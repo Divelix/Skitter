@@ -1,0 +1,15 @@
+{
+  "guns": [
+    {
+      "id": 1,
+      "name": "Rifle",
+      "specs": {
+        "damage": 100,
+        "reload_speed": 1.2,
+        "bullet_speed": 10,
+        "crit_chance": 0.1,
+        "crit_multiplier": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "mods": [
+    {
+      "id": 1,
+      "name": "damage mod",
+      "effects": {
+        "damage": 10
+      }
+    },
+
+    {
+      "id": 2,
+      "name": "reload speed mod",
+      "effects": {
+        "reload_speed": 10
+      }
+    },
+
+    {
+      "id": 3,
+      "name": "bullet speed mod",
+      "effects": {
+        "bullet_speed": 10
+      }
+    },
+
+    {
+      "id": 4,
+      "name": "crit mult mod",
+      "effects": {
+        "crit_multiplier": 1.1
+      }
+    }
+  ]
+}

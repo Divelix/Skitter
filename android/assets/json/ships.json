@@ -1,0 +1,14 @@
+{
+  "ships": [
+    {
+      "id": 1,
+      "name": "Bucket",
+      "specs": {
+        "health": 100,
+        "energy": 99,
+        "armor": 0,
+        "speed": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+package com.divelix.skitter.desktop
+
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+import com.divelix.skitter.Constants
+import com.divelix.skitter.Main
+
+object DesktopLauncher {
+    @JvmStatic
+    fun main(arg: Array<String>) {
+        LwjglApplication(Main(), LwjglApplicationConfiguration().apply {
+            title = Constants.TITLE
+            width = Constants.D_WIDTH
+            height = Constants.D_HEIGHT
+//            resizable = false
+        })
+    }
+}

@@ -1,0 +1,60 @@
+{
+	"name": "Serega",
+	"level": 5,
+	"coins": 2000,
+	"guns": [
+		{
+			"type": "RIFLE",
+			"damage": 10.0,
+			"speed": 10.0,
+			"critical_multiplier": 2.1,
+			"critical_chance": 0.13,
+			"mods": [
+				{
+					"type": "ATTACK_SPEED",
+					"level": 2,
+					"quantity": 1
+				},
+				{
+					"type": "FIRE_DAMAGE",
+					"level": 3,
+					"quantity": 1
+				}
+			]
+		}
+	],
+	"gun_mods": [
+		{
+			"type": "DAMAGE",
+			"level": 1,
+			"quantity": 1
+		},
+		{
+			"type": "ATTACK_SPEED",
+			"level": 2,
+			"quantity": 1
+		},
+		{
+			"type": "FIRE_DAMAGE",
+			"level": 3,
+			"quantity": 4
+		}
+	],
+	"ship_mods": [
+		{
+			"type": "HEALTH",
+			"level": 1,
+			"quantity": 1
+		},
+		{
+			"type": "SPEED",
+			"level": 2,
+			"quantity": 1
+		},
+		{
+			"type": "MANA",
+			"level": 3,
+			"quantity": 4
+		}
+	]
+}

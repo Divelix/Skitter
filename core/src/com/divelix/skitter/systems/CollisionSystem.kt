@@ -1,0 +1,68 @@
+package com.divelix.skitter.systems
+
+import com.badlogic.ashley.core.*
+import com.badlogic.ashley.systems.IteratingSystem
+import com.divelix.skitter.components.*
+
+class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
+    private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
+    private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
+
+    override fun processEntity(entity: Entity, deltaTime: Float) {
+        // get player collision component
+        val typeCmp = cmType.get(entity)
+        val collisionCmp = cmCollision.get(entity)
+
+        val collidedEntity = collisionCmp.collisionEntity
+        if (collidedEntity != null) {
+            val collidedTypeCmp = collidedEntity.getComponent(TypeComponent::class.java)
+
+            when(typeCmp.type) {
+                TypeComponent.PLAYER -> {
+                    val pm = ComponentMapper.getFor(PlayerComponent::class.java)
+                    val playerCmp = pm.get(entity)
+                    when (collidedTypeCmp.type) {
+                        TypeComponent.ENEMY -> {
+                            println("player hit enemy")
+                            val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
+                            playerCmp.health -= enemyCmp.damage
+                            println(playerCmp.health)
+                            if (playerCmp.health <= 0f) {
+//                                val bodyCmp = entity.getComponent(B2dBodyComponent::class.java)
+//                                bodyCmp.isDead = true
+                                println("Player died")
+                                gameOver()
+                            }
+                            collisionCmp.collisionEntity = null // collision handled reset component
+                        }
+                    }
+                }
+                TypeComponent.BULLET -> {
+                    val bulletCmp = entity.getComponent(BulletComponent::class.java)
+                    if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
+                    when (collidedTypeCmp.type) {
+                        TypeComponent.ENEMY -> {
+//                            println("bullet hit enemy")
+                            val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
+                            enemyCmp.health -= 10
+                            println("Enemy health: ${enemyCmp.health + 10} -> ${enemyCmp.health}")
+                            if(enemyCmp.health <= 0) {
+                                val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
+                                collidedBodyCmp.isDead = true
+                            }
+                            collisionCmp.collisionEntity = null
+                            bulletCmp.isDead = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun gameOver() {
+        println("------------------------------------")
+        println("-------------Game Over--------------")
+        println("------------------------------------")
+    }
+
+}
