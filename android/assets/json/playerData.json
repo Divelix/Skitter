@@ -1,4 +1,5 @@
 {
+	"id": 1,
 	"name": "Serega",
 	"level": 5,
 	"coins": 2000,
@@ -23,36 +24,46 @@
 			]
 		}
 	],
-	"gun_mods": [
+	"mods": [
 		{
-			"type": "DAMAGE",
+			"id": 1,
+			"type": "gun",
+			"name": "DAMAGE",
 			"level": 1,
 			"quantity": 1
 		},
 		{
-			"type": "ATTACK_SPEED",
+			"id": 2,
+			"type": "gun",
+			"name": "ATTACK_SPEED",
 			"level": 2,
 			"quantity": 1
 		},
 		{
-			"type": "FIRE_DAMAGE",
+			"id": 3,
+			"type": "gun",
+			"name": "FIRE_DAMAGE",
 			"level": 3,
 			"quantity": 4
-		}
-	],
-	"ship_mods": [
+		},
 		{
-			"type": "HEALTH",
+			"id": 100,
+			"type": "ship",
+			"name": "HEALTH",
 			"level": 1,
 			"quantity": 1
 		},
 		{
-			"type": "SPEED",
+			"id": 101,
+			"type": "ship",
+			"name": "SPEED",
 			"level": 2,
 			"quantity": 1
 		},
 		{
-			"type": "MANA",
+			"id": 102,
+			"type": "ship",
+			"name": "MANA",
 			"level": 3,
 			"quantity": 4
 		}

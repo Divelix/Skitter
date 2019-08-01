@@ -38,7 +38,7 @@ class LoadingScreen(private val game: Main): KtxScreen {
         if(assets.manager.update() && progress >= 0.99f) {
             assets.manager.finishLoading()
             assets.setup()
-            game.screen = FancyScreen(game)
+            game.screen = GunScreen(game)
         }
     }
 }

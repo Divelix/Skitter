@@ -79,11 +79,13 @@ class GunScreen(val game: Main): KtxScreen {
             val quantity = mod.get("quantity").asInt()
             suitMods.add(Mod(type, level, quantity))
         }
-        for (mod in data.get("gun_mods")) {
-            val type = ModType.valueOf(mod.get("type").asString()) // not toString()!!!
-            val level = mod.get("level").asInt()
-            val quantity = mod.get("quantity").asInt()
-            stockMods.add(Mod(type, level, quantity))
+        for (mod in data.get("mods")) {
+            if (mod.get("type").asString() == "gun") {
+                val name = ModType.valueOf(mod.get("name").asString()) // not toString()!!!
+                val level = mod.get("level").asInt()
+                val quantity = mod.get("quantity").asInt()
+                stockMods.add(Mod(name, level, quantity))
+            }
         }
 
         stockTable = table {

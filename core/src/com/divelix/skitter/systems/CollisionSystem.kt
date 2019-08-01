@@ -2,9 +2,11 @@ package com.divelix.skitter.systems
 
 import com.badlogic.ashley.core.*
 import com.badlogic.ashley.systems.IteratingSystem
+import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
+import com.divelix.skitter.screens.GunScreen
 
-class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
+class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
 
@@ -63,6 +65,7 @@ class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.jav
         println("------------------------------------")
         println("-------------Game Over--------------")
         println("------------------------------------")
+        game.screen = GunScreen(game)
     }
 
 }
