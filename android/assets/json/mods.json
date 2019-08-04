@@ -1,39 +1,72 @@
 {
-  "mods": [
-    {
-      "id": 1,
-      "type": "gun",
-      "name": "damage mod",
-      "effects": {
-        "damage": 10
-      }
-    },
-
-    {
-      "id": 2,
-      "type": "gun",
-      "name": "reload speed mod",
-      "effects": {
-        "reload_speed": 10
-      }
-    },
-
-    {
-      "id": 3,
-      "type": "gun",
-      "name": "bullet speed mod",
-      "effects": {
-        "bullet_speed": 10
-      }
-    },
-
-    {
-      "id": 4,
-      "type": "gun",
-      "name": "crit mult mod",
-      "effects": {
-        "crit_multiplier": 1.1
-      }
+ "mods": {
+  "gun": [
+   {
+    "index": 1,
+    "name": "DAMAGE",
+    "effects": {
+      "damage": 10
     }
+   },
+   {
+    "index": 2,
+    "name": "RELOAD_SPEED",
+    "effects": {
+      "reload_speed": 10
+    }
+   },
+   {
+    "index": 3,
+    "name": "BULLET_SPEED",
+    "effects": {
+      "bullet_speed": 10
+    }
+   },
+   {
+    "index": 4,
+    "name": "CRIT_MULT",
+    "effects": {
+      "crit_multiplier": 1.1
+    }
+   },
+   {
+    "index": 5,
+    "name": "FIRE_DAMAGE",
+    "effects": {
+      "fire_damage": 10
+    }
+   },
+   {
+    "index": 6,
+    "name": "COLD_DAMAGE",
+    "effects": {
+      "cold_damage": 10
+    }
+   }
+  ],
+
+  "ship": [
+   {
+    "index": 1,
+    "name": "HEALTH",
+    "effects": {
+      "health": 100
+    }
+   },
+   {
+    "index": 2,
+    "name": "ENERGY",
+    "effects": {
+      "energy": 100
+    }
+   },
+   {
+    "index": 3,
+    "name": "SPEED",
+    "effects": {
+      "speed": 100
+    }
+   }
   ]
+ }
 }

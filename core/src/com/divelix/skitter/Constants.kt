@@ -50,11 +50,10 @@ object Constants {
     const val RIFLE = "rifle.png"
     const val UZI = "uzi.png"
     const val MOD_GLOW = "mods/mod-glow.png"
-    const val MOD_ATTACK_SPEED = "mods/attack-speed.png"
+    const val MOD_RELOAD_SPEED = "mods/reload-speed.png"
     const val MOD_COLD_DAMAGE = "mods/cold-damage.png"
     const val MOD_DAMAGE = "mods/damage.png"
     const val MOD_FIRE_DAMAGE = "mods/fire-damage.png"
     const val MOD_HEALTH = "mods/health.png"
-    const val MOD_SPEED = "mods/speed.png"
     const val MOD_MANA = "mods/mana.png"
 }

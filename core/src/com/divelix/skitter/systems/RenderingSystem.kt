@@ -88,7 +88,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
                 val originX = width / 2f
                 val originY = height / 2f
 
-//            if (typeCmp.type == TypeComponent.BULLET)
+//            if (typeCmp.name == TypeComponent.BULLET)
 //                batch.shader = bulletShader
                 batch.draw(textureCmp.region!!,
                         transformCmp.position.x - originX, transformCmp.position.y - originY,

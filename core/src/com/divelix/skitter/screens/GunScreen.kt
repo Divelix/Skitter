@@ -18,10 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.Json
-import com.badlogic.gdx.utils.JsonReader
-import com.badlogic.gdx.utils.JsonWriter
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.*
 import ktx.actors.*
@@ -36,7 +34,9 @@ class GunScreen(val game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
     private val skin = assets.uiSkin
     private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
-    private val dataFile = "json/playerData.json".toInternalFile()
+    private val playerJson = "json/playerData.json".toInternalFile()
+    private val gunsJson = "json/guns.json".toInternalFile()
+    private val modsJson = "json/mods.json".toInternalFile()
 
     private val posLabel = Label("0; 0", skin)
     private val rootTable: Table
@@ -55,7 +55,7 @@ class GunScreen(val game: Main): KtxScreen {
     var sourceContainer: Container<*>? = null
 
     var damage: Float
-    var speed: Float
+    var reload_speed: Float
     var critMult: Float
     var critChance: Float
 
@@ -66,25 +66,62 @@ class GunScreen(val game: Main): KtxScreen {
 
     init {
         val reader = JsonReader()
-        val data = reader.parse(dataFile)
-        val guns = data.get("guns")
-        damage = guns[0].get("damage").asFloat()
-        speed = guns[0].get("speed").asFloat()
-        critMult = guns[0].get("critical_multiplier").asFloat()
-        critChance = guns[0].get("critical_chance").asFloat()
-        println(" Damage: $damage\n Speed: $speed\n Crit multiplier: $critMult\n Crit chance: $critChance")
-        for (mod in guns[0].get("mods")) {
-            val type = ModType.valueOf(mod.get("type").asString())
-            val level = mod.get("level").asInt()
-            val quantity = mod.get("quantity").asInt()
-            suitMods.add(Mod(type, level, quantity))
+        val playerData = reader.parse(playerJson)
+        val gunsData = reader.parse(gunsJson)
+        val modsData = reader.parse(modsJson)
+        val playerGuns = playerData.get("guns")
+        val guns = gunsData.get("guns")
+        val mods = modsData.get("mods")
+
+        val playerGun = playerGuns[playerData.get("active_gun").asInt()]
+        val playerGunIndex = playerGun.get("index").asInt()
+        val playerGunLevel = playerGun.get("level").asInt()
+        val playerGunMods = playerGun.get("mods")
+        var activeGun = guns[0] // first gun by default
+        for (gun in guns) {
+            if (gun.get("index").asInt() == playerGunIndex) {
+                activeGun = gun
+                break
+            }
         }
-        for (mod in data.get("mods")) {
-            if (mod.get("type").asString() == "gun") {
-                val name = ModType.valueOf(mod.get("name").asString()) // not toString()!!!
-                val level = mod.get("level").asInt()
-                val quantity = mod.get("quantity").asInt()
-                stockMods.add(Mod(name, level, quantity))
+
+        val gunSpecs = activeGun.get("specs")
+        damage = gunSpecs.get("damage").asFloat()
+        reload_speed = gunSpecs.get("reload_speed").asFloat()
+        // bullet speed
+        critChance = gunSpecs.get("crit_chance").asFloat()
+        critMult = gunSpecs.get("crit_multiplier").asFloat()
+        println(" Damage: $damage\n Reload: $reload_speed\n Crit multiplier: $critMult\n Crit chance: $critChance")
+
+        val gunMods = mods.get("gun")
+        val playerGunModIndices = Array<Int>(playerGunMods.size)
+        for (i in 0 until playerGunMods.size) {
+            playerGunModIndices.add(playerGunMods[i].get("index").asInt())
+        }
+        val activeGunMods = Array<JsonValue>(playerGunMods.size)
+        for (i in 0 until playerGunMods.size) {
+            for (mod in gunMods) {
+                if (playerGunModIndices[i] == mod.get("index").asInt())
+                    activeGunMods.add(mod)
+            }
+        }
+        for (i in 0 until playerGunMods.size) {
+            val name = ModName.valueOf(activeGunMods[i].get("name").asString())
+            val level = playerGunMods[i].get("level").asInt()
+            suitMods.add(Mod(name, level))
+        }
+        for (playerMod in playerData.get("mods").get("gun")) {
+            val index = playerMod.get("index").asInt()
+            val level = playerMod.get("level").asInt()
+            val quantity = playerMod.get("quantity").asInt()
+
+            for (mod in gunMods) {
+                if (mod.get("index").asInt() == index) {
+                    val name = ModName.valueOf(mod.get("name").asString())
+                    val effects = mod.get("effects")
+                    stockMods.add(Mod(name, level, quantity))
+                    break
+                }
             }
         }
 
@@ -92,18 +129,18 @@ class GunScreen(val game: Main): KtxScreen {
             name = "StockTable"
             defaults().width(Constants.MOD_WIDTH).height(Constants.MOD_HEIGHT).pad(2f)
 
-//                for (i in 1..stockMods.size) {
-//                    container(ModImage(stockMods[i - 1])) {
-//                        touchable = Touchable.enabled
-//                    }
-//                    if (i % 4 == 0) row()
-//                }
-            for (i in 1..30) {
-                container(ModImage(stockMods[0])) {
+            for (i in 1..stockMods.size) {
+                container(ModImage(stockMods[i - 1])) {
                     touchable = Touchable.enabled
                 }
                 if (i % 4 == 0) row()
             }
+//            for (i in 1..30) {
+//                container(ModImage(stockMods[0])) {
+//                    touchable = Touchable.enabled
+//                }
+//                if (i % 4 == 0) row()
+//            }
         }
         rootTable = table {
             setFillParent(true)
@@ -119,7 +156,7 @@ class GunScreen(val game: Main): KtxScreen {
                     padLeft(10f)
                     defaults().expandX().left()
                     label("DAMAGE: $damage");row()
-                    label("SPEED: $speed");row()
+                    label("RELOAD: $reload_speed");row()
                     label("CRIT: $critMult");row()
                     label("CHANCE: $critChance")
                 }
@@ -150,6 +187,7 @@ class GunScreen(val game: Main): KtxScreen {
         applyBtn.setSize(64f, 64f)
         applyBtn.addListener(object: ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                applyMods()
                 game.screen = PlayScreen(game)
                 return super.touchDown(event, x, y, pointer, button)
             }
@@ -176,8 +214,8 @@ class GunScreen(val game: Main): KtxScreen {
                                 sourceContainer = null
                             } else {
                                 val isInSameTable = actor.parent.parent.name == activeMod!!.parent.parent.name
-                                val isSameTypes = actor.mod.type == activeMod!!.mod.type
-                                val modOnCheck = if (actor.parent.parent.name == "StockTable") actor.mod.type else activeMod!!.mod.type
+                                val isSameTypes = actor.mod.name == activeMod!!.mod.name
+                                val modOnCheck = if (actor.parent.parent.name == "StockTable") actor.mod.name else activeMod!!.mod.name
                                 if (isInSameTable || isSameTypes || !checkDupSuit(modOnCheck)) {
                                     val cont = actor.parent as Container<*>
                                     activeMod!!.remove()
@@ -191,7 +229,7 @@ class GunScreen(val game: Main): KtxScreen {
                     is Container<*> -> {
                         if (activeMod != null) {
                             val isInSameTable = actor.parent.parent.name == activeMod!!.parent.parent.name
-                            if (isInSameTable || !checkDupSuit(activeMod!!.mod.type) || activeMod!!.parent.parent.name == "SuitTable") {
+                            if (isInSameTable || !checkDupSuit(activeMod!!.mod.name) || activeMod!!.parent.parent.name == "SuitTable") {
                                 activeMod!!.children[1].remove()
                                 actor.actor = activeMod
                                 activeMod = null
@@ -212,28 +250,28 @@ class GunScreen(val game: Main): KtxScreen {
         updateSpecs()
     }
 
-    fun checkDupSuit(type: ModType): Boolean {
+    fun checkDupSuit(name: ModName): Boolean {
         for (container in suitTable.children) {
             val c = (container as Container<*>)
             if (c.actor != null)
-                if ((c.actor as ModImage).mod.type == type) return true
+                if ((c.actor as ModImage).mod.name == name) return true
         }
         return false
     }
 
     fun updateSpecs() {
         finalDamage = damage
-        finalSpeed = speed
+        finalSpeed = reload_speed
         finalCritMult = critMult
         finalCritChance = critChance
         for (container in suitTable.children) {
             val c = (container as Container<*>)
             if (c.actor != null) {
                 val mod = (c.actor as ModImage).mod
-                when(mod.type) {
-                    ModType.DAMAGE -> finalDamage *= 2f
-                    ModType.ATTACK_SPEED -> finalSpeed *= 1.1f
-                    else -> println("${mod.type} is not implemented yet")
+                when(mod.name) {
+                    ModName.DAMAGE -> finalDamage *= 2f
+                    ModName.RELOAD_SPEED -> finalSpeed *= 1.1f
+                    else -> println("${mod.name} is not implemented yet")
                 }
             }
         }
@@ -261,10 +299,10 @@ class GunScreen(val game: Main): KtxScreen {
                     Input.Keys.W -> {
                         val json = Json(JsonWriter.OutputType.json)
                         val mods = Array<Mod>()
-                        mods.add(Mod(ModType.DAMAGE, 1, 1))
+                        mods.add(Mod(ModName.DAMAGE, 1, 1))
                         val data = PlayerData("Qwerty", 5, 2000, 125, mods)
 //                        println(json.prettyPrint(data))
-                        dataFile.writeString(json.prettyPrint(data), false)
+                        playerJson.writeString(json.prettyPrint(data), false)
                     }
                 }
                 return true
@@ -295,23 +333,25 @@ class GunScreen(val game: Main): KtxScreen {
         stage.dispose()
     }
 
+    fun applyMods() {
+        println("gun mods applied")
+    }
+
     inner class ModImage(val mod: Mod): Group() {
         init {
             touchable = Touchable.enabled
             setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
-            val texture = when(mod.type) {
-                ModType.EMPTY -> assets.manager.get<Texture>(Constants.LOADING_IMAGE)
-
+            val texture = when(mod.name) {
                 // Gun stockMods
-                ModType.DAMAGE -> assets.manager.get<Texture>(Constants.MOD_DAMAGE)
-                ModType.FIRE_DAMAGE -> assets.manager.get<Texture>(Constants.MOD_FIRE_DAMAGE)
-                ModType.COLD_DAMAGE -> assets.manager.get<Texture>(Constants.MOD_COLD_DAMAGE)
-                ModType.ATTACK_SPEED -> assets.manager.get<Texture>(Constants.MOD_ATTACK_SPEED)
+                ModName.DAMAGE -> assets.manager.get<Texture>(Constants.MOD_DAMAGE)
+                ModName.FIRE_DAMAGE -> assets.manager.get<Texture>(Constants.MOD_FIRE_DAMAGE)
+                ModName.COLD_DAMAGE -> assets.manager.get<Texture>(Constants.MOD_COLD_DAMAGE)
+                ModName.RELOAD_SPEED -> assets.manager.get<Texture>(Constants.MOD_RELOAD_SPEED)
 
                 // Ship stockMods
-                ModType.HEALTH -> TODO()
-                ModType.SPEED -> TODO()
-                ModType.MANA -> TODO()
+                ModName.HEALTH -> TODO()
+                ModName.SPEED -> TODO()
+                ModName.MANA -> TODO()
             }
             addActor(Image(texture).apply {
                 touchable = Touchable.disabled

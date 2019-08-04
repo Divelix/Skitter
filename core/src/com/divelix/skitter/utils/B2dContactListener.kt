@@ -9,7 +9,7 @@ class B2dContactListener : ContactListener {
     override fun beginContact(contact: Contact) {
         val fa = contact.fixtureA
         val fb = contact.fixtureB
-//        println("${fa.body.type} has hit ${fb.body.type}")
+//        println("${fa.body.name} has hit ${fb.body.name}")
         if(fa.body.userData is Entity && fb.body.userData is Entity) {
             val entityA = fa.body.userData as Entity
             val entityB = fb.body.userData as Entity

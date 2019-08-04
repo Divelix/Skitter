@@ -49,7 +49,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      * flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -65,7 +65,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -83,7 +83,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      * flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -102,7 +102,7 @@ public class Noise implements Serializable {
      * numbers, then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash,
      * especially for ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by
      * Pelle Evensen's rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary
-     * hash used here has been stripped down heavily, both for speed and because unless points are selected
+     * hash used here has been stripped down heavily, both for reload_speed and because unless points are selected
      * specifically to target flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that
      * rrxmrrxmsx_0 has.
      * @param x x position, as an int
@@ -124,7 +124,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      * flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -140,7 +140,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -158,7 +158,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      * flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -177,7 +177,7 @@ public class Noise implements Serializable {
      * numbers, then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash,
      * especially for ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by
      * Pelle Evensen's rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary
-     * hash used here has been stripped down heavily, both for speed and because unless points are selected
+     * hash used here has been stripped down heavily, both for reload_speed and because unless points are selected
      * specifically to target flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that
      * rrxmrrxmsx_0 has.
      * @param x x position, as an int
@@ -199,7 +199,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      * flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -215,7 +215,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -233,7 +233,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      * flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -252,7 +252,7 @@ public class Noise implements Serializable {
      * numbers, then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash,
      * especially for ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by
      * Pelle Evensen's rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary
-     * hash used here has been stripped down heavily, both for speed and because unless points are selected
+     * hash used here has been stripped down heavily, both for reload_speed and because unless points are selected
      * specifically to target flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that
      * rrxmrrxmsx_0 has.
      * @param x x position, as an int
@@ -273,7 +273,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      * flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -289,7 +289,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -307,7 +307,7 @@ public class Noise implements Serializable {
      * then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash, especially for
      * ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by Pelle Evensen's
      * rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary hash used here has
-     * been stripped down heavily, both for speed and because unless points are selected specifically to target
+     * been stripped down heavily, both for reload_speed and because unless points are selected specifically to target
      * flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that rrxmrrxmsx_0 has.
      * @param x x position, as an int
      * @param y y position, as an int
@@ -326,7 +326,7 @@ public class Noise implements Serializable {
      * numbers, then runs a simple unary hash on s and returns it. Has better performance than HastyPointHash,
      * especially for ints, and has slightly fewer collisions in a hash table of points. GWT-optimized. Inspired by
      * Pelle Evensen's rrxmrrxmsx_0 unary hash, though this doesn'stockTable use its code or its full algorithm. The unary
-     * hash used here has been stripped down heavily, both for speed and because unless points are selected
+     * hash used here has been stripped down heavily, both for reload_speed and because unless points are selected
      * specifically to target flaws in the hash, it doesn'stockTable need the intense resistance to bad inputs that
      * rrxmrrxmsx_0 has.
      * @param x x position, as an int
@@ -857,24 +857,24 @@ public class Noise implements Serializable {
     }
 
     /**
-     * Sets the default type of noise returned by {@link #getConfiguredNoise(float, float)}, using one of the following constants
+     * Sets the default name of noise returned by {@link #getConfiguredNoise(float, float)}, using one of the following constants
      * in this class:
      * {@link #VALUE} (0), {@link #VALUE_FRACTAL} (1), {@link #PERLIN} (2), {@link #PERLIN_FRACTAL} (3),
      * {@link #SIMPLEX} (4), {@link #SIMPLEX_FRACTAL} (5), {@link #CELLULAR} (6), {@link #WHITE_NOISE} (7),
      * {@link #CUBIC} (8), or {@link #CUBIC_FRACTAL} (9). If this isn'stockTable called, getConfiguredNoise() will default to SIMPLEX.
-     * @param noiseType an int from 0 to 9 corresponding to a constant from this class for a noise type
+     * @param noiseType an int from 0 to 9 corresponding to a constant from this class for a noise name
      */
     public void setNoiseType(int noiseType) {
         this.noiseType = noiseType;
     }
 
     /**
-     * Gets the default type of noise returned by {@link #getConfiguredNoise(float, float)}, using one of the following constants
+     * Gets the default name of noise returned by {@link #getConfiguredNoise(float, float)}, using one of the following constants
      * in this class:
      * {@link #VALUE} (0), {@link #VALUE_FRACTAL} (1), {@link #PERLIN} (2), {@link #PERLIN_FRACTAL} (3),
      * {@link #SIMPLEX} (4), {@link #SIMPLEX_FRACTAL} (5), {@link #CELLULAR} (6), {@link #WHITE_NOISE} (7),
      * {@link #CUBIC} (8), or {@link #CUBIC_FRACTAL} (9). The default is SIMPLEX.
-     * @return the noise type as a code, from 0 to 9 inclusive
+     * @return the noise name as a code, from 0 to 9 inclusive
      */
     public int getNoiseType()
     {
@@ -933,7 +933,7 @@ public class Noise implements Serializable {
      * Gets the method for combining octaves in all fractal noise types, allowing an int argument corresponding to one
      * of the following constants from this class: {@link #FBM} (0), {@link #BILLOW} (1), or {@link #RIDGED_MULTI} (2).
      * The default is FBM.
-     * @return the fractal type as a code; 0, 1, or 2
+     * @return the fractal name as a code; 0, 1, or 2
      */
     public int getFractalType()
     {
@@ -953,7 +953,7 @@ public class Noise implements Serializable {
     // Default: CellValue
 
     /**
-     * Sets the return type from cellular noise calculations, allowing an int argument corresponding to one of the
+     * Sets the return name from cellular noise calculations, allowing an int argument corresponding to one of the
      * following constants from this class: {@link #CELL_VALUE} (0), {@link #NOISE_LOOKUP} (1), {@link #DISTANCE} (2),
      * {@link #DISTANCE_2} (3), {@link #DISTANCE_2_ADD} (4), {@link #DISTANCE_2_SUB} (5), {@link #DISTANCE_2_MUL} (6),
      * or {@link #DISTANCE_2_DIV} (7). If this isn'stockTable called, it will use CELL_VALUE.
@@ -963,7 +963,7 @@ public class Noise implements Serializable {
         this.cellularReturnType = cellularReturnType;
     }
 
-    // Noise used to calculate a cell value if cellular return type is NoiseLookup
+    // Noise used to calculate a cell value if cellular return name is NoiseLookup
     // The lookup value is acquired through getConfiguredNoise() so ensure you setNoiseType() on the noise lookup, value, gradient or simplex is recommended
     public void setCellularNoiseLookup(Noise noise) {
         cellularNoiseLookup = noise;

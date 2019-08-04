@@ -1,71 +1,60 @@
 {
-	"id": 1,
-	"name": "Serega",
-	"level": 5,
-	"coins": 2000,
-	"guns": [
-		{
-			"type": "RIFLE",
-			"damage": 10.0,
-			"speed": 10.0,
-			"critical_multiplier": 2.1,
-			"critical_chance": 0.13,
-			"mods": [
-				{
-					"type": "ATTACK_SPEED",
-					"level": 2,
-					"quantity": 1
-				},
-				{
-					"type": "FIRE_DAMAGE",
-					"level": 3,
-					"quantity": 1
-				}
-			]
-		}
-	],
-	"mods": [
-		{
-			"id": 1,
-			"type": "gun",
-			"name": "DAMAGE",
-			"level": 1,
-			"quantity": 1
-		},
-		{
-			"id": 2,
-			"type": "gun",
-			"name": "ATTACK_SPEED",
-			"level": 2,
-			"quantity": 1
-		},
-		{
-			"id": 3,
-			"type": "gun",
-			"name": "FIRE_DAMAGE",
-			"level": 3,
-			"quantity": 4
-		},
-		{
-			"id": 100,
-			"type": "ship",
-			"name": "HEALTH",
-			"level": 1,
-			"quantity": 1
-		},
-		{
-			"id": 101,
-			"type": "ship",
-			"name": "SPEED",
-			"level": 2,
-			"quantity": 1
-		},
-		{
-			"id": 102,
-			"type": "ship",
-			"name": "MANA",
-			"level": 3,
-			"quantity": 4
-		}
-	]
+ "id": 1,
+ "name": "Serega",
+ "coins": 2000,
+ "active_gun": 0,
+ "guns": [
+  {
+   "index": 1,
+   "level": 1,
+   "mods": [
+    {
+  	 "index": 1,
+  	 "level": 2
+  	},
+  	{
+  	 "index": 5,
+  	 "level": 3
+  	}
+   ]
+  }
+ ],
+
+ "mods": {
+  "gun": [
+   {
+    "index": 1,
+    "level": 1,
+    "quantity": 1
+   },
+   {
+    "index": 2,
+    "level": 2,
+    "quantity": 1
+   },
+   {
+    "index": 5,
+    "level": 3,
+    "quantity": 4
+   }
+  ],
+
+  "ship": [
+   {
+    "index": 1,
+    "level": 1,
+    "quantity": 1
+   },
+   {
+    "index": 2,
+    "level": 2,
+    "quantity": 1
+   },
+   {
+    "index": 3,
+    "level": 3,
+    "quantity": 4
+   }
+  ]
+ }
 }

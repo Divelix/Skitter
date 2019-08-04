@@ -44,12 +44,11 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.RIFLE)
         manager.load<Texture>(Constants.UZI)
         manager.load<Texture>(Constants.MOD_GLOW)
-        manager.load<Texture>(Constants.MOD_ATTACK_SPEED)
+        manager.load<Texture>(Constants.MOD_RELOAD_SPEED)
         manager.load<Texture>(Constants.MOD_COLD_DAMAGE)
         manager.load<Texture>(Constants.MOD_DAMAGE)
         manager.load<Texture>(Constants.MOD_FIRE_DAMAGE)
         manager.load<Texture>(Constants.MOD_HEALTH)
-        manager.load<Texture>(Constants.MOD_SPEED)
         manager.load<Texture>(Constants.MOD_MANA)
 //        loadFonts() //TODO try move to the top
     }
