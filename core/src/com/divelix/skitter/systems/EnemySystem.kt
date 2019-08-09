@@ -26,6 +26,6 @@ class EnemySystem: IteratingSystem(Family.all(EnemyComponent::class.java).get())
         bodyCmp.body.linearVelocity = playerPos.sub(enemyPos).nor().scl(speed)
 
 //        time += deltaTime
-//        bodyCmp.body.linearVelocity = Vector2(reload_speed * MathUtils.sin(time), -5f)
+//        bodyCmp.body.linearVelocity = Vector2(reloadSpeed * MathUtils.sin(time), -5f)
     }
 }

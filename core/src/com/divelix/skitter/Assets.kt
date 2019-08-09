@@ -45,6 +45,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.UZI)
         manager.load<Texture>(Constants.MOD_GLOW)
         manager.load<Texture>(Constants.MOD_RELOAD_SPEED)
+        manager.load<Texture>(Constants.MOD_BULLET_SPEED)
         manager.load<Texture>(Constants.MOD_COLD_DAMAGE)
         manager.load<Texture>(Constants.MOD_DAMAGE)
         manager.load<Texture>(Constants.MOD_FIRE_DAMAGE)

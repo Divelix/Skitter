@@ -51,6 +51,7 @@ object Constants {
     const val UZI = "uzi.png"
     const val MOD_GLOW = "mods/mod-glow.png"
     const val MOD_RELOAD_SPEED = "mods/reload-speed.png"
+    const val MOD_BULLET_SPEED = "mods/bullet-speed.png"
     const val MOD_COLD_DAMAGE = "mods/cold-damage.png"
     const val MOD_DAMAGE = "mods/damage.png"
     const val MOD_FIRE_DAMAGE = "mods/fire-damage.png"

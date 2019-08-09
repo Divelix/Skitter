@@ -16,7 +16,7 @@ import com.divelix.skitter.screens.PlayScreen
 class PhysicsSystem(private val world: World, private val blackList: ArrayList<Body>):
         IteratingSystem(Family.all(B2dBodyComponent::class.java, TransformComponent::class.java).get()) {
     companion object {
-        // create variables to stabilize reload_speed
+        // create variables to stabilize reloadSpeed
         private var accumulator = 0f
     }
     private val bodiesQueue: Array<Entity> = Array()

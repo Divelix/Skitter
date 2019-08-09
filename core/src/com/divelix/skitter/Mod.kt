@@ -6,6 +6,9 @@ enum class ModName {
     // Gun
     DAMAGE,
     RELOAD_SPEED,
+    BULLET_SPEED,
+    CRIT_CHANCE,
+    CRIT_MULT,
     FIRE_DAMAGE,
     COLD_DAMAGE,
 

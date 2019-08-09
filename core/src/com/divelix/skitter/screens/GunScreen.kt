@@ -7,16 +7,12 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
@@ -55,14 +51,10 @@ class GunScreen(val game: Main): KtxScreen {
     var sourceContainer: Container<*>? = null
 
     var damage: Float
-    var reload_speed: Float
-    var critMult: Float
+    var reloadSpeed: Float
+    var bulletSpeed: Float
     var critChance: Float
-
-    var finalDamage = 0f
-    var finalSpeed = 0f
-    var finalCritMult = 0f
-    var finalCritChance = 0f
+    var critMult: Float
 
     init {
         val reader = JsonReader()
@@ -73,6 +65,7 @@ class GunScreen(val game: Main): KtxScreen {
         val guns = gunsData.get("guns")
         val mods = modsData.get("mods")
 
+        // GUN
         val playerGun = playerGuns[playerData.get("active_gun").asInt()]
         val playerGunIndex = playerGun.get("index").asInt()
         val playerGunLevel = playerGun.get("level").asInt()
@@ -86,13 +79,14 @@ class GunScreen(val game: Main): KtxScreen {
         }
 
         val gunSpecs = activeGun.get("specs")
-        damage = gunSpecs.get("damage").asFloat()
-        reload_speed = gunSpecs.get("reload_speed").asFloat()
-        // bullet speed
-        critChance = gunSpecs.get("crit_chance").asFloat()
-        critMult = gunSpecs.get("crit_multiplier").asFloat()
-        println(" Damage: $damage\n Reload: $reload_speed\n Crit multiplier: $critMult\n Crit chance: $critChance")
+        damage = gunSpecs[0].asFloat()
+        reloadSpeed = gunSpecs[1].asFloat()
+        bulletSpeed = gunSpecs[2].asFloat()
+        critChance = gunSpecs[3].asFloat()
+        critMult = gunSpecs[4].asFloat()
+        println(" Damage: $damage\n Reload: $reloadSpeed\n BulletSpeed: $bulletSpeed\n CritChance: $critChance\n CritMult: $critMult")
 
+        // MODS
         val gunMods = mods.get("gun")
         val playerGunModIndices = Array<Int>(playerGunMods.size)
         for (i in 0 until playerGunMods.size) {
@@ -156,7 +150,8 @@ class GunScreen(val game: Main): KtxScreen {
                     padLeft(10f)
                     defaults().expandX().left()
                     label("DAMAGE: $damage");row()
-                    label("RELOAD: $reload_speed");row()
+                    label("RELOAD: $reloadSpeed");row()
+                    label("SPEED: $bulletSpeed");row()
                     label("CRIT: $critMult");row()
                     label("CHANCE: $critChance")
                 }
@@ -193,7 +188,7 @@ class GunScreen(val game: Main): KtxScreen {
             }
         })
 
-        stage.addListener(object: DragListener() {
+        stage.addListener(object: ClickListener() {
 
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 super.touchDown(event, x, y, pointer, button)
@@ -228,7 +223,7 @@ class GunScreen(val game: Main): KtxScreen {
                     }
                     is Container<*> -> {
                         if (activeMod != null) {
-                            val isInSameTable = actor.parent.parent.name == activeMod!!.parent.parent.name
+                            val isInSameTable = actor.parent.name == activeMod!!.parent.parent.name
                             if (isInSameTable || !checkDupSuit(activeMod!!.mod.name) || activeMod!!.parent.parent.name == "SuitTable") {
                                 activeMod!!.children[1].remove()
                                 actor.actor = activeMod
@@ -260,25 +255,28 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     fun updateSpecs() {
-        finalDamage = damage
-        finalSpeed = reload_speed
-        finalCritMult = critMult
-        finalCritChance = critChance
+        var finalDamage = damage
+        var finalReloadSpeed = reloadSpeed
+        var finalBulletSpeed = bulletSpeed
+        var finalCritMult = critMult
+        var finalCritChance = critChance
         for (container in suitTable.children) {
             val c = (container as Container<*>)
             if (c.actor != null) {
                 val mod = (c.actor as ModImage).mod
                 when(mod.name) {
                     ModName.DAMAGE -> finalDamage *= 2f
-                    ModName.RELOAD_SPEED -> finalSpeed *= 1.1f
+                    ModName.RELOAD_SPEED -> finalReloadSpeed *= 1.1f
+                    ModName.BULLET_SPEED -> finalBulletSpeed *= 1.1f
                     else -> println("${mod.name} is not implemented yet")
                 }
             }
         }
         (specsTable.children[0] as Label).setText("DAMAGE: $finalDamage")
-        (specsTable.children[1] as Label).setText("SPEED: $finalSpeed")
-        (specsTable.children[2] as Label).setText("CRIT: $finalCritMult")
-        (specsTable.children[3] as Label).setText("CHANCE: $finalCritChance")
+        (specsTable.children[1] as Label).setText("RELOAD: $finalReloadSpeed")
+        (specsTable.children[2] as Label).setText("SPEED: $finalBulletSpeed")
+        (specsTable.children[3] as Label).setText("CRIT: $finalCritMult")
+        (specsTable.children[4] as Label).setText("CHANCE: $finalCritChance")
     }
 
     override fun render(delta: Float) {
@@ -344,14 +342,18 @@ class GunScreen(val game: Main): KtxScreen {
             val texture = when(mod.name) {
                 // Gun stockMods
                 ModName.DAMAGE -> assets.manager.get<Texture>(Constants.MOD_DAMAGE)
+                ModName.RELOAD_SPEED -> assets.manager.get<Texture>(Constants.MOD_RELOAD_SPEED)
+                ModName.BULLET_SPEED -> assets.manager.get<Texture>(Constants.MOD_BULLET_SPEED)
+                ModName.CRIT_CHANCE -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
+                ModName.CRIT_MULT -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
+
                 ModName.FIRE_DAMAGE -> assets.manager.get<Texture>(Constants.MOD_FIRE_DAMAGE)
                 ModName.COLD_DAMAGE -> assets.manager.get<Texture>(Constants.MOD_COLD_DAMAGE)
-                ModName.RELOAD_SPEED -> assets.manager.get<Texture>(Constants.MOD_RELOAD_SPEED)
 
                 // Ship stockMods
-                ModName.HEALTH -> TODO()
-                ModName.SPEED -> TODO()
-                ModName.MANA -> TODO()
+                ModName.HEALTH -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
+                ModName.SPEED -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
+                ModName.MANA -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
             }
             addActor(Image(texture).apply {
                 touchable = Touchable.disabled
