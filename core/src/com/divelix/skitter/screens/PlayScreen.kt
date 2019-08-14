@@ -8,12 +8,14 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
+import ktx.assets.toInternalFile
 import java.util.*
 
 class PlayScreen(game: Main): KtxScreen {
@@ -25,6 +27,7 @@ class PlayScreen(game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
 
     private val dynamicData = DynamicData(Vector2(), Vector2(), 10, Array(10))
+    private val playerData: PlayerData
 
     private val world = World(Vector2(0f, 0f), true)
     private val engine = PooledEngine()
@@ -36,6 +39,13 @@ class PlayScreen(game: Main): KtxScreen {
     private val playerEntity: Entity
 
     init {
+        val playerReader = JsonReader().parse("json/player_data.json".toInternalFile())
+        val shipSpecs = Array(arrayOf(100f, 100f, 10f)) // as HP, ENERGY and ARMOR
+        val gunSpecs = Array<Float>(5) // as DAMAGE, RELOAD_SPEED, BULLET_SPEED, CRIT_CHANCE, CRIT_MULTIPLIER
+        for (spec in playerReader.get("active_gun_specs"))
+            gunSpecs.add(spec.asFloat())
+        playerData = PlayerData(shipSpecs, gunSpecs)
+
 //        bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
 //        bgReg.setRegion(0, 0, Constants.WIDTH, Constants.HEIGHT)
 

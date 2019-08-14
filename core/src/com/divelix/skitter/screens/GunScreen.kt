@@ -21,6 +21,7 @@ import com.divelix.skitter.*
 import ktx.actors.*
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
+import ktx.assets.toLocalFile
 import ktx.vis.table
 
 // Drag'n'drop version is in Google Drive
@@ -30,9 +31,6 @@ class GunScreen(val game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
     private val skin = assets.uiSkin
     private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
-    private val playerJson = "json/playerData.json".toInternalFile()
-    private val gunsJson = "json/guns.json".toInternalFile()
-    private val modsJson = "json/mods.json".toInternalFile()
 
     private val posLabel = Label("0; 0", skin)
     private val rootTable: Table
@@ -50,17 +48,15 @@ class GunScreen(val game: Main): KtxScreen {
     var activeMod: ModImage? = null
     var sourceContainer: Container<*>? = null
 
-    var damage: Float
-    var reloadSpeed: Float
-    var bulletSpeed: Float
-    var critChance: Float
-    var critMult: Float
+    val gunSpecs = Array<Float>(5)
+    val finalGunSpecs = Array<Float>(5)
+
+    val reader = JsonReader()
+    val playerData = reader.parse("json/player_data.json".toInternalFile())
+    val gunsData = reader.parse("json/guns.json".toInternalFile())
+    val modsData = reader.parse("json/mods.json".toInternalFile())
 
     init {
-        val reader = JsonReader()
-        val playerData = reader.parse(playerJson)
-        val gunsData = reader.parse(gunsJson)
-        val modsData = reader.parse(modsJson)
         val playerGuns = playerData.get("guns")
         val guns = gunsData.get("guns")
         val mods = modsData.get("mods")
@@ -78,13 +74,11 @@ class GunScreen(val game: Main): KtxScreen {
             }
         }
 
-        val gunSpecs = activeGun.get("specs")
-        damage = gunSpecs[0].asFloat()
-        reloadSpeed = gunSpecs[1].asFloat()
-        bulletSpeed = gunSpecs[2].asFloat()
-        critChance = gunSpecs[3].asFloat()
-        critMult = gunSpecs[4].asFloat()
-        println(" Damage: $damage\n Reload: $reloadSpeed\n BulletSpeed: $bulletSpeed\n CritChance: $critChance\n CritMult: $critMult")
+        val specs = activeGun.get("specs")
+        for (spec in specs) {
+            gunSpecs.add(spec.asFloat())
+        }
+        println(" Damage: ${gunSpecs[0]}\n Reload: ${gunSpecs[1]}\n BulletSpeed: ${gunSpecs[2]}\n CritChance: ${gunSpecs[3]}\n CritMult: ${gunSpecs[4]}")
 
         // MODS
         val gunMods = mods.get("gun")
@@ -149,11 +143,11 @@ class GunScreen(val game: Main): KtxScreen {
                 specsTable = table {
                     padLeft(10f)
                     defaults().expandX().left()
-                    label("DAMAGE: $damage");row()
-                    label("RELOAD: $reloadSpeed");row()
-                    label("SPEED: $bulletSpeed");row()
-                    label("CRIT: $critMult");row()
-                    label("CHANCE: $critChance")
+                    label("DAMAGE: ${gunSpecs[0]}");row()
+                    label("RELOAD: ${gunSpecs[1]}");row()
+                    label("SPEED: ${gunSpecs[2]}");row()
+                    label("CRIT: ${gunSpecs[3]}");row()
+                    label("CHANCE: ${gunSpecs[4]}")
                 }
             }
             row()
@@ -255,28 +249,25 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     fun updateSpecs() {
-        var finalDamage = damage
-        var finalReloadSpeed = reloadSpeed
-        var finalBulletSpeed = bulletSpeed
-        var finalCritMult = critMult
-        var finalCritChance = critChance
+        for (spec in gunSpecs)
+            finalGunSpecs.add(spec)
         for (container in suitTable.children) {
             val c = (container as Container<*>)
             if (c.actor != null) {
                 val mod = (c.actor as ModImage).mod
                 when(mod.name) {
-                    ModName.DAMAGE -> finalDamage *= 2f
-                    ModName.RELOAD_SPEED -> finalReloadSpeed *= 1.1f
-                    ModName.BULLET_SPEED -> finalBulletSpeed *= 1.1f
+                    ModName.DAMAGE -> finalGunSpecs[0] *= 2f
+                    ModName.RELOAD_SPEED -> finalGunSpecs[1] *= 1.1f
+                    ModName.BULLET_SPEED -> finalGunSpecs[2] *= 1.1f
                     else -> println("${mod.name} is not implemented yet")
                 }
             }
         }
-        (specsTable.children[0] as Label).setText("DAMAGE: $finalDamage")
-        (specsTable.children[1] as Label).setText("RELOAD: $finalReloadSpeed")
-        (specsTable.children[2] as Label).setText("SPEED: $finalBulletSpeed")
-        (specsTable.children[3] as Label).setText("CRIT: $finalCritMult")
-        (specsTable.children[4] as Label).setText("CHANCE: $finalCritChance")
+        (specsTable.children[0] as Label).setText("DAMAGE: ${finalGunSpecs[0]}")
+        (specsTable.children[1] as Label).setText("RELOAD: ${finalGunSpecs[1]}")
+        (specsTable.children[2] as Label).setText("SPEED: ${finalGunSpecs[2]}")
+        (specsTable.children[3] as Label).setText("CRIT: ${finalGunSpecs[3]}")
+        (specsTable.children[4] as Label).setText("CHANCE: ${finalGunSpecs[4]}")
     }
 
     override fun render(delta: Float) {
@@ -293,14 +284,6 @@ class GunScreen(val game: Main): KtxScreen {
                 when(keycode) {
                     Input.Keys.BACK -> {
                         game.screen = PlayScreen(game)
-                    }
-                    Input.Keys.W -> {
-                        val json = Json(JsonWriter.OutputType.json)
-                        val mods = Array<Mod>()
-                        mods.add(Mod(ModName.DAMAGE, 1, 1))
-                        val data = PlayerData("Qwerty", 5, 2000, 125, mods)
-//                        println(json.prettyPrint(data))
-                        playerJson.writeString(json.prettyPrint(data), false)
                     }
                 }
                 return true
@@ -320,10 +303,6 @@ class GunScreen(val game: Main): KtxScreen {
 //        stage.viewport.update(Constants.D_WIDTH, Constants.D_WIDTH * height/width, true)
         stage.viewport.update(width, height, true)
         applyBtn.setPosition(stage.camera.viewportWidth - applyBtn.width, 0f)
-        println("stage size: (${stage.width}; ${stage.height})")
-        println("stage.viewport screen size: (${stage.viewport.screenWidth}; ${stage.viewport.screenHeight})")
-        println("stage.viewport world size: (${stage.viewport.worldWidth}; ${stage.viewport.worldHeight})")
-        println("stage.camera size: (${stage.camera.viewportWidth}; ${stage.camera.viewportHeight})")
     }
 
     // hide?
@@ -332,7 +311,18 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     fun applyMods() {
-        println("gun mods applied")
+//        println(playerData.toJson(JsonWriter.OutputType.json))
+        for (field in playerData) {
+            when(field.name) {
+                "active_gun" -> field.set(0, null) // TODO change when gun switch implemented
+                "active_gun_specs" -> {
+                    for (i in 0 until field.size)
+                        field[i].set(finalGunSpecs[i].toDouble(), null)
+                }
+            }
+        }
+        "json/player_data.json".toLocalFile().writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
+        println("----------------gun mods applied-----------------")
     }
 
     inner class ModImage(val mod: Mod): Group() {
