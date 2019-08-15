@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.Noise
+import com.divelix.skitter.utils.Noise
 import ktx.app.KtxScreen
 import ktx.graphics.*
 

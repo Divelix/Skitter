@@ -13,6 +13,7 @@ import com.divelix.skitter.*
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
+import com.divelix.skitter.DynamicData
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
@@ -26,13 +27,10 @@ class PlayScreen(game: Main): KtxScreen {
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
 
-    private val dynamicData = DynamicData(Vector2(), Vector2(), 10, Array(10))
-    private val playerData: PlayerData
-
     private val world = World(Vector2(0f, 0f), true)
     private val engine = PooledEngine()
     private val entityBuilder = EntityBuilder(engine, world, assets)
-    private val hud = Hud(game, dynamicData)
+    private val hud = Hud(game)
     private val blackList = ArrayList<Body>() // list of bodies to kill
 //    private val b2dViewport: ScreenViewport
     private val camera: OrthographicCamera
@@ -40,11 +38,14 @@ class PlayScreen(game: Main): KtxScreen {
 
     init {
         val playerReader = JsonReader().parse("json/player_data.json".toInternalFile())
-        val shipSpecs = Array(arrayOf(100f, 100f, 10f)) // as HP, ENERGY and ARMOR
-        val gunSpecs = Array<Float>(5) // as DAMAGE, RELOAD_SPEED, BULLET_SPEED, CRIT_CHANCE, CRIT_MULTIPLIER
-        for (spec in playerReader.get("active_gun_specs"))
-            gunSpecs.add(spec.asFloat())
-        playerData = PlayerData(shipSpecs, gunSpecs)
+//        val shipSpecs = Array(arrayOf(100f, 100f, 10f)) // as HP, ENERGY and ARMOR
+//        val gunSpecs = Array<Float>(5) // as DAMAGE, RELOAD_SPEED, BULLET_SPEED, CRIT_CHANCE, CRIT_MULTIPLIER
+//        for (spec in specs)
+//            gunSpecs.add(spec.asFloat())
+        val specs = playerReader.get("active_gun_specs")
+        for (i in 0 until Data.playerData.gun.size)
+            Data.playerData.gun[i] = specs[i].asFloat()
+//        playerData = PlayerData(shipSpecs, gunSpecs)
 
 //        bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
 //        bgReg.setRegion(0, 0, Constants.WIDTH, Constants.HEIGHT)
@@ -57,15 +58,15 @@ class PlayScreen(game: Main): KtxScreen {
         entityBuilder.createEnemy(3f, 7f, 1f, playerEntity)
 //        createBorder()
 
-        engine.addSystem(CameraSystem(dynamicData))
+        engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
         engine.addSystem(PhysicsDebugSystem(world, camera))
-        engine.addSystem(CollisionSystem(game))
-        engine.addSystem(PlayerSystem(dynamicData))
+        engine.addSystem(CollisionSystem())
+        engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
         engine.addSystem(BulletSystem())
-        engine.addSystem(ClickableSystem(dynamicData, camera))
+        engine.addSystem(ClickableSystem(camera))
 
         ShaderProgram.pedantic = false
 
@@ -74,7 +75,7 @@ class PlayScreen(game: Main): KtxScreen {
                 when(keycode) {
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
-                    Input.Keys.A -> println(dynamicData.aims)
+                    Input.Keys.A -> println(Data.dynamicData.aims)
                     Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
                     Input.Keys.Z -> println("Table pos: (${hud.rootTable.x}; ${hud.rootTable.y})")
                 }
@@ -89,7 +90,7 @@ class PlayScreen(game: Main): KtxScreen {
     override fun render(delta: Float) {
         engine.update(delta)
         if (!isPaused) {
-            shootBullets(dynamicData.aims)
+            shootBullets(Data.dynamicData.aims)
             clearDeadBodies()
         }
         hud.update(delta)
@@ -123,10 +124,10 @@ class PlayScreen(game: Main): KtxScreen {
     private fun shootBullets(aims: Array<Vector2>) {
         if (isPaused || aims.size == 0) return
         for (aim in aims) {
-            if (dynamicData.ammo == 0) break
+            if (Data.dynamicData.ammo == 0) break
             entityBuilder.createBullet(playerEntity, aim)
-            dynamicData.ammo--
-            hud.ammoLabel.setText("${dynamicData.ammo}")
+            Data.dynamicData.ammo--
+            hud.ammoLabel.setText("${Data.dynamicData.ammo}")
         }
         aims.clear()
     }

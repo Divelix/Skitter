@@ -1,4 +1,4 @@
-package com.divelix.skitter;
+package com.divelix.skitter.utils;
 
 // This file was originally from https://github.com/Auburns/FastNoise_Java as:
 // FastNoise.java

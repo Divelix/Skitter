@@ -6,11 +6,10 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import com.divelix.skitter.Constants
-import com.divelix.skitter.DynamicData
+import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.PlayScreen
 
-class CameraSystem(val dynamicData: DynamicData): IteratingSystem(Family.all(CameraComponent::class.java).get()) {
+class CameraSystem: IteratingSystem(Family.all(CameraComponent::class.java).get()) {
     private val cmCamera = ComponentMapper.getFor(CameraComponent::class.java)
     private val cmBind = ComponentMapper.getFor(BindComponent::class.java)
     private val camPos = Vector2()
@@ -27,7 +26,7 @@ class CameraSystem(val dynamicData: DynamicData): IteratingSystem(Family.all(Cam
             radVec.set(Constants.CAMERA_RADIUS, 0f).rotate(difVec.angle())
             camPos.set(bodPos).sub(radVec)
         }
-        dynamicData.camPos.set(camPos)
+        Data.dynamicData.camPos.set(camPos)
         cameraCmp.camera.position.set(camPos, 0f)
         cameraCmp.camera.update()
     }

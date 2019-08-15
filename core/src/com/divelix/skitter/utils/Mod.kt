@@ -1,4 +1,4 @@
-package com.divelix.skitter
+package com.divelix.skitter.utils
 
 data class Mod(val name: ModName, val level: Int, val quantity: Int = 1)
 

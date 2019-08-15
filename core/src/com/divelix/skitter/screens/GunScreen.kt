@@ -18,6 +18,8 @@ import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.*
+import com.divelix.skitter.utils.Mod
+import com.divelix.skitter.utils.ModName
 import ktx.actors.*
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile

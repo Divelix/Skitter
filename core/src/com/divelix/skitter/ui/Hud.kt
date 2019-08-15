@@ -24,7 +24,7 @@ import ktx.actors.*
 import ktx.graphics.use
 import ktx.vis.table
 
-class Hud(val game: Main, val dynamicData: DynamicData) {
+class Hud(val game: Main) {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val shape = context.inject<ShapeRenderer>()
@@ -62,7 +62,7 @@ class Hud(val game: Main, val dynamicData: DynamicData) {
             camera.unproject(floatPoint)
             tempVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
             if (tempVec.len2() > Constants.DEAD_BAND) {
-                dynamicData.dirVec.set(tempVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
+                Data.dynamicData.dirVec.set(tempVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
                 swordImage.isVisible = false
                 PlayScreen.isPaused = false
                 isDriven = true
@@ -71,7 +71,7 @@ class Hud(val game: Main, val dynamicData: DynamicData) {
         }
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            dynamicData.dirVec.setZero()
+            Data.dynamicData.dirVec.setZero()
             swordImage.isVisible = true
             isDriven = false
             PlayScreen.isPaused = true
@@ -85,7 +85,7 @@ class Hud(val game: Main, val dynamicData: DynamicData) {
             top().right()
 //            defaults().top()
             pad(20f)
-            ammoLabel = label("${dynamicData.ammo}") { cell->
+            ammoLabel = label("${Data.dynamicData.ammo}") { cell->
                 color = Color.ORANGE
                 cell.fill()
             }
@@ -121,10 +121,10 @@ class Hud(val game: Main, val dynamicData: DynamicData) {
         } else {
 //            batch.projectionMatrix = camera.combined
             batch.use {
-                if (dynamicData.aims.size > 0) {
-                    for (i in 0 until dynamicData.aims.size) {
-                        aim.set(dynamicData.aims[i])
-                        aim.sub(dynamicData.camPos)
+                if (Data.dynamicData.aims.size > 0) {
+                    for (i in 0 until Data.dynamicData.aims.size) {
+                        aim.set(Data.dynamicData.aims[i])
+                        aim.sub(Data.dynamicData.camPos)
                         aim.scl(widthRatio)
                         aim.add(camera.position.x, camera.position.y)
                         batch.draw(aimTxt, aim.x - 12f, aim.y - 12f, 24f, 24f)

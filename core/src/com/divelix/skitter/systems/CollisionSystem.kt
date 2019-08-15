@@ -2,13 +2,14 @@ package com.divelix.skitter.systems
 
 import com.badlogic.ashley.core.*
 import com.badlogic.ashley.systems.IteratingSystem
-import com.divelix.skitter.Main
+import com.divelix.skitter.Constants
+import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.GunScreen
 
-class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
+class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
+    private val playerDamage = Data.playerData.gun[0]
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         // get player collision component
@@ -46,7 +47,7 @@ class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComp
                         TypeComponent.ENEMY -> {
 //                            println("bullet hit enemy")
                             val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
-                            enemyCmp.health -= 10
+                            enemyCmp.health -= playerDamage
                             println("Enemy health: ${enemyCmp.health + 10} -> ${enemyCmp.health}")
                             if(enemyCmp.health <= 0) {
                                 val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
@@ -65,7 +66,7 @@ class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComp
         println("------------------------------------")
         println("-------------Game Over--------------")
         println("------------------------------------")
-        game.screen = GunScreen(game)
+//        game.screen = GunScreen(game)
     }
 
 }
