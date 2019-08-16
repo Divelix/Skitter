@@ -25,6 +25,9 @@ import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.vis.table
+import com.badlogic.gdx.utils.JsonValue
+import com.kotcrab.vis.ui.widget.VisLabel
+
 
 // Drag'n'drop version is in Google Drive
 class GunScreen(val game: Main): KtxScreen {
@@ -51,7 +54,7 @@ class GunScreen(val game: Main): KtxScreen {
     var sourceContainer: Container<*>? = null
 
     val gunSpecs = Array<Float>(5)
-    val finalGunSpecs = Array<Float>(5)
+    val finalGunSpecs = Array(arrayOf(0f, 0f, 0f, 0f, 0f))
 
     val reader = JsonReader()
     val playerData = reader.parse("json/player_data.json".toInternalFile())
@@ -96,9 +99,10 @@ class GunScreen(val game: Main): KtxScreen {
             }
         }
         for (i in 0 until playerGunMods.size) {
+            val index = playerGunMods[i].get("index").asInt()
             val name = ModName.valueOf(activeGunMods[i].get("name").asString())
             val level = playerGunMods[i].get("level").asInt()
-            suitMods.add(Mod(name, level))
+            suitMods.add(Mod(index, name, level))
         }
         for (playerMod in playerData.get("mods").get("gun")) {
             val index = playerMod.get("index").asInt()
@@ -109,7 +113,7 @@ class GunScreen(val game: Main): KtxScreen {
                 if (mod.get("index").asInt() == index) {
                     val name = ModName.valueOf(mod.get("name").asString())
                     val effects = mod.get("effects")
-                    stockMods.add(Mod(name, level, quantity))
+                    stockMods.add(Mod(index, name, level, quantity))
                     break
                 }
             }
@@ -119,18 +123,14 @@ class GunScreen(val game: Main): KtxScreen {
             name = "StockTable"
             defaults().width(Constants.MOD_WIDTH).height(Constants.MOD_HEIGHT).pad(2f)
 
-            for (i in 1..stockMods.size) {
-                container(ModImage(stockMods[i - 1])) {
-                    touchable = Touchable.enabled
+            for (i in 0 until stockMods.size + 8) {
+                if (i < stockMods.size) {
+                    container(ModImage(stockMods[i])) { touchable = Touchable.enabled }
+                } else {
+                    container<ModImage> { touchable = Touchable.enabled }
                 }
-                if (i % 4 == 0) row()
+                if ((i+1) % 4 == 0) row()
             }
-//            for (i in 1..30) {
-//                container(ModImage(stockMods[0])) {
-//                    touchable = Touchable.enabled
-//                }
-//                if (i % 4 == 0) row()
-//            }
         }
         rootTable = table {
             setFillParent(true)
@@ -142,14 +142,26 @@ class GunScreen(val game: Main): KtxScreen {
                 weaponImg = image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.RIFLE))) { cell ->
                     cell.size(128f, 64f)
                 }
-                specsTable = table {
+                table {
                     padLeft(10f)
                     defaults().expandX().left()
-                    label("DAMAGE: ${gunSpecs[0]}");row()
-                    label("RELOAD: ${gunSpecs[1]}");row()
-                    label("SPEED: ${gunSpecs[2]}");row()
-                    label("CRIT: ${gunSpecs[3]}");row()
-                    label("CHANCE: ${gunSpecs[4]}")
+                    table {
+                        defaults().left()
+                        label("DAMAGE:"); row()
+                        label("RELOAD:"); row()
+                        label("SPEED:"); row()
+                        label("CRIT:"); row()
+                        label("CHANCE:")
+                    }
+                    specsTable = table {
+                        padLeft(5f)
+                        defaults().left()
+                        label(gunSpecs[0].toString());row()
+                        label(gunSpecs[1].toString());row()
+                        label(gunSpecs[2].toString());row()
+                        label(gunSpecs[3].toString());row()
+                        label(gunSpecs[4].toString())
+                    }
                 }
             }
             row()
@@ -200,7 +212,7 @@ class GunScreen(val game: Main): KtxScreen {
                             sourceContainer = actor.parent as Container<*>
                         } else {
                             if (actor == activeMod) {
-                                actor.children[1].remove()
+                                actor.children[1].remove() // removes glow texture
                                 activeMod = null
                                 sourceContainer = null
                             } else {
@@ -236,7 +248,6 @@ class GunScreen(val game: Main): KtxScreen {
 
         stage += rootTable
         stage += applyBtn
-//        stage + posLabel
         stage.isDebugAll = true
         updateSpecs()
     }
@@ -251,25 +262,26 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     fun updateSpecs() {
-        for (spec in gunSpecs)
-            finalGunSpecs.add(spec)
+        for (i in 0 until gunSpecs.size)
+            finalGunSpecs[i] = gunSpecs[i]
         for (container in suitTable.children) {
             val c = (container as Container<*>)
             if (c.actor != null) {
                 val mod = (c.actor as ModImage).mod
+                println(mod.name)
                 when(mod.name) {
-                    ModName.DAMAGE -> finalGunSpecs[0] *= 2f
-                    ModName.RELOAD_SPEED -> finalGunSpecs[1] *= 1.1f
-                    ModName.BULLET_SPEED -> finalGunSpecs[2] *= 1.1f
+                    ModName.DAMAGE -> finalGunSpecs[0] = gunSpecs[0] * 2f
+                    ModName.RELOAD_SPEED -> finalGunSpecs[1] = gunSpecs[1] * 2f
+                    ModName.BULLET_SPEED -> finalGunSpecs[2] = gunSpecs[2] * 2f
                     else -> println("${mod.name} is not implemented yet")
                 }
             }
         }
-        (specsTable.children[0] as Label).setText("DAMAGE: ${finalGunSpecs[0]}")
-        (specsTable.children[1] as Label).setText("RELOAD: ${finalGunSpecs[1]}")
-        (specsTable.children[2] as Label).setText("SPEED: ${finalGunSpecs[2]}")
-        (specsTable.children[3] as Label).setText("CRIT: ${finalGunSpecs[3]}")
-        (specsTable.children[4] as Label).setText("CHANCE: ${finalGunSpecs[4]}")
+        (specsTable.children[0] as Label).setText("${finalGunSpecs[0]}")
+        (specsTable.children[1] as Label).setText("${finalGunSpecs[1]}")
+        (specsTable.children[2] as Label).setText("${finalGunSpecs[2]}")
+        (specsTable.children[3] as Label).setText("${finalGunSpecs[3]}")
+        (specsTable.children[4] as Label).setText("${finalGunSpecs[4]}")
     }
 
     override fun render(delta: Float) {
@@ -286,6 +298,15 @@ class GunScreen(val game: Main): KtxScreen {
                 when(keycode) {
                     Input.Keys.BACK -> {
                         game.screen = PlayScreen(game)
+                    }
+                    Input.Keys.P -> println(suitTable.children)
+                    Input.Keys.A -> {
+                        for (child in suitTable.children) {
+                            if (child is Container<*> && child.actor != null) {
+                                val mod = (child.actor as ModImage).mod
+                                println("index: ${mod.index}, level: ${mod.level}")
+                            }
+                        }
                     }
                 }
                 return true
@@ -313,13 +334,37 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     fun applyMods() {
-//        println(playerData.toJson(JsonWriter.OutputType.json))
+        // update mod arrays
+        suitMods.clear()
+        for (child in suitTable.children) {
+            if (child is Container<*> && child.actor != null) {
+                val mod = (child.actor as ModImage).mod
+                suitMods.add(mod)
+                println("index: ${mod.index}, level: ${mod.level}")
+            }
+        }
+
+        // update player_data.json
         for (field in playerData) {
             when(field.name) {
                 "active_gun" -> field.set(0, null) // TODO change when gun switch implemented
                 "active_gun_specs" -> {
                     for (i in 0 until field.size)
                         field[i].set(finalGunSpecs[i].toDouble(), null)
+                }
+                "guns" -> {
+                    val activeGunMods = field[0].get("mods")
+
+                    // clear mods JsonValue before writing
+                    for (i in 0 until activeGunMods.size)
+                        activeGunMods.remove(0)
+
+                    for (mod in suitMods) {
+                        val jsonMod = JsonValue(JsonValue.ValueType.`object`)
+                        jsonMod.addChild("index", JsonValue(mod.index.toLong()))
+                        jsonMod.addChild("level", JsonValue(mod.level.toLong()))
+                        activeGunMods.addChild(jsonMod)
+                    }
                 }
             }
         }

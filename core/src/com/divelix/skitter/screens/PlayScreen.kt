@@ -38,25 +38,18 @@ class PlayScreen(game: Main): KtxScreen {
 
     init {
         val playerReader = JsonReader().parse("json/player_data.json".toInternalFile())
-//        val shipSpecs = Array(arrayOf(100f, 100f, 10f)) // as HP, ENERGY and ARMOR
-//        val gunSpecs = Array<Float>(5) // as DAMAGE, RELOAD_SPEED, BULLET_SPEED, CRIT_CHANCE, CRIT_MULTIPLIER
-//        for (spec in specs)
-//            gunSpecs.add(spec.asFloat())
         val specs = playerReader.get("active_gun_specs")
         for (i in 0 until Data.playerData.gun.size)
             Data.playerData.gun[i] = specs[i].asFloat()
-//        playerData = PlayerData(shipSpecs, gunSpecs)
 
 //        bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
 //        bgReg.setRegion(0, 0, Constants.WIDTH, Constants.HEIGHT)
 
         playerEntity = entityBuilder.createPlayer()
         camera = entityBuilder.createCamera(playerEntity)
-//        b2dViewport = ScreenViewport(camera)
         entityBuilder.createEnemy(-3f, 7f, 1f, playerEntity)
         entityBuilder.createEnemy(0f, 7f, 1f, playerEntity)
         entityBuilder.createEnemy(3f, 7f, 1f, playerEntity)
-//        createBorder()
 
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
