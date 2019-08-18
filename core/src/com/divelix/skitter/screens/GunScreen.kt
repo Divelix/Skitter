@@ -37,7 +37,6 @@ class GunScreen(val game: Main): KtxScreen {
     private val skin = assets.uiSkin
     private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
-    private val posLabel = Label("0; 0", skin)
     private val rootTable: Table
     lateinit var weaponImg: Image
     lateinit var infoTable: Table
@@ -62,58 +61,69 @@ class GunScreen(val game: Main): KtxScreen {
     val modsData = reader.parse("json/mods.json".toInternalFile())
 
     init {
-        val playerGuns = playerData.get("guns")
-        val guns = gunsData.get("guns")
-        val mods = modsData.get("mods")
+        // Underscore in variable names (_) means non-player data, i.e. from mods.json and guns.json
+        val pGuns = playerData.get("guns")
+        val _guns = gunsData.get("guns")
+        val _mods = modsData.get("mods")
 
         // GUN
-        val playerGun = playerGuns[playerData.get("active_gun").asInt()]
-        val playerGunIndex = playerGun.get("index").asInt()
-        val playerGunLevel = playerGun.get("level").asInt()
-        val playerGunMods = playerGun.get("mods")
-        var activeGun = guns[0] // first gun by default
-        for (gun in guns) {
-            if (gun.get("index").asInt() == playerGunIndex) {
-                activeGun = gun
+        val pGun = pGuns[playerData.get("active_gun").asInt()]
+        val pGunIndex = pGun.get("index").asInt()
+        val pGunLevel = pGun.get("level").asInt()
+        val pGunMods = pGun.get("mods")
+        var _activeGun = _guns[0] // first gun by default
+        for (_gun in _guns) {
+            if (_gun.get("index").asInt() == pGunIndex) {
+                _activeGun = _gun
                 break
             }
         }
 
-        val specs = activeGun.get("specs")
+        val specs = _activeGun.get("specs")
         for (spec in specs) {
             gunSpecs.add(spec.asFloat())
         }
-        println(" Damage: ${gunSpecs[0]}\n Reload: ${gunSpecs[1]}\n BulletSpeed: ${gunSpecs[2]}\n CritChance: ${gunSpecs[3]}\n CritMult: ${gunSpecs[4]}")
 
-        // MODS
-        val gunMods = mods.get("gun")
-        val playerGunModIndices = Array<Int>(playerGunMods.size)
-        for (i in 0 until playerGunMods.size) {
-            playerGunModIndices.add(playerGunMods[i].get("index").asInt())
+        // GUN MODS
+        val _gunMods = _mods.get("gun")
+        val pGunModIndices = Array<Int>(pGunMods.size)
+        for (i in 0 until pGunMods.size) {
+            pGunModIndices.add(pGunMods[i].get("index").asInt())
         }
-        val activeGunMods = Array<JsonValue>(playerGunMods.size)
-        for (i in 0 until playerGunMods.size) {
-            for (mod in gunMods) {
-                if (playerGunModIndices[i] == mod.get("index").asInt())
-                    activeGunMods.add(mod)
+        val _aGunMods = Array<JsonValue>(pGunMods.size)
+        for (i in 0 until pGunMods.size) {
+            for (_mod in _gunMods) {
+                if (pGunModIndices[i] == _mod.get("index").asInt())
+                    _aGunMods.add(_mod)
             }
         }
-        for (i in 0 until playerGunMods.size) {
-            val index = playerGunMods[i].get("index").asInt()
-            val name = ModName.valueOf(activeGunMods[i].get("name").asString())
-            val level = playerGunMods[i].get("level").asInt()
+
+        // fill suit array with Mods
+        for (i in 0 until pGunMods.size) {
+            val index = pGunMods[i].get("index").asInt()
+            val name = ModName.valueOf(_aGunMods[i].get("name").asString())
+            val level = pGunMods[i].get("level").asInt()
             suitMods.add(Mod(index, name, level))
         }
-        for (playerMod in playerData.get("mods").get("gun")) {
-            val index = playerMod.get("index").asInt()
-            val level = playerMod.get("level").asInt()
-            val quantity = playerMod.get("quantity").asInt()
 
-            for (mod in gunMods) {
-                if (mod.get("index").asInt() == index) {
-                    val name = ModName.valueOf(mod.get("name").asString())
-                    val effects = mod.get("effects")
-                    stockMods.add(Mod(index, name, level, quantity))
+        // fill stock array with Mods
+        for (pMod in playerData.get("mods").get("gun")) {
+            val index = pMod.get("index").asInt()
+            val level = pMod.get("level").asInt()
+            val quantity = pMod.get("quantity").asInt()
+
+            for (_mod in _gunMods) {
+                if (_mod.get("index").asInt() == index) {
+                    val name = ModName.valueOf(_mod.get("name").asString())
+                    val effects = _mod.get("effects")
+                    var isRepeat = false
+                    for (sm in suitMods) {
+                        if (sm.index == index && sm.level == level) {
+                            isRepeat = true
+                            break
+                        }
+                    }
+                    if (!isRepeat) stockMods.add(Mod(index, name, level, quantity))
                     break
                 }
             }
@@ -212,7 +222,7 @@ class GunScreen(val game: Main): KtxScreen {
                             sourceContainer = actor.parent as Container<*>
                         } else {
                             if (actor == activeMod) {
-                                actor.children[1].remove() // removes glow texture
+                                actor.children[actor.children.size-1].remove() // removes glow texture
                                 activeMod = null
                                 sourceContainer = null
                             } else {
@@ -233,7 +243,7 @@ class GunScreen(val game: Main): KtxScreen {
                         if (activeMod != null) {
                             val isInSameTable = actor.parent.name == activeMod!!.parent.parent.name
                             if (isInSameTable || !checkDupSuit(activeMod!!.mod.name) || activeMod!!.parent.parent.name == "SuitTable") {
-                                activeMod!!.children[1].remove()
+                                activeMod!!.children[activeMod!!.children.size-1].remove()
                                 actor.actor = activeMod
                                 activeMod = null
                                 sourceContainer = null
@@ -268,7 +278,6 @@ class GunScreen(val game: Main): KtxScreen {
             val c = (container as Container<*>)
             if (c.actor != null) {
                 val mod = (c.actor as ModImage).mod
-                println(mod.name)
                 when(mod.name) {
                     ModName.DAMAGE -> finalGunSpecs[0] = gunSpecs[0] * 2f
                     ModName.RELOAD_SPEED -> finalGunSpecs[1] = gunSpecs[1] * 2f
@@ -396,6 +405,7 @@ class GunScreen(val game: Main): KtxScreen {
                 touchable = Touchable.disabled
                 setFillParent(true)
             })
+            addActor(VisLabel(mod.level.toString(), "mod-level"))
         }
     }
 }

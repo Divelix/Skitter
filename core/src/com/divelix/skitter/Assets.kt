@@ -72,6 +72,9 @@ class Assets: Disposable {
                 font = BitmapFont()
                 fontColor = Color.WHITE
             }
+            label("mod-level", extend = defaultStyle) {
+                fontColor = Color.GREEN
+            }
             button {
                 up = it["button"]
                 down = it["button-blue"]
