@@ -19,7 +19,6 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.utils.Mod
-import com.divelix.skitter.utils.ModName
 import ktx.actors.*
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
@@ -101,7 +100,7 @@ class GunScreen(val game: Main): KtxScreen {
         // fill suit array with Mods
         for (i in 0 until pGunMods.size) {
             val index = pGunMods[i].get("index").asInt()
-            val name = ModName.valueOf(_aGunMods[i].get("name").asString())
+            val name = _aGunMods[i].get("name").asString()
             val level = pGunMods[i].get("level").asInt()
             suitMods.add(Mod(index, name, level))
         }
@@ -114,7 +113,7 @@ class GunScreen(val game: Main): KtxScreen {
 
             for (_mod in _gunMods) {
                 if (_mod.get("index").asInt() == index) {
-                    val name = ModName.valueOf(_mod.get("name").asString())
+                    val name = _mod.get("name").asString()
                     val effects = _mod.get("effects")
                     var isRepeat = false
                     for (sm in suitMods) {
@@ -262,7 +261,7 @@ class GunScreen(val game: Main): KtxScreen {
         updateSpecs()
     }
 
-    fun checkDupSuit(name: ModName): Boolean {
+    fun checkDupSuit(name: String): Boolean {
         for (container in suitTable.children) {
             val c = (container as Container<*>)
             if (c.actor != null)
@@ -278,19 +277,34 @@ class GunScreen(val game: Main): KtxScreen {
             val c = (container as Container<*>)
             if (c.actor != null) {
                 val mod = (c.actor as ModImage).mod
-                when(mod.name) {
-                    ModName.DAMAGE -> finalGunSpecs[0] = gunSpecs[0] * 2f
-                    ModName.RELOAD_SPEED -> finalGunSpecs[1] = gunSpecs[1] * 2f
-                    ModName.BULLET_SPEED -> finalGunSpecs[2] = gunSpecs[2] * 2f
+                when(mod.index) {
+                    1 -> finalGunSpecs[0] = gunSpecs[0] * 2f
+                    2 -> finalGunSpecs[1] = gunSpecs[1] * 2f
+                    3 -> finalGunSpecs[2] = gunSpecs[2] * 2f
                     else -> println("${mod.name} is not implemented yet")
                 }
             }
         }
-        (specsTable.children[0] as Label).setText("${finalGunSpecs[0]}")
-        (specsTable.children[1] as Label).setText("${finalGunSpecs[1]}")
-        (specsTable.children[2] as Label).setText("${finalGunSpecs[2]}")
-        (specsTable.children[3] as Label).setText("${finalGunSpecs[3]}")
-        (specsTable.children[4] as Label).setText("${finalGunSpecs[4]}")
+        for (i in 0 until specsTable.children.size)
+            (specsTable.children[i] as Label).setText("${finalGunSpecs[i]}")
+
+        manageQuantityVisibility()
+    }
+
+    fun manageQuantityVisibility() {
+        for (container in suitTable.children) {
+            val modImage = if ((container as Container<*>).actor != null) container.actor as ModImage else continue
+            for (child in modImage.children)
+                if (child.name == "QuantityLabel")
+                    child.isVisible = false
+        }
+
+        for (container in stockTable.children) {
+            val modImage = if ((container as Container<*>).actor != null) container.actor as ModImage else continue
+            for (child in modImage.children)
+                if (child.name == "QuantityLabel")
+                    child.isVisible = true
+        }
     }
 
     override fun render(delta: Float) {
@@ -385,27 +399,29 @@ class GunScreen(val game: Main): KtxScreen {
         init {
             touchable = Touchable.enabled
             setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
-            val texture = when(mod.name) {
+            val texture = when(mod.index) {
                 // Gun stockMods
-                ModName.DAMAGE -> assets.manager.get<Texture>(Constants.MOD_DAMAGE)
-                ModName.RELOAD_SPEED -> assets.manager.get<Texture>(Constants.MOD_RELOAD_SPEED)
-                ModName.BULLET_SPEED -> assets.manager.get<Texture>(Constants.MOD_BULLET_SPEED)
-                ModName.CRIT_CHANCE -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
-                ModName.CRIT_MULT -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
+                1 -> assets.manager.get<Texture>(Constants.MOD_DAMAGE)
+                2 -> assets.manager.get<Texture>(Constants.MOD_RELOAD_SPEED)
+                3 -> assets.manager.get<Texture>(Constants.MOD_BULLET_SPEED)
+                4 -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture for CRIT_MULT
 
-                ModName.FIRE_DAMAGE -> assets.manager.get<Texture>(Constants.MOD_FIRE_DAMAGE)
-                ModName.COLD_DAMAGE -> assets.manager.get<Texture>(Constants.MOD_COLD_DAMAGE)
-
-                // Ship stockMods
-                ModName.HEALTH -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
-                ModName.SPEED -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
-                ModName.MANA -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture
+                5 -> assets.manager.get<Texture>(Constants.MOD_FIRE_DAMAGE)
+                6 -> assets.manager.get<Texture>(Constants.MOD_COLD_DAMAGE)
+                else -> assets.manager.get<Texture>(Constants.LOADING_IMAGE)
             }
             addActor(Image(texture).apply {
                 touchable = Touchable.disabled
                 setFillParent(true)
             })
-            addActor(VisLabel(mod.level.toString(), "mod-level"))
+            addActor(VisLabel("lvl ${mod.level}", "mod-level").apply {
+                touchable = Touchable.disabled
+            })
+            addActor(VisLabel("${mod.quantity}", "mod-quantity").apply {
+                name = "QuantityLabel"
+                setPosition(this@ModImage.width - width, this@ModImage.height - height)
+                touchable = Touchable.disabled
+            })
         }
     }
 }

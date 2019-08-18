@@ -75,6 +75,9 @@ class Assets: Disposable {
             label("mod-level", extend = defaultStyle) {
                 fontColor = Color.GREEN
             }
+            label("mod-quantity", extend = defaultStyle) {
+                fontColor = Color.YELLOW
+            }
             button {
                 up = it["button"]
                 down = it["button-blue"]
