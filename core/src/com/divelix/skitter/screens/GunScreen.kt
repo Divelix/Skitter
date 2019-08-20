@@ -109,20 +109,26 @@ class GunScreen(val game: Main): KtxScreen {
         for (pMod in playerData.get("mods").get("gun")) {
             val index = pMod.get("index").asInt()
             val level = pMod.get("level").asInt()
-            val quantity = pMod.get("quantity").asInt()
+            var quantity = pMod.get("quantity").asInt()
+            var isRepeat = false
+            for (sm in suitMods) {
+                if (sm.index == index && sm.level == level) {
+                    isRepeat = true
+                    break
+                }
+            }
 
             for (_mod in _gunMods) {
                 if (_mod.get("index").asInt() == index) {
                     val name = _mod.get("name").asString()
                     val effects = _mod.get("effects")
-                    var isRepeat = false
-                    for (sm in suitMods) {
-                        if (sm.index == index && sm.level == level) {
-                            isRepeat = true
-                            break
+                    if (isRepeat) {
+                        if (quantity > 1) {
+                            stockMods.add(Mod(index, name, level, quantity-1))
                         }
+                    } else {
+                        stockMods.add(Mod(index, name, level, quantity))
                     }
-                    if (!isRepeat) stockMods.add(Mod(index, name, level, quantity))
                     break
                 }
             }
@@ -224,6 +230,17 @@ class GunScreen(val game: Main): KtxScreen {
                                 actor.children[actor.children.size-1].remove() // removes glow texture
                                 activeMod = null
                                 sourceContainer = null
+                            } else if (actor.mod.index == activeMod!!.mod.index && actor.mod.level == activeMod!!.mod.level) {
+                                // SAME MODS -> need merge
+                                if (actor.parent.parent.name == "StockTable") {
+                                    actor.mod.quantity += activeMod!!.mod.quantity
+                                    actor.quantityLabel.setText(actor.mod.quantity)
+                                    activeMod!!.remove()
+                                    activeMod = null
+                                    sourceContainer = null
+                                }
+                            } else if (actor.mod.quantity != 1) {
+                                println("DON'T TAP ON MULTI MODS") // TODO make visual (e.g. change color of quantity label)
                             } else {
                                 val isInSameTable = actor.parent.parent.name == activeMod!!.parent.parent.name
                                 val isSameTypes = actor.mod.name == activeMod!!.mod.name
@@ -243,7 +260,14 @@ class GunScreen(val game: Main): KtxScreen {
                             val isInSameTable = actor.parent.name == activeMod!!.parent.parent.name
                             if (isInSameTable || !checkDupSuit(activeMod!!.mod.name) || activeMod!!.parent.parent.name == "SuitTable") {
                                 activeMod!!.children[activeMod!!.children.size-1].remove()
-                                actor.actor = activeMod
+                                if (activeMod!!.mod.quantity == 1) {
+                                    actor.actor = activeMod
+                                } else {
+                                    val source = activeMod!!.mod
+                                    actor.actor = ModImage(Mod(source.index, source.name, source.level))
+                                    activeMod!!.mod.quantity--
+                                    activeMod!!.quantityLabel.setText(activeMod!!.mod.quantity)
+                                }
                                 activeMod = null
                                 sourceContainer = null
                             }
@@ -294,16 +318,12 @@ class GunScreen(val game: Main): KtxScreen {
     fun manageQuantityVisibility() {
         for (container in suitTable.children) {
             val modImage = if ((container as Container<*>).actor != null) container.actor as ModImage else continue
-            for (child in modImage.children)
-                if (child.name == "QuantityLabel")
-                    child.isVisible = false
+            modImage.quantityLabel.isVisible = false
         }
 
         for (container in stockTable.children) {
             val modImage = if ((container as Container<*>).actor != null) container.actor as ModImage else continue
-            for (child in modImage.children)
-                if (child.name == "QuantityLabel")
-                    child.isVisible = true
+            modImage.quantityLabel.isVisible = true
         }
     }
 
@@ -396,32 +416,38 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     inner class ModImage(val mod: Mod): Group() {
+        val texture: Texture
+        val levelLabel: VisLabel
+        val quantityLabel: VisLabel
+
         init {
             touchable = Touchable.enabled
             setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
-            val texture = when(mod.index) {
+            texture = when(mod.index) {
                 // Gun stockMods
-                1 -> assets.manager.get<Texture>(Constants.MOD_DAMAGE)
-                2 -> assets.manager.get<Texture>(Constants.MOD_RELOAD_SPEED)
-                3 -> assets.manager.get<Texture>(Constants.MOD_BULLET_SPEED)
-                4 -> assets.manager.get<Texture>(Constants.LOADING_IMAGE) //TODO add texture for CRIT_MULT
+                1 -> assets.manager.get(Constants.MOD_DAMAGE)
+                2 -> assets.manager.get(Constants.MOD_RELOAD_SPEED)
+                3 -> assets.manager.get(Constants.MOD_BULLET_SPEED)
+                4 -> assets.manager.get(Constants.LOADING_IMAGE) //TODO add texture for CRIT_MULT
 
-                5 -> assets.manager.get<Texture>(Constants.MOD_FIRE_DAMAGE)
-                6 -> assets.manager.get<Texture>(Constants.MOD_COLD_DAMAGE)
-                else -> assets.manager.get<Texture>(Constants.LOADING_IMAGE)
+                5 -> assets.manager.get(Constants.MOD_FIRE_DAMAGE)
+                6 -> assets.manager.get(Constants.MOD_COLD_DAMAGE)
+                else -> assets.manager.get(Constants.LOADING_IMAGE)
+            }
+            levelLabel = VisLabel("lvl ${mod.level}", "mod-level").apply {
+                touchable = Touchable.disabled
+            }
+            quantityLabel = VisLabel("${mod.quantity}", "mod-quantity").apply {
+                setPosition(this@ModImage.width - width, this@ModImage.height - height)
+                touchable = Touchable.disabled
             }
             addActor(Image(texture).apply {
                 touchable = Touchable.disabled
                 setFillParent(true)
             })
-            addActor(VisLabel("lvl ${mod.level}", "mod-level").apply {
-                touchable = Touchable.disabled
-            })
-            addActor(VisLabel("${mod.quantity}", "mod-quantity").apply {
-                name = "QuantityLabel"
-                setPosition(this@ModImage.width - width, this@ModImage.height - height)
-                touchable = Touchable.disabled
-            })
+            addActor(levelLabel)
+            addActor(quantityLabel)
+            addActor(quantityLabel)
         }
     }
 }
