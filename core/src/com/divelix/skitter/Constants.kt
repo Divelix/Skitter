@@ -19,7 +19,7 @@ object Constants {
     // Controls params
     const val CAMERA_RADIUS = 1f
     const val CAMERA_RADIUS_2 = CAMERA_RADIUS * CAMERA_RADIUS
-    const val DEAD_BAND = 500f
+    const val DEAD_BAND_2 = 500f
     const val SPEED_LIMIT = 2f
 
     const val MOD_WIDTH = 64f

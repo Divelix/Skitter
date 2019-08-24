@@ -22,7 +22,7 @@ import java.util.*
 class PlayScreen(game: Main): KtxScreen {
     companion object {
         var slowRate = Constants.DEFAULT_SLOW_RATE
-        var isPaused = true
+        var isPaused = false
     }
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
@@ -30,9 +30,8 @@ class PlayScreen(game: Main): KtxScreen {
     private val world = World(Vector2(0f, 0f), true)
     private val engine = PooledEngine()
     private val entityBuilder = EntityBuilder(engine, world, assets)
-    private val hud = Hud(game)
+    private val hud: Hud
     private val blackList = ArrayList<Body>() // list of bodies to kill
-//    private val b2dViewport: ScreenViewport
     private val camera: OrthographicCamera
     private val playerEntity: Entity
 
@@ -47,6 +46,7 @@ class PlayScreen(game: Main): KtxScreen {
 
         playerEntity = entityBuilder.createPlayer()
         camera = entityBuilder.createCamera(playerEntity)
+        hud = Hud(game, camera)
         entityBuilder.createEnemy(-3f, 7f, 1f, playerEntity)
         entityBuilder.createEnemy(0f, 7f, 1f, playerEntity)
         entityBuilder.createEnemy(3f, 7f, 1f, playerEntity)
@@ -57,15 +57,16 @@ class PlayScreen(game: Main): KtxScreen {
         engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem())
         engine.addSystem(PlayerSystem())
-        engine.addSystem(EnemySystem())
+//        engine.addSystem(EnemySystem())
         engine.addSystem(BulletSystem())
-        engine.addSystem(ClickableSystem(camera))
+//        engine.addSystem(ClickableSystem(camera))
 
         ShaderProgram.pedantic = false
 
         val handler = object: InputAdapter() {
             override fun keyDown(keycode: Int): Boolean {
                 when(keycode) {
+                    Input.Keys.BACK -> game.screen = GunScreen(game)
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
                     Input.Keys.A -> println(Data.dynamicData.aims)
@@ -75,7 +76,7 @@ class PlayScreen(game: Main): KtxScreen {
                 return true
             }
         }
-        val multiplexer = InputMultiplexer(hud.stage, hud.playerCtrl, handler)
+        val multiplexer = InputMultiplexer(handler, hud.stage, hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
         world.setContactListener(B2dContactListener())
     }
@@ -90,7 +91,7 @@ class PlayScreen(game: Main): KtxScreen {
     }
 
     override fun show() {
-        isPaused = true
+        isPaused = false
     }
 
     override fun pause() {
@@ -98,17 +99,21 @@ class PlayScreen(game: Main): KtxScreen {
     }
 
     override fun resume() {
-//        isPaused = false
+        isPaused = false
     }
 
     override fun resize(width: Int, height: Int) {
         camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * height/width)
-        hud.camera.setToOrtho(false, width.toFloat(), height.toFloat())
+//        hud.camera.setToOrtho(false, width.toFloat(), height.toFloat())
         hud.widthRatio = width / Constants.WIDTH
+        hud.stage.viewport.update(width, height, true)
         println("resize(): Resolution = ($width; $height) | HEIGHT = ${Constants.WIDTH * height/width} | widthRatio = ${hud.widthRatio}")
     }
 
-    // hide?
+    override fun hide() {
+        super.hide()
+    }
+
     override fun dispose() {
         hud.dispose()
         engine.clearPools()

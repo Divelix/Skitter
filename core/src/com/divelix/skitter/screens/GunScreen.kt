@@ -41,23 +41,23 @@ class GunScreen(val game: Main): KtxScreen {
     lateinit var infoTable: Table
     lateinit var specsTable: Table
     lateinit var suitTable: Table
-    lateinit var stockTable: Table
+    private val stockTable: Table
     private val applyBtn: Image
     private val suitMods = Array<Mod>(8)
     private val stockMods = Array<Mod>(20)
 
-    val glowTexture = assets.manager.get<Texture>(Constants.MOD_GLOW)
+    val glowTexture: Texture = assets.manager.get(Constants.MOD_GLOW)
 
     var activeMod: ModImage? = null
     var sourceContainer: Container<*>? = null
 
-    val gunSpecs = Array<Float>(5)
-    val finalGunSpecs = Array(arrayOf(0f, 0f, 0f, 0f, 0f))
+    private val gunSpecs = Array<Float>(5)
+    private val finalGunSpecs = Array(arrayOf(0f, 0f, 0f, 0f, 0f))
 
-    val reader = JsonReader()
-    val playerData = reader.parse("json/player_data.json".toInternalFile())
-    val gunsData = reader.parse("json/guns.json".toInternalFile())
-    val modsData = reader.parse("json/mods.json".toInternalFile())
+    private val reader = JsonReader()
+    private val playerData = reader.parse("json/player_data.json".toInternalFile())
+    private val gunsData = reader.parse("json/guns.json".toInternalFile())
+    private val modsData = reader.parse("json/mods.json".toInternalFile())
 
     init {
         // Underscore in variable names (_) means non-player data, i.e. from mods.json and guns.json
@@ -303,7 +303,7 @@ class GunScreen(val game: Main): KtxScreen {
         manageQuantityVisibility()
     }
 
-    fun manageQuantityVisibility() {
+    private fun manageQuantityVisibility() {
         for (container in suitTable.children) {
             val modImage = if ((container as Container<*>).actor != null) container.actor as ModImage else continue
             modImage.quantityLabel.isVisible = false
@@ -329,14 +329,6 @@ class GunScreen(val game: Main): KtxScreen {
                 when(keycode) {
                     Input.Keys.BACK -> game.screen = PlayScreen(game)
                     Input.Keys.P -> println(suitTable.children)
-                    Input.Keys.A -> {
-                        for (child in suitTable.children) {
-                            if (child is Container<*> && child.actor != null) {
-                                val mod = (child.actor as ModImage).mod
-                                println("index: ${mod.index}, level: ${mod.level}")
-                            }
-                        }
-                    }
                 }
                 return true
             }
@@ -346,9 +338,11 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     override fun pause() {
+        super.pause()
     }
 
     override fun resume() {
+        super.resume()
     }
 
     override fun resize(width: Int, height: Int) {
@@ -357,7 +351,10 @@ class GunScreen(val game: Main): KtxScreen {
         applyBtn.setPosition(stage.camera.viewportWidth - applyBtn.width, 0f)
     }
 
-    // hide?
+    override fun hide() {
+        super.hide()
+    }
+
     override fun dispose() {
         stage.dispose()
     }

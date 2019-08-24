@@ -16,22 +16,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.viewport.ScreenViewport
+import com.badlogic.gdx.utils.viewport.FillViewport
+import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.GunScreen
-import com.divelix.skitter.screens.PlayScreen
 import ktx.actors.*
 import ktx.graphics.use
 import ktx.vis.table
 
-class Hud(val game: Main) {
+class Hud(val game: Main, val playCam: OrthographicCamera) {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val shape = context.inject<ShapeRenderer>()
     private val assets = context.inject<Assets>()
 
     val camera = OrthographicCamera()
-    val stage = Stage(ScreenViewport(camera), batch)
+    val stage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat(), camera), batch)
 
     private val aim = Vector2()
     private val aimTxt = assets.manager.get<Texture>(Constants.AIM)
@@ -41,18 +41,20 @@ class Hud(val game: Main) {
 
     var widthRatio = 1f // updates on first resize()
     var isDriven = false
+    var isShipSlowdown = false
     val tempVec = Vector2()
     val fixedPoint = Vector3()
     val floatPoint = Vector3()
     val playerCtrl = object: InputAdapter() {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            isShipSlowdown = false
             when (pointer) {
                 0 -> {
                     fixedPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
                     camera.unproject(fixedPoint)
                     floatPoint.set(fixedPoint) // fixes small bug
                 }
-                1-> println("DON'T USE SECOND FINGER!!! ARE YOU CRAZY?")
+                1 -> println("DON'T USE SECOND FINGER!!! ARE YOU CRAZY?")
             }
             return true
         }
@@ -61,20 +63,25 @@ class Hud(val game: Main) {
             floatPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
             camera.unproject(floatPoint)
             tempVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
-            if (tempVec.len2() > Constants.DEAD_BAND) {
+            if (tempVec.len2() > Constants.DEAD_BAND_2) {
                 Data.dynamicData.dirVec.set(tempVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
                 swordImage.isVisible = false
-                PlayScreen.isPaused = false
+//                PlayScreen.isPaused = false
                 isDriven = true
             }
             return true
         }
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            Data.dynamicData.dirVec.setZero()
+            isShipSlowdown = true
             swordImage.isVisible = true
-            isDriven = false
-            PlayScreen.isPaused = true
+            if (isDriven) {
+                isDriven = false
+            } else {
+                val click = playCam.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
+                Data.dynamicData.aims.add(Vector2(click.x, click.y))
+            }
+//            PlayScreen.isPaused = true
             return true
         }
     }
@@ -95,7 +102,8 @@ class Hud(val game: Main) {
         swordImage.setPosition(10f, 10f)
         swordImage.addListener(object: ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                game.screen = GunScreen(game)
+//                game.screen = GunScreen(game)
+                println(Data.dynamicData.aims)
                 return super.touchDown(event, x, y, pointer, button)
             }
         })
@@ -106,9 +114,6 @@ class Hud(val game: Main) {
     }
 
     fun update(delta: Float) {
-        stage.act()
-        stage.draw()
-
         if(isDriven) {
             Gdx.gl.glEnable(GL20.GL_BLEND)
             shape.projectionMatrix = camera.combined
@@ -118,20 +123,11 @@ class Hud(val game: Main) {
             shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
             shape.end()
             Gdx.gl.glDisable(GL20.GL_BLEND)
-        } else {
-//            batch.projectionMatrix = camera.combined
-            batch.use {
-                if (Data.dynamicData.aims.size > 0) {
-                    for (i in 0 until Data.dynamicData.aims.size) {
-                        aim.set(Data.dynamicData.aims[i])
-                        aim.sub(Data.dynamicData.camPos)
-                        aim.scl(widthRatio)
-                        aim.add(camera.position.x, camera.position.y)
-                        batch.draw(aimTxt, aim.x - 12f, aim.y - 12f, 24f, 24f)
-                    }
-                }
-            }
         }
+        stage.act()
+        stage.draw()
+
+        if (isShipSlowdown) Data.dynamicData.dirVec.scl(0.95f)
     }
 
     fun dispose() {
