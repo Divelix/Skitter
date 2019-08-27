@@ -87,7 +87,7 @@ class PlayScreen(game: Main): KtxScreen {
             shootBullets(Data.dynamicData.aims)
             clearDeadBodies()
         }
-        hud.update(delta)
+        hud.update()
     }
 
     override fun show() {
@@ -125,7 +125,6 @@ class PlayScreen(game: Main): KtxScreen {
             if (Data.dynamicData.ammo == 0) break
             entityBuilder.createBullet(playerEntity, aim)
             Data.dynamicData.ammo--
-            hud.ammoLabel.setText("${Data.dynamicData.ammo}")
         }
         aims.clear()
     }

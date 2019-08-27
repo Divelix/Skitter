@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 
 object Data {
+    var renderTime = 0f
+    var physicsTime = 0f
     val playerData = PlayerData(Array(arrayOf(100f, 100f, 10f)), Array(arrayOf(1f, 1f, 1f, 1f, 1f)))
     val dynamicData = DynamicData(Vector2(), Vector2(), 10, Array(10))
 }

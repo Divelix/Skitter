@@ -12,7 +12,7 @@
     "index": 2,
     "name": "RELOAD_SPEED",
     "effects": {
-      "reload_speed": 10
+      "reload_time": 0.5
     }
    },
    {

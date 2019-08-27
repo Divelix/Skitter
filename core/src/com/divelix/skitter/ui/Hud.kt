@@ -17,11 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FillViewport
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.*
-import com.divelix.skitter.screens.GunScreen
 import ktx.actors.*
-import ktx.graphics.use
 import ktx.vis.table
 
 class Hud(val game: Main, val playCam: OrthographicCamera) {
@@ -33,10 +30,11 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val camera = OrthographicCamera()
     val stage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat(), camera), batch)
 
-    private val aim = Vector2()
-    private val aimTxt = assets.manager.get<Texture>(Constants.AIM)
     private val swordImage = Image(assets.manager.get<Texture>(Constants.WEAPON_ICON))
     val rootTable: Table
+    lateinit var fpsLabel: Label
+    lateinit var renderTimeLabel: Label
+    lateinit var physicsTimeLabel: Label
     lateinit var ammoLabel: Label
 
     var widthRatio = 1f // updates on first resize()
@@ -89,9 +87,24 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     init {
         rootTable = table {
             setFillParent(true)
-            top().right()
+            top().left()
 //            defaults().top()
             pad(20f)
+            fpsLabel = label("${Gdx.graphics.framesPerSecond}"){ cell->
+                color = Color.BLACK
+                cell.fill()
+            }
+            row()
+            renderTimeLabel = label("${Data.renderTime}"){ cell->
+                color = Color.BLACK
+                cell.fill()
+            }
+            row()
+            physicsTimeLabel = label("${Data.physicsTime}"){ cell->
+                color = Color.BLACK
+                cell.fill()
+            }
+            row()
             ammoLabel = label("${Data.dynamicData.ammo}") { cell->
                 color = Color.ORANGE
                 cell.fill()
@@ -113,7 +126,11 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         stage.isDebugAll = true
     }
 
-    fun update(delta: Float) {
+    fun update() {
+        fpsLabel.setText("FPS: ${Gdx.graphics.framesPerSecond}")
+        renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
+        physicsTimeLabel.setText("Physics time: ${Data.physicsTime.toInt()}")
+        ammoLabel.setText("${Data.dynamicData.ammo}")
         if(isDriven) {
             Gdx.gl.glEnable(GL20.GL_BLEND)
             shape.projectionMatrix = camera.combined
