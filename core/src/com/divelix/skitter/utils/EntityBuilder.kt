@@ -12,175 +12,134 @@ import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.components.*
+import ktx.ashley.entity
 import ktx.box2d.body
 import ktx.box2d.mouseJointWith
 
 class EntityBuilder(private val engine: PooledEngine, private val world: World, private val assets: Assets) {
 
     fun createPlayer(): Entity {
-        val entity = engine.createEntity()
 
-        val typeCmp = engine.createComponent(TypeComponent::class.java)
-        val playerCmp = engine.createComponent(PlayerComponent::class.java)
-        val transformCmp = engine.createComponent(TransformComponent::class.java)
-        val textureCmp = engine.createComponent(TextureComponent::class.java)
-        val b2dCmp = engine.createComponent(B2dBodyComponent::class.java)
-        val mouseCmp = engine.createComponent(MouseComponent::class.java)
-        val collisionCmp = engine.createComponent(CollisionComponent::class.java)
-
-        val type = TypeComponent.PLAYER
-        typeCmp.type = type
-        transformCmp.position.set(0f, 0f, 1f)
-        transformCmp.size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
-        textureCmp.region = TextureRegion(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT))
-        val cursorBody = world.body(type = BodyDef.BodyType.StaticBody) {
-            position.set(transformCmp.position.x, transformCmp.position.y)
-        }
-        val playerBody = world.body(type = BodyDef.BodyType.DynamicBody) {
-            circle(radius = Constants.PLAYER_SIZE / 2f) {
-                density = 10f
-                friction = 0.5f
-                restitution = 0f
-                filter.categoryBits = type
-                filter.maskBits = TypeComponent.ENEMY
-//                filter.groupIndex = -1
-                isSensor = true
+        val entityType = TypeComponent.PLAYER
+        return engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<PlayerComponent>()
+            with<TransformComponent> {
+                position.set(0f, 0f, 1f)
+                size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
             }
-            fixedRotation = true
-            position.set(transformCmp.position.x, transformCmp.position.y)
-            userData = entity
-        }
-        b2dCmp.body = playerBody
-        mouseCmp.mouseJoint = cursorBody.mouseJointWith(playerBody) {
-            maxForce = 1000000f
-            target.set(bodyB.position)
-            collideConnected = false
-            dampingRatio = 1f
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT)) }
+            val cursorBody = world.body(type = BodyDef.BodyType.StaticBody) {
+                position.set(0f, 0f)
+            }
+            val playerBody = world.body(type = BodyDef.BodyType.DynamicBody) {
+                circle(radius = Constants.PLAYER_SIZE / 2f) {
+                    density = 10f
+                    friction = 0.5f
+                    restitution = 0f
+                    filter.categoryBits = entityType
+                    filter.maskBits = TypeComponent.ENEMY
+//                filter.groupIndex = -1
+                    isSensor = true
+                }
+                fixedRotation = true
+                position.set(0f, 0f)
+                userData = this@entity.entity
+            }
+            with<B2dBodyComponent> { body = playerBody }
+            with<MouseComponent> {
+                mouseJoint = cursorBody.mouseJointWith(playerBody) {
+                    maxForce = 1000000f
+                    target.set(bodyB.position)
+                    collideConnected = false
+                    dampingRatio = 1f
 //            frequencyHz = 100f
+                }
+            }
+            with<CollisionComponent>()
         }
-
-        entity.add(typeCmp)
-        entity.add(playerCmp)
-        entity.add(transformCmp)
-        entity.add(textureCmp)
-        entity.add(b2dCmp)
-        entity.add(mouseCmp)
-        entity.add(collisionCmp)
-
-        engine.addEntity(entity)
-        return entity
     }
 
     fun createCamera(playerEntity: Entity): OrthographicCamera {
-        val entity = engine.createEntity()
 
-        val cameraCmp = engine.createComponent(CameraComponent::class.java)
-        val bindCmp = engine.createComponent(BindComponent::class.java)
-
-        cameraCmp.camera.position.set(0f, 0f, 1f)
-//        cameraCmp.camera.setToOrtho(false, Constants.B2D_WIDTH, Constants.B2D_HEIGHT)
-        bindCmp.entity = playerEntity
-
-        entity.add(cameraCmp)
-        entity.add(bindCmp)
-
-        engine.addEntity(entity)
-        return cameraCmp.camera
+        val camEntity = engine.entity {
+            with<CameraComponent> { camera.position.set(0f, 0f, 1f) }
+            with<BindComponent> { entity = playerEntity }
+        }
+        return camEntity.getComponent(CameraComponent::class.java).camera
     }
 
     fun createBullet(playerEntity: Entity, aim: Vector2) {
-        val entity = engine.createEntity()
 
-        val typeCmp = engine.createComponent(TypeComponent::class.java)
-        val bulletCmp = engine.createComponent(BulletComponent::class.java)
-        val transformCmp = engine.createComponent(TransformComponent::class.java)
-        val textureCmp = engine.createComponent(TextureComponent::class.java)
-        val b2dCmp = engine.createComponent(B2dBodyComponent::class.java)
-        val collisionCmp = engine.createComponent(CollisionComponent::class.java)
-        val bindingCmp = engine.createComponent(BindComponent::class.java)
-
+        val entityType = TypeComponent.BULLET
         val initPos = playerEntity.getComponent(B2dBodyComponent::class.java).body.position
         val dirVec = aim.sub(initPos)
         val angleInRad = dirVec.angleRad() - MathUtils.PI / 2f
-        val type = TypeComponent.BULLET
-        typeCmp.type = type
-        transformCmp.position.set(initPos.x, initPos.y, 0f)
-        transformCmp.size.set(bulletCmp.width, bulletCmp.height)
-//        textureCmp.region = createTexture(Color.BLACK, false, (width*Main.PPM).toInt(), (height*Main.PPM).toInt())
-        textureCmp.region = TextureRegion(assets.manager.get<Texture>(Constants.RIFLE))
-        b2dCmp.body = world.body(type = BodyDef.BodyType.DynamicBody) {
-            box(width = 0.1f, height = 0.5f) {
-                density = 10f
-                friction = 0.5f
-                restitution = 0f
-                filter.categoryBits = type
-                filter.maskBits = TypeComponent.ENEMY
-//                filter.groupIndex = 1
-                isSensor = true // TODO Carefully
+        val width = 0.1f
+        val height = 0.5f
+        val speed = Constants.BULLET_SPEED
+        engine.entity {
+            val thisEntity = entity //  TODO sad thing(
+            with<TypeComponent> { type = entityType }
+            with<BulletComponent>()
+            with<TransformComponent> {
+                position.set(initPos.x, initPos.y, 0f)
+                size.set(width, height)
             }
-            position.set(initPos)
-            angle = angleInRad
-            bullet = true
-            userData = entity
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.RIFLE)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    box(width = 0.1f, height = 0.5f) {
+                        density = 10f
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                        filter.maskBits = TypeComponent.ENEMY
+//                filter.groupIndex = 1
+                        isSensor = true // TODO Carefully
+                    }
+                    position.set(initPos)
+                    angle = angleInRad
+                    bullet = true
+                    userData = thisEntity
+                    linearVelocity.set(Vector2(0f, 1f).scl(speed).rotateRad(angleInRad))
+                }
+            }
+            with<CollisionComponent>()
+            with<BindComponent> { entity = playerEntity }
         }
-        val velocity = Vector2(0f, 1f).scl(bulletCmp.speed).rotateRad(angleInRad)
-        b2dCmp.body.linearVelocity = velocity
-        bindingCmp.entity = playerEntity
-
-        entity.add(typeCmp)
-        entity.add(bulletCmp)
-        entity.add(transformCmp)
-        entity.add(textureCmp)
-        entity.add(b2dCmp)
-        entity.add(collisionCmp)
-        entity.add(bindingCmp)
-
-        engine.addEntity(entity)
     }
 
-    fun createEnemy(x: Float, y: Float, size: Float, playerEntity: Entity) {
-        val entity = engine.createEntity()
+    fun createEnemy(x: Float, y: Float, entitySize: Float, playerEntity: Entity) {
 
-        val typeCmp = engine.createComponent(TypeComponent::class.java)
-        val enemyCmp = engine.createComponent(EnemyComponent::class.java)
-        val transformCmp = engine.createComponent(TransformComponent::class.java)
-        val textureCmp = engine.createComponent(TextureComponent::class.java)
-        val b2dCmp = engine.createComponent(B2dBodyComponent::class.java)
-        val collisionCmp = engine.createComponent(CollisionComponent::class.java)
-        val healthBarCmp = engine.createComponent(HealthBarComponent::class.java)
-        val bindingCmp = engine.createComponent(BindComponent::class.java)
-        val clickCmp = engine.createComponent(ClickableComponent::class.java)
-
-        val type = TypeComponent.ENEMY
-        typeCmp.type = type
-        transformCmp.position.set(x, y, 0f)
-        transformCmp.size.set(size, size)
-        textureCmp.region = TextureRegion(assets.manager.get<Texture>(Constants.ENEMY_DEFAULT))
-        b2dCmp.body = world.body(type = BodyDef.BodyType.DynamicBody) {
-            circle(radius = size / 2f) {
-                density = 10f
-                friction = 0.5f
-                restitution = 0f
-                filter.categoryBits = type
-//                filter.maskBits = TypeComponent.PLAYER or TypeComponent.BULLET or TypeComponent.ENEMY
-                filter.groupIndex = 1
+        val entityType = TypeComponent.ENEMY
+        engine.entity {
+            val thisEntity = entity //  TODO sad thing(
+            with<TypeComponent> { type = entityType }
+            with<EnemyComponent>()
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(entitySize, entitySize)
             }
-            position.set(x, y)
-            userData = entity
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.ENEMY_DEFAULT)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    circle(radius = entitySize / 2f) {
+                        density = 10f
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+//                filter.maskBits = TypeComponent.PLAYER or TypeComponent.BULLET or TypeComponent.ENEMY
+                        filter.groupIndex = 1
+                    }
+                    position.set(x, y)
+                    userData = thisEntity
+                }
+            }
+            with<CollisionComponent>()
+            with<HealthBarComponent>()
+            with<BindComponent> { entity = playerEntity }
+            with<ClickableComponent> { circle.set(x, y, entitySize/2)}
         }
-        bindingCmp.entity = playerEntity
-        clickCmp.circle.set(x, y, size / 2)
-
-        entity.add(typeCmp)
-        entity.add(enemyCmp)
-        entity.add(transformCmp)
-        entity.add(textureCmp)
-        entity.add(b2dCmp)
-        entity.add(collisionCmp)
-        entity.add(healthBarCmp)
-        entity.add(bindingCmp)
-        entity.add(clickCmp)
-
-        engine.addEntity(entity)
     }
 }
