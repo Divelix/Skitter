@@ -5,9 +5,9 @@ import com.badlogic.gdx.utils.Pool
 import com.divelix.skitter.Data
 
 class PlayerComponent: Component, Pool.Poolable {
-    var health = Data.playerData.ship[0]
+    var health = Data.playerData.ship.health
 
     override fun reset() {
-        health = Data.playerData.ship[0]
+        health = Data.playerData.ship.health
     }
 }

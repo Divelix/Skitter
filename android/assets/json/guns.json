@@ -1,6 +1,7 @@
 {
  "specs": [
   "damage",
+  "capacity",
   "reload_time",
   "bullet_speed",
   "crit_chance",
@@ -10,7 +11,7 @@
   {
    "index": 1,
    "name": "Rifle",
-   "specs": [100, 1, 10, 0.1, 2]
+   "specs": [100, 10, 1, 10, 0.1, 2]
   }
  ]
 }

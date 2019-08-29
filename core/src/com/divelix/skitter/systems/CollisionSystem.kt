@@ -9,7 +9,7 @@ import com.divelix.skitter.components.*
 class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
-    private val playerDamage = Data.playerData.gun[0]
+    private val playerDamage = Data.playerData.gun.damage
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         // get player collision component

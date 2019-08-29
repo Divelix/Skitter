@@ -51,8 +51,8 @@ class GunScreen(val game: Main): KtxScreen {
     var activeMod: ModImage? = null
     var sourceContainer: Container<*>? = null
 
-    private val gunSpecs = Array<Float>(5)
-    private val finalGunSpecs = Array(arrayOf(0f, 0f, 0f, 0f, 0f))
+    private val gunSpecs = Array<Float>(6)
+    private val finalGunSpecs = Array(arrayOf(0f, 0f, 0f, 0f, 0f, 0f))
 
     private val reader = JsonReader()
     private val playerData = reader.parse("json/player_data.json".toInternalFile())
@@ -151,6 +151,7 @@ class GunScreen(val game: Main): KtxScreen {
                     table {
                         defaults().left()
                         label("DAMAGE:"); row()
+                        label("CAPACITY:"); row()
                         label("RELOAD:"); row()
                         label("SPEED:"); row()
                         label("CRIT:"); row()
@@ -163,7 +164,8 @@ class GunScreen(val game: Main): KtxScreen {
                         label(gunSpecs[1].toString());row()
                         label(gunSpecs[2].toString());row()
                         label(gunSpecs[3].toString());row()
-                        label(gunSpecs[4].toString())
+                        label(gunSpecs[4].toString());row()
+                        label(gunSpecs[5].toString())
                     }
                 }
             }
@@ -291,8 +293,8 @@ class GunScreen(val game: Main): KtxScreen {
                 val mod = (c.actor as ModImage).mod
                 when(mod.index) {
                     1 -> finalGunSpecs[0] = gunSpecs[0] * 2f
-                    2 -> finalGunSpecs[1] = gunSpecs[1] * 2f
-                    3 -> finalGunSpecs[2] = gunSpecs[2] * 2f
+                    2 -> finalGunSpecs[2] = gunSpecs[2] * 2f
+                    3 -> finalGunSpecs[3] = gunSpecs[3] * 2f
                     else -> println("${mod.name} is not implemented yet")
                 }
             }

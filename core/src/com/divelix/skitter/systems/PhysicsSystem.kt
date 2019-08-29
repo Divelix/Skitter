@@ -24,7 +24,8 @@ class PhysicsSystem(private val world: World, private val blackList: ArrayList<B
 
     private var accumulator = 0f
     private var reloadTimer = 0f
-    private val reloadTime = Data.playerData.gun[1]
+    private val reloadTime = Data.playerData.gun.reloadTime
+    private val capacity = Data.playerData.gun.capacity
 
     override fun update(deltaTime: Float) {
         if(PlayScreen.isPaused) return
@@ -38,7 +39,7 @@ class PhysicsSystem(private val world: World, private val blackList: ArrayList<B
             // reload ammo
             reloadTimer += stepTime
             if (reloadTimer >= reloadTime) {
-                Data.dynamicData.ammo++ // TODO add check on max capacity before add
+                if (Data.dynamicData.ammo < capacity) Data.dynamicData.ammo++
                 reloadTimer = 0f
             }
             world.step(stepTime, 6, 2)

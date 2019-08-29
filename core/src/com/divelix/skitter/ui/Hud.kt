@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
+import com.divelix.skitter.screens.GunScreen
 import ktx.actors.*
 import ktx.vis.table
 
@@ -88,35 +89,22 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         rootTable = table {
             setFillParent(true)
             top().left()
-//            defaults().top()
+            defaults().fill()
             pad(20f)
-            fpsLabel = label("${Gdx.graphics.framesPerSecond}"){ cell->
-                color = Color.BLACK
-                cell.fill()
-            }
+            fpsLabel = label("${Gdx.graphics.framesPerSecond}") { color = Color.BLACK }
             row()
-            renderTimeLabel = label("${Data.renderTime}"){ cell->
-                color = Color.BLACK
-                cell.fill()
-            }
+            renderTimeLabel = label("${Data.renderTime}") { color = Color.BLACK }
             row()
-            physicsTimeLabel = label("${Data.physicsTime}"){ cell->
-                color = Color.BLACK
-                cell.fill()
-            }
+            physicsTimeLabel = label("${Data.physicsTime}"){ color = Color.BLACK }
             row()
-            ammoLabel = label("${Data.dynamicData.ammo}") { cell->
-                color = Color.ORANGE
-                cell.fill()
-            }
+            ammoLabel = label("${Data.dynamicData.ammo}") { color = Color.ORANGE }
 //            pack()
         }
         swordImage.setSize(64f, 128f)
         swordImage.setPosition(10f, 10f)
         swordImage.addListener(object: ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-//                game.screen = GunScreen(game)
-                println(Data.dynamicData.aims)
+                game.screen = GunScreen(game)
                 return super.touchDown(event, x, y, pointer, button)
             }
         })

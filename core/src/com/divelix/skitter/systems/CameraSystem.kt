@@ -26,7 +26,6 @@ class CameraSystem: IteratingSystem(Family.all(CameraComponent::class.java).get(
             radVec.set(Constants.CAMERA_RADIUS, 0f).rotate(difVec.angle())
             camPos.set(bodPos).sub(radVec)
         }
-        Data.dynamicData.camPos.set(camPos)
         cameraCmp.camera.position.set(camPos, 0f)
         cameraCmp.camera.update()
     }
