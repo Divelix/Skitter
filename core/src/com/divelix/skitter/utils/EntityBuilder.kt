@@ -79,7 +79,6 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
         val height = 0.5f
         val speed = Constants.BULLET_SPEED
         engine.entity {
-            val thisEntity = entity //  TODO sad thing(
             with<TypeComponent> { type = entityType }
             with<BulletComponent>()
             with<TransformComponent> {
@@ -101,7 +100,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     position.set(initPos)
                     angle = angleInRad
                     bullet = true
-                    userData = thisEntity
+                    userData = (this@entity).entity
                     linearVelocity.set(Vector2(0f, 1f).scl(speed).rotateRad(angleInRad))
                 }
             }
@@ -114,7 +113,6 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
 
         val entityType = TypeComponent.ENEMY
         engine.entity {
-            val thisEntity = entity //  TODO sad thing(
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()
             with<TransformComponent> {
@@ -133,7 +131,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         filter.groupIndex = 1
                     }
                     position.set(x, y)
-                    userData = thisEntity
+                    userData = (this@entity).entity
                 }
             }
             with<CollisionComponent>()

@@ -39,7 +39,7 @@ class PhysicsSystem(private val world: World, private val blackList: ArrayList<B
             // reload ammo
             reloadTimer += stepTime
             if (reloadTimer >= reloadTime) {
-                if (Data.dynamicData.ammo < capacity) Data.dynamicData.ammo++
+                if (Data.playerData.gun.capacity < capacity) Data.playerData.gun.capacity++
                 reloadTimer = 0f
             }
             world.step(stepTime, 6, 2)

@@ -97,7 +97,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             row()
             physicsTimeLabel = label("${Data.physicsTime}"){ color = Color.BLACK }
             row()
-            ammoLabel = label("${Data.dynamicData.ammo}") { color = Color.ORANGE }
+            ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }
 //            pack()
         }
         swordImage.setSize(64f, 128f)
@@ -118,7 +118,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         fpsLabel.setText("FPS: ${Gdx.graphics.framesPerSecond}")
         renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
         physicsTimeLabel.setText("Physics time: ${Data.physicsTime.toInt()}")
-        ammoLabel.setText("${Data.dynamicData.ammo}")
+        ammoLabel.setText("${Data.playerData.gun.capacity}")
         if(isDriven) {
             Gdx.gl.glEnable(GL20.GL_BLEND)
             shape.projectionMatrix = camera.combined

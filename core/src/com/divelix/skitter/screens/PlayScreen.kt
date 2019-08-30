@@ -41,7 +41,7 @@ class PlayScreen(game: Main): KtxScreen {
 //        for (i in 0 until Data.playerData.gun.size)
 //            Data.playerData.gun[i] = specs[i].asFloat()
         Data.playerData.gun.damage = specs[0].asFloat()
-        Data.playerData.gun.capacity = specs[1].asFloat()
+        Data.playerData.gun.capacity = specs[1].asInt()
         Data.playerData.gun.reloadTime = specs[2].asFloat()
         Data.playerData.gun.bulletSpeed = specs[3].asFloat()
         Data.playerData.gun.critChance = specs[4].asFloat()
@@ -128,9 +128,9 @@ class PlayScreen(game: Main): KtxScreen {
     private fun shootBullets(aims: Array<Vector2>) {
         if (isPaused || aims.size == 0) return
         for (aim in aims) {
-            if (Data.dynamicData.ammo == 0) break
+            if (Data.playerData.gun.capacity == 0) break
             entityBuilder.createBullet(playerEntity, aim)
-            Data.dynamicData.ammo--
+            Data.playerData.gun.capacity--
         }
         aims.clear()
     }
