@@ -41,7 +41,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     var widthRatio = 1f // updates on first resize()
     var isDriven = false
     var isShipSlowdown = false
-    val tempVec = Vector2()
+    val distVec = Vector2()
     val fixedPoint = Vector3()
     val floatPoint = Vector3()
     val playerCtrl = object: InputAdapter() {
@@ -51,36 +51,45 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                 0 -> {
                     fixedPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
                     camera.unproject(fixedPoint)
-                    floatPoint.set(fixedPoint) // fixes small bug
+//                    floatPoint.set(fixedPoint) // fixes small bug // TODO che za bug?
                 }
-                1 -> println("DON'T USE SECOND FINGER!!! ARE YOU CRAZY?")
+                1 -> {
+                    val click = playCam.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
+                    Data.dynamicData.aims.add(Vector2(click.x, click.y))
+                }
             }
             return true
         }
 
         override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-            floatPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
-            camera.unproject(floatPoint)
-            tempVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
-            if (tempVec.len2() > Constants.DEAD_BAND_2) {
-                Data.dynamicData.dirVec.set(tempVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
-                swordImage.isVisible = false
-//                PlayScreen.isPaused = false
-                isDriven = true
+            when (pointer) {
+                0 -> {
+                    floatPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
+                    camera.unproject(floatPoint)
+                    distVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
+                    if (distVec.len2() > Constants.DEAD_BAND_2) {
+                        Data.dynamicData.dirVec.set(distVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
+                        swordImage.isVisible = false
+                        isDriven = true
+                    }
+                }
             }
             return true
         }
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            isShipSlowdown = true
-            swordImage.isVisible = true
-            if (isDriven) {
-                isDriven = false
-            } else {
-                val click = playCam.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
-                Data.dynamicData.aims.add(Vector2(click.x, click.y))
+            when (pointer) {
+                0 -> {
+                    isShipSlowdown = true
+                    swordImage.isVisible = true
+                    if (isDriven) {
+                        isDriven = false
+                    } else {
+                        val click = playCam.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
+                        Data.dynamicData.aims.add(Vector2(click.x, click.y))
+                    }
+                }
             }
-//            PlayScreen.isPaused = true
             return true
         }
     }
