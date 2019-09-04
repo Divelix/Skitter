@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
+import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.box2d.body
@@ -73,11 +74,12 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
 
         val entityType = TypeComponent.BULLET
         val initPos = playerEntity.getComponent(B2dBodyComponent::class.java).body.position
+        val initVelocity = playerEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
         val dirVec = aim.sub(initPos)
         val angleInRad = dirVec.angleRad() - MathUtils.PI / 2f
-        val width = 0.1f
-        val height = 0.5f
-        val speed = Constants.BULLET_SPEED
+        val width = 0.2f
+        val height = 1f
+        val speed = Data.playerData.gun.bulletSpeed
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<BulletComponent>()
@@ -85,10 +87,10 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 position.set(initPos.x, initPos.y, 0f)
                 size.set(width, height)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.RIFLE)) }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
-                    box(width = 0.1f, height = 0.5f) {
+                    box(width = width, height = height) {
                         density = 10f
                         friction = 0.5f
                         restitution = 0f
@@ -101,7 +103,9 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     angle = angleInRad
                     bullet = true
                     userData = (this@entity).entity
-                    linearVelocity.set(Vector2(0f, 1f).scl(speed).rotateRad(angleInRad))
+                    val velocity = Vector2(0f, 1f).scl(speed).rotateRad(angleInRad)
+                    velocity.add(initVelocity)
+                    linearVelocity.set(velocity)
                 }
             }
             with<CollisionComponent>()

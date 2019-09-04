@@ -48,7 +48,6 @@ class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.jav
 //                            println("bullet hit enemy")
                             val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
                             enemyCmp.health -= playerDamage
-                            println("Enemy health: ${enemyCmp.health + 10} -> ${enemyCmp.health}")
                             if(enemyCmp.health <= 0) {
                                 val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
                                 collidedBodyCmp.isDead = true
