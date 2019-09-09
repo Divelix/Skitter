@@ -113,6 +113,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         swordImage.setPosition(10f, 10f)
         swordImage.addListener(object: ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                Data.dynamicData.dirVec.setZero()
                 game.screen = GunScreen(game)
                 return super.touchDown(event, x, y, pointer, button)
             }

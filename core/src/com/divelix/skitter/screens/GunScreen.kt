@@ -27,13 +27,10 @@ import ktx.vis.table
 import com.badlogic.gdx.utils.JsonValue
 import com.kotcrab.vis.ui.widget.VisLabel
 
-
-// Drag'n'drop version is in Google Drive
 class GunScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
-    private val skin = assets.uiSkin
     private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
     private val rootTable: Table
@@ -53,11 +50,14 @@ class GunScreen(val game: Main): KtxScreen {
 
     private val gunSpecs = Array<Float>(6)
     private val finalGunSpecs = Array(arrayOf(0f, 0f, 0f, 0f, 0f, 0f))
+    private val modEffects = Array(arrayOf(1f, 1f, 1f, 1f, 1f, 1f))
 
     private val reader = JsonReader()
     private val playerData = reader.parse("json/player_data.json".toInternalFile())
     private val gunsData = reader.parse("json/guns.json".toInternalFile())
     private val modsData = reader.parse("json/mods.json".toInternalFile())
+    // GUN MODS
+    val _gunMods = modsData.get("mods").get("gun")
 
     init {
         // Underscore in variable names (_) means non-player data, i.e. from mods.json and guns.json
@@ -77,9 +77,6 @@ class GunScreen(val game: Main): KtxScreen {
         for (spec in _pGun.get("specs")) {
             gunSpecs.add(spec.asFloat())
         }
-
-        // GUN MODS
-        val _gunMods = modsData.get("mods").get("gun")
 
         // fill suitMods
         for (mod in pGun.get("mods")) {
@@ -194,10 +191,16 @@ class GunScreen(val game: Main): KtxScreen {
         applyBtn = Image(assets.manager.get<Texture>(Constants.APPLY_BTN))
         applyBtn.setSize(64f, 64f)
         applyBtn.addListener(object: ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+//            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+//                applyMods()
+//                game.screen = PlayScreen(game)
+//                return super.touchDown(event, x, y, pointer, button)
+//            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 applyMods()
                 game.screen = PlayScreen(game)
-                return super.touchDown(event, x, y, pointer, button)
+                super.touchUp(event, x, y, pointer, button)
             }
         })
 
@@ -285,19 +288,31 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     fun updateSpecs() {
-        for (i in 0 until gunSpecs.size)
+        for (i in 0 until gunSpecs.size) {
             finalGunSpecs[i] = gunSpecs[i]
+            modEffects[i] = 1f
+        }
+
         for (container in suitTable.children) {
             val c = (container as Container<*>)
             if (c.actor != null) {
                 val mod = (c.actor as ModImage).mod
-                when(mod.index) {
-                    1 -> finalGunSpecs[0] = gunSpecs[0] * 2f
-                    2 -> finalGunSpecs[2] = gunSpecs[2] * 2f
-                    3 -> finalGunSpecs[3] = gunSpecs[3] * 2f
-                    else -> println("${mod.name} is not implemented yet")
+                for (_mod in _gunMods) {
+                    if (_mod.get("index").asInt() == mod.index) {
+                        when (_mod.get("effects").child.name) {
+                            "damage" -> modEffects[0] = _mod.get("effects").child.asFloat()
+                            "capacity" -> modEffects[1] = _mod.get("effects").child.asFloat()
+                            "reload_time" -> modEffects[2] = _mod.get("effects").child.asFloat()
+                            "bullet_speed" -> modEffects[3] = _mod.get("effects").child.asFloat()
+                            "crit_chance" -> modEffects[4] = _mod.get("effects").child.asFloat()
+                            "crit_multiplier" -> modEffects[5] = _mod.get("effects").child.asFloat()
+                        }
+                    }
                 }
             }
+        }
+        for (i in 0 until finalGunSpecs.size) {
+            finalGunSpecs[i] = gunSpecs[i] * modEffects[i]
         }
         for (i in 0 until specsTable.children.size)
             (specsTable.children[i] as Label).setText("${finalGunSpecs[i]}")
@@ -326,6 +341,7 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     override fun show() {
+        println("GunScreen - show()")
         val handler = object: InputAdapter() {
             override fun keyDown(keycode: Int): Boolean {
                 when(keycode) {
@@ -340,24 +356,29 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     override fun pause() {
+        println("GunScreen - pause()")
         super.pause()
     }
 
     override fun resume() {
+        println("GunScreen - resume()")
         super.resume()
     }
 
     override fun resize(width: Int, height: Int) {
+        println("GunScreen - resize()")
 //        stage.viewport.update(Constants.D_WIDTH, Constants.D_WIDTH * height/width, true)
         stage.viewport.update(width, height, true)
         applyBtn.setPosition(stage.camera.viewportWidth - applyBtn.width, 0f)
     }
 
     override fun hide() {
+        println("GunScreen - hide()")
         super.hide()
     }
 
     override fun dispose() {
+        println("GunScreen - dispose()")
         stage.dispose()
     }
 

@@ -97,18 +97,22 @@ class PlayScreen(game: Main): KtxScreen {
     }
 
     override fun show() {
+        println("PlayScreen - show()")
         isPaused = false
     }
 
     override fun pause() {
+        println("PlayScreen - pause()")
         isPaused = true
     }
 
     override fun resume() {
+        println("PlayScreen - resume()")
         isPaused = false
     }
 
     override fun resize(width: Int, height: Int) {
+        println("PlayScreen - resize()")
         camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * height/width)
 //        hud.camera.setToOrtho(false, width.toFloat(), height.toFloat())
         hud.widthRatio = width / Constants.WIDTH
@@ -117,10 +121,12 @@ class PlayScreen(game: Main): KtxScreen {
     }
 
     override fun hide() {
+        println("PlayScreen - hide()")
         super.hide()
     }
 
     override fun dispose() {
+        println("PlayScreen - hide()")
         hud.dispose()
         engine.clearPools()
     }

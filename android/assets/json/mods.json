@@ -5,12 +5,12 @@
     "index": 1,
     "name": "DAMAGE",
     "effects": {
-      "damage": 10
+      "damage": 1.1
     }
    },
    {
     "index": 2,
-    "name": "RELOAD_SPEED",
+    "name": "RELOAD_TIME",
     "effects": {
       "reload_time": 0.5
     }
@@ -19,7 +19,7 @@
     "index": 3,
     "name": "BULLET_SPEED",
     "effects": {
-      "bullet_speed": 10
+      "bullet_speed": 1.5
     }
    },
    {
