@@ -53,7 +53,7 @@ class GunScreen(val game: Main): KtxScreen {
     private val modEffects = Array(arrayOf(1f, 1f, 1f, 1f, 1f, 1f))
 
     private val reader = JsonReader()
-    private val playerData = reader.parse("json/player_data.json".toInternalFile())
+    private val playerData = reader.parse("json/player_data.json".toLocalFile())
     private val gunsData = reader.parse("json/guns.json".toInternalFile())
     private val modsData = reader.parse("json/mods.json".toInternalFile())
     // GUN MODS
@@ -300,12 +300,12 @@ class GunScreen(val game: Main): KtxScreen {
                 for (_mod in _gunMods) {
                     if (_mod.get("index").asInt() == mod.index) {
                         when (_mod.get("effects").child.name) {
-                            "damage" -> modEffects[0] = _mod.get("effects").child.asFloat()
-                            "capacity" -> modEffects[1] = _mod.get("effects").child.asFloat()
-                            "reload_time" -> modEffects[2] = _mod.get("effects").child.asFloat()
-                            "bullet_speed" -> modEffects[3] = _mod.get("effects").child.asFloat()
-                            "crit_chance" -> modEffects[4] = _mod.get("effects").child.asFloat()
-                            "crit_multiplier" -> modEffects[5] = _mod.get("effects").child.asFloat()
+                            "damage" -> modEffects[0] = _mod.get("effects").child[mod.level-1].asFloat()
+                            "capacity" -> modEffects[1] = _mod.get("effects").child[mod.level-1].asFloat()
+                            "reload_time" -> modEffects[2] = _mod.get("effects").child[mod.level-1].asFloat()
+                            "bullet_speed" -> modEffects[3] = _mod.get("effects").child[mod.level-1].asFloat()
+                            "crit_chance" -> modEffects[4] = _mod.get("effects").child[mod.level-1].asFloat()
+                            "crit_multiplier" -> modEffects[5] = _mod.get("effects").child[mod.level-1].asFloat()
                         }
                     }
                 }
