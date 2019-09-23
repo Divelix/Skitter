@@ -16,11 +16,11 @@ import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.box2d.body
 import ktx.box2d.mouseJointWith
+import kotlin.experimental.or
 
 class EntityBuilder(private val engine: PooledEngine, private val world: World, private val assets: Assets) {
 
     fun createPlayer(): Entity {
-
         val entityType = TypeComponent.PLAYER
         return engine.entity {
             with<TypeComponent> { type = entityType }
@@ -39,9 +39,9 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     friction = 0.5f
                     restitution = 0f
                     filter.categoryBits = entityType
-                    filter.maskBits = TypeComponent.ENEMY
-//                filter.groupIndex = -1
-                    isSensor = true
+                    filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE
+//                    filter.groupIndex = -1
+//                    isSensor = true
                 }
                 fixedRotation = true
                 position.set(0f, 0f)
@@ -62,7 +62,6 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
     }
 
     fun createCamera(playerEntity: Entity): OrthographicCamera {
-
         val camEntity = engine.entity {
             with<CameraComponent> { camera.position.set(0f, 0f, 1f) }
             with<BindComponent> { entity = playerEntity }
@@ -71,7 +70,6 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
     }
 
     fun createBullet(playerEntity: Entity, aim: Vector2) {
-
         val entityType = TypeComponent.BULLET
         val initPos = playerEntity.getComponent(B2dBodyComponent::class.java).body.position
         val initVelocity = playerEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
@@ -95,7 +93,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.ENEMY
+                        filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE
 //                filter.groupIndex = 1
                         isSensor = true // TODO Carefully
                     }
@@ -114,7 +112,6 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
     }
 
     fun createEnemy(x: Float, y: Float, entitySize: Float, playerEntity: Entity) {
-
         val entityType = TypeComponent.ENEMY
         engine.entity {
             with<TypeComponent> { type = entityType }
@@ -131,8 +128,8 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-//                filter.maskBits = TypeComponent.PLAYER or TypeComponent.BULLET or TypeComponent.ENEMY
-                        filter.groupIndex = 1
+//                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.BULLET or TypeComponent.ENEMY
+//                        filter.groupIndex = 1
                     }
                     position.set(x, y)
                     userData = (this@entity).entity
@@ -142,6 +139,33 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<HealthBarComponent>()
             with<BindComponent> { entity = playerEntity }
             with<ClickableComponent> { circle.set(x, y, entitySize/2)}
+        }
+    }
+
+    fun createObstacle(x: Float, y: Float, width: Float, height: Float) {
+        val entityType = TypeComponent.OBSTACLE
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(width, height)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOADING_IMAGE)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.StaticBody) {
+                    box(width = width, height = height) {
+                        density = 10f
+                        friction = 0f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.BULLET
+//                        filter.groupIndex = 1
+                    }
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
+            }
+            with<CollisionComponent>()
         }
     }
 }

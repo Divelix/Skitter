@@ -7,8 +7,7 @@ class TypeComponent: Component {
         const val PLAYER: Short = 1
         const val ENEMY: Short = 2
         const val BULLET: Short = 4
-        const val BORDER: Short = 8
-        const val OTHER: Short = 16
+        const val OBSTACLE: Short = 8
     }
     var type: Short? = null
 }

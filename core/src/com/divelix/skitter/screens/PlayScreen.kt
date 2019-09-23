@@ -56,6 +56,7 @@ class PlayScreen(game: Main): KtxScreen {
         entityBuilder.createEnemy(-3f, 7f, 2f, playerEntity)
         entityBuilder.createEnemy(0f, 7f, 2f, playerEntity)
         entityBuilder.createEnemy(3f, 7f, 2f, playerEntity)
+        entityBuilder.createObstacle(5f, -3f, 2f, 2f)
 
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
@@ -63,7 +64,7 @@ class PlayScreen(game: Main): KtxScreen {
         engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem())
         engine.addSystem(PlayerSystem())
-//        engine.addSystem(EnemySystem())
+        engine.addSystem(EnemySystem())
         engine.addSystem(BulletSystem())
 //        engine.addSystem(ClickableSystem(camera))
 

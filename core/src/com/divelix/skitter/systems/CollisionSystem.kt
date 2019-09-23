@@ -55,6 +55,11 @@ class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.jav
                             collisionCmp.collisionEntity = null
                             bulletCmp.isDead = true
                         }
+                        TypeComponent.OBSTACLE -> {
+                            println("OBSTACLE")
+                            collisionCmp.collisionEntity = null
+                            bulletCmp.isDead = true
+                        }
                     }
                 }
             }
