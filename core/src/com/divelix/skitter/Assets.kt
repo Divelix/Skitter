@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Disposable
 import com.kotcrab.vis.ui.VisUI
 import ktx.assets.*
+import ktx.freetype.loadFreeTypeFont
+import ktx.freetype.registerFreeTypeFontLoaders
 import ktx.style.*
 
 //creation of a singleton
@@ -51,6 +53,10 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.MOD_FIRE_DAMAGE)
         manager.load<Texture>(Constants.MOD_HEALTH)
         manager.load<Texture>(Constants.MOD_MANA)
+        manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)
+        manager.loadFreeTypeFont(Constants.ROBOTO_FONT) {
+            size = 16
+        }
 //        loadFonts() //TODO try move to the top
     }
 
@@ -69,7 +75,7 @@ class Assets: Disposable {
         uiSkin = skin(manager.get(Constants.UISKIN_ATLAS)) {
             color("pinky", 0.7f, 0f, 1f)
             label {
-                font = BitmapFont()
+                font = manager.get<BitmapFont>(Constants.ROBOTO_FONT)
                 fontColor = Color.WHITE
             }
             label("mod-level", extend = defaultStyle) {

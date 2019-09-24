@@ -100,11 +100,11 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             top().left()
             defaults().fill()
             pad(20f)
-            fpsLabel = label("${Gdx.graphics.framesPerSecond}") { color = Color.BLACK }
+            fpsLabel = label("${Gdx.graphics.framesPerSecond}")
             row()
-            renderTimeLabel = label("${Data.renderTime}") { color = Color.BLACK }
+            renderTimeLabel = label("${Data.renderTime}")
             row()
-            physicsTimeLabel = label("${Data.physicsTime}"){ color = Color.BLACK }
+            physicsTimeLabel = label("${Data.physicsTime}")
             row()
             ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }
 //            pack()
@@ -121,7 +121,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
 
         stage += rootTable
         stage += swordImage
-        stage.isDebugAll = true
+//        stage.isDebugAll = true
     }
 
     fun update() {

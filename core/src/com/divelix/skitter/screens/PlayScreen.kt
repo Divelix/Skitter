@@ -61,7 +61,7 @@ class PlayScreen(game: Main): KtxScreen {
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
-        engine.addSystem(PhysicsDebugSystem(world, camera))
+//        engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem())
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
