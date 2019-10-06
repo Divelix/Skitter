@@ -191,15 +191,9 @@ class GunScreen(val game: Main): KtxScreen {
         applyBtn = Image(assets.manager.get<Texture>(Constants.APPLY_BTN))
         applyBtn.setSize(64f, 64f)
         applyBtn.addListener(object: ClickListener() {
-//            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-//                applyMods()
-//                game.screen = PlayScreen(game)
-//                return super.touchDown(event, x, y, pointer, button)
-//            }
-
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 applyMods()
-                game.screen = PlayScreen(game)
+                game.screen = MenuScreen(game)
                 super.touchUp(event, x, y, pointer, button)
             }
         })

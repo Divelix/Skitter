@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.GunScreen
+import com.divelix.skitter.screens.MenuScreen
 import ktx.actors.*
 import ktx.vis.table
 
@@ -107,15 +108,14 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             physicsTimeLabel = label("${Data.physicsTime}")
             row()
             ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }
-//            pack()
         }
         swordImage.setSize(64f, 128f)
         swordImage.setPosition(10f, 10f)
         swordImage.addListener(object: ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 Data.dynamicData.dirVec.setZero()
-                game.screen = GunScreen(game)
-                return super.touchDown(event, x, y, pointer, button)
+                game.screen = MenuScreen(game)
+                super.touchUp(event, x, y, pointer, button)
             }
         })
 
