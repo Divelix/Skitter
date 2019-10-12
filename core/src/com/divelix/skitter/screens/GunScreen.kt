@@ -18,14 +18,14 @@ import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.*
-import com.divelix.skitter.utils.Mod
+import com.divelix.skitter.ui.Mod
 import ktx.actors.*
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.vis.table
 import com.badlogic.gdx.utils.JsonValue
-import com.kotcrab.vis.ui.widget.VisLabel
+import com.divelix.skitter.ui.ModImage
 
 class GunScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
@@ -33,7 +33,6 @@ class GunScreen(val game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
     private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
-    private val rootTable: Table
     lateinit var weaponImg: Image
     lateinit var infoTable: Table
     lateinit var specsTable: Table
@@ -110,7 +109,7 @@ class GunScreen(val game: Main): KtxScreen {
                     val effects = _mod.get("effects")
                     if (isRepeat) {
                         if (quantity > 1)
-                            stockMods.add(Mod(index, name, level, quantity-1))
+                            stockMods.add(Mod(index, name, level, quantity - 1))
                     } else {
                         stockMods.add(Mod(index, name, level, quantity))
                     }
@@ -125,14 +124,14 @@ class GunScreen(val game: Main): KtxScreen {
 
             for (i in 0 until stockMods.size + 8) {
                 if (i < stockMods.size) {
-                    container(ModImage(stockMods[i])) { touchable = Touchable.enabled }
+                    container(ModImage(stockMods[i], assets)) { touchable = Touchable.enabled }
                 } else {
                     container<ModImage> { touchable = Touchable.enabled }
                 }
                 if ((i+1) % 4 == 0) row()
             }
         }
-        rootTable = table {
+        stage += table {
             setFillParent(true)
             top()
             padTop(50f)
@@ -174,7 +173,7 @@ class GunScreen(val game: Main): KtxScreen {
 
                 for (i in 1..8) {
                     if (i <= suitMods.size) {
-                        container(ModImage(suitMods[i - 1])) {
+                        container(ModImage(suitMods[i - 1], assets)) {
                             touchable = Touchable.enabled
                         }
                     } else {
@@ -251,7 +250,7 @@ class GunScreen(val game: Main): KtxScreen {
                                     actor.actor = activeMod
                                 } else {
                                     val source = activeMod!!.mod
-                                    actor.actor = ModImage(Mod(source.index, source.name, source.level))
+                                    actor.actor = ModImage(Mod(source.index, source.name, source.level), assets)
                                     activeMod!!.mod.quantity--
                                     activeMod!!.quantityLabel.setText(activeMod!!.mod.quantity)
                                 }
@@ -265,8 +264,6 @@ class GunScreen(val game: Main): KtxScreen {
                 return true
             }
         })
-
-        stage += rootTable
         stage += applyBtn
         stage.isDebugAll = true
         updateSpecs()
@@ -415,39 +412,39 @@ class GunScreen(val game: Main): KtxScreen {
         println("----------------gun mods applied-----------------")
     }
 
-    inner class ModImage(val mod: Mod): Group() {
-        val texture: Texture
-        val levelLabel: VisLabel
-        val quantityLabel: VisLabel
-
-        init {
-            touchable = Touchable.enabled
-            setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
-            texture = when(mod.index) {
-                // Gun stockMods
-                1 -> assets.manager.get(Constants.MOD_DAMAGE)
-                2 -> assets.manager.get(Constants.MOD_RELOAD_SPEED)
-                3 -> assets.manager.get(Constants.MOD_BULLET_SPEED)
-                4 -> assets.manager.get(Constants.LOADING_IMAGE) //TODO add texture for CRIT_MULT
-
-                5 -> assets.manager.get(Constants.MOD_FIRE_DAMAGE)
-                6 -> assets.manager.get(Constants.MOD_COLD_DAMAGE)
-                else -> assets.manager.get(Constants.LOADING_IMAGE)
-            }
-            levelLabel = VisLabel("lvl ${mod.level}", "mod-level").apply {
-                touchable = Touchable.disabled
-            }
-            quantityLabel = VisLabel("${mod.quantity}", "mod-quantity").apply {
-                setPosition(this@ModImage.width - width, this@ModImage.height - height)
-                touchable = Touchable.disabled
-            }
-            addActor(Image(texture).apply {
-                touchable = Touchable.disabled
-                setFillParent(true)
-            })
-            addActor(levelLabel)
-            addActor(quantityLabel)
-            addActor(quantityLabel)
-        }
-    }
+//    inner class ModImage(val mod: Mod): Group() {
+//        val texture: Texture
+//        val levelLabel: VisLabel
+//        val quantityLabel: VisLabel
+//
+//        init {
+//            touchable = Touchable.enabled
+//            setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
+//            texture = when(mod.index) {
+//                // Gun stockMods
+//                1 -> assets.manager.get(Constants.MOD_DAMAGE)
+//                2 -> assets.manager.get(Constants.MOD_RELOAD_SPEED)
+//                3 -> assets.manager.get(Constants.MOD_BULLET_SPEED)
+//                4 -> assets.manager.get(Constants.LOADING_IMAGE) //TODO add texture for CRIT_MULT
+//
+//                5 -> assets.manager.get(Constants.MOD_FIRE_DAMAGE)
+//                6 -> assets.manager.get(Constants.MOD_COLD_DAMAGE)
+//                else -> assets.manager.get(Constants.LOADING_IMAGE)
+//            }
+//            levelLabel = VisLabel("lvl ${mod.level}", "mod-level").apply {
+//                touchable = Touchable.disabled
+//            }
+//            quantityLabel = VisLabel("${mod.quantity}", "mod-quantity").apply {
+//                setPosition(this@ModImage.width - width, this@ModImage.height - height)
+//                touchable = Touchable.disabled
+//            }
+//            addActor(Image(texture).apply {
+//                touchable = Touchable.disabled
+//                setFillParent(true)
+//            })
+//            addActor(levelLabel)
+//            addActor(quantityLabel)
+//            addActor(quantityLabel)
+//        }
+//    }
 }

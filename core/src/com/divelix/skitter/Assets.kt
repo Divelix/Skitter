@@ -38,6 +38,8 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.SKIN_GRAD)
         manager.load<Texture>(Constants.BACK_BTN)
         manager.load<Texture>(Constants.APPLY_BTN)
+        manager.load<Texture>(Constants.UP_BTN)
+        manager.load<Texture>(Constants.SELL_BTN)
         manager.load<Texture>(Constants.WEAPON_ICON)
         manager.load<Texture>(Constants.SHIPS_ICON)
         manager.load<Texture>(Constants.GUNS_ICON)

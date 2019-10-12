@@ -24,7 +24,7 @@ class MenuScreen(game: Main): KtxScreen {
     private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
     init {
-        val rootTable = table {
+        stage += table {
             setFillParent(true)
             debugAll()
             table {
@@ -51,7 +51,6 @@ class MenuScreen(game: Main): KtxScreen {
                 }
             })
         }
-        stage += rootTable
     }
 
     override fun show() {

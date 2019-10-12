@@ -2,14 +2,24 @@ package com.divelix.skitter.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
+import com.divelix.skitter.ui.Mod
+import com.divelix.skitter.ui.ModImage
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
+import ktx.assets.toInternalFile
+import ktx.assets.toLocalFile
 import ktx.vis.table
 
 class ModScreen(game: Main): KtxScreen {
@@ -18,14 +28,60 @@ class ModScreen(game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
     private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
-    init {
-        val rootTable = table {
+    private val stockTable: Table
 
+    private val stockMods = Array<Mod>(20)
+
+    private val reader = JsonReader()
+    private val playerData = reader.parse("json/player_data.json".toLocalFile())
+    private val gunsData = reader.parse("json/guns.json".toInternalFile())
+    private val modsData = reader.parse("json/mods.json".toInternalFile())
+    // GUN MODS
+    val _gunMods = modsData.get("mods").get("gun")
+
+    init {
+        // fill stockMods
+        for (mod in playerData.get("mods").get("gun")) {
+            val index = mod.get("index").asInt()
+            val level = mod.get("level").asInt()
+            val quantity = mod.get("quantity").asInt()
+
+            for (_mod in _gunMods) {
+                if (_mod.get("index").asInt() == index) {
+                    val name = _mod.get("name").asString()
+                    val effects = _mod.get("effects")
+                    stockMods.add(Mod(index, name, level, quantity))
+                    break
+                }
+            }
         }
-        stage += rootTable
+
+        stockTable = table {
+            name = "StockTable"
+            defaults().width(Constants.MOD_WIDTH).height(Constants.MOD_HEIGHT).pad(2f)
+
+            for (i in 0 until stockMods.size + 8) {
+                if (i < stockMods.size) {
+                    container(ModImage(stockMods[i], assets)) { touchable = Touchable.enabled }
+                } else {
+                    container<ModImage> { touchable = Touchable.enabled }
+                }
+                if ((i + 1) % 4 == 0) row()
+            }
+        }
+        stage += table {
+            setFillParent(true)
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN)))
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MOD_DAMAGE))).cell(pad = 25f)
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN)))
+            row()
+            scrollPane(stockTable).cell(colspan = 3)
+        }
+        stage.isDebugAll = true
     }
 
     override fun show() {
+        println("ModScreen - show()")
         Gdx.input.inputProcessor = stage
     }
 
@@ -35,5 +91,30 @@ class ModScreen(game: Main): KtxScreen {
 
         stage.act()
         stage.draw()
+    }
+
+    override fun pause() {
+        println("ModScreen - pause()")
+        super.pause()
+    }
+
+    override fun resume() {
+        println("ModScreen - resume()")
+        super.resume()
+    }
+
+    override fun resize(width: Int, height: Int) {
+        println("ModScreen - resize()")
+        stage.viewport.update(width, height, true)
+    }
+
+    override fun hide() {
+        println("ModScreen - hide()")
+        super.hide()
+    }
+
+    override fun dispose() {
+        println("GunScreen - dispose()")
+        stage.dispose()
     }
 }

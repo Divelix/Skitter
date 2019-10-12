@@ -45,6 +45,8 @@ object Constants {
     const val WHITE_CIRCLE = "skin_grad.png"
     const val BACK_BTN = "back_tex.png"
     const val APPLY_BTN = "apply_btn.png"
+    const val UP_BTN = "up_btn.png"
+    const val SELL_BTN = "sell_btn.png"
     const val RIFLE = "rifle.png"
     const val UZI = "uzi.png"
     const val MOD_GLOW = "mods/mod-glow.png"
