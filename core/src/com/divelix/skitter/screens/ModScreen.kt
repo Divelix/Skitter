@@ -4,9 +4,13 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
@@ -21,6 +25,7 @@ import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.vis.table
+import java.nio.file.Files.size
 
 class ModScreen(game: Main): KtxScreen {
     private val context = game.getContext()
@@ -31,6 +36,9 @@ class ModScreen(game: Main): KtxScreen {
     private val stockTable: Table
 
     private val stockMods = Array<Mod>(20)
+    var activeMod: ModImage? = null
+    var bigContainer: Container<*>? = null
+//    var sourceContainer: Container<*>? = null
 
     private val reader = JsonReader()
     private val playerData = reader.parse("json/player_data.json".toLocalFile())
@@ -69,15 +77,43 @@ class ModScreen(game: Main): KtxScreen {
                 if ((i + 1) % 4 == 0) row()
             }
         }
+
         stage += table {
             setFillParent(true)
             image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN)))
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MOD_DAMAGE))).cell(pad = 25f)
+            bigContainer = container<Image> {
+                size(150f)
+                touchable = Touchable.disabled
+            }
             image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN)))
             row()
             scrollPane(stockTable).cell(colspan = 3)
         }
         stage.isDebugAll = true
+
+        stage.addListener(object: ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                super.touchDown(event, x, y, pointer, button)
+                val actor = stage.hit(x, y, true) ?: return false
+                when (actor) {
+                    is ModImage -> {
+                        if (activeMod != null) {
+                            val a = activeMod as ModImage
+                            a.children[a.children.size-1].remove()
+                        }
+                        activeMod = actor
+                        (activeMod as ModImage).addActor(Image(assets.manager.get<Texture>(Constants.MOD_GLOW)).apply {
+                            touchable = Touchable.disabled
+                            setFillParent(true)
+                        })
+                        bigContainer?.actor = Image(actor.texture).apply { setFillParent(true) }
+                        println("CLICKED MOD")
+                    }
+                    else -> println(actor.name) // TODO aaaaaaa, wtf?
+                }
+                return true
+            }
+        })
     }
 
     override fun show() {

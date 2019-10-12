@@ -42,8 +42,6 @@ class GunScreen(val game: Main): KtxScreen {
     private val suitMods = Array<Mod>(8)
     private val stockMods = Array<Mod>(20)
 
-    val glowTexture: Texture = assets.manager.get(Constants.MOD_GLOW)
-
     var activeMod: ModImage? = null
     var sourceContainer: Container<*>? = null
 
@@ -206,7 +204,7 @@ class GunScreen(val game: Main): KtxScreen {
                     is ModImage -> {
                         if (activeMod == null) {
                             activeMod = actor
-                            (activeMod as ModImage).addActor(Image(glowTexture).apply {
+                            (activeMod as ModImage).addActor(Image(assets.manager.get<Texture>(Constants.MOD_GLOW)).apply {
                                 touchable = Touchable.disabled
                                 setFillParent(true)
                             })
