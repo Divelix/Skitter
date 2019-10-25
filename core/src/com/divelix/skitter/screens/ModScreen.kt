@@ -8,10 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Align.top
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -25,7 +28,7 @@ import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.vis.table
-import java.nio.file.Files.size
+import ktx.vis.window
 
 class ModScreen(game: Main): KtxScreen {
     private val context = game.getContext()
@@ -35,6 +38,7 @@ class ModScreen(game: Main): KtxScreen {
 
     private val stockTable: Table
 
+    private var coins: Int
     private val stockMods = Array<Mod>(20)
     var activeMod: ModImage? = null
     var bigContainer: Container<*>? = null
@@ -64,6 +68,8 @@ class ModScreen(game: Main): KtxScreen {
             }
         }
 
+        coins = playerData.get("coins").asInt()
+
         stockTable = table {
             name = "StockTable"
             defaults().width(Constants.MOD_WIDTH).height(Constants.MOD_HEIGHT).pad(2f)
@@ -79,15 +85,21 @@ class ModScreen(game: Main): KtxScreen {
         }
 
         stage += table {
+            top()
             setFillParent(true)
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN)))
+            label("$coins", "mod-quantity").cell(align = Align.right, colspan = 3, padBottom = 50f)
+            row()
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).name = "sellBtn"
             bigContainer = container<Image> {
                 size(150f)
                 touchable = Touchable.disabled
             }
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN)))
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).name = "upBtn"
             row()
             scrollPane(stockTable).cell(colspan = 3)
+        }
+        stage += window("darova ept") {
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.AIM))).apply { setSize(50f, 50f) }
         }
         stage.isDebugAll = true
 
@@ -96,24 +108,48 @@ class ModScreen(game: Main): KtxScreen {
                 super.touchDown(event, x, y, pointer, button)
                 val actor = stage.hit(x, y, true) ?: return false
                 when (actor) {
-                    is ModImage -> {
-                        if (activeMod != null) {
-                            val a = activeMod as ModImage
-                            a.children[a.children.size-1].remove()
-                        }
-                        activeMod = actor
-                        (activeMod as ModImage).addActor(Image(assets.manager.get<Texture>(Constants.MOD_GLOW)).apply {
-                            touchable = Touchable.disabled
-                            setFillParent(true)
-                        })
-                        bigContainer?.actor = Image(actor.texture).apply { setFillParent(true) }
-                        println("CLICKED MOD")
+                    is Image -> when(actor.name) {
+                        "sellBtn" -> sellActiveMod()
+                        "upBtn" -> upgradeActiveMod()
                     }
-                    else -> println(actor.name) // TODO aaaaaaa, wtf?
+                    is ModImage -> makeModActive(actor)
                 }
                 return true
             }
         })
+
+        makeModActive((stockTable.children[0] as Container<*>).actor as ModImage)
+    }
+
+    fun sellActiveMod() {
+        val level = activeMod!!.mod.level
+        val price = modsData.get("prices").asIntArray()
+
+
+
+        val cost = price[level - 1]
+        println("SELL for $cost")
+    }
+
+    fun upgradeActiveMod() {
+        val level = activeMod!!.mod.level
+        val price = modsData.get("prices").asIntArray()
+
+        val cost = price[level] - price[0]
+        println("UPGRADE for $cost")
+    }
+
+    fun makeModActive(modImage: ModImage) {
+        if (activeMod != null) {
+            val a = activeMod as ModImage
+            a.children[a.children.size-1].remove()
+        }
+        activeMod = modImage
+        (activeMod as ModImage).addActor(Image(assets.manager.get<Texture>(Constants.MOD_GLOW)).apply {
+            touchable = Touchable.disabled
+            setFillParent(true)
+        })
+        bigContainer?.actor = Image(modImage.texture).apply { setFillParent(true) }
     }
 
     override fun show() {

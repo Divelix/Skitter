@@ -2,14 +2,19 @@ package com.divelix.skitter.systems
 
 import com.badlogic.ashley.core.*
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.audio.Sound
+import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
+import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
 
-class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
+class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
     private val playerDamage = Data.playerData.gun.damage
+    private val assets = game.getContext().inject<Assets>()
+    private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         // get player collision component
@@ -45,6 +50,7 @@ class CollisionSystem : IteratingSystem(Family.all(CollisionComponent::class.jav
                     if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                     when (collidedTypeCmp.type) {
                         TypeComponent.ENEMY -> {
+                            hitSound.play()
 //                            println("bullet hit enemy")
                             val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
                             enemyCmp.health -= playerDamage

@@ -36,6 +36,7 @@ class ModImage(val mod: Mod, val assets: Assets): Group() {
             setPosition(this@ModImage.width - width, this@ModImage.height - height)
             touchable = Touchable.disabled
         }
+
         addActor(Image(texture).apply {
             touchable = Touchable.disabled
             setFillParent(true)

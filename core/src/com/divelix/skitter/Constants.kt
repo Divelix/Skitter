@@ -12,12 +12,12 @@ object Constants {
 //    const val B2D_HEIGHT = HEIGHT * PTM
     const val B2D_FPS = 120f
     const val B2D_STEP_TIME = 1 / B2D_FPS
-    const val BULLET_CRITICAL_DISTANCE_2 = 100f
+    const val BULLET_CRITICAL_DISTANCE_2 = 400f
     const val BULLET_SPEED = 40f
     const val DEFAULT_SLOW_RATE = 1f
     const val PLAYER_SIZE = 2f
     // Controls params
-    const val CAMERA_RADIUS = 1f
+    const val CAMERA_RADIUS = 2f
     const val CAMERA_RADIUS_2 = CAMERA_RADIUS * CAMERA_RADIUS
     const val DEAD_BAND_2 = 500f
     const val SPEED_LIMIT = 2f
@@ -57,4 +57,6 @@ object Constants {
     const val MOD_FIRE_DAMAGE = "mods/fire-damage.png"
     const val MOD_HEALTH = "mods/health.png"
     const val MOD_MANA = "mods/mana.png"
+
+    const val HIT_SOUND = "audio/hit.wav"
 }

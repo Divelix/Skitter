@@ -1,12 +1,14 @@
 package com.divelix.skitter
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Disposable
 import com.kotcrab.vis.ui.VisUI
@@ -24,6 +26,7 @@ class Assets: Disposable {
     lateinit var uiSkin: Skin
     //    lateinit var font: BitmapFont
     lateinit var digitsFont: BitmapFont
+    lateinit var windowStyle: Window.WindowStyle // TODO ugly shit, delete later
 
     fun loadSplashAssets() {
         manager.load<Texture>(Constants.LOADING_IMAGE)
@@ -58,6 +61,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.MOD_FIRE_DAMAGE)
         manager.load<Texture>(Constants.MOD_HEALTH)
         manager.load<Texture>(Constants.MOD_MANA)
+        manager.load<Sound>(Constants.HIT_SOUND)
         manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)
         manager.loadFreeTypeFont(Constants.ROBOTO_FONT) {
             size = 16
@@ -103,7 +107,12 @@ class Assets: Disposable {
             val btn = visTextButton {
                 up = it["button"]
             }
+            textButton {  }
             scrollPane {}
+            windowStyle = window {
+                titleFont = manager.get<BitmapFont>(Constants.ROBOTO_FONT)
+                background = TextureRegionDrawable(manager.get<Texture>(Constants.BACKGROUND_IMAGE))
+            }
             tabbedPane {
                 background = it["window-border-bg"]
                 draggable = false
