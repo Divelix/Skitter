@@ -19,9 +19,7 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.Mod
 import com.divelix.skitter.ui.ModImage
-import com.kotcrab.vis.ui.widget.VisLabel
-import com.kotcrab.vis.ui.widget.VisWindow
-import ktx.actors.keepWithinParent
+import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.onChange
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
@@ -36,14 +34,14 @@ class ModScreen(game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
     private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
-    private val stockTable: Table
+    private val stockTable: VisTable
 
     private var coins: Int
     private val stockMods = Array<Mod>(20)
     var activeMod: ModImage? = null
     var bigContainer: Container<*>? = null
-//    var sourceContainer: Container<*>? = null
-    lateinit var slider: Slider
+
+    val rootTable: VisTable
 
     private val reader = JsonReader()
     private val playerData = reader.parse("json/player_data.json".toLocalFile())
@@ -85,7 +83,7 @@ class ModScreen(game: Main): KtxScreen {
             }
         }
 
-        stage += table {
+        rootTable = table {
             top()
             setFillParent(true)
             label("$coins", "mod-quantity").cell(align = Align.right, colspan = 3, padBottom = 50f)
@@ -99,6 +97,7 @@ class ModScreen(game: Main): KtxScreen {
             row()
             scrollPane(stockTable).cell(colspan = 3)
         }
+        stage += rootTable
 //        stage.isDebugAll = true
 
         stage.addListener(object: ClickListener() {
@@ -121,29 +120,30 @@ class ModScreen(game: Main): KtxScreen {
     }
 
     fun makeSellWindow() {
-        val sellWindow = window("Sell mode?") {
+        rootTable.touchable = Touchable.disabled
+        stage += window("Sell mode?") {
             debugAll()
             centerWindow()
             defaults().expand()
             padTop(25f) // title height
             width = 200f
             height = 100f
-            slider = slider(1f, activeMod!!.mod.quantity.toFloat()).cell(colspan = 2)
+            val quantitySlider = slider(1f, activeMod!!.mod.quantity.toFloat()).cell(width = 200f, colspan = 2)
             row()
-            val numberLabel = label("1").cell(colspan = 2)
-            slider.onChange {
-                numberLabel.setText(slider.value.toInt().toString())
+            val quantityLabel = label("1").cell(colspan = 2)
+            quantitySlider.onChange {
+                quantityLabel.setText(quantitySlider.value.toInt().toString())
             }
             row()
             textButton("Sell").cell(align = Align.left)
             textButton("Cancel").cell(align = Align.right).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
+                    rootTable.touchable = Touchable.enabled
                     this@window.fadeOut(1f)
                 }
             })
-        }
-        stage += sellWindow.fadeIn(1f)
+        }.fadeIn(1f)
     }
 
     fun sellActiveMod() {
