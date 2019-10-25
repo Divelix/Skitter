@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Disposable
 import com.kotcrab.vis.ui.VisUI
 import ktx.assets.*
@@ -107,7 +108,26 @@ class Assets: Disposable {
             val btn = visTextButton {
                 up = it["button"]
             }
-            textButton {  }
+            visTextButton {
+                focusBorder = it["border"]
+                down = it["button-down"]
+                up = it["button"]
+                over = it["button-over"]
+                disabled = it["button"]
+                font = manager.get<BitmapFont>(Constants.ROBOTO_FONT)
+                fontColor = Color.WHITE
+                disabledFontColor = Color.GRAY
+            }
+            slider("default-horizontal") {
+                background = it["slider"]
+                knob = it["slider-knob"]
+                knobOver = it["slider-knob-over"]
+                knobDown = it["slider-knob-down"]
+                disabledKnob = it["slider-knob-disabled"]
+            }
+            slider("default-vertical", extend = "default-horizontal") {
+                background = it["slider-vertical"]
+            }
             scrollPane {}
             windowStyle = window {
                 titleFont = manager.get<BitmapFont>(Constants.ROBOTO_FONT)
@@ -127,6 +147,7 @@ class Assets: Disposable {
 
         }
         VisUI.load(uiSkin)
+        VisUI.setDefaultTitleAlign(Align.center)
 //        font = manager.get("myFont.ttf")
 //        val fontMap = ObjectMap<String, Any>()
 //        fontMap.put("default-font", font)

@@ -7,14 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Container
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Align.top
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -23,6 +19,10 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.Mod
 import com.divelix.skitter.ui.ModImage
+import com.kotcrab.vis.ui.widget.VisLabel
+import com.kotcrab.vis.ui.widget.VisWindow
+import ktx.actors.keepWithinParent
+import ktx.actors.onChange
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
@@ -43,6 +43,7 @@ class ModScreen(game: Main): KtxScreen {
     var activeMod: ModImage? = null
     var bigContainer: Container<*>? = null
 //    var sourceContainer: Container<*>? = null
+    lateinit var slider: Slider
 
     private val reader = JsonReader()
     private val playerData = reader.parse("json/player_data.json".toLocalFile())
@@ -98,10 +99,7 @@ class ModScreen(game: Main): KtxScreen {
             row()
             scrollPane(stockTable).cell(colspan = 3)
         }
-        stage += window("darova ept") {
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.AIM))).apply { setSize(50f, 50f) }
-        }
-        stage.isDebugAll = true
+//        stage.isDebugAll = true
 
         stage.addListener(object: ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -109,7 +107,8 @@ class ModScreen(game: Main): KtxScreen {
                 val actor = stage.hit(x, y, true) ?: return false
                 when (actor) {
                     is Image -> when(actor.name) {
-                        "sellBtn" -> sellActiveMod()
+//                        "sellBtn" -> stage += sellWindow.fadeIn(1f)
+                        "sellBtn" -> makeSellWindow()
                         "upBtn" -> upgradeActiveMod()
                     }
                     is ModImage -> makeModActive(actor)
@@ -119,6 +118,32 @@ class ModScreen(game: Main): KtxScreen {
         })
 
         makeModActive((stockTable.children[0] as Container<*>).actor as ModImage)
+    }
+
+    fun makeSellWindow() {
+        val sellWindow = window("Sell mode?") {
+            debugAll()
+            centerWindow()
+            defaults().expand()
+            padTop(25f) // title height
+            width = 200f
+            height = 100f
+            slider = slider(1f, activeMod!!.mod.quantity.toFloat()).cell(colspan = 2)
+            row()
+            val numberLabel = label("1").cell(colspan = 2)
+            slider.onChange {
+                numberLabel.setText(slider.value.toInt().toString())
+            }
+            row()
+            textButton("Sell").cell(align = Align.left)
+            textButton("Cancel").cell(align = Align.right).addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    this@window.fadeOut(1f)
+                }
+            })
+        }
+        stage += sellWindow.fadeIn(1f)
     }
 
     fun sellActiveMod() {
