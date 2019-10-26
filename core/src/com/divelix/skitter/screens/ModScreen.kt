@@ -10,15 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.Mod
 import com.divelix.skitter.ui.ModImage
+import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.onChange
 import ktx.actors.plusAssign
@@ -37,15 +37,15 @@ class ModScreen(game: Main): KtxScreen {
     private val stockTable: VisTable
 
     private var coins: Int
+    lateinit var moneyLabel: VisLabel
     private val stockMods = Array<Mod>(20)
     var activeMod: ModImage? = null
     var bigContainer: Container<*>? = null
-
     val rootTable: VisTable
+    val fadeTime = 0.1f
 
     private val reader = JsonReader()
     private val playerData = reader.parse("json/player_data.json".toLocalFile())
-    private val gunsData = reader.parse("json/guns.json".toInternalFile())
     private val modsData = reader.parse("json/mods.json".toInternalFile())
     // GUN MODS
     val _gunMods = modsData.get("mods").get("gun")
@@ -86,7 +86,8 @@ class ModScreen(game: Main): KtxScreen {
         rootTable = table {
             top()
             setFillParent(true)
-            label("$coins", "mod-quantity").cell(align = Align.right, colspan = 3, padBottom = 50f)
+            defaults().pad(5f)
+            moneyLabel = label("$coins", "mod-quantity").cell(align = Align.right, colspan = 3, padBottom = 50f)
             row()
             image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).name = "sellBtn"
             bigContainer = container<Image> {
@@ -135,25 +136,54 @@ class ModScreen(game: Main): KtxScreen {
                 quantityLabel.setText(quantitySlider.value.toInt().toString())
             }
             row()
-            textButton("Sell").cell(align = Align.left)
+            textButton("Sell").cell(align = Align.left).addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    sellActiveMod(quantitySlider.value.toInt())
+                    rootTable.touchable = Touchable.enabled
+                    this@window.fadeOut(fadeTime)
+                }
+            })
             textButton("Cancel").cell(align = Align.right).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
                     rootTable.touchable = Touchable.enabled
-                    this@window.fadeOut(1f)
+                    this@window.fadeOut(fadeTime)
                 }
             })
-        }.fadeIn(1f)
+        }.fadeIn(fadeTime)
     }
 
-    fun sellActiveMod() {
+    fun sellActiveMod(quantityToSell: Int) {
+        val index = activeMod!!.mod.index
         val level = activeMod!!.mod.level
-        val price = modsData.get("prices").asIntArray()
+        val quantity = activeMod!!.mod.quantity
+        val prices = modsData.get("prices").asIntArray()
+        val cost = prices[level - 1]
 
+        val gunMods = playerData.get("mods").get("gun")
 
-
-        val cost = price[level - 1]
-        println("SELL for $cost")
+        for (i in 0 until gunMods.size) {
+            if (gunMods[i].get("index").asInt() == index && gunMods[i].get("level").asInt() == level && gunMods[i].get("quantity").asInt() == quantity) {
+                if (quantity == quantityToSell) {
+                    gunMods.remove(i)
+                    activeMod!!.remove()
+                    bigContainer!!.actor.remove()
+                    //TODO also disable sell/up buttons or make active another mod here
+                } else {
+                    gunMods[i].get("quantity").set((quantity - quantityToSell).toLong(), null)
+                    activeMod!!.mod.quantity -= quantityToSell
+                    activeMod!!.quantityLabel.setText(activeMod!!.mod.quantity.toString())
+                }
+                break
+            }
+        }
+        val income = cost * quantityToSell
+        coins += income
+        playerData.get("coins").set(coins.toLong(), null)
+        moneyLabel.setText(coins)
+        println("Sold $quantityToSell mods for $income")
+        "json/player_data.json".toLocalFile().writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
     }
 
     fun upgradeActiveMod() {
