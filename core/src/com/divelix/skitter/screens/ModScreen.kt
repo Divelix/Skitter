@@ -45,10 +45,12 @@ class ModScreen(game: Main): KtxScreen {
     val fadeTime = 0.1f
 
     private val reader = JsonReader()
-    private val playerData = reader.parse("json/player_data.json".toLocalFile())
+    private val playerDataFile = "json/player_data.json".toLocalFile()
+    private val playerData = reader.parse(playerDataFile)
     private val modsData = reader.parse("json/mods.json".toInternalFile())
     // GUN MODS
     val _gunMods = modsData.get("mods").get("gun")
+    val gunMods = playerData.get("mods").get("gun")
 
     init {
         // fill stockMods
@@ -155,43 +157,73 @@ class ModScreen(game: Main): KtxScreen {
     }
 
     fun sellActiveMod(quantityToSell: Int) {
-        val index = activeMod!!.mod.index
-        val level = activeMod!!.mod.level
-        val quantity = activeMod!!.mod.quantity
-        val prices = modsData.get("prices").asIntArray()
-        val cost = prices[level - 1]
-
-        val gunMods = playerData.get("mods").get("gun")
-
         for (i in 0 until gunMods.size) {
-            if (gunMods[i].get("index").asInt() == index && gunMods[i].get("level").asInt() == level && gunMods[i].get("quantity").asInt() == quantity) {
-                if (quantity == quantityToSell) {
+            if (gunMods[i].get("index").asInt() == activeMod!!.mod.index
+                    && gunMods[i].get("level").asInt() == activeMod!!.mod.level
+                    && gunMods[i].get("quantity").asInt() == activeMod!!.mod.quantity) {
+                if (activeMod!!.mod.quantity == quantityToSell) {
                     gunMods.remove(i)
                     activeMod!!.remove()
                     bigContainer!!.actor.remove()
                     //TODO also disable sell/up buttons or make active another mod here
                 } else {
-                    gunMods[i].get("quantity").set((quantity - quantityToSell).toLong(), null)
                     activeMod!!.mod.quantity -= quantityToSell
+                    gunMods[i].get("quantity").set(activeMod!!.mod.quantity.toLong(), null)
                     activeMod!!.quantityLabel.setText(activeMod!!.mod.quantity.toString())
                 }
                 break
             }
         }
+        val prices = modsData.get("prices").asIntArray()
+        val cost = prices[activeMod!!.mod.level - 1]
         val income = cost * quantityToSell
         coins += income
         playerData.get("coins").set(coins.toLong(), null)
         moneyLabel.setText(coins)
+        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
         println("Sold $quantityToSell mods for $income")
-        "json/player_data.json".toLocalFile().writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
     }
 
     fun upgradeActiveMod() {
-        val level = activeMod!!.mod.level
         val price = modsData.get("prices").asIntArray()
+        val cost = price[activeMod!!.mod.level] - price[0]
+        if (cost > playerData.get("coins").asInt()) {
+            println("Not enough money") //TODO make window instead
+            return
+        }
 
-        val cost = price[level] - price[0]
-        println("UPGRADE for $cost")
+        for (i in 0 until gunMods.size) {
+            if (gunMods[i].get("index").asInt() == activeMod!!.mod.index
+                    && gunMods[i].get("level").asInt() == activeMod!!.mod.level
+                    && gunMods[i].get("quantity").asInt() == activeMod!!.mod.quantity) {
+                if (activeMod!!.mod.quantity == 1) {
+                    activeMod!!.mod.level++
+                    activeMod!!.levelLabel.setText("lvl ${activeMod!!.mod.level}")
+                    gunMods[i].get("level").set(activeMod!!.mod.level.toLong(), null)
+                } else {
+                    activeMod!!.mod.quantity--
+                    gunMods[i].get("quantity").set(activeMod!!.mod.quantity.toLong(), null)
+                    activeMod!!.quantityLabel.setText(activeMod!!.mod.quantity.toString())
+                    // Add new ModImage
+                    val upgradedMod = Mod(activeMod!!.mod.index, activeMod!!.mod.name, activeMod!!.mod.level + 1, 1)
+                    var j = 0
+                    while ((stockTable.children[stockMods.size + j] as Container<*>).actor != null) j++
+                    (stockTable.children[stockMods.size + j] as Container<*>).actor = ModImage(upgradedMod, assets)
+                    // Add new mod to player_data.json
+                    val jsonMod = JsonValue(JsonValue.ValueType.`object`)
+                    jsonMod.addChild("index", JsonValue(upgradedMod.index.toLong()))
+                    jsonMod.addChild("level", JsonValue(upgradedMod.level.toLong()))
+                    jsonMod.addChild("quantity", JsonValue(1))
+                    gunMods.addChild(jsonMod)
+                }
+                break
+            }
+        }
+        coins -= cost
+        playerData.get("coins").set(coins.toLong(), null)
+        moneyLabel.setText(coins)
+        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
+        println("Upgrade for $cost")
     }
 
     fun makeModActive(modImage: ModImage) {

@@ -8,7 +8,7 @@ import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.kotcrab.vis.ui.widget.VisLabel
 
-data class Mod(val index: Int, val name: String, val level: Int, var quantity: Int = 1)
+data class Mod(val index: Int, val name: String, var level: Int, var quantity: Int = 1)
 
 class ModImage(val mod: Mod, val assets: Assets): Group() {
     val texture: Texture
