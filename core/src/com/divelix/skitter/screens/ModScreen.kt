@@ -38,6 +38,9 @@ class ModScreen(game: Main): KtxScreen {
 
     private var coins: Int
     lateinit var moneyLabel: VisLabel
+    lateinit var sellCostLabel: VisLabel
+    lateinit var upCostLabel: VisLabel
+    private val menuBtn: Image
     private val stockMods = Array<Mod>(20)
     var activeMod: ModImage? = null
     var bigContainer: Container<*>? = null
@@ -51,6 +54,8 @@ class ModScreen(game: Main): KtxScreen {
     // GUN MODS
     val _gunMods = modsData.get("mods").get("gun")
     val gunMods = playerData.get("mods").get("gun")
+    val price = modsData.get("prices").asIntArray()
+    var cost = 0
 
     init {
         // fill stockMods
@@ -91,17 +96,28 @@ class ModScreen(game: Main): KtxScreen {
             defaults().pad(5f)
             moneyLabel = label("$coins", "mod-quantity").cell(align = Align.right, colspan = 3, padBottom = 50f)
             row()
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).name = "sellBtn"
+            table {
+                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).name = "sellBtn"
+                row()
+                sellCostLabel = label("")
+            }
             bigContainer = container<Image> {
                 size(150f)
                 touchable = Touchable.disabled
             }
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).name = "upBtn"
+            table {
+                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).name = "upBtn"
+                row()
+                upCostLabel = label("")
+            }
             row()
             scrollPane(stockTable).cell(colspan = 3)
         }
-        stage += rootTable
-//        stage.isDebugAll = true
+        menuBtn = Image(assets.manager.get<Texture>(Constants.APPLY_BTN)).apply {
+            name = "backBtn"
+            setSize(75f, 75f)
+//            setPosition(Gdx.graphics.width - width - 20f, 20f)
+        }
 
         stage.addListener(object: ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -112,14 +128,18 @@ class ModScreen(game: Main): KtxScreen {
 //                        "sellBtn" -> stage += sellWindow.fadeIn(1f)
                         "sellBtn" -> makeSellWindow()
                         "upBtn" -> upgradeActiveMod()
+                        "backBtn" -> game.screen = MenuScreen(game)
                     }
                     is ModImage -> makeModActive(actor)
                 }
                 return true
             }
         })
-
         makeModActive((stockTable.children[0] as Container<*>).actor as ModImage)
+
+        stage += rootTable
+        stage += menuBtn
+        stage.isDebugAll = true
     }
 
     fun makeSellWindow() {
@@ -174,8 +194,6 @@ class ModScreen(game: Main): KtxScreen {
                 break
             }
         }
-        val prices = modsData.get("prices").asIntArray()
-        val cost = prices[activeMod!!.mod.level - 1]
         val income = cost * quantityToSell
         coins += income
         playerData.get("coins").set(coins.toLong(), null)
@@ -185,8 +203,6 @@ class ModScreen(game: Main): KtxScreen {
     }
 
     fun upgradeActiveMod() {
-        val price = modsData.get("prices").asIntArray()
-        val cost = price[activeMod!!.mod.level] - price[0]
         if (cost > playerData.get("coins").asInt()) {
             println("Not enough money") //TODO make window instead
             return
@@ -237,6 +253,10 @@ class ModScreen(game: Main): KtxScreen {
             setFillParent(true)
         })
         bigContainer?.actor = Image(modImage.texture).apply { setFillParent(true) }
+
+        cost = price[activeMod!!.mod.level] - price[0]
+        sellCostLabel.setText("${price[activeMod!!.mod.level]}")
+        upCostLabel.setText("$cost")
     }
 
     override fun show() {
@@ -265,6 +285,7 @@ class ModScreen(game: Main): KtxScreen {
     override fun resize(width: Int, height: Int) {
         println("ModScreen - resize()")
         stage.viewport.update(width, height, true)
+//        menuBtn.setPosition(stage.camera.viewportWidth - menuBtn.width - 20f, 20f)
     }
 
     override fun hide() {
