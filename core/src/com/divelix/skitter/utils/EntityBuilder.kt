@@ -13,6 +13,7 @@ import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
+import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.entity
 import ktx.box2d.body
 import ktx.box2d.mouseJointWith
@@ -140,6 +141,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<BindComponent> { entity = playerEntity }
             with<ClickableComponent> { circle.set(x, y, entitySize/2)}
         }
+        Data.enemiesCount++
     }
 
     fun createObstacle(x: Float, y: Float, width: Float, height: Float) {

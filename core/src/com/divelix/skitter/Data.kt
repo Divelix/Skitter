@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array
 object Data {
     var renderTime = 0f
     var physicsTime = 0f
+    var enemiesCount = 0
     val playerData = PlayerData(ShipData(100f, 100f, 10f), GunData(1f, 1, 1f, 1f, 1f, 1f))
     val dynamicData = DynamicData(Vector2(), Array(10))
 }

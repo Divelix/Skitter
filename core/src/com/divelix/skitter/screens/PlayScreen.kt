@@ -47,9 +47,6 @@ class PlayScreen(game: Main): KtxScreen {
         Data.playerData.gun.critChance = specs[4].asFloat()
         Data.playerData.gun.critMultiplier = specs[5].asFloat()
 
-//        bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
-//        bgReg.setRegion(0, 0, Constants.WIDTH, Constants.HEIGHT)
-
         playerEntity = entityBuilder.createPlayer()
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera)
@@ -66,6 +63,7 @@ class PlayScreen(game: Main): KtxScreen {
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
         engine.addSystem(BulletSystem())
+        engine.addSystem(SpawnSystem(5f, entityBuilder, playerEntity))
 //        engine.addSystem(ClickableSystem(camera))
 
         ShaderProgram.pedantic = false

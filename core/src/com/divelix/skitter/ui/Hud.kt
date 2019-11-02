@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.GunScreen
 import com.divelix.skitter.screens.MenuScreen
+import com.divelix.skitter.screens.PlayScreen
 import ktx.actors.*
 import ktx.vis.table
 
@@ -37,6 +38,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     lateinit var fpsLabel: Label
     lateinit var renderTimeLabel: Label
     lateinit var physicsTimeLabel: Label
+    lateinit var enemyCountLabel: Label
     lateinit var ammoLabel: Label
 
     var widthRatio = 1f // updates on first resize()
@@ -107,6 +109,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             row()
             physicsTimeLabel = label("${Data.physicsTime}")
             row()
+            enemyCountLabel = label("${Data.enemiesCount}")
+            row()
             ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }
         }
         swordImage.setSize(64f, 128f)
@@ -128,6 +132,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         fpsLabel.setText("FPS: ${Gdx.graphics.framesPerSecond}")
         renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
         physicsTimeLabel.setText("Physics time: ${Data.physicsTime.toInt()}")
+        enemyCountLabel.setText("Enemies: ${Data.enemiesCount}")
         ammoLabel.setText("${Data.playerData.gun.capacity}")
         if(isDriven) {
             Gdx.gl.glEnable(GL20.GL_BLEND)

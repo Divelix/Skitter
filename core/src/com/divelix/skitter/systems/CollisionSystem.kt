@@ -8,6 +8,7 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
+import com.divelix.skitter.screens.PlayScreen
 
 class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
@@ -57,6 +58,7 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
                             if(enemyCmp.health <= 0) {
                                 val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
                                 collidedBodyCmp.isDead = true
+                                Data.enemiesCount--
                             }
                             collisionCmp.collisionEntity = null
                             bulletCmp.isDead = true
