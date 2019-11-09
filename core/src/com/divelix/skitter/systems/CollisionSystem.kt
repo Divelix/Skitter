@@ -59,6 +59,7 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
                                 val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
                                 collidedBodyCmp.isDead = true
                                 Data.enemiesCount--
+                                Data.score += 100
                             }
                             collisionCmp.collisionEntity = null
                             bulletCmp.isDead = true

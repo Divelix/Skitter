@@ -39,7 +39,12 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     lateinit var renderTimeLabel: Label
     lateinit var physicsTimeLabel: Label
     lateinit var enemyCountLabel: Label
+    lateinit var scoreLabel: Label
     lateinit var ammoLabel: Label
+
+    val defaultColor = Color(0.2f, 1f, 0.2f, 0.5f)
+    val limitColor = Color(1f, 0.2f, 0.2f, 0.5f)
+    var activeColor = defaultColor
 
     var widthRatio = 1f // updates on first resize()
     var isDriven = false
@@ -70,7 +75,9 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                     floatPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
                     camera.unproject(floatPoint)
                     distVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
-                    if (distVec.len2() > Constants.DEAD_BAND_2) {
+                    val dist2 = distVec.len2()
+                    if (dist2 > Constants.DEAD_BAND_2) {
+                        activeColor = if (dist2 < 10000) defaultColor else limitColor // TODO tie up limit (10000) with SPEED_LIMIT constant
                         Data.dynamicData.dirVec.set(distVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
                         swordImage.isVisible = false
                         isDriven = true
@@ -109,6 +116,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             row()
             physicsTimeLabel = label("${Data.physicsTime}")
             row()
+            scoreLabel = label("${Data.score}", "mod-quantity")
+            row()
             enemyCountLabel = label("${Data.enemiesCount}")
             row()
             ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }
@@ -132,12 +141,13 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         fpsLabel.setText("FPS: ${Gdx.graphics.framesPerSecond}")
         renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
         physicsTimeLabel.setText("Physics time: ${Data.physicsTime.toInt()}")
+        scoreLabel.setText("Score: ${Data.score}")
         enemyCountLabel.setText("Enemies: ${Data.enemiesCount}")
         ammoLabel.setText("${Data.playerData.gun.capacity}")
         if(isDriven) {
             Gdx.gl.glEnable(GL20.GL_BLEND)
             shape.projectionMatrix = camera.combined
-            shape.color = Color(0.2f, 1f, 0.2f, 0.5f)
+            shape.color = activeColor
             shape.begin(ShapeRenderer.ShapeType.Filled)
             shape.circle(fixedPoint.x, fixedPoint.y, 10f)
             shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
