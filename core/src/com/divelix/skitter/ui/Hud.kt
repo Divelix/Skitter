@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -18,10 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
-import com.divelix.skitter.screens.GunScreen
 import com.divelix.skitter.screens.MenuScreen
-import com.divelix.skitter.screens.PlayScreen
 import ktx.actors.*
+import ktx.graphics.use
 import ktx.vis.table
 
 class Hud(val game: Main, val playCam: OrthographicCamera) {
@@ -42,9 +42,12 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     lateinit var scoreLabel: Label
     lateinit var ammoLabel: Label
 
-    val defaultColor = Color(0.2f, 1f, 0.2f, 0.5f)
-    val limitColor = Color(1f, 0.2f, 0.2f, 0.5f)
-    var activeColor = defaultColor
+    val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
+    val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
+    val healthColor = Color(1f, 0f, 0f, 1f)
+    var activeColor = touchpadColor
+
+    var camBounceTimer = 0f
 
     var widthRatio = 1f // updates on first resize()
     var isDriven = false
@@ -77,7 +80,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                     distVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
                     val dist2 = distVec.len2()
                     if (dist2 > Constants.DEAD_BAND_2) {
-                        activeColor = if (dist2 < 10000) defaultColor else limitColor // TODO tie up limit (10000) with SPEED_LIMIT constant
+                        activeColor = if (dist2 < 10000) touchpadColor else touchpadLimitColor // TODO tie up limit (10000) with SPEED_LIMIT constant
                         Data.dynamicData.dirVec.set(distVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
                         swordImage.isVisible = false
                         isDriven = true
@@ -97,6 +100,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                     } else {
                         val click = playCam.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
                         Data.dynamicData.aims.add(Vector2(click.x, click.y))
+                        camBounceTimer = 1f
                     }
                 }
             }
@@ -134,9 +138,11 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
 
         stage += rootTable
         stage += swordImage
-//        stage.isDebugAll = true
+        stage.isDebugAll = true
     }
 
+    val hpOffset = 10f
+    val hpHeight = 10f
     fun update() {
         fpsLabel.setText("FPS: ${Gdx.graphics.framesPerSecond}")
         renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
@@ -144,20 +150,34 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         scoreLabel.setText("Score: ${Data.score}")
         enemyCountLabel.setText("Enemies: ${Data.enemiesCount}")
         ammoLabel.setText("${Data.playerData.gun.capacity}")
-        if(isDriven) {
-            Gdx.gl.glEnable(GL20.GL_BLEND)
-            shape.projectionMatrix = camera.combined
-            shape.color = activeColor
-            shape.begin(ShapeRenderer.ShapeType.Filled)
-            shape.circle(fixedPoint.x, fixedPoint.y, 10f)
-            shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
-            shape.end()
-            Gdx.gl.glDisable(GL20.GL_BLEND)
+
+        Gdx.gl.glEnable(GL20.GL_BLEND)
+        shape.projectionMatrix = camera.combined
+        shape.use(ShapeRenderer.ShapeType.Filled) {
+            if(isDriven) {
+                shape.color = activeColor
+                shape.circle(fixedPoint.x, fixedPoint.y, 10f)
+                shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
+            }
+            shape.color = healthColor
+            // TODO fix that hardcode after ship json implementation
+            val barWidth = Gdx.graphics.width * Data.playerData.ship.health / 100f
+            shape.rect(hpOffset + (Gdx.graphics.width - barWidth) / 2f, hpOffset,
+                    barWidth - hpOffset*2, hpHeight)
         }
+        Gdx.gl.glDisable(GL20.GL_BLEND)
+//        bounceCam()
         stage.act()
         stage.draw()
 
         if (isShipSlowdown) Data.dynamicData.dirVec.scl(0.95f)
+    }
+
+    fun bounceCam() {
+        if (camBounceTimer > 0f) camBounceTimer -= Gdx.graphics.deltaTime
+        val reversed = 1 - camBounceTimer
+        val value = if (reversed < 0.5f) Interpolation.exp5Out.apply(reversed * 2f) else Interpolation.linear.apply((1 - reversed) * 2f)
+        playCam.zoom = 1 + value / 10f
     }
 
     fun dispose() {

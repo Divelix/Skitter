@@ -8,9 +8,11 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
+import com.divelix.skitter.screens.GunScreen
+import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
 
-class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
+class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
     private val playerDamage = Data.playerData.gun.damage
@@ -34,9 +36,10 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
                         TypeComponent.ENEMY -> {
                             println("player hit enemy")
                             val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
-                            playerCmp.health -= enemyCmp.damage
-                            println(playerCmp.health)
-                            if (playerCmp.health <= 0f) {
+//                            playerCmp.health -= enemyCmp.damage
+                            Data.playerData.ship.health -= enemyCmp.damage
+                            println(Data.playerData.ship.health)
+                            if (Data.playerData.ship.health <= 0f) {
 //                                val bodyCmp = entity.getComponent(B2dBodyComponent::class.java)
 //                                bodyCmp.isDead = true
                                 println("Player died")
@@ -79,7 +82,8 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
         println("------------------------------------")
         println("-------------Game Over--------------")
         println("------------------------------------")
-//        game.screen = GunScreen(game)
+        Data.dynamicData.dirVec.setZero()
+        game.screen = MenuScreen(game)
     }
 
 }

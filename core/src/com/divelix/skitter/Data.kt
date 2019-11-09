@@ -8,7 +8,7 @@ object Data {
     var physicsTime = 0f
     var enemiesCount = 0
     var score = 0
-    val playerData = PlayerData(ShipData(100f, 100f, 10f), GunData(1f, 1, 1f, 1f, 1f, 1f))
+    val playerData = PlayerData(ShipData(1f, 1f, 1f), GunData(1f, 1, 1f, 1f, 1f, 1f))
     val dynamicData = DynamicData(Vector2(), Array(10))
 }
 

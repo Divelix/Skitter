@@ -36,6 +36,9 @@ class PlayScreen(game: Main): KtxScreen {
     private val playerEntity: Entity
 
     init {
+        Data.playerData.ship.health = 100f
+        Data.playerData.ship.energy = 100f
+        Data.playerData.ship.armor = 10f
         val playerReader = JsonReader().parse("json/player_data.json".toInternalFile())
         val specs = playerReader.get("active_gun_specs")
 //        for (i in 0 until Data.playerData.gun.size)
