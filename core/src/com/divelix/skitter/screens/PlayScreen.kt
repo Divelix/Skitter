@@ -3,6 +3,7 @@ package com.divelix.skitter.screens
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.*
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector2
@@ -138,6 +139,7 @@ class PlayScreen(game: Main): KtxScreen {
         for (aim in aims) {
             if (Data.playerData.gun.capacity == 0) break
             entityBuilder.createBullet(playerEntity, aim)
+            assets.manager.get<Sound>(Constants.HIT_SOUND).play()
             Data.playerData.gun.capacity--
         }
         aims.clear()

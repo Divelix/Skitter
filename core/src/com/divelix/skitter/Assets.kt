@@ -39,11 +39,10 @@ class Assets: Disposable {
     fun loadAssets() {
         manager.load<TextureAtlas>(Constants.UISKIN_ATLAS)
         manager.load<Texture>(Constants.BACKGROUND_IMAGE)
-        manager.load<Texture>(Constants.SKIN_GRAD)
         manager.load<Texture>(Constants.APPLY_BTN)
         manager.load<Texture>(Constants.UP_BTN)
         manager.load<Texture>(Constants.SELL_BTN)
-        manager.load<Texture>(Constants.WEAPON_ICON)
+        manager.load<Texture>(Constants.PAUSE_BTN)
         manager.load<Texture>(Constants.SHIPS_ICON)
         manager.load<Texture>(Constants.GUNS_ICON)
         manager.load<Texture>(Constants.MODS_ICON)

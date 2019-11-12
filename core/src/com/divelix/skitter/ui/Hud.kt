@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.MenuScreen
@@ -33,7 +35,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val camera = OrthographicCamera()
     val stage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat(), camera), batch)
 
-    private val swordImage = Image(assets.manager.get<Texture>(Constants.WEAPON_ICON))
     val rootTable: Table
     lateinit var fpsLabel: Label
     lateinit var renderTimeLabel: Label
@@ -82,7 +83,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                     if (dist2 > Constants.DEAD_BAND_2) {
                         activeColor = if (dist2 < 10000) touchpadColor else touchpadLimitColor // TODO tie up limit (10000) with SPEED_LIMIT constant
                         Data.dynamicData.dirVec.set(distVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
-                        swordImage.isVisible = false
                         isDriven = true
                     }
                 }
@@ -94,7 +94,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             when (pointer) {
                 0 -> {
                     isShipSlowdown = true
-                    swordImage.isVisible = true
                     if (isDriven) {
                         isDriven = false
                     } else {
@@ -111,45 +110,35 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     init {
         rootTable = table {
             setFillParent(true)
-            top().left()
-            defaults().fill()
-            pad(20f)
-            fpsLabel = label("${Gdx.graphics.framesPerSecond}")
+            top().pad(20f)
+            defaults().expandX()
+//            pad(20f)
+            scoreLabel = label("${Data.score}", "mod-quantity").cell(colspan = 2)
             row()
-            renderTimeLabel = label("${Data.renderTime}")
+            enemyCountLabel = label("${Data.enemiesCount}").cell(height = 50f, align = Align.left)
+            ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }.cell(align = Align.right)
             row()
-            physicsTimeLabel = label("${Data.physicsTime}")
+            fpsLabel = label("${Gdx.graphics.framesPerSecond}").cell(align = Align.left)
             row()
-            scoreLabel = label("${Data.score}", "mod-quantity")
+            renderTimeLabel = label("${Data.renderTime}").cell(align = Align.left)
             row()
-            enemyCountLabel = label("${Data.enemiesCount}")
-            row()
-            ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }
+            physicsTimeLabel = label("${Data.physicsTime}").cell(align = Align.left)
         }
-        swordImage.setSize(64f, 128f)
-        swordImage.setPosition(10f, 10f)
-        swordImage.addListener(object: ClickListener() {
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                Data.dynamicData.dirVec.setZero()
-                game.screen = MenuScreen(game)
-                super.touchUp(event, x, y, pointer, button)
-            }
-        })
-
         stage += rootTable
-        stage += swordImage
         stage.isDebugAll = true
     }
 
-    val hpOffset = 10f
+    val hpOffset = 20f
     val hpHeight = 10f
     fun update() {
         fpsLabel.setText("FPS: ${Gdx.graphics.framesPerSecond}")
         renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
         physicsTimeLabel.setText("Physics time: ${Data.physicsTime.toInt()}")
-        scoreLabel.setText("Score: ${Data.score}")
+        scoreLabel.setText("${Data.score}")
         enemyCountLabel.setText("Enemies: ${Data.enemiesCount}")
         ammoLabel.setText("${Data.playerData.gun.capacity}")
+        stage.act()
+        stage.draw()
 
         Gdx.gl.glEnable(GL20.GL_BLEND)
         shape.projectionMatrix = camera.combined
@@ -167,8 +156,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         }
         Gdx.gl.glDisable(GL20.GL_BLEND)
 //        bounceCam()
-        stage.act()
-        stage.draw()
 
         if (isShipSlowdown) Data.dynamicData.dirVec.scl(0.95f)
     }

@@ -30,8 +30,6 @@ class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComp
 
             when(typeCmp.type) {
                 TypeComponent.PLAYER -> {
-                    val pm = ComponentMapper.getFor(PlayerComponent::class.java)
-                    val playerCmp = pm.get(entity)
                     when (collidedTypeCmp.type) {
                         TypeComponent.ENEMY -> {
                             println("player hit enemy")
@@ -40,8 +38,6 @@ class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComp
                             Data.playerData.ship.health -= enemyCmp.damage
                             println(Data.playerData.ship.health)
                             if (Data.playerData.ship.health <= 0f) {
-//                                val bodyCmp = entity.getComponent(B2dBodyComponent::class.java)
-//                                bodyCmp.isDead = true
                                 println("Player died")
                                 gameOver()
                             }
@@ -55,7 +51,6 @@ class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComp
                     when (collidedTypeCmp.type) {
                         TypeComponent.ENEMY -> {
                             hitSound.play()
-//                            println("bullet hit enemy")
                             val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
                             enemyCmp.health -= playerDamage
                             if(enemyCmp.health <= 0) {
