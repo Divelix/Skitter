@@ -81,8 +81,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                     distVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
                     val dist2 = distVec.len2()
                     if (dist2 > Constants.DEAD_BAND_2) {
-                        activeColor = if (dist2 < 10000) touchpadColor else touchpadLimitColor // TODO tie up limit (10000) with SPEED_LIMIT constant
-                        Data.dynamicData.dirVec.set(distVec).scl(0.01f).limit(Constants.SPEED_LIMIT)
+                        activeColor = if (dist2 < Constants.MAX_TOUCHPAD_RADIUS_2) touchpadColor else touchpadLimitColor
+                        Data.dynamicData.dirVec.set(distVec).limit2(Constants.MAX_TOUCHPAD_RADIUS_2).scl(0.015f) // TODO assign scl() to ship speed spec
                         isDriven = true
                     }
                 }
