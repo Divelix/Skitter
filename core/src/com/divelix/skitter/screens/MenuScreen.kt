@@ -1,6 +1,7 @@
 package com.divelix.skitter.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -54,6 +55,7 @@ class MenuScreen(game: Main): KtxScreen {
     }
 
     override fun show() {
+        //TODO add InputHandler on BACK btn up (pop up Dialog)
         Gdx.input.inputProcessor = stage
     }
 

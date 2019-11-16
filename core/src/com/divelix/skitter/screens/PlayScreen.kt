@@ -18,6 +18,7 @@ import com.divelix.skitter.DynamicData
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
+import ktx.assets.toLocalFile
 import java.util.*
 
 class PlayScreen(game: Main): KtxScreen {
@@ -37,20 +38,7 @@ class PlayScreen(game: Main): KtxScreen {
     private val playerEntity: Entity
 
     init {
-        Data.playerData.ship.health = 100f
-        Data.playerData.ship.energy = 100f
-        Data.playerData.ship.armor = 10f
-        val playerReader = JsonReader().parse("json/player_data.json".toInternalFile())
-        val specs = playerReader.get("active_gun_specs")
-//        for (i in 0 until Data.playerData.gun.size)
-//            Data.playerData.gun[i] = specs[i].asFloat()
-        Data.playerData.gun.damage = specs[0].asFloat()
-        Data.playerData.gun.capacity = specs[1].asInt()
-        Data.playerData.gun.reloadTime = specs[2].asFloat()
-        Data.playerData.gun.bulletSpeed = specs[3].asFloat()
-        Data.playerData.gun.critChance = specs[4].asFloat()
-        Data.playerData.gun.critMultiplier = specs[5].asFloat()
-
+        Gdx.app.log("PlayScreen","init")
         playerEntity = entityBuilder.createPlayer()
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera)
@@ -73,9 +61,9 @@ class PlayScreen(game: Main): KtxScreen {
         ShaderProgram.pedantic = false
 
         val handler = object: InputAdapter() {
-            override fun keyDown(keycode: Int): Boolean {
+            override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
-                    Input.Keys.BACK -> game.screen = GunScreen(game)
+                    Input.Keys.BACK -> game.screen = MenuScreen(game)
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
                     Input.Keys.A -> println(Data.dynamicData.aims)
@@ -90,6 +78,22 @@ class PlayScreen(game: Main): KtxScreen {
         world.setContactListener(B2dContactListener())
     }
 
+    override fun show() {
+        Gdx.app.log("PlayScreen","show()")
+        Data.playerData.ship.health = 100f
+        Data.playerData.ship.energy = 100f
+        Data.playerData.ship.armor = 10f
+        val playerReader = JsonReader().parse("json/player_data.json".toLocalFile())
+        val specs = playerReader.get("active_gun_specs")
+        Data.playerData.gun.damage = specs[0].asFloat()
+        Data.playerData.gun.capacity = specs[1].asInt()
+        Data.playerData.gun.reloadTime = specs[2].asFloat()
+        Data.playerData.gun.bulletSpeed = specs[3].asFloat()
+        Data.playerData.gun.critChance = specs[4].asFloat()
+        Data.playerData.gun.critMultiplier = specs[5].asFloat()
+        isPaused = false
+    }
+
     override fun render(delta: Float) {
         engine.update(delta)
         if (!isPaused) {
@@ -99,23 +103,18 @@ class PlayScreen(game: Main): KtxScreen {
         hud.update()
     }
 
-    override fun show() {
-        println("PlayScreen - show()")
-        isPaused = false
-    }
-
     override fun pause() {
-        println("PlayScreen - pause()")
+        Gdx.app.log("PlayScreen","pause()")
         isPaused = true
     }
 
     override fun resume() {
-        println("PlayScreen - resume()")
+        Gdx.app.log("PlayScreen","resume()")
         isPaused = false
     }
 
     override fun resize(width: Int, height: Int) {
-        println("PlayScreen - resize()")
+        Gdx.app.log("PlayScreen","resize()")
         camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * height/width)
 //        hud.camera.setToOrtho(false, width.toFloat(), height.toFloat())
         hud.widthRatio = width / Constants.WIDTH
@@ -124,12 +123,11 @@ class PlayScreen(game: Main): KtxScreen {
     }
 
     override fun hide() {
-        println("PlayScreen - hide()")
-        super.hide()
+        Gdx.app.log("PlayScreen","hide()")
     }
 
     override fun dispose() {
-        println("PlayScreen - hide()")
+        Gdx.app.log("PlayScreen","dispose()")
         hud.dispose()
         engine.clearPools()
     }

@@ -149,9 +149,9 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                 shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
             }
             shape.color = healthColor
-            // TODO fix that hardcode after ship json implementation
-            val barWidth = Gdx.graphics.width * Data.playerData.ship.health / 100f
-            shape.rect(hpOffset + (Gdx.graphics.width - barWidth) / 2f, hpOffset,
+            // TODO fix that healthbar hardcode after ship json implementation
+            val barWidth = stage.width * Data.playerData.ship.health / 100f
+            shape.rect(hpOffset + (stage.width - barWidth) / 2f, hpOffset,
                     barWidth - hpOffset*2, hpHeight)
         }
         Gdx.gl.glDisable(GL20.GL_BLEND)

@@ -331,11 +331,10 @@ class GunScreen(val game: Main): KtxScreen {
     }
 
     override fun show() {
-        println("GunScreen - show()")
         val handler = object: InputAdapter() {
-            override fun keyDown(keycode: Int): Boolean {
+            override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
-                    Input.Keys.BACK -> game.screen = PlayScreen(game)
+                    Input.Keys.BACK -> game.screen = MenuScreen(game)
                     Input.Keys.P -> println(suitTable.children)
                 }
                 return true
@@ -345,30 +344,13 @@ class GunScreen(val game: Main): KtxScreen {
         Gdx.input.inputProcessor = multiplexer
     }
 
-    override fun pause() {
-        println("GunScreen - pause()")
-        super.pause()
-    }
-
-    override fun resume() {
-        println("GunScreen - resume()")
-        super.resume()
-    }
-
     override fun resize(width: Int, height: Int) {
-        println("GunScreen - resize()")
 //        stage.viewport.update(Constants.D_WIDTH, Constants.D_WIDTH * height/width, true)
         stage.viewport.update(width, height, true)
         applyBtn.setPosition(stage.camera.viewportWidth - applyBtn.width, 0f)
     }
 
-    override fun hide() {
-        println("GunScreen - hide()")
-        super.hide()
-    }
-
     override fun dispose() {
-        println("GunScreen - dispose()")
         stage.dispose()
     }
 
@@ -408,6 +390,6 @@ class GunScreen(val game: Main): KtxScreen {
             }
         }
         playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
-        println("----------------gun mods applied-----------------")
+        Gdx.app.log("GunScreen","gun info saved to JSON")
     }
 }

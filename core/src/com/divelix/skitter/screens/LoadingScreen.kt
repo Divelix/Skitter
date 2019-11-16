@@ -1,6 +1,7 @@
 package com.divelix.skitter.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -19,6 +20,7 @@ class LoadingScreen(private val game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
 
     init {
+        Gdx.input.setCatchKey(Input.Keys.BACK, true)
         assets.loadSplashAssets()
         greenSquare = assets.manager.get(Constants.LOADING_IMAGE)
         assets.loadAssets()

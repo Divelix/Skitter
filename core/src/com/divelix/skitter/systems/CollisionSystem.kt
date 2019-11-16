@@ -15,7 +15,6 @@ import com.divelix.skitter.screens.PlayScreen
 class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
-    private val playerDamage = Data.playerData.gun.damage
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
 
@@ -52,7 +51,7 @@ class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComp
                         TypeComponent.ENEMY -> {
                             hitSound.play()
                             val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
-                            enemyCmp.health -= playerDamage
+                            enemyCmp.health -= Data.playerData.gun.damage
                             if(enemyCmp.health <= 0) {
                                 val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
                                 collidedBodyCmp.isDead = true

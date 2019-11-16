@@ -1,6 +1,9 @@
 package com.divelix.skitter.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -28,7 +31,7 @@ import ktx.assets.toLocalFile
 import ktx.vis.table
 import ktx.vis.window
 
-class ModScreen(game: Main): KtxScreen {
+class ModScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
@@ -260,8 +263,16 @@ class ModScreen(game: Main): KtxScreen {
     }
 
     override fun show() {
-        println("ModScreen - show()")
-        Gdx.input.inputProcessor = stage
+        val handler = object: InputAdapter() {
+            override fun keyUp(keycode: Int): Boolean {
+                when(keycode) {
+                    Input.Keys.BACK -> game.screen = MenuScreen(game)
+                }
+                return true
+            }
+        }
+        val multiplexer = InputMultiplexer(handler, stage)
+        Gdx.input.inputProcessor = multiplexer
     }
 
     override fun render(delta: Float) {
@@ -272,29 +283,12 @@ class ModScreen(game: Main): KtxScreen {
         stage.draw()
     }
 
-    override fun pause() {
-        println("ModScreen - pause()")
-        super.pause()
-    }
-
-    override fun resume() {
-        println("ModScreen - resume()")
-        super.resume()
-    }
-
     override fun resize(width: Int, height: Int) {
-        println("ModScreen - resize()")
         stage.viewport.update(width, height, true)
 //        menuBtn.setPosition(stage.camera.viewportWidth - menuBtn.width - 20f, 20f)
     }
 
-    override fun hide() {
-        println("ModScreen - hide()")
-        super.hide()
-    }
-
     override fun dispose() {
-        println("GunScreen - dispose()")
         stage.dispose()
     }
 }
