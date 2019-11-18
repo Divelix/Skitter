@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
-import com.divelix.skitter.PlayerData
 import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.screens.PlayScreen
@@ -23,25 +22,17 @@ class PhysicsSystem(private val world: World, private val blackList: ArrayList<B
     private val cmBody = ComponentMapper.getFor(B2dBodyComponent::class.java)
 
     private var accumulator = 0f
-    private var reloadTimer = 0f
-    private val reloadTime = Data.playerData.gun.reloadTime
-    private val capacity = Data.playerData.gun.capacity
 
     override fun update(deltaTime: Float) {
         if(PlayScreen.isPaused) return
         super.update(deltaTime)
         Data.renderTime += deltaTime
+        reloadAmmo(deltaTime)
         val frameTime = Math.min(deltaTime, 0.25f)
         accumulator += frameTime
         if (accumulator >= Constants.B2D_STEP_TIME) {
             val stepTime = Constants.B2D_STEP_TIME / PlayScreen.slowRate
             Data.physicsTime += stepTime
-            // reload ammo
-            reloadTimer += stepTime
-            if (reloadTimer >= reloadTime) {
-                if (Data.playerData.gun.capacity < capacity) Data.playerData.gun.capacity++
-                reloadTimer = 0f
-            }
             world.step(stepTime, 6, 2)
             accumulator -= stepTime
 
@@ -68,5 +59,17 @@ class PhysicsSystem(private val world: World, private val blackList: ArrayList<B
     override fun processEntity(entity: Entity, deltaTime: Float) {
         // add Items to queue
         bodiesQueue.add(entity)
+    }
+
+    fun reloadAmmo(delta: Float) {
+        if (PlayScreen.ammo < Data.playerData.gun.capacity) {
+            Data.reloadTimer += delta
+            if (Data.reloadTimer >= Data.playerData.gun.reloadTime) {
+                PlayScreen.ammo++
+                Data.reloadTimer = 0f
+            }
+        } else {
+            Data.reloadTimer = Data.playerData.gun.reloadTime
+        }
     }
 }

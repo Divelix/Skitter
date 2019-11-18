@@ -5,25 +5,20 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
-import com.divelix.skitter.screens.MenuScreen
+import com.divelix.skitter.screens.PlayScreen
+import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
-import ktx.graphics.use
+import ktx.graphics.*
 import ktx.vis.table
 
 class Hud(val game: Main, val playCam: OrthographicCamera) {
@@ -35,20 +30,20 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val camera = OrthographicCamera()
     val stage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat(), camera), batch)
 
-    val rootTable: Table
     lateinit var fpsLabel: Label
     lateinit var renderTimeLabel: Label
     lateinit var physicsTimeLabel: Label
     lateinit var enemyCountLabel: Label
     lateinit var scoreLabel: Label
-    lateinit var ammoLabel: Label
+    val ammoLabel: Label
 
     val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
     val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
-    val healthColor = Color(1f, 0f, 0f, 1f)
     var activeColor = touchpadColor
-
-    var camBounceTimer = 0f
+    val healthColor = Color(1f, 0f, 0f, 1f)
+    val reloadFGColor = Color(1f, 1f, 0f, 1f)
+    val reloadBGColor = Color(1f, 1f, 0f, 0.3f)
+    val reloadPos = Vector2(310f, 580f)
 
     var widthRatio = 1f // updates on first resize()
     var isDriven = false
@@ -99,7 +94,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                     } else {
                         val click = playCam.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
                         Data.dynamicData.aims.add(Vector2(click.x, click.y))
-                        camBounceTimer = 1f
                     }
                 }
             }
@@ -108,7 +102,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     }
 
     init {
-        rootTable = table {
+        stage += table {
             setFillParent(true)
             top().pad(20f)
             defaults().expandX()
@@ -116,7 +110,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             scoreLabel = label("${Data.score}", "mod-quantity").cell(colspan = 2)
             row()
             enemyCountLabel = label("${Data.enemiesCount}").cell(height = 50f, align = Align.left)
-            ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }.cell(align = Align.right)
+//            ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }.cell(align = Align.right)
             row()
             fpsLabel = label("${Gdx.graphics.framesPerSecond}").cell(align = Align.left)
             row()
@@ -124,22 +118,16 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             row()
             physicsTimeLabel = label("${Data.physicsTime}").cell(align = Align.left)
         }
-        stage += rootTable
-        stage.isDebugAll = true
+        ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin()).apply {
+            color = Color.BLACK
+        }
+        stage += ammoLabel
+//        stage.isDebugAll = true
     }
 
     val hpOffset = 20f
     val hpHeight = 10f
     fun update() {
-        fpsLabel.setText("FPS: ${Gdx.graphics.framesPerSecond}")
-        renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
-        physicsTimeLabel.setText("Physics time: ${Data.physicsTime.toInt()}")
-        scoreLabel.setText("${Data.score}")
-        enemyCountLabel.setText("Enemies: ${Data.enemiesCount}")
-        ammoLabel.setText("${Data.playerData.gun.capacity}")
-        stage.act()
-        stage.draw()
-
         Gdx.gl.glEnable(GL20.GL_BLEND)
         shape.projectionMatrix = camera.combined
         shape.use(ShapeRenderer.ShapeType.Filled) {
@@ -153,18 +141,28 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             val barWidth = stage.width * Data.playerData.ship.health / 100f
             shape.rect(hpOffset + (stage.width - barWidth) / 2f, hpOffset,
                     barWidth - hpOffset*2, hpHeight)
+
+            shape.color = reloadBGColor
+            shape.circle(reloadPos, 30f)
+            shape.color = reloadFGColor
+            shape.arc(reloadPos, 30f, 90f, Data.reloadTimer / Data.playerData.gun.reloadTime * 360)
         }
         Gdx.gl.glDisable(GL20.GL_BLEND)
-//        bounceCam()
+
+        fpsLabel.setText("FPS: ${Gdx.graphics.framesPerSecond}")
+        renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
+        physicsTimeLabel.setText("Physics time: ${Data.physicsTime.toInt()}")
+        scoreLabel.setText("${Data.score}")
+        enemyCountLabel.setText("Enemies: ${Data.enemiesCount}")
+        ammoLabel.run {
+            setText("${PlayScreen.ammo}")
+            pack()
+            setPosition(reloadPos.x - width/2f, reloadPos.y - height/2f)
+        }
+        stage.act()
+        stage.draw()
 
         if (isShipSlowdown) Data.dynamicData.dirVec.scl(0.95f)
-    }
-
-    fun bounceCam() {
-        if (camBounceTimer > 0f) camBounceTimer -= Gdx.graphics.deltaTime
-        val reversed = 1 - camBounceTimer
-        val value = if (reversed < 0.5f) Interpolation.exp5Out.apply(reversed * 2f) else Interpolation.linear.apply((1 - reversed) * 2f)
-        playCam.zoom = 1 + value / 10f
     }
 
     fun dispose() {

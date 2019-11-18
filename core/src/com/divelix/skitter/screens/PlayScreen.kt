@@ -14,10 +14,8 @@ import com.divelix.skitter.*
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
-import com.divelix.skitter.DynamicData
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
-import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import java.util.*
 
@@ -25,6 +23,7 @@ class PlayScreen(game: Main): KtxScreen {
     companion object {
         var slowRate = Constants.DEFAULT_SLOW_RATE
         var isPaused = false
+        var ammo = Data.playerData.gun.capacity
     }
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
@@ -68,7 +67,6 @@ class PlayScreen(game: Main): KtxScreen {
                     Input.Keys.B -> println(world.bodyCount)
                     Input.Keys.A -> println(Data.dynamicData.aims)
                     Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
-                    Input.Keys.Z -> println("Table pos: (${hud.rootTable.x}; ${hud.rootTable.y})")
                 }
                 return true
             }
@@ -91,6 +89,7 @@ class PlayScreen(game: Main): KtxScreen {
         Data.playerData.gun.bulletSpeed = specs[3].asFloat()
         Data.playerData.gun.critChance = specs[4].asFloat()
         Data.playerData.gun.critMultiplier = specs[5].asFloat()
+        ammo = Data.playerData.gun.capacity
         isPaused = false
     }
 
@@ -135,10 +134,11 @@ class PlayScreen(game: Main): KtxScreen {
     private fun shootBullets(aims: Array<Vector2>) {
         if (isPaused || aims.size == 0) return
         for (aim in aims) {
-            if (Data.playerData.gun.capacity == 0) break
+            if (ammo == 0) break
             entityBuilder.createBullet(playerEntity, aim)
             assets.manager.get<Sound>(Constants.SHOT_SOUND).play()
-            Data.playerData.gun.capacity--
+            if (ammo == Data.playerData.gun.capacity) Data.reloadTimer = 0f // fix for reload on first shot
+            ammo--
         }
         aims.clear()
     }
