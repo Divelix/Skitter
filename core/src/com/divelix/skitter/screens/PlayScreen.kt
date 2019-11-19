@@ -38,6 +38,22 @@ class PlayScreen(game: Main): KtxScreen {
 
     init {
         Gdx.app.log("PlayScreen","init")
+        isPaused = false
+        Data.score = 0
+        Data.enemiesCount = 0
+        Data.playerData.ship.health = 100f
+        Data.playerData.ship.energy = 100f
+        Data.playerData.ship.armor = 10f
+        val playerReader = JsonReader().parse("json/player_data.json".toLocalFile())
+        val specs = playerReader.get("active_gun_specs")
+        Data.playerData.gun.damage = specs[0].asFloat()
+        Data.playerData.gun.capacity = specs[1].asInt()
+        Data.playerData.gun.reloadTime = specs[2].asFloat()
+        Data.playerData.gun.bulletSpeed = specs[3].asFloat()
+        Data.playerData.gun.critChance = specs[4].asFloat()
+        Data.playerData.gun.critMultiplier = specs[5].asFloat()
+        ammo = Data.playerData.gun.capacity
+
         playerEntity = entityBuilder.createPlayer()
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera)
@@ -78,19 +94,6 @@ class PlayScreen(game: Main): KtxScreen {
 
     override fun show() {
         Gdx.app.log("PlayScreen","show()")
-        Data.playerData.ship.health = 100f
-        Data.playerData.ship.energy = 100f
-        Data.playerData.ship.armor = 10f
-        val playerReader = JsonReader().parse("json/player_data.json".toLocalFile())
-        val specs = playerReader.get("active_gun_specs")
-        Data.playerData.gun.damage = specs[0].asFloat()
-        Data.playerData.gun.capacity = specs[1].asInt()
-        Data.playerData.gun.reloadTime = specs[2].asFloat()
-        Data.playerData.gun.bulletSpeed = specs[3].asFloat()
-        Data.playerData.gun.critChance = specs[4].asFloat()
-        Data.playerData.gun.critMultiplier = specs[5].asFloat()
-        ammo = Data.playerData.gun.capacity
-        isPaused = false
     }
 
     override fun render(delta: Float) {

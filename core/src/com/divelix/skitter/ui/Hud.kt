@@ -118,9 +118,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             row()
             physicsTimeLabel = label("${Data.physicsTime}").cell(align = Align.left)
         }
-        ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin()).apply {
-            color = Color.BLACK
-        }
+        ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin(), "reload-label")
         stage += ammoLabel
 //        stage.isDebugAll = true
     }

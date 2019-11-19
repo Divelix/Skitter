@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Disposable
 import com.kotcrab.vis.ui.VisUI
 import ktx.assets.*
-import ktx.freetype.loadFreeTypeFont
+import ktx.freetype.freeTypeFontParameters
 import ktx.freetype.registerFreeTypeFontLoaders
 import ktx.style.*
 
@@ -63,28 +63,23 @@ class Assets: Disposable {
         manager.load<Sound>(Constants.HIT_SOUND)
         manager.load<Sound>(Constants.SHOT_SOUND)
         manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)
-        manager.loadFreeTypeFont(Constants.ROBOTO_FONT) {
+        val fontParams16 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
             size = 16
         }
-//        loadFonts() //TODO try move to the top
+        val fontParams32 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
+            size = 32
+            magFilter = Texture.TextureFilter.Linear
+            minFilter = Texture.TextureFilter.Linear
+        }
+        manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT, fontParams16)
+        manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD, fontParams32)
     }
-
-//    private fun loadFonts() {
-//        val resolver = InternalFileHandleResolver()
-//        manager.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(resolver))
-//        manager.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(resolver))
-//        val fontLP = FreetypeFontLoader.FreeTypeFontLoaderParameter()
-//        fontLP.fontFileName = Resources.MAIN_FONT
-////        fontLP.fontParameters.size = 80
-//        fontLP.fontParameters.size = 20
-//        manager.load("myFont.ttf", BitmapFont::class.java, fontLP)
-//    }
 
     fun setup() {
         uiSkin = skin(manager.get(Constants.UISKIN_ATLAS)) {
             color("pinky", 0.7f, 0f, 1f)
             label {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_FONT)
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColor = Color.WHITE
             }
             label("mod-level", extend = defaultStyle) {
@@ -92,6 +87,10 @@ class Assets: Disposable {
             }
             label("mod-quantity", extend = defaultStyle) {
                 fontColor = Color.YELLOW
+            }
+            label("reload-label") {
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD)
+                fontColor = Color.BLACK
             }
             button {
                 up = it["button"]
@@ -113,7 +112,7 @@ class Assets: Disposable {
                 up = it["button"]
                 over = it["button-over"]
                 disabled = it["button"]
-                font = manager.get<BitmapFont>(Constants.ROBOTO_FONT)
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColor = Color.WHITE
                 disabledFontColor = Color.GRAY
             }
@@ -129,7 +128,7 @@ class Assets: Disposable {
             }
             scrollPane {}
             windowStyle = window {
-                titleFont = manager.get<BitmapFont>(Constants.ROBOTO_FONT)
+                titleFont = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
                 background = TextureRegionDrawable(manager.get<Texture>(Constants.BACKGROUND_IMAGE))
             }
             tabbedPane {
