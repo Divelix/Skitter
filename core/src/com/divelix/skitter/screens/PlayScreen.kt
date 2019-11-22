@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
+import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
@@ -54,23 +55,21 @@ class PlayScreen(game: Main): KtxScreen {
         Data.playerData.gun.critMultiplier = specs[5].asFloat()
         ammo = Data.playerData.gun.capacity
 
+        entityBuilder.createBattleground(-7f, -5f, 14f, 40f)
         playerEntity = entityBuilder.createPlayer()
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera)
-        entityBuilder.createEnemy(-3f, 7f, 2f, playerEntity)
-        entityBuilder.createEnemy(0f, 7f, 2f, playerEntity)
-        entityBuilder.createEnemy(3f, 7f, 2f, playerEntity)
         entityBuilder.createObstacle(5f, -3f, 2f, 2f)
 
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
-//        engine.addSystem(PhysicsDebugSystem(world, camera))
+        engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem(game))
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
         engine.addSystem(BulletSystem())
-        engine.addSystem(SpawnSystem(5f, entityBuilder, playerEntity))
+        engine.addSystem(SpawnSystem(1f, entityBuilder, playerEntity))
 //        engine.addSystem(ClickableSystem(camera))
 
         ShaderProgram.pedantic = false
@@ -117,11 +116,8 @@ class PlayScreen(game: Main): KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         Gdx.app.log("PlayScreen","resize()")
-        camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * height/width)
-//        hud.camera.setToOrtho(false, width.toFloat(), height.toFloat())
-        hud.widthRatio = width / Constants.WIDTH
-        hud.stage.viewport.update(width, height, true)
-        println("resize(): Resolution = ($width; $height) | HEIGHT = ${Constants.WIDTH * height/width} | widthRatio = ${hud.widthRatio}")
+        camera.setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
+        hud.resize(width, height)
     }
 
     override fun hide() {

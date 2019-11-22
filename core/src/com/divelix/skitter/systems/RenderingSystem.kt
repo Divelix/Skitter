@@ -39,12 +39,11 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
 
     private val bg = assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE)
     private val bgReg = TextureRegion(bg)
-    private val aim = assets.manager.get<Texture>(Constants.AIM)
     private val healthBarReg: TextureRegion
 
     init {
         bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
-        bgReg.setRegion(0, 0, 1000, 1000)
+        bgReg.setRegion(0, 0, 5000, 5000)
         val redPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
         redPixel.setColor(1f, 0f, 0f, 1f)
         redPixel.fill()
@@ -60,21 +59,18 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        timer += deltaTime
-
         entities.sort(comparator)
 
-        bulletShader.begin()
-        bulletShader.setUniformf("u_time", timer)
-        bulletShader.end()
+        bulletShader.use {
+            timer += deltaTime
+            bulletShader.setUniformf("u_time", timer)
+        }
         batch.projectionMatrix = camera.combined
 //        batch.enableBlending()
         batch.use {
-            batch.draw(bgReg, -50f, -50f, 100f, 100f)
-            batch.draw(aim, -1f, -1f, 2f, 2f)
+//            batch.draw(bgReg, -200f, -200f, 400f, 400f)
 
             for (entity in entities) {
-                val typeCmp = cmType.get(entity)
                 val textureCmp = cmTexture.get(entity)
                 val transformCmp = cmTransform.get(entity)
 
@@ -85,8 +81,8 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
                 val width = transformCmp.size.x
                 val height = transformCmp.size.y
 
-                val originX = width / 2f
-                val originY = height / 2f
+                val originX = transformCmp.origin.x
+                val originY = transformCmp.origin.y
 
 //            if (typeCmp.name == TypeComponent.BULLET)
 //                batch.shader = bulletShader

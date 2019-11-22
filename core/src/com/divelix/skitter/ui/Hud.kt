@@ -5,21 +5,29 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
+import com.divelix.skitter.screens.ModScreen
 import com.divelix.skitter.screens.PlayScreen
 import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
 import ktx.graphics.*
 import ktx.vis.table
+import ktx.vis.window
 
 class Hud(val game: Main, val playCam: OrthographicCamera) {
     private val context = game.getContext()
@@ -30,6 +38,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val camera = OrthographicCamera()
     val stage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat(), camera), batch)
 
+    lateinit var rootTable: Table
     lateinit var fpsLabel: Label
     lateinit var renderTimeLabel: Label
     lateinit var physicsTimeLabel: Label
@@ -45,7 +54,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val reloadBGColor = Color(1f, 1f, 0f, 0.3f)
     val reloadPos = Vector2(310f, 580f)
 
-    var widthRatio = 1f // updates on first resize()
     var isDriven = false
     var isShipSlowdown = false
     val distVec = Vector2()
@@ -102,7 +110,19 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     }
 
     init {
-        stage += table {
+        stage += Image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PAUSE_BTN))).apply {
+            setSize(50f, 50f)
+            setPosition(Constants.D_WIDTH - width - 20f, Constants.D_HEIGHT - height - 20f)
+            addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    Gdx.app.log("Hud","Resolution: ${Gdx.graphics.width}; ${Gdx.graphics.height}")
+                    Gdx.app.log("Hud","PlayCam: ${playCam.viewportWidth}; ${playCam.viewportHeight}")
+                    Gdx.app.log("Hud","StageCam: ${camera.viewportWidth}; ${camera.viewportHeight}")
+                    super.touchUp(event, x, y, pointer, button)
+                }
+            })
+        }
+        rootTable = table {
             setFillParent(true)
             top().pad(20f)
             defaults().expandX()
@@ -119,6 +139,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             physicsTimeLabel = label("${Data.physicsTime}").cell(align = Align.left)
         }
         ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin(), "reload-label")
+        stage += rootTable
         stage += ammoLabel
 //        stage.isDebugAll = true
     }
@@ -161,6 +182,12 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         stage.draw()
 
         if (isShipSlowdown) Data.dynamicData.dirVec.scl(0.95f)
+    }
+
+    fun resize(width: Int, height: Int) {
+        Gdx.app.log("Hud","resize: $width; $height")
+        stage.viewport.update(width, height, true)
+//        camera.setToOrtho(false, width.toFloat(), height.toFloat())
     }
 
     fun dispose() {

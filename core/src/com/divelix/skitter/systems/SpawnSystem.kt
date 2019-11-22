@@ -8,8 +8,8 @@ import com.divelix.skitter.utils.EntityBuilder
 
 class SpawnSystem(interval: Float, val entityBuilder: EntityBuilder, val playerEntity: Entity): IntervalSystem(interval) {
     override fun updateInterval() {
-        val x = MathUtils.random(0, Constants.WIDTH.toInt()).toFloat()
-        val y = MathUtils.random(0, Constants.WIDTH.toInt()).toFloat()
+        val x = MathUtils.random(-5, 5).toFloat()
+        val y = MathUtils.random(32, 34).toFloat()
         entityBuilder.createEnemy(x, y, 2f, playerEntity)
     }
 }

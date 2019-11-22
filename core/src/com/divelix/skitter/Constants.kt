@@ -5,6 +5,7 @@ object Constants {
     const val D_WIDTH = 350
     const val D_HEIGHT = 700
     const val WIDTH = 15f
+    const val HEIGHT = WIDTH * 2f
 //    const val HEIGHT = 1920
     const val PPM = 32f
     const val PTM = 1 / PPM

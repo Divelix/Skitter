@@ -29,6 +29,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<TransformComponent> {
                 position.set(0f, 0f, 1f)
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
+                origin.set(size).scl(0.5f)
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT)) }
             val cursorBody = world.body(type = BodyDef.BodyType.StaticBody) {
@@ -85,6 +86,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<TransformComponent> {
                 position.set(initPos.x, initPos.y, 0f)
                 size.set(width, height)
+                origin.set(size).scl(0.5f)
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
             with<B2dBodyComponent> {
@@ -120,6 +122,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(entitySize, entitySize)
+                origin.set(size).scl(0.5f)
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.ENEMY_DEFAULT)) }
             with<B2dBodyComponent> {
@@ -139,7 +142,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<CollisionComponent>()
             with<HealthBarComponent>()
             with<BindComponent> { entity = playerEntity }
-            with<ClickableComponent> { circle.set(x, y, entitySize/2)}
+//            with<ClickableComponent> { circle.set(x, y, entitySize/2)} // TODO maybe return later for new mechanics
         }
         Data.enemiesCount++
     }
@@ -151,6 +154,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(width, height)
+                origin.set(size).scl(0.5f)
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOADING_IMAGE)) }
             with<B2dBodyComponent> {
@@ -161,6 +165,45 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         restitution = 0f
                         filter.categoryBits = entityType
                         filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.BULLET
+//                        filter.groupIndex = 1
+                    }
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
+            }
+            with<CollisionComponent>()
+        }
+    }
+
+    fun createBattleground(x: Float, y: Float, width: Float, height: Float) {
+        val entityType = TypeComponent.OBSTACLE
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(width, height)
+                origin.setZero()
+            }
+            with<TextureComponent> {
+                val texture = assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE)
+//                val texture = Texture("anti-seamless.png")
+                val textureRegion = TextureRegion(texture)
+                texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
+                textureRegion.setRegion(0, 0, (width*Constants.PPM).toInt(), (height*Constants.PPM).toInt())
+                region = textureRegion
+            }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.StaticBody) {
+                    val vertices = arrayOf(Vector2(0f, 0f),
+                                           Vector2(0f, height),
+                                           Vector2(width, height),
+                                           Vector2(width, 0f))
+                    loop(*vertices) {
+                        density = 10f
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+//                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.BULLET or TypeComponent.ENEMY
 //                        filter.groupIndex = 1
                     }
                     position.set(x, y)
