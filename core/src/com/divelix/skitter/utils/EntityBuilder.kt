@@ -3,6 +3,7 @@ package com.divelix.skitter.utils
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
@@ -41,7 +42,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     friction = 0.5f
                     restitution = 0f
                     filter.categoryBits = entityType
-                    filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE
+                    filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE or TypeComponent.SPAWN
 //                    filter.groupIndex = -1
 //                    isSensor = true
                 }
@@ -156,7 +157,13 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOADING_IMAGE)) }
+            with<TextureComponent> {
+                val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
+                    setColor(0.5f, 0.5f, 0.5f, 1f)
+                    fill()
+                }
+                region = TextureRegion(Texture(pixel))
+            }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     box(width = width, height = height) {
@@ -166,6 +173,38 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         filter.categoryBits = entityType
                         filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.BULLET
 //                        filter.groupIndex = 1
+                    }
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
+            }
+            with<CollisionComponent>()
+        }
+    }
+
+    fun createSpawn(x: Float, y: Float, radius: Float) {
+        val entityType = TypeComponent.SPAWN
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<SpawnComponent> { circle.set(x, y, radius) }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(radius * 2f, radius * 2f)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> {
+                region = TextureRegion(assets.manager.get<Texture>(Constants.AIM))
+            }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.StaticBody) {
+                    circle(radius) {
+                        density = 10f
+                        friction = 0f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+//                        filter.maskBits = TypeComponent.PLAYER
+//                        filter.groupIndex = 1
+                        isSensor = true
                     }
                     position.set(x, y)
                     userData = (this@entity).entity

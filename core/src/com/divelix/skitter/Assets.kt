@@ -30,7 +30,6 @@ class Assets: Disposable {
     lateinit var windowStyle: Window.WindowStyle // TODO ugly shit, delete later
 
     fun loadSplashAssets() {
-        manager.load<Texture>(Constants.LOADING_IMAGE)
         manager.load<Texture>(Constants.DIGITS_PNG)
         manager.finishLoading()
         digitsFont = BitmapFont(file(Constants.DIGITS_FNT), TextureRegion(manager.get<Texture>(Constants.DIGITS_PNG)))

@@ -44,9 +44,10 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
     init {
         bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         bgReg.setRegion(0, 0, 5000, 5000)
-        val redPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-        redPixel.setColor(1f, 0f, 0f, 1f)
-        redPixel.fill()
+        val redPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888) .apply {
+            setColor(1f, 0f, 0f, 1f)
+            fill()
+        }
         healthBarReg = TextureRegion(Texture(redPixel))
 //        camera.position.set(Constants.B2D_WIDTH / 2f, Constants.B2D_HEIGHT / 2f, 0f)
         ShaderProgram.pedantic = false // SpriteBatch won'stockTable send ALL info to shader program

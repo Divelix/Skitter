@@ -23,11 +23,11 @@ class ModImage(val mod: Mod, val assets: Assets): Group() {
             1 -> assets.manager.get(Constants.MOD_DAMAGE)
             2 -> assets.manager.get(Constants.MOD_RELOAD_SPEED)
             3 -> assets.manager.get(Constants.MOD_BULLET_SPEED)
-            4 -> assets.manager.get(Constants.LOADING_IMAGE) //TODO add texture for CRIT_MULT
+            4 -> assets.manager.get(Constants.BACKGROUND_IMAGE) //TODO add texture for CRIT_MULT
 
             5 -> assets.manager.get(Constants.MOD_FIRE_DAMAGE)
             6 -> assets.manager.get(Constants.MOD_COLD_DAMAGE)
-            else -> assets.manager.get(Constants.LOADING_IMAGE)
+            else -> assets.manager.get(Constants.BACKGROUND_IMAGE)
         }
         levelLabel = VisLabel("lvl ${mod.level}", "mod-level").apply {
             touchable = Touchable.disabled

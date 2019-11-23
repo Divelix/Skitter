@@ -42,6 +42,9 @@ class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComp
                             }
                             collisionCmp.collisionEntity = null // collision handled reset component
                         }
+//                        TypeComponent.SPAWN -> {
+//                            println("SPAWN")
+//                        }
                     }
                 }
                 TypeComponent.BULLET -> {

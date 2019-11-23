@@ -60,6 +60,10 @@ class PlayScreen(game: Main): KtxScreen {
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera)
         entityBuilder.createObstacle(5f, -3f, 2f, 2f)
+        entityBuilder.createObstacle(6.5f, 3f, 1f, 1f)
+        entityBuilder.createObstacle(-8f, 0f, 3f, 1f)
+        entityBuilder.createObstacle(-4.5f, 5f, 5f, 5f)
+        entityBuilder.createSpawn(2f, 20f, 3f)
 
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))

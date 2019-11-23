@@ -2,27 +2,29 @@ package com.divelix.skitter.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.MathUtils
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Main
 import com.divelix.skitter.Constants
 import ktx.app.KtxScreen
+import ktx.graphics.use
 
 class LoadingScreen(private val game: Main): KtxScreen {
 
     private var progress = 0f
-    private val greenSquare: Texture
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
+    private val shape = context.inject<ShapeRenderer>()
     private val assets = context.inject<Assets>()
 
     init {
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         assets.loadSplashAssets()
-        greenSquare = assets.manager.get(Constants.LOADING_IMAGE)
         assets.loadAssets()
     }
 
@@ -32,10 +34,13 @@ class LoadingScreen(private val game: Main): KtxScreen {
 
         progress = MathUtils.lerp(progress, assets.manager.progress, 0.1f)
 
-        batch.begin()
-        batch.draw(greenSquare, 0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height*progress)
-        assets.digitsFont.draw(batch, "${(progress*100).toInt()}%", Gdx.graphics.width / 2f - 50f, Gdx.graphics.height / 2f)
-        batch.end()
+        shape.use(ShapeRenderer.ShapeType.Filled) {
+            shape.color = Color.GREEN
+            shape.rect(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height*progress)
+        }
+        batch.use {
+            assets.digitsFont.draw(batch, "${(progress*100).toInt()}%", Gdx.graphics.width / 2f - 50f, Gdx.graphics.height / 2f)
+        }
 
         if(assets.manager.update() && progress >= 0.99f) {
             assets.manager.finishLoading()
