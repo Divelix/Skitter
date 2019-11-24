@@ -14,7 +14,6 @@ import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.entity
 import ktx.box2d.body
 import ktx.box2d.mouseJointWith
@@ -22,11 +21,12 @@ import kotlin.experimental.or
 
 class EntityBuilder(private val engine: PooledEngine, private val world: World, private val assets: Assets) {
 
-    fun createPlayer(): Entity {
+    fun createPlayer(hp: Float): Entity {
         val entityType = TypeComponent.PLAYER
         return engine.entity {
             with<TypeComponent> { type = entityType }
             with<PlayerComponent>()
+            with<HealthComponent> { health = hp }
             with<TransformComponent> {
                 position.set(0f, 0f, 1f)
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
@@ -42,7 +42,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     friction = 0.5f
                     restitution = 0f
                     filter.categoryBits = entityType
-                    filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE or TypeComponent.SPAWN
+                    filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE
 //                    filter.groupIndex = -1
 //                    isSensor = true
                 }
@@ -120,6 +120,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()
+            with<HealthComponent> { health = 100f }
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(entitySize, entitySize)
@@ -192,9 +193,36 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 size.set(radius * 2f, radius * 2f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> {
-                region = TextureRegion(assets.manager.get<Texture>(Constants.AIM))
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.AIM)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.StaticBody) {
+                    circle(radius) {
+                        density = 10f
+                        friction = 0f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+//                        filter.maskBits = TypeComponent.PLAYER
+//                        filter.groupIndex = 1
+                        isSensor = true
+                    }
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
             }
+            with<CollisionComponent>()
+        }
+    }
+
+    fun createPuddle(x: Float, y: Float, radius: Float) {
+        val entityType = TypeComponent.PUDDLE
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(radius * 2f, radius * 2f)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.WHITE_CIRCLE)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     circle(radius) {

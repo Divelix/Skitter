@@ -3,11 +3,7 @@ package com.divelix.skitter.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool
 
-class EnemyComponent: Component, Pool.Poolable {
-    var health = 100f
+class EnemyComponent: Component {
     var damage = 10f
-
-    override fun reset() {
-        health = 100f
-    }
+    var speed = 5f
 }

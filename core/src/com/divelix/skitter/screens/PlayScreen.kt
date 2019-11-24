@@ -11,6 +11,8 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
+import com.divelix.skitter.components.B2dBodyComponent
+import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
@@ -20,11 +22,12 @@ import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
 import java.util.*
 
-class PlayScreen(game: Main): KtxScreen {
+class PlayScreen(val game: Main): KtxScreen {
     companion object {
         var slowRate = Constants.DEFAULT_SLOW_RATE
         var isPaused = false
         var ammo = Data.playerData.gun.capacity
+        var playerHealth = Data.playerData.ship.health
     }
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
@@ -42,10 +45,11 @@ class PlayScreen(game: Main): KtxScreen {
         isPaused = false
         Data.score = 0
         Data.enemiesCount = 0
+        val playerReader = JsonReader().parse("json/player_data.json".toLocalFile())
+        // TODO replace with json data
         Data.playerData.ship.health = 100f
         Data.playerData.ship.energy = 100f
         Data.playerData.ship.armor = 10f
-        val playerReader = JsonReader().parse("json/player_data.json".toLocalFile())
         val specs = playerReader.get("active_gun_specs")
         Data.playerData.gun.damage = specs[0].asFloat()
         Data.playerData.gun.capacity = specs[1].asInt()
@@ -55,15 +59,17 @@ class PlayScreen(game: Main): KtxScreen {
         Data.playerData.gun.critMultiplier = specs[5].asFloat()
         ammo = Data.playerData.gun.capacity
 
-        entityBuilder.createBattleground(-7f, -5f, 14f, 40f)
-        playerEntity = entityBuilder.createPlayer()
+//        entityBuilder.createBattleground(-7f, -5f, 14f, 40f)
+        entityBuilder.createBattleground(-7f, -10f, 14f, 30f)
+        playerEntity = entityBuilder.createPlayer(Data.playerData.ship.health)
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera)
-        entityBuilder.createObstacle(5f, -3f, 2f, 2f)
+//        entityBuilder.createObstacle(5f, -3f, 2f, 2f)
         entityBuilder.createObstacle(6.5f, 3f, 1f, 1f)
         entityBuilder.createObstacle(-8f, 0f, 3f, 1f)
-        entityBuilder.createObstacle(-4.5f, 5f, 5f, 5f)
-        entityBuilder.createSpawn(2f, 20f, 3f)
+//        entityBuilder.createObstacle(-4.5f, 5f, 5f, 5f)
+        entityBuilder.createSpawn(0f, 10f, 2f)
+        entityBuilder.createPuddle(0f, 5f, 2f)
 
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
@@ -73,7 +79,8 @@ class PlayScreen(game: Main): KtxScreen {
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
         engine.addSystem(BulletSystem())
-        engine.addSystem(SpawnSystem(1f, entityBuilder, playerEntity))
+        engine.addSystem(SpawnSystem(3f, entityBuilder, playerEntity))
+        engine.addSystem(DecaySystem(0.5f))
 //        engine.addSystem(ClickableSystem(camera))
 
         ShaderProgram.pedantic = false
@@ -86,6 +93,8 @@ class PlayScreen(game: Main): KtxScreen {
                     Input.Keys.B -> println(world.bodyCount)
                     Input.Keys.A -> println(Data.dynamicData.aims)
                     Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
+                    Input.Keys.D -> playerEntity.add(DecayComponent())
+                    Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
                 }
                 return true
             }
@@ -106,6 +115,7 @@ class PlayScreen(game: Main): KtxScreen {
             clearDeadBodies()
         }
         hud.update()
+        if (playerHealth <= 0f) gameOver()
     }
 
     override fun pause() {
@@ -156,5 +166,13 @@ class PlayScreen(game: Main): KtxScreen {
             }
             blackList.clear()
         }
+    }
+
+    private fun gameOver() {
+        println("------------------------------------")
+        println("-------------Game Over--------------")
+        println("------------------------------------")
+        Data.dynamicData.dirVec.setZero()
+        game.screen = MenuScreen(game)
     }
 }

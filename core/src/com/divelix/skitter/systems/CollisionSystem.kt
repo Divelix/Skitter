@@ -8,83 +8,81 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.GunScreen
 import com.divelix.skitter.screens.MenuScreen
-import com.divelix.skitter.screens.PlayScreen
+import ktx.ashley.has
+import ktx.ashley.hasNot
+import kotlin.experimental.or
 
-class CollisionSystem(val game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
+class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
+    private val cmHealth = ComponentMapper.getFor(HealthComponent::class.java)
+    private val cmEnemy = ComponentMapper.getFor(EnemyComponent::class.java)
+    private val cmBullet = ComponentMapper.getFor(BulletComponent::class.java)
+    private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        // get player collision component
-        val typeCmp = cmType.get(entity)
         val collisionCmp = cmCollision.get(entity)
+        val typeCmp = cmType.get(entity)
 
         val collidedEntity = collisionCmp.collisionEntity
         if (collidedEntity != null) {
-            val collidedTypeCmp = collidedEntity.getComponent(TypeComponent::class.java)
+            val collidedTypeCmp = cmType.get(collidedEntity)
 
             when(typeCmp.type) {
                 TypeComponent.PLAYER -> {
                     when (collidedTypeCmp.type) {
                         TypeComponent.ENEMY -> {
                             println("player hit enemy")
-                            val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
-//                            playerCmp.health -= enemyCmp.damage
-                            Data.playerData.ship.health -= enemyCmp.damage
-                            println(Data.playerData.ship.health)
-                            if (Data.playerData.ship.health <= 0f) {
-                                println("Player died")
-                                gameOver()
-                            }
-                            collisionCmp.collisionEntity = null // collision handled reset component
+                            val playerHealthCmp = cmHealth.get(entity)
+                            val enemyCmp = cmEnemy.get(collidedEntity)
+                            playerHealthCmp.health -= enemyCmp.damage
+                            println(playerHealthCmp.health)
                         }
-//                        TypeComponent.SPAWN -> {
-//                            println("SPAWN")
-//                        }
+                        TypeComponent.SPAWN -> {
+                            println("PLAYER collided SPAWN")
+                        }
                     }
                 }
                 TypeComponent.BULLET -> {
-                    val bulletCmp = entity.getComponent(BulletComponent::class.java)
+                    val bulletCmp = cmBullet.get(entity)
                     if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                     when (collidedTypeCmp.type) {
                         TypeComponent.ENEMY -> {
                             hitSound.play()
-                            val enemyCmp = collidedEntity.getComponent(EnemyComponent::class.java)
-                            if (enemyCmp.health > Data.playerData.gun.damage)
-                                enemyCmp.health -= Data.playerData.gun.damage
+                            val enemyHealthCmp = cmHealth.get(collidedEntity)
+                            if (enemyHealthCmp.health > Data.playerData.gun.damage)
+                                enemyHealthCmp.health -= Data.playerData.gun.damage
                             else
-                                enemyCmp.health = 0f
+                                enemyHealthCmp.health = 0f
 
-                            if(enemyCmp.health <= 0f) {
-                                val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
-                                collidedBodyCmp.isDead = true
-                                Data.enemiesCount--
-                                Data.score += 100
-                            }
-                            collisionCmp.collisionEntity = null
+//                            if(enemyHealthCmp.health <= 0f) {
+//                                val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
+//                                collidedBodyCmp.isDead = true
+//                                Data.enemiesCount--
+//                                Data.score += 100
+//                            }
                             bulletCmp.isDead = true
                         }
                         TypeComponent.OBSTACLE -> {
                             println("OBSTACLE")
-                            collisionCmp.collisionEntity = null
                             bulletCmp.isDead = true
                         }
                     }
                 }
+                TypeComponent.PUDDLE -> {
+                    when (collidedTypeCmp.type) {
+                        TypeComponent.PLAYER, TypeComponent.ENEMY -> {
+                            if (!collidedEntity.has(cmDecay)) {
+                                collidedEntity.add(DecayComponent())
+                            }
+                        }
+                    }
+                }
             }
+            collisionCmp.collisionEntity = null // collision handled reset component
         }
     }
-
-    private fun gameOver() {
-        println("------------------------------------")
-        println("-------------Game Over--------------")
-        println("------------------------------------")
-        Data.dynamicData.dirVec.setZero()
-        game.screen = MenuScreen(game)
-    }
-
 }

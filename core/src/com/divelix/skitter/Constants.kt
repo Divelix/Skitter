@@ -9,8 +9,6 @@ object Constants {
 //    const val HEIGHT = 1920
     const val PPM = 32f
     const val PTM = 1 / PPM
-//    const val B2D_WIDTH = WIDTH * PTM
-//    const val B2D_HEIGHT = HEIGHT * PTM
     const val B2D_FPS = 120f
     const val B2D_STEP_TIME = 1 / B2D_FPS
     const val BULLET_CRITICAL_DISTANCE_2 = 400f
@@ -41,6 +39,7 @@ object Constants {
     const val ENEMY_DEFAULT = "enemy-default.png"
     const val BULLET_DEFAULT = "bullet-default.png"
     const val AIM = "aim-64.png"
+    const val WHITE_CIRCLE = "white_circle.png"
     const val BACKGROUND_IMAGE = "dark-honeycomb.png"
     const val APPLY_BTN = "apply_btn.png"
     const val UP_BTN = "up_btn.png"

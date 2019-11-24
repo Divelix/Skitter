@@ -38,7 +38,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val camera = OrthographicCamera()
     val stage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat(), camera), batch)
 
-    lateinit var rootTable: Table
+    val rootTable: Table
     lateinit var fpsLabel: Label
     lateinit var renderTimeLabel: Label
     lateinit var physicsTimeLabel: Label
@@ -52,6 +52,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val healthColor = Color(1f, 0f, 0f, 1f)
     val reloadFGColor = Color(1f, 1f, 0f, 1f)
     val reloadBGColor = Color(1f, 1f, 0f, 0.3f)
+    val scoreColor = Color(0.7f, 0.7f, 0.7f, 1f)
     val reloadPos = Vector2(310f, 580f)
 
     var isDriven = false
@@ -124,10 +125,10 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         }
         rootTable = table {
             setFillParent(true)
-            top().pad(20f)
+            top().pad(10f)
             defaults().expandX()
 //            pad(20f)
-            scoreLabel = label("${Data.score}", "mod-quantity").cell(colspan = 2)
+            scoreLabel = label("${Data.score}", "score-label").cell(colspan = 2)
             row()
             enemyCountLabel = label("${Data.enemiesCount}").cell(height = 50f, align = Align.left)
 //            ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }.cell(align = Align.right)
@@ -157,10 +158,12 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             }
             shape.color = healthColor
             // TODO fix that healthbar hardcode after ship json implementation
-            val barWidth = stage.width * Data.playerData.ship.health / 100f
+            val barWidth = stage.width * PlayScreen.playerHealth / 100f
             shape.rect(hpOffset + (stage.width - barWidth) / 2f, hpOffset,
                     barWidth - hpOffset*2, hpHeight)
 
+            shape.color = scoreColor
+            shape.circle(175f, 725f, 60f)
             shape.color = reloadBGColor
             shape.circle(reloadPos, 30f)
             shape.color = reloadFGColor

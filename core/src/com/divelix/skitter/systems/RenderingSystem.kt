@@ -33,7 +33,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
     private val cmTexture: ComponentMapper<TextureComponent> = ComponentMapper.getFor(TextureComponent::class.java)
     private val cmTransform: ComponentMapper<TransformComponent> = ComponentMapper.getFor(TransformComponent::class.java)
     private val cmHealthBar: ComponentMapper<HealthBarComponent> = ComponentMapper.getFor(HealthBarComponent::class.java)
-    private val cmEnemy: ComponentMapper<EnemyComponent> = ComponentMapper.getFor(EnemyComponent::class.java)
+    private val cmHealth: ComponentMapper<HealthComponent> = ComponentMapper.getFor(HealthComponent::class.java)
 
     private var timer = 0f
 
@@ -95,10 +95,10 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
                         transformCmp.rotation)
                 if(entity.has(cmHealthBar)) {
                     val healthBarCmp = cmHealthBar.get(entity)
-                    val enemyCmp = cmEnemy.get(entity)
+                    val healthCmp = cmHealth.get(entity)
                     batch.draw(healthBarReg,
                             transformCmp.position.x - originX, transformCmp.position.y - originY + transformCmp.size.y,
-                            width * enemyCmp.health / 100, healthBarCmp.height)
+                            width * healthCmp.health / 100, healthBarCmp.height)
                 }
 //            batch.shader = null
             }

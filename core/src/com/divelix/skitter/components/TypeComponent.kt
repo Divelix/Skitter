@@ -9,6 +9,7 @@ class TypeComponent: Component {
         const val BULLET: Short = 4
         const val OBSTACLE: Short = 8
         const val SPAWN: Short = 16
+        const val PUDDLE: Short = 32
     }
     var type: Short? = null
 }

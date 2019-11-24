@@ -49,6 +49,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.ENEMY_DEFAULT)
         manager.load<Texture>(Constants.BULLET_DEFAULT)
         manager.load<Texture>(Constants.AIM)
+        manager.load<Texture>(Constants.WHITE_CIRCLE)
         manager.load<Texture>(Constants.RIFLE)
         manager.load<Texture>(Constants.UZI)
         manager.load<Texture>(Constants.MOD_GLOW)
@@ -80,6 +81,9 @@ class Assets: Disposable {
             label {
                 font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColor = Color.WHITE
+            }
+            label("score-label", extend = defaultStyle) {
+                fontColor = Color.BLACK
             }
             label("mod-level", extend = defaultStyle) {
                 fontColor = Color.GREEN
