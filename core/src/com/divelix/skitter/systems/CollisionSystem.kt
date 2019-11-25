@@ -57,20 +57,12 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
                                 enemyHealthCmp.health -= Data.playerData.gun.damage
                             else
                                 enemyHealthCmp.health = 0f
-
-//                            if(enemyHealthCmp.health <= 0f) {
-//                                val collidedBodyCmp = collidedEntity.getComponent(B2dBodyComponent::class.java)
-//                                collidedBodyCmp.isDead = true
-//                                Data.enemiesCount--
-//                                Data.score += 100
-//                            }
-                            bulletCmp.isDead = true
                         }
                         TypeComponent.OBSTACLE -> {
                             println("OBSTACLE")
-                            bulletCmp.isDead = true
                         }
                     }
+                    bulletCmp.isDead = true // always delete bullet after any collision
                 }
                 TypeComponent.PUDDLE -> {
                     when (collidedTypeCmp.type) {

@@ -13,6 +13,9 @@ class DecaySystem(interval: Float): IntervalIteratingSystem(Family.all(DecayComp
 
     override fun processEntity(entity: Entity?) {
         val healthCmp = cmHealth.get(entity)
-        healthCmp.health -= 10f
+        if (healthCmp.health > 10f)
+            healthCmp.health -= 10f
+        else
+            healthCmp.health = 0f
     }
 }

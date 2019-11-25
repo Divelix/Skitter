@@ -61,15 +61,15 @@ class PlayScreen(val game: Main): KtxScreen {
 
 //        entityBuilder.createBattleground(-7f, -5f, 14f, 40f)
         entityBuilder.createBattleground(-7f, -10f, 14f, 30f)
-        playerEntity = entityBuilder.createPlayer(Data.playerData.ship.health)
-        camera = entityBuilder.createCamera(playerEntity)
-        hud = Hud(game, camera)
 //        entityBuilder.createObstacle(5f, -3f, 2f, 2f)
         entityBuilder.createObstacle(6.5f, 3f, 1f, 1f)
         entityBuilder.createObstacle(-8f, 0f, 3f, 1f)
+        entityBuilder.createPuddle(0f, 5f, 2f)
 //        entityBuilder.createObstacle(-4.5f, 5f, 5f, 5f)
         entityBuilder.createSpawn(0f, 10f, 2f)
-        entityBuilder.createPuddle(0f, 5f, 2f)
+        playerEntity = entityBuilder.createPlayer(Data.playerData.ship.health)
+        camera = entityBuilder.createCamera(playerEntity)
+        hud = Hud(game, camera)
 
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
@@ -79,7 +79,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
         engine.addSystem(BulletSystem())
-        engine.addSystem(SpawnSystem(3f, entityBuilder, playerEntity))
+        engine.addSystem(SpawnSystem(7f, entityBuilder, playerEntity))
         engine.addSystem(DecaySystem(0.5f))
 //        engine.addSystem(ClickableSystem(camera))
 

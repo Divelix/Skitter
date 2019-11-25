@@ -23,7 +23,7 @@ class EnemySystem: IteratingSystem(Family.all(EnemyComponent::class.java).get())
         val enemyCmp = cmEnemy.get(entity)
         val healthCmp = cmHealth.get(entity)
 
-        val playerPos = bindCmp.entity.getComponent(B2dBodyComponent::class.java).body.position
+        val playerPos = cmBody.get(bindCmp.entity).body.position
         val enemyPos = Vector2(transCmp.position.x, transCmp.position.y)
         bodyCmp.body.linearVelocity = playerPos.sub(enemyPos).nor().scl(enemyCmp.speed)
 

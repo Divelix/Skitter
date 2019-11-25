@@ -4,11 +4,14 @@ import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.components.CollisionComponent
+import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.components.TypeComponent
+import ktx.ashley.has
 
 class B2dContactListener : ContactListener {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
+    private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
 
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body // A is a body that was created earlier
@@ -31,6 +34,11 @@ class B2dContactListener : ContactListener {
             val entityB = bodyB.userData as Entity
             val tCmpA = cmType.get(entityA)
             val tCmpB = cmType.get(entityB)
+            if (tCmpA == null || tCmpB == null) return // kostyl to filter bullets (cause NPE as they die on beginContact())
+            if (tCmpA.type == TypeComponent.PUDDLE && entityB.has(cmDecay)) {
+                entityB.remove(DecayComponent::class.java)
+                println("cured")
+            }
         }
     }
     override fun preSolve(contact: Contact, oldManifold: Manifold) {}
