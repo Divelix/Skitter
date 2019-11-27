@@ -32,32 +32,24 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT)) }
-            val cursorBody = world.body(type = BodyDef.BodyType.StaticBody) {
-                position.set(0f, 0f)
+            with<MoveComponent> {
+                speed = Constants.PLAYER_SPEED
             }
-            val playerBody = world.body(type = BodyDef.BodyType.DynamicBody) {
-                circle(radius = Constants.PLAYER_SIZE / 2f) {
-                    density = 10f
-                    friction = 0.5f
-                    restitution = 0f
-                    filter.categoryBits = entityType
-                    filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    circle(radius = Constants.PLAYER_SIZE / 2f) {
+                        density = 10f
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                        filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE
 //                    filter.groupIndex = -1
 //                    isSensor = true
-                }
-                fixedRotation = true
-                position.set(0f, 0f)
-                userData = this@entity.entity
-            }
-            with<B2dBodyComponent> { body = playerBody }
-            with<MouseComponent> {
-                mouseJoint = cursorBody.mouseJointWith(playerBody) {
-                    maxForce = 1000000f
-                    target.set(bodyB.position)
-                    collideConnected = false
-                    dampingRatio = 1f
-//            frequencyHz = 100f
+                    }
+                    fixedRotation = true
+                    position.set(0f, 0f)
+                    userData = this@entity.entity
                 }
             }
             with<CollisionComponent>()

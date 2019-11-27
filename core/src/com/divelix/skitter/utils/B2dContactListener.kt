@@ -3,10 +3,8 @@ package com.divelix.skitter.utils
 import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.*
-import com.divelix.skitter.components.CollisionComponent
-import com.divelix.skitter.components.DecayComponent
-import com.divelix.skitter.components.SlowComponent
-import com.divelix.skitter.components.TypeComponent
+import com.divelix.skitter.Constants
+import com.divelix.skitter.components.*
 import ktx.ashley.has
 
 class B2dContactListener : ContactListener {
@@ -14,6 +12,7 @@ class B2dContactListener : ContactListener {
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
     private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
     private val cmSlow = ComponentMapper.getFor(SlowComponent::class.java)
+    private val cmMove = ComponentMapper.getFor(MoveComponent::class.java)
 
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body // A is a body that was created earlier
@@ -28,7 +27,7 @@ class B2dContactListener : ContactListener {
         }
     }
 
-    override fun endContact(contact: Contact) {
+    override fun endContact(contact: Contact) {//TODO seems like a hardcode a little, ponder on it later
         val bodyA = contact.fixtureA.body // A is a body that was created earlier
         val bodyB = contact.fixtureB.body
         if (bodyA.userData is Entity && bodyB.userData is Entity) {
@@ -39,8 +38,12 @@ class B2dContactListener : ContactListener {
             if (tCmpA == null || tCmpB == null) return // kostyl to filter bullets (cause NPE as they die on beginContact())
             if (tCmpA.type == TypeComponent.PUDDLE) {
                 if (entityB.has(cmDecay)) entityB.remove(DecayComponent::class.java)
-                if (entityB.has(cmSlow)) entityB.remove(SlowComponent::class.java) //TODO fix after player movement system rework (without MouseJoint)
-                println("cured")
+                if (entityB.has(cmSlow)) entityB.remove(SlowComponent::class.java)
+                val moveCmp = cmMove.get(entityB)
+                when (tCmpB.type) {
+                    TypeComponent.PLAYER -> moveCmp.speed = Constants.PLAYER_SPEED
+                    TypeComponent.ENEMY -> moveCmp.speed = Constants.ENEMY_SPEED
+                }
             }
         }
     }
