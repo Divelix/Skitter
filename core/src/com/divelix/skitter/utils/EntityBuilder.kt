@@ -126,6 +126,9 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
+            with<MoveComponent> {
+                speed = Constants.ENEMY_SPEED
+            }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.ENEMY_DEFAULT)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {

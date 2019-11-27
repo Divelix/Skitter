@@ -11,9 +11,7 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
-import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.DecayComponent
-import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
@@ -74,13 +72,15 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
+        engine.addSystem(MovementSystem())
         engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem(game))
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
         engine.addSystem(BulletSystem())
         engine.addSystem(SpawnSystem(7f, entityBuilder, playerEntity))
-        engine.addSystem(DecaySystem(0.5f))
+        engine.addSystem(DecaySystem(0.1f))
+        engine.addSystem(SlowSystem())
 //        engine.addSystem(ClickableSystem(camera))
 
         ShaderProgram.pedantic = false

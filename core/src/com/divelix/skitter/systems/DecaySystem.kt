@@ -9,12 +9,15 @@ import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.components.HealthComponent
 
 class DecaySystem(interval: Float): IntervalIteratingSystem(Family.all(DecayComponent::class.java, HealthComponent::class.java).get(), interval) {
-    val cmHealth = ComponentMapper.getFor(HealthComponent::class.java)
+    private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
+    private val cmHealth = ComponentMapper.getFor(HealthComponent::class.java)
 
     override fun processEntity(entity: Entity?) {
+        val decayCmp = cmDecay.get(entity)
         val healthCmp = cmHealth.get(entity)
-        if (healthCmp.health > 10f)
-            healthCmp.health -= 10f
+
+        if (healthCmp.health > decayCmp.damage)
+            healthCmp.health -= decayCmp.damage
         else
             healthCmp.health = 0f
     }

@@ -20,6 +20,8 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
     private val cmEnemy = ComponentMapper.getFor(EnemyComponent::class.java)
     private val cmBullet = ComponentMapper.getFor(BulletComponent::class.java)
     private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
+    private val cmSlow = ComponentMapper.getFor(SlowComponent::class.java)
+
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
 
@@ -67,9 +69,8 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
                 TypeComponent.PUDDLE -> {
                     when (collidedTypeCmp.type) {
                         TypeComponent.PLAYER, TypeComponent.ENEMY -> {
-                            if (!collidedEntity.has(cmDecay)) {
-                                collidedEntity.add(DecayComponent())
-                            }
+                            if (!collidedEntity.has(cmDecay)) collidedEntity.add(DecayComponent())
+                            if (!collidedEntity.has(cmSlow)) collidedEntity.add(SlowComponent())
                         }
                     }
                 }

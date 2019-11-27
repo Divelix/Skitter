@@ -5,5 +5,4 @@ import com.badlogic.gdx.utils.Pool
 
 class EnemyComponent: Component {
     var damage = 10f
-    var speed = 5f
 }
