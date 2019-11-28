@@ -33,7 +33,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 origin.set(size).scl(0.5f)
             }
             with<MoveComponent> {
-                speed = Constants.PLAYER_SPEED
+                speed = Data.playerData.ship.speed
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT)) }
             with<B2dBodyComponent> {

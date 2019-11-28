@@ -1,0 +1,14 @@
+{
+ "specs": [
+  "health",
+  "speed",
+  "damage"
+ ],
+ "guns": [
+  {
+   "index": 1,
+   "name": "Lover",
+   "specs": [100, 5, 10]
+  }
+ ]
+}

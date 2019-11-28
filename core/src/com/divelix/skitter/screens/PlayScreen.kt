@@ -25,7 +25,7 @@ class PlayScreen(val game: Main): KtxScreen {
         var slowRate = Constants.DEFAULT_SLOW_RATE
         var isPaused = false
         var ammo = Data.playerData.gun.capacity
-        var playerHealth = Data.playerData.ship.health
+        var health = Data.playerData.ship.health
     }
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
@@ -44,17 +44,16 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.score = 0
         Data.enemiesCount = 0
         val playerReader = JsonReader().parse("json/player_data.json".toLocalFile())
-        // TODO replace with json data
-        Data.playerData.ship.health = 100f
-        Data.playerData.ship.energy = 100f
-        Data.playerData.ship.armor = 10f
-        val specs = playerReader.get("active_gun_specs")
-        Data.playerData.gun.damage = specs[0].asFloat()
-        Data.playerData.gun.capacity = specs[1].asInt()
-        Data.playerData.gun.reloadTime = specs[2].asFloat()
-        Data.playerData.gun.bulletSpeed = specs[3].asFloat()
-        Data.playerData.gun.critChance = specs[4].asFloat()
-        Data.playerData.gun.critMultiplier = specs[5].asFloat()
+        val shipSpecs = playerReader.get("active_ship_specs")
+        Data.playerData.ship.health = shipSpecs[0].asFloat()
+        Data.playerData.ship.speed = shipSpecs[1].asFloat()
+        val gunSpecs = playerReader.get("active_gun_specs")
+        Data.playerData.gun.damage = gunSpecs[0].asFloat()
+        Data.playerData.gun.capacity = gunSpecs[1].asInt()
+        Data.playerData.gun.reloadTime = gunSpecs[2].asFloat()
+        Data.playerData.gun.bulletSpeed = gunSpecs[3].asFloat()
+        Data.playerData.gun.critChance = gunSpecs[4].asFloat()
+        Data.playerData.gun.critMultiplier = gunSpecs[5].asFloat()
         ammo = Data.playerData.gun.capacity
 
         entityBuilder.createBattleground(-20f, -20f, 40f, 40f)
@@ -117,7 +116,7 @@ class PlayScreen(val game: Main): KtxScreen {
             clearDeadBodies()
         }
         hud.update()
-        if (playerHealth <= 0f) gameOver()
+        if (health <= 0f) gameOver()
     }
 
     override fun pause() {

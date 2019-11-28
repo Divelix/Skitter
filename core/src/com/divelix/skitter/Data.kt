@@ -16,9 +16,10 @@ object Data {
 
     init {
         val playerReader = JsonReader().parse("json/player_data.json".toLocalFile())
-        val specs = playerReader.get("active_gun_specs")
-        val shipData = ShipData(100f, 100f, 10f)
-        val gunData = GunData(specs[0].asFloat(), specs[1].asInt(), specs[2].asFloat(), specs[3].asFloat(), specs[4].asFloat(), specs[5].asFloat())
+        val shipSpecs = playerReader.get("active_ship_specs")
+        val shipData = ShipData(shipSpecs[0].asFloat(), shipSpecs[1].asFloat())
+        val gunSpecs = playerReader.get("active_gun_specs")
+        val gunData = GunData(gunSpecs[0].asFloat(), gunSpecs[1].asInt(), gunSpecs[2].asFloat(), gunSpecs[3].asFloat(), gunSpecs[4].asFloat(), gunSpecs[5].asFloat())
         playerData = PlayerData(shipData, gunData)
         dynamicData = DynamicData(Vector2(), Array(10))
     }
@@ -31,8 +32,7 @@ data class PlayerData(val ship: ShipData,
                       var gun: GunData)
 
 data class ShipData(var health: Float,
-                    var energy: Float,
-                    var armor: Float)
+                    var speed: Float)
 
 data class GunData(var damage: Float,
                    var capacity: Int,

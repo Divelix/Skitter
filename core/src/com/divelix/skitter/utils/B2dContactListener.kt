@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.Constants
+import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.has
 
@@ -41,7 +42,7 @@ class B2dContactListener : ContactListener {
                 if (entityB.has(cmSlow)) entityB.remove(SlowComponent::class.java)
                 val moveCmp = cmMove.get(entityB)
                 when (tCmpB.type) {
-                    TypeComponent.PLAYER -> moveCmp.speed = Constants.PLAYER_SPEED
+                    TypeComponent.PLAYER -> moveCmp.speed = Data.playerData.ship.speed
                     TypeComponent.ENEMY -> moveCmp.speed = Constants.ENEMY_SPEED
                 }
             }

@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -21,13 +20,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
-import com.divelix.skitter.screens.ModScreen
 import com.divelix.skitter.screens.PlayScreen
 import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
 import ktx.graphics.*
 import ktx.vis.table
-import ktx.vis.window
 
 class Hud(val game: Main, val playCam: OrthographicCamera) {
     private val context = game.getContext()
@@ -158,7 +155,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             }
             shape.color = healthColor
             // TODO fix that healthbar hardcode after ship json implementation
-            val barWidth = stage.width * PlayScreen.playerHealth / 100f
+            val barWidth = stage.width * PlayScreen.health / 100f
             shape.rect(hpOffset + (stage.width - barWidth) / 2f, hpOffset,
                     barWidth - hpOffset*2, hpHeight)
 
