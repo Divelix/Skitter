@@ -24,8 +24,6 @@ object Constants {
     const val MOD_WIDTH = 64f
     const val MOD_HEIGHT = 64f
 
-    const val ENEMY_SPEED = 5f //TODO move to json later
-
     const val UISKIN_ATLAS = "uiskin.atlas"
     const val DIGITS_FNT = "fonts/digits.fnt"
     const val DIGITS_PNG = "fonts/digits.png"

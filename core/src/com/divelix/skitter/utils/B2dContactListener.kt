@@ -43,7 +43,7 @@ class B2dContactListener : ContactListener {
                 val moveCmp = cmMove.get(entityB)
                 when (tCmpB.type) {
                     TypeComponent.PLAYER -> moveCmp.speed = Data.playerData.ship.speed
-                    TypeComponent.ENEMY -> moveCmp.speed = Constants.ENEMY_SPEED
+                    TypeComponent.ENEMY -> moveCmp.speed = Data.loverData.speed
                 }
             }
         }

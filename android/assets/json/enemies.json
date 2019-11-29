@@ -4,7 +4,7 @@
   "speed",
   "damage"
  ],
- "guns": [
+ "enemies": [
   {
    "index": 1,
    "name": "Lover",

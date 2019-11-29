@@ -68,6 +68,7 @@ class Assets: Disposable {
         }
         val fontParams32 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
             size = 32
+            characters = "0123456789"
             magFilter = Texture.TextureFilter.Linear
             minFilter = Texture.TextureFilter.Linear
         }

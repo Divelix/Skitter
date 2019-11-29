@@ -10,11 +10,13 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
+import ktx.assets.toLocalFile
 import ktx.box2d.body
 import ktx.box2d.mouseJointWith
 import kotlin.experimental.or
@@ -111,15 +113,15 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
         val entityType = TypeComponent.ENEMY
         engine.entity {
             with<TypeComponent> { type = entityType }
-            with<EnemyComponent>()
-            with<HealthComponent> { health = 100f }
+            with<EnemyComponent> { damage = Data.loverData.damage }
+            with<HealthComponent> { health = Data.loverData.health }
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
             with<MoveComponent> {
-                speed = Constants.ENEMY_SPEED
+                speed = Data.loverData.speed
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.ENEMY_DEFAULT)) }
             with<B2dBodyComponent> {
@@ -137,7 +139,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 }
             }
             with<CollisionComponent>()
-            with<HealthBarComponent>()
+            with<HealthBarComponent> { maxValue = Data.loverData.health }
             with<BindComponent> { entity = playerEntity }
 //            with<ClickableComponent> { circle.set(x, y, entitySize/2)} // TODO maybe return later for new mechanics
         }

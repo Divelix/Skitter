@@ -7,4 +7,5 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 class HealthBarComponent: Component {
     val height = 0.2f
+    var maxValue = 100f
 }

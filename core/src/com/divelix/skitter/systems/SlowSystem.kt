@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.divelix.skitter.Constants
+import com.divelix.skitter.Data
 import com.divelix.skitter.components.MoveComponent
 import com.divelix.skitter.components.SlowComponent
 
@@ -15,6 +16,6 @@ class SlowSystem: IteratingSystem(Family.all(SlowComponent::class.java).get()) {
     override fun processEntity(entity: Entity?, deltaTime: Float) {
         val slowCmp = cmSlow.get(entity)
         val moveCmp = cmMove.get(entity)
-        moveCmp.speed = Constants.ENEMY_SPEED * slowCmp.slowRate
+        moveCmp.speed = Data.loverData.speed * slowCmp.slowRate
     }
 }

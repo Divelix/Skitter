@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
+import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.has
 import ktx.assets.file
@@ -98,7 +99,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
                     val healthCmp = cmHealth.get(entity)
                     batch.draw(healthBarReg,
                             transformCmp.position.x - originX, transformCmp.position.y - originY + transformCmp.size.y,
-                            width * healthCmp.health / 100, healthBarCmp.height)
+                            width * healthCmp.health / healthBarCmp.maxValue, healthBarCmp.height)
                 }
 //            batch.shader = null
             }
