@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
+import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
 import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
@@ -113,9 +114,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             setPosition(Constants.D_WIDTH - width - 20f, Constants.D_HEIGHT - height - 20f)
             addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    Gdx.app.log("Hud","Resolution: ${Gdx.graphics.width}; ${Gdx.graphics.height}")
-                    Gdx.app.log("Hud","PlayCam: ${playCam.viewportWidth}; ${playCam.viewportHeight}")
-                    Gdx.app.log("Hud","StageCam: ${camera.viewportWidth}; ${camera.viewportHeight}")
+                    game.screen = MenuScreen(game)
                     super.touchUp(event, x, y, pointer, button)
                 }
             })

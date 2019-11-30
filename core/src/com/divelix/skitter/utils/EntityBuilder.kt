@@ -29,6 +29,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<TypeComponent> { type = entityType }
             with<PlayerComponent>()
             with<HealthComponent> { health = hp }
+            with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
                 position.set(0f, 0f, 1f)
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)

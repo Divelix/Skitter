@@ -56,16 +56,12 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.playerData.gun.critMultiplier = gunSpecs[5].asFloat()
         ammo = Data.playerData.gun.capacity
 
-        entityBuilder.createBattleground(-20f, -20f, 40f, 40f)
-        entityBuilder.createObstacle(-5f, 5f, 4f, 4f)
-        entityBuilder.createObstacle(5f, 5f, 4f, 4f)
+        entityBuilder.createBattleground(-8f, -8f, 16f, 45f)
+        entityBuilder.createObstacle(-6f, 5f, 2f, 4f)
+        entityBuilder.createObstacle(6f, 5f, 2f, 4f)
         entityBuilder.createPuddle(0f, 5f, 2f)
         entityBuilder.createSpawn(0f, 10f, 2f)
-        entityBuilder.createObstacle(12f, -15f, 4f, 4f)
         entityBuilder.createObstacle(8f, -4f, 2f, 2f)
-        entityBuilder.createObstacle(-10f, -8f, 6f, 6f)
-        entityBuilder.createPuddle(-10f, -3f, 1f)
-        entityBuilder.createSpawn(-19f, -19f, 1f)
         playerEntity = entityBuilder.createPlayer(Data.playerData.ship.health)
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera)
@@ -81,6 +77,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(BulletSystem())
         engine.addSystem(SpawnSystem(5f, entityBuilder, playerEntity))
         engine.addSystem(DecaySystem(0.1f))
+        engine.addSystem(RegenerationSystem(0.5f))
         engine.addSystem(SlowSystem())
 //        engine.addSystem(ClickableSystem(camera))
 
