@@ -32,15 +32,17 @@ object Constants {
     const val ROBOTO_ALIAS_RELOAD = "big"
     const val VERTEX_SHADER = "shaders/shader.vsh"
     const val FRAGMENT_SHADER = "shaders/shader.fsh"
-    const val SHIPS_ICON = "ships-icon.png"
-    const val GUNS_ICON = "guns-icon.png"
-    const val MODS_ICON = "mods-icon.png"
+    const val SHIPS_BTN = "ships-btn.png"
+    const val GUNS_BTN = "guns-btn.png"
+    const val MODS_BTN = "mods-btn.png"
     const val PLAYER_DEFAULT = "player-default.png"
     const val ENEMY_DEFAULT = "enemy-default.png"
     const val BULLET_DEFAULT = "bullet-default.png"
     const val AIM = "aim-64.png"
     const val WHITE_CIRCLE = "white_circle.png"
     const val BACKGROUND_IMAGE = "dark-honeycomb.png"
+    const val SHIP_ICON = "ship-icon.png"
+    const val GUN_ICON = "gun-icon.png"
     const val APPLY_BTN = "apply_btn.png"
     const val UP_BTN = "up_btn.png"
     const val SELL_BTN = "sell_btn.png"
@@ -58,4 +60,12 @@ object Constants {
 
     const val HIT_SOUND = "audio/hit.wav"
     const val SHOT_SOUND = "audio/shot.wav"
+
+    const val PLAYER_FILE = "json/player_data.json"
+    const val MODS_FILE = "json/mods.json"
+    const val SHIPS_FILE = "json/ships.json"
+    const val GUNS_FILE = "json/guns.json"
+
+    const val SHIPS_TAB = "ShipsTab"
+    const val GUNS_TAB = "GunsTab"
 }

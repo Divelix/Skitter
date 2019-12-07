@@ -1,13 +1,11 @@
 package com.divelix.skitter.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -30,14 +28,14 @@ class MenuScreen(game: Main): KtxScreen {
             debugAll()
             table {
                 defaults().expandX().pad(10f)
-                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SHIPS_ICON)))
-                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MODS_ICON))).addListener(object: ClickListener() {
+                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SHIPS_BTN)))
+                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MODS_BTN))).addListener(object: ClickListener() {
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                         game.screen = ModScreen(game)
                         super.touchUp(event, x, y, pointer, button)
                     }
                 })
-                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.GUNS_ICON))).addListener(object: ClickListener() {
+                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.GUNS_BTN))).addListener(object: ClickListener() {
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                         game.screen = GunScreen(game)
                         super.touchUp(event, x, y, pointer, button)

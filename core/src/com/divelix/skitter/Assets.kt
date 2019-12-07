@@ -38,13 +38,15 @@ class Assets: Disposable {
     fun loadAssets() {
         manager.load<TextureAtlas>(Constants.UISKIN_ATLAS)
         manager.load<Texture>(Constants.BACKGROUND_IMAGE)
+        manager.load<Texture>(Constants.SHIP_ICON)
+        manager.load<Texture>(Constants.GUN_ICON)
         manager.load<Texture>(Constants.APPLY_BTN)
         manager.load<Texture>(Constants.UP_BTN)
         manager.load<Texture>(Constants.SELL_BTN)
         manager.load<Texture>(Constants.PAUSE_BTN)
-        manager.load<Texture>(Constants.SHIPS_ICON)
-        manager.load<Texture>(Constants.GUNS_ICON)
-        manager.load<Texture>(Constants.MODS_ICON)
+        manager.load<Texture>(Constants.SHIPS_BTN)
+        manager.load<Texture>(Constants.GUNS_BTN)
+        manager.load<Texture>(Constants.MODS_BTN)
         manager.load<Texture>(Constants.PLAYER_DEFAULT)
         manager.load<Texture>(Constants.ENEMY_DEFAULT)
         manager.load<Texture>(Constants.BULLET_DEFAULT)
@@ -101,7 +103,7 @@ class Assets: Disposable {
                 down = it["button-blue"]
             }
             list {
-                font = BitmapFont()
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColorSelected = Color.BLACK
                 fontColorUnselected = Color.WHITE
                 background = it["select-box-list-bg"]
@@ -109,6 +111,7 @@ class Assets: Disposable {
             }
             val btn = visTextButton {
                 up = it["button"]
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
             }
             visTextButton {
                 focusBorder = it["border"]
@@ -135,20 +138,26 @@ class Assets: Disposable {
                 titleFont = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
                 background = TextureRegionDrawable(manager.get<Texture>(Constants.BACKGROUND_IMAGE))
             }
-            tabbedPane {
+            tabbedPane("vertical") {
                 background = it["window-border-bg"]
-                draggable = false
                 separatorBar = it["separator"]
-                vertical = true
                 buttonStyle = btn
+                draggable = false
+                vertical = true
             }
             sizes {
                 borderSize = 1f
             }
-            visImageButton {  }
+            visImageButton {
+                up = it["button"]
+                down = it["button-down"]
+            }
+            visImageButton("close-active-tab", extend = defaultStyle)
+            visImageButton("close", extend = defaultStyle)
 
         }
         VisUI.load(uiSkin)
+//        VisUI.load() //TODO test tabs and delete
         VisUI.setDefaultTitleAlign(Align.center)
 //        font = manager.get("myFont.ttf")
 //        val fontMap = ObjectMap<String, Any>()
