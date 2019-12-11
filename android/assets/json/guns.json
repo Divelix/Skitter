@@ -2,16 +2,16 @@
  "specs": [
   "damage",
   "capacity",
-  "reload_time",
-  "bullet_speed",
-  "crit_chance",
-  "crit_multiplier"
+  "reload",
+  "speed",
+  "crit",
+  "chance"
  ],
  "guns": [
   {
    "index": 1,
    "name": "Rifle",
-   "specs": [30, 10, 1, 25, 0.1, 2]
+   "specs": [30, 10, 1, 25, 2, 0.1]
   }
  ]
 }

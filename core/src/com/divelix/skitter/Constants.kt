@@ -57,6 +57,7 @@ object Constants {
     const val MOD_FIRE_DAMAGE = "mods/fire-damage.png"
     const val MOD_HEALTH = "mods/health.png"
     const val MOD_MANA = "mods/mana.png"
+    const val STAR = "star.png"
 
     const val HIT_SOUND = "audio/hit.wav"
     const val SHOT_SOUND = "audio/shot.wav"

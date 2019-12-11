@@ -62,6 +62,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.MOD_FIRE_DAMAGE)
         manager.load<Texture>(Constants.MOD_HEALTH)
         manager.load<Texture>(Constants.MOD_MANA)
+        manager.load<Texture>(Constants.STAR)
         manager.load<Sound>(Constants.HIT_SOUND)
         manager.load<Sound>(Constants.SHOT_SOUND)
         manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)

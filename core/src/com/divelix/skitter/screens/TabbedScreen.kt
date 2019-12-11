@@ -23,6 +23,7 @@ import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.EquipTable
+import com.divelix.skitter.utils.TopViewport
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.vis.table
@@ -31,7 +32,7 @@ class TabbedScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
-    private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
+    private val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
     val ships: Table
     val guns: Table
