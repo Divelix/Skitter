@@ -10,7 +10,7 @@
  "guns": [
   {
    "index": 1,
-   "name": "Rifle",
+   "name": "Pistol",
    "specs": [30, 10, 1, 25, 2, 0.1]
   }
  ]

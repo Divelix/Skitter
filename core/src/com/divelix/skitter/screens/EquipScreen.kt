@@ -28,7 +28,7 @@ import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.vis.table
 
-class TabbedScreen(val game: Main): KtxScreen {
+class EquipScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
@@ -46,7 +46,6 @@ class TabbedScreen(val game: Main): KtxScreen {
         stage += table {
             setFillParent(true)
             top()
-            debugAll()
             defaults().expandX()
             table {
                 shipTab = container(NavButton(Constants.SHIPS_TAB, true))
@@ -92,16 +91,9 @@ class TabbedScreen(val game: Main): KtxScreen {
         init {
             setSize(btnSize.x, btnSize.y)
             // Background
-            val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha).apply {
-                setColor(upColor)
-                fill()
-            }
-            val upDrawable = TextureRegionDrawable(Texture(bgPixel))
-            bgPixel.run {
-                setColor(downColor)
-                fill()
-            }
-            val downDrawable = TextureRegionDrawable(Texture(bgPixel))
+            val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
+            val upDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(upColor); fill() }))
+            val downDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(downColor); fill() }))
             val activeDrawable = if (active) downDrawable else upDrawable
             bg = Image(activeDrawable).apply { setFillParent(true) }
             // Icon

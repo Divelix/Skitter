@@ -4,12 +4,12 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
@@ -26,12 +26,13 @@ class TestScreen(val game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
     private val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
+    lateinit var infoTable: Table
+    lateinit var suitTable: Table
+    lateinit var stockTable: Table
+
     init {
-        val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha).apply {
-            setColor(Color(0f, 0f, 0f, 0.3f))
-            fill()
-        }
-        val bgDrawable = TextureRegionDrawable(Texture(bgPixel))
+        val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
+        val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Color(0f, 0f, 0f, 0.3f)); fill()}))
         val rootTable = table {
             setFillParent(true)
             top()
@@ -40,23 +41,34 @@ class TestScreen(val game: Main): KtxScreen {
                 name = "TopPart"
                 debugAll()
                 background = bgDrawable
-                table {
+                infoTable = table {
+                    // make table width equal 298 = 99 + 100 + 99
+                    val textWidth = 99f
+                    val tableHeight = 100f
+                    debugAll()
                     pad(14f, 14f, 7f, 14f)
-                    label("Description")
-                    image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT))) { cell ->
-                        cell.size(64f, 64f)
+                    label("Description for this specific gun") {
+                        it.size(textWidth, tableHeight)
+                        setWrap(true)
+                        setAlignment(Align.center)
                     }
-                    label("Specs")
+                    container(image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.BUCKET_ICON)))) {
+                        background = bgDrawable
+                        pad(10f)
+                        it.size(tableHeight, tableHeight)
+                    }
+//                    image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT))) { it.size(tableHeight, tableHeight) }
+                    label("Specs") { it.size(textWidth, tableHeight) }
                 }
                 row()
-                table {
+                suitTable = table {
                     debugAll()
                     pad(7f)
                     defaults().pad(7f)
                     container(EmptyMod())
                     container(EmptyMod())
                     container(EmptyMod())
-                    container(EmptyMod())
+                    container(ModIcon(Mod(1, "DAMAGE", 3, 96), assets))
                     row()
                     container(EmptyMod())
                     container(EmptyMod())
@@ -68,7 +80,7 @@ class TestScreen(val game: Main): KtxScreen {
             table {
                 name = "BotPart"
                 padTop(14f)
-                table {
+                stockTable = table {
                     background = bgDrawable // lifehack for margin
                     debugAll()
                     pad(7f)
@@ -135,8 +147,13 @@ class TestScreen(val game: Main): KtxScreen {
                 setSize(iconSize, iconSize)
                 setPosition((this@ModIcon.width - width) / 2f, (this@ModIcon.height - height) / 2f)
             }
-            val quantityLabel = VisLabel("${mod.quantity}", "score-label").apply {
+            val quantityBg = Image(lvlDrawable).apply {
+                setSize(14f, 14f)
                 setPosition(this@ModIcon.width - width, this@ModIcon.height - height)
+            }
+            val quantityLabel = VisLabel("${mod.quantity}").apply {
+//                setPosition(this@ModIcon.width - width, this@ModIcon.height - height)
+                setPosition(quantityBg.x + (quantityBg.width-width)/2f, quantityBg.y + (quantityBg.height-height)/2f)
                 touchable = Touchable.disabled
             }
             val levelBars = table {
@@ -150,6 +167,7 @@ class TestScreen(val game: Main): KtxScreen {
 
             addActor(bg)
             addActor(icon)
+            addActor(quantityBg)
             addActor(quantityLabel)
             addActor(levelBars)
         }

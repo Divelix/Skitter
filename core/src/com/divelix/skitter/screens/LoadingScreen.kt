@@ -4,13 +4,11 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.MathUtils
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Main
-import com.divelix.skitter.Constants
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -45,7 +43,7 @@ class LoadingScreen(private val game: Main): KtxScreen {
         if(assets.manager.update() && progress >= 0.99f) {
             assets.manager.finishLoading()
             assets.setup()
-            game.screen = TestScreen(game)
+            game.screen = EquipScreen(game)
         }
     }
 }

@@ -43,7 +43,7 @@ class MenuScreen(game: Main): KtxScreen {
                 })
             }
             row()
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT))).addListener(object: ClickListener() {
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.BUCKET_ICON))).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     game.screen = PlayScreen(game)
                     super.touchUp(event, x, y, pointer, button)

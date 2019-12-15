@@ -47,7 +47,8 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.SHIPS_BTN)
         manager.load<Texture>(Constants.GUNS_BTN)
         manager.load<Texture>(Constants.MODS_BTN)
-        manager.load<Texture>(Constants.PLAYER_DEFAULT)
+        manager.load<Texture>(Constants.BUCKET_ICON)
+        manager.load<Texture>(Constants.PISTOL_ICON)
         manager.load<Texture>(Constants.ENEMY_DEFAULT)
         manager.load<Texture>(Constants.BULLET_DEFAULT)
         manager.load<Texture>(Constants.AIM)
@@ -66,6 +67,9 @@ class Assets: Disposable {
         manager.load<Sound>(Constants.HIT_SOUND)
         manager.load<Sound>(Constants.SHOT_SOUND)
         manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)
+        val fontParams12 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
+            size = 12
+        }
         val fontParams16 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
             size = 16
         }
@@ -75,6 +79,7 @@ class Assets: Disposable {
             magFilter = Texture.TextureFilter.Linear
             minFilter = Texture.TextureFilter.Linear
         }
+        manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_QUANTITY, fontParams12)
         manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT, fontParams16)
         manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD, fontParams32)
     }
@@ -92,8 +97,9 @@ class Assets: Disposable {
             label("mod-level", extend = defaultStyle) {
                 fontColor = Color.GREEN
             }
-            label("mod-quantity", extend = defaultStyle) {
-                fontColor = Color.YELLOW
+            label("mod-quantity") {
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_QUANTITY)
+                fontColor = Color.WHITE
             }
             label("reload-label") {
                 font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD)

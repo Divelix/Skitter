@@ -10,15 +10,12 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
-import ktx.assets.toLocalFile
 import ktx.box2d.body
-import ktx.box2d.mouseJointWith
 import kotlin.experimental.or
 
 class EntityBuilder(private val engine: PooledEngine, private val world: World, private val assets: Assets) {
@@ -38,7 +35,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<MoveComponent> {
                 speed = Data.playerData.ship.speed
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.PLAYER_DEFAULT)) }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.BUCKET_ICON)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = Constants.PLAYER_SIZE / 2f) {
