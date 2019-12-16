@@ -1,5 +1,7 @@
 package com.divelix.skitter
 
+import com.badlogic.gdx.graphics.Color
+
 object Constants {
     const val TITLE = "Skitter"
     const val D_WIDTH = 350
@@ -24,6 +26,8 @@ object Constants {
     const val MOD_WIDTH = 64f
     const val MOD_HEIGHT = 64f
 
+    val BG_COLOR = Color(0x684BA6FF)
+
     const val UISKIN_ATLAS = "uiskin.atlas"
     const val DIGITS_FNT = "fonts/digits.fnt"
     const val DIGITS_PNG = "fonts/digits.png"
@@ -38,6 +42,7 @@ object Constants {
     const val MODS_BTN = "mods-btn.png"
     const val BUCKET_ICON = "player-default.png"
     const val PISTOL_ICON = "pistol.png"
+    const val CARRIAGE = "carriage.png"
     const val ENEMY_DEFAULT = "enemy-default.png"
     const val BULLET_DEFAULT = "bullet-default.png"
     const val AIM = "aim-64.png"
@@ -59,6 +64,9 @@ object Constants {
     const val MOD_FIRE_DAMAGE = "mods/fire-damage.png"
     const val MOD_HEALTH = "mods/health.png"
     const val MOD_MANA = "mods/mana.png"
+    const val MOD_ICON_DAMAGE = "mods/damage_icon.png"
+    const val MOD_ICON_RELOAD = "mods/reload_icon.png"
+    const val MOD_ICON_CAPACITY = "mods/capacity_icon.png"
     const val STAR = "star.png"
 
     const val HIT_SOUND = "audio/hit.wav"

@@ -3,31 +3,21 @@ package com.divelix.skitter.ui
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
-import com.badlogic.gdx.utils.JsonValue
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
-import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.vis.table
 
-class EquipTable(val tabName: String, val assets: Assets): Table() {
-    private val reader = JsonReader()
-    private val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
-    private val playerData = reader.parse(playerDataFile)
-    private val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
-//    private val equipData: JsonValue
-//    private val equipMods: JsonValue
-
+class EquipTable(private val tabName: String, val assets: Assets): Table() {
     private val equipSpecs = Array<Float>(6)
     private val suitMods = Array<Mod>(8)
     private val stockMods = Array<Mod>(20)
@@ -35,15 +25,14 @@ class EquipTable(val tabName: String, val assets: Assets): Table() {
 
     private val infoTable: Table
     lateinit var specsTable: Table
-    private val suitTable: Table
-    private val stockTable: Table
+    val suitTable: Table
+    val stockTable: Table
 
-    val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Color(0f, 0f, 0f, 0.3f)); fill()}))
+    private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
+    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Color(0f, 0f, 0f, 0.3f)); fill()}))
 
     init {
-        useJsonFile()
-
+        readJsonData()
         infoTable = makeInfoTable()
         suitTable = makeSuitTable()
         stockTable = makeStockTable()
@@ -57,10 +46,9 @@ class EquipTable(val tabName: String, val assets: Assets): Table() {
         }
         val botPart = table {
             name = "BotPart"
-            padTop(14f)
+            padTop(12f)
             add(ScrollPane(stockTable))
         }
-
         // make UI
         setFillParent(true)
         top()
@@ -70,7 +58,11 @@ class EquipTable(val tabName: String, val assets: Assets): Table() {
         add(botPart)
     }
 
-    private fun useJsonFile() {
+    private fun readJsonData() {
+        val reader = JsonReader()
+        val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
+        val playerData = reader.parse(playerDataFile)
+        val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
         var modsType = ""
         var equipFile = ""
         var equipTypeName = ""
@@ -111,12 +103,12 @@ class EquipTable(val tabName: String, val assets: Assets): Table() {
             equipMods.filter { mod ->
                 val effects = mod.get("effects")
                 mod.get("index").asInt() == index
-            }.forEach { stockMods.add(Mod(index, it.get("name").asString(), level, quantity)) }
+            }.forEach { stockMods.add(Mod(index, it.get("name").asString(), level)) }
         }
         suitMods.forEach { suitMod -> // consider repetition
             stockMods.filter { it.index == suitMod.index }.forEach {it.quantity--}
         }
-        stockMods.filter { it.quantity == 0 }.forEach { stockMods.removeValue(it, true) }
+        stockMods.filter { it.quantity == -1 }.forEach { stockMods.removeValue(it, true) }
     }
 
     private fun makeInfoTable(): Table {
@@ -199,67 +191,5 @@ class EquipTable(val tabName: String, val assets: Assets): Table() {
             }
         }
         return TextureRegionDrawable(assets.manager.get<Texture>(textureName))
-    }
-
-    class ModIcon(val mod: Mod, val assets: Assets): Group() {
-        private val iconSize = Constants.MOD_WIDTH / 2f
-        private val bgColor = Color(1f, 1f, 0f, 1f)
-        private val lvlColor = Color(0f, 0f, 0f, 1f)
-        private val noLvlColor = Color(1f, 1f, 1f, 1f)
-
-        init {
-            touchable = Touchable.enabled
-            setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
-
-            val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-            val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(bgColor); fill()}))
-            val lvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(lvlColor); fill()}))
-            val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(noLvlColor); fill()}))
-
-            val bg = Image(bgDrawable).apply { setFillParent(true) }
-            val texture: Texture = when(mod.index) {
-                1 -> assets.manager.get(Constants.STAR)
-                else -> assets.manager.get(Constants.BACKGROUND_IMAGE)
-            }
-            val icon = Image(texture).apply {
-                setSize(iconSize, iconSize)
-                setPosition((this@ModIcon.width - width) / 2f, (this@ModIcon.height - height) / 2f)
-            }
-            val quantityBg = Image(lvlDrawable).apply {
-                setSize(14f, 14f)
-                setPosition(this@ModIcon.width - width, this@ModIcon.height - height)
-            }
-            val quantityLabel = VisLabel("${mod.quantity}").apply {
-                //                setPosition(this@ModIcon.width - width, this@ModIcon.height - height)
-                setPosition(quantityBg.x + (quantityBg.width-width)/2f, quantityBg.y + (quantityBg.height-height)/2f)
-                touchable = Touchable.disabled
-            }
-            val levelBars = table {
-                bottom().left()
-                pad(2f)
-                defaults().pad(1f)
-                for (i in 1..10) {
-                    image(if (i <= mod.level) lvlDrawable else noLvlDrawable) {it.size(4f)}
-                }
-            }
-
-            addActor(bg)
-            addActor(icon)
-            addActor(quantityBg)
-            addActor(quantityLabel)
-            addActor(levelBars)
-        }
-    }
-
-    class EmptyMod: Group() {
-        private val bgColor = Color(0f, 0f, 0f, 0.3f)
-
-        init {
-            setSize(64f, 64f)
-            val pixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-            val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(bgColor); fill()}))
-            val img = Image(bgDrawable).apply { setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT) }
-            addActor(img)
-        }
     }
 }

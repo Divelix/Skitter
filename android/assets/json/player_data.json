@@ -35,6 +35,7 @@
 	"ship": [
 		{ "index": 1, "level": 1, "quantity": 1 },
 		{ "index": 2, "level": 2, "quantity": 1 },
+		{ "index": 2, "level": 7, "quantity": 1 },
 		{ "index": 3, "level": 3, "quantity": 4 }
 	]
 }
