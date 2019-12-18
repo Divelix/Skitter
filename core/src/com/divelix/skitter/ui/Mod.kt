@@ -34,9 +34,13 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
 
         val bg = Image(bgDrawable).apply { setFillParent(true) }
         val textureName = when (mod.index) {
-            1 -> Constants.MOD_ICON_DAMAGE
-            2 -> Constants.MOD_ICON_RELOAD
-            3 -> Constants.MOD_ICON_CAPACITY
+            1001 -> Constants.MOD_ICON_HEALTH
+            1002 -> Constants.MOD_ICON_SPEED
+
+            2001 -> Constants.MOD_ICON_DAMAGE
+            2002 -> Constants.MOD_ICON_RELOAD
+            2003 -> Constants.MOD_ICON_CAPACITY
+
             else -> Constants.STAR
         }
         val texture: Texture = assets.manager.get(textureName)

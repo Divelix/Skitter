@@ -1,78 +1,70 @@
 {
  "prices": [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
  "mods": {
+  "ship": [
+   {
+    "index": 1001,
+    "name": "HEALTH",
+    "effects": {
+     "health": [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2]
+    }
+   },
+   {
+    "index": 1002,
+    "name": "SPEED",
+    "effects": {
+     "speed": [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2]
+    }
+   }
+  ],
   "gun": [
    {
-    "index": 1,
+    "index": 2001,
     "name": "DAMAGE",
     "effects": {
       "damage": [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2]
     }
    },
    {
-    "index": 2,
+    "index": 2002,
     "name": "RELOAD_TIME",
     "effects": {
       "reload_time": [0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5, 0.4]
     }
    },
    {
-    "index": 3,
+    "index": 2003,
     "name": "CAPACITY",
     "effects": {
-     "bullet_speed": [1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1]
+     "capacity": [1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1]
     }
    },
    {
-    "index": 4,
+    "index": 2004,
     "name": "BULLET_SPEED",
     "effects": {
       "bullet_speed": [1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1]
     }
    },
    {
-    "index": 5,
+    "index": 2005,
     "name": "CRIT_MULT",
     "effects": {
       "crit_multiplier": [1.2, 1.4, 1.6, 1.8, 2]
     }
    },
    {
-    "index": 6,
+    "index": 2006,
     "name": "FIRE_DAMAGE",
     "effects": {
       "fire_damage": [10, 15, 20]
     }
    },
    {
-    "index": 7,
+    "index": 2007,
     "name": "COLD_DAMAGE",
     "effects": {
       "cold_damage": [10, 15, 20]
-    }
-   }
-  ],
-
-  "ship": [
-   {
-    "index": 1,
-    "name": "HEALTH",
-    "effects": {
-      "health": 100
-    }
-   },
-   {
-    "index": 2,
-    "name": "ENERGY",
-    "effects": {
-      "energy": 100
-    }
-   },
-   {
-    "index": 3,
-    "name": "SPEED",
-    "effects": {
-      "speed": 100
     }
    }
   ]

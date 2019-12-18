@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -34,8 +35,8 @@ class EquipScreen(val game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
     private val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
-    val ships: Table
-    val guns: Table
+    val ships: EquipTable
+    val guns: EquipTable
     lateinit var shipTab: Container<NavButton>
     lateinit var gunTab: Container<NavButton>
     lateinit var content: Container<Table>
@@ -60,6 +61,7 @@ class EquipScreen(val game: Main): KtxScreen {
             content = container(ships)
         }
         stage += carriage.apply { setPosition(-height, -width) }
+        stage += ApplyBtn(0f, 0f)
         stage.addListener(makeStageListener())
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
@@ -95,7 +97,7 @@ class EquipScreen(val game: Main): KtxScreen {
                     is ModIcon -> processModIcon(actor)
                     is EmptyMod -> processEmptyMod(actor)
                 }
-//                updateSpecs()
+                updateSpecs()
                 return true
             }
         }
@@ -112,9 +114,7 @@ class EquipScreen(val game: Main): KtxScreen {
                 carriage.setPosition(carriagePos.x, carriagePos.y)
             }
             modIcon -> {// deselect this mod
-                activeMod = null
-                activeModContainer = null
-                carriage.setPosition(-carriage.width, -carriage.height)
+                deselect()
             }
             else -> {
                 val isSameIndex = modIcon.mod.index == activeMod!!.mod.index
@@ -153,13 +153,28 @@ class EquipScreen(val game: Main): KtxScreen {
         }
     }
 
-    fun isDup(modIcon: ModIcon): Boolean {
+    private fun isDup(modIcon: ModIcon): Boolean {
         val suitTable = (content.actor as EquipTable).suitTable
         suitTable.children.filter {(it as Container<*>).actor is ModIcon}.forEach {
             val suitModIcon = (it as Container<*>).actor as ModIcon
             if (suitModIcon.mod.index == modIcon.mod.index) return true
         }
         return false
+    }
+
+    private fun deselect() {
+        activeMod = null
+        activeModContainer = null
+        carriage.setPosition(-carriage.width, -carriage.height)
+    }
+
+    private fun updateSpecs() {
+        (content.actor as EquipTable).updateSpecs()
+    }
+
+    private fun saveToJson() {
+        ships.saveJsonData()
+        guns.saveJsonData()
     }
 
     inner class NavButton(val tabName: String, active: Boolean = false): Group() {
@@ -206,11 +221,42 @@ class EquipScreen(val game: Main): KtxScreen {
                             content.actor = guns
                         }
                     }
+                    deselect()
                     return super.touchDown(event, x, y, pointer, button)
                 }
             })
         }
-
-
     }
+
+    inner class ApplyBtn(x: Float, y: Float): Group() {
+        val bgColor = Color(0f, 0f, 0f, 1f)
+        val btnSize = Vector2(60f, 60f)
+        val iconWidth = 50f
+
+        init {
+            setPosition(0f, 0f)
+            setSize(btnSize.x, btnSize.y)
+            // Background
+            val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
+            val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(bgColor); fill() }))
+            val bg = Image(bgDrawable).apply { setFillParent(true) }
+            // Icon
+            val texture = assets.manager.get<Texture>(Constants.APPLY_ICON)
+            val aspectRatio = texture.width.toFloat() / texture.height.toFloat()
+            val icon = Image(texture).apply {
+                setSize(iconWidth, iconWidth / aspectRatio)
+                setPosition(btnSize.x / 2f - width / 2f, btnSize.y / 2f - height / 2f)
+            }
+            addActor(bg)
+            addActor(icon)
+            addListener(object: ClickListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    saveToJson()
+                    println("saved to player_data.json")
+                    return super.touchDown(event, x, y, pointer, button)
+                }
+            })
+        }
+    }
+
 }

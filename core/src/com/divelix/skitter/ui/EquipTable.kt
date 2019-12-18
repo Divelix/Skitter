@@ -3,22 +3,24 @@ package com.divelix.skitter.ui
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
+import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.vis.table
 
 class EquipTable(private val tabName: String, val assets: Assets): Table() {
     private val equipSpecs = Array<Float>(6)
+    private val modEffects = Array<Float>(6)
+    private val finalEquipSpecs = Array<Float>(6)
+
     private val suitMods = Array<Mod>(8)
     private val stockMods = Array<Mod>(20)
     private val specNames = Array<String>()
@@ -31,7 +33,33 @@ class EquipTable(private val tabName: String, val assets: Assets): Table() {
     private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
     private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Color(0f, 0f, 0f, 0.3f)); fill()}))
 
+    val reader = JsonReader()
+    val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
+    val playerData = reader.parse(playerDataFile)
+    val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
+    var modsType = ""
+    var equipFile = ""
+    var equipTypeName = ""
+    var activeEquipName = ""
+    var activeEquipSpecs = ""
+
     init {
+        when (tabName) {
+            Constants.SHIPS_TAB -> {
+                modsType = "ship"
+                equipFile = Constants.SHIPS_FILE
+                equipTypeName = "ships"
+                activeEquipName = "active_ship"
+                activeEquipSpecs = "active_ship_specs"
+            }
+            Constants.GUNS_TAB -> {
+                modsType = "gun"
+                equipFile = Constants.GUNS_FILE
+                equipTypeName = "guns"
+                activeEquipName = "active_gun"
+                activeEquipSpecs = "active_gun_specs"
+            }
+        }
         readJsonData()
         infoTable = makeInfoTable()
         suitTable = makeSuitTable()
@@ -56,31 +84,11 @@ class EquipTable(private val tabName: String, val assets: Assets): Table() {
         add(topPart)
         row()
         add(botPart)
+
+        updateSpecs()
     }
 
     private fun readJsonData() {
-        val reader = JsonReader()
-        val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
-        val playerData = reader.parse(playerDataFile)
-        val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
-        var modsType = ""
-        var equipFile = ""
-        var equipTypeName = ""
-        var activeEquipName = ""
-        when (tabName) {
-            Constants.SHIPS_TAB -> {
-                modsType = "ship"
-                equipFile = Constants.SHIPS_FILE
-                equipTypeName = "ships"
-                activeEquipName = "active_ship"
-            }
-            Constants.GUNS_TAB -> {
-                modsType = "gun"
-                equipFile = Constants.GUNS_FILE
-                equipTypeName = "guns"
-                activeEquipName = "active_gun"
-            }
-        }
         val equipData = reader.parse(equipFile.toInternalFile())
         val equipMods = modsData.get("mods").get(modsType)
         equipData.get("specs").forEach { specNames.add(it.asString()) }
@@ -88,6 +96,10 @@ class EquipTable(private val tabName: String, val assets: Assets): Table() {
         val activeEquipDescription = playerData.get(equipTypeName)[playerData.get(activeEquipName).asInt()]
         val activeEquip = allEquips.filter { it.get("index").asInt() == activeEquipDescription.get("index").asInt() }[0]
         activeEquip.get("specs").forEach { equipSpecs.add(it.asFloat()) }
+        equipSpecs.forEach {
+            finalEquipSpecs.add(it)
+            modEffects.add(1f)
+        }
 
 //        // fill suitMods
         activeEquipDescription.get("mods").forEach { modDescription ->
@@ -109,6 +121,60 @@ class EquipTable(private val tabName: String, val assets: Assets): Table() {
             stockMods.filter { it.index == suitMod.index }.forEach {it.quantity--}
         }
         stockMods.filter { it.quantity == -1 }.forEach { stockMods.removeValue(it, true) }
+    }
+
+    fun saveJsonData() {
+        suitMods.clear()
+        suitTable.children.filterIsInstance<ModIcon>().forEach { suitMods.add(it.mod) }
+        // update player_data.json
+        for (field in playerData) {
+            when(field.name) {
+                activeEquipName -> field.set(0, null) // TODO change when gun switch implemented
+                activeEquipSpecs -> {
+                    for (i in 0 until field.size)
+                        field[i].set(finalEquipSpecs[i].toDouble(), null)
+                }
+                equipTypeName -> {
+                    val activeEquipMods = field[0].get("mods")
+
+                    // clear mods JsonValue before writing
+                    for (i in 0 until activeEquipMods.size)
+                        activeEquipMods.remove(0)
+
+                    for (mod in suitMods) { // TODO change to forEach
+                        val jsonMod = JsonValue(JsonValue.ValueType.`object`)
+                        jsonMod.addChild("index", JsonValue(mod.index.toLong()))
+                        jsonMod.addChild("level", JsonValue(mod.level.toLong()))
+                        activeEquipMods.addChild(jsonMod)
+                    }
+                }
+            }
+        }
+        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
+    }
+
+    fun updateSpecs() {
+        val equipData = reader.parse(equipFile.toInternalFile())
+        val equipMods = modsData.get("mods").get(modsType) // TODO duplcate with readJsonData()
+        for (i in 0 until equipSpecs.size) {
+            finalEquipSpecs[i] = equipSpecs[i]
+            modEffects[i] = 1f
+        }
+        val equipSpecsValues = equipData.get("specs").asStringArray()
+        suitTable.children.filterIsInstance<Container<ModIcon>>().filter { it.actor is ModIcon }.forEach {
+            val suitMod = it.actor.mod
+            val equipMod = equipMods.single { it.get("index").asInt() == suitMod.index }
+            equipMod.get("effects").forEach {effect ->
+                for (i in equipSpecsValues.indices) {
+                    if (effect.name == equipSpecsValues[i])
+                        modEffects[i] += effect[suitMod.level-1].asFloat()
+                }
+            }
+        }
+        for (i in 0 until finalEquipSpecs.size) {
+            finalEquipSpecs[i] = equipSpecs[i] * modEffects[i]
+            (specsTable.children[i] as VisLabel).setText("${finalEquipSpecs[i].toInt()}")
+        }
     }
 
     private fun makeInfoTable(): Table {
