@@ -2,10 +2,10 @@
 "id": 1,
 "name": "Serega",
 "coins": 2000,
+"active_ship": 0,
+"active_ship_specs": [ 209.99998474121094, 10.0 ],
 "active_gun": 0,
 "active_gun_specs": [ 66.0, 10.0, 1.0, 25.0, 2.0, 0.10000000149011612 ],
-"active_ship": 0,
-"active_ship_specs": [ 100.0, 10.0 ],
 "ships": [
 	{
 		"index": 1,

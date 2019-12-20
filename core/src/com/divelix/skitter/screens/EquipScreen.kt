@@ -10,23 +10,24 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.JsonReader
+import com.badlogic.gdx.utils.JsonWriter
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.EmptyMod
 import com.divelix.skitter.ui.EquipTable
-import com.divelix.skitter.ui.Mod
 import com.divelix.skitter.ui.ModIcon
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
+import ktx.assets.toLocalFile
 import ktx.vis.table
 
 class EquipScreen(val game: Main): KtxScreen {
@@ -46,9 +47,13 @@ class EquipScreen(val game: Main): KtxScreen {
     var activeMod: ModIcon? = null
     var activeModContainer: Container<*>? = null
 
+    val reader = JsonReader()
+    val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
+    val playerData = reader.parse(playerDataFile)
+
     init {
-        ships = EquipTable(Constants.SHIPS_TAB, assets)
-        guns = EquipTable(Constants.GUNS_TAB, assets)
+        ships = EquipTable(Constants.SHIPS_TAB, assets, reader, playerData)
+        guns = EquipTable(Constants.GUNS_TAB, assets, reader, playerData)
         stage += table {
             setFillParent(true)
             top()
@@ -173,8 +178,9 @@ class EquipScreen(val game: Main): KtxScreen {
     }
 
     private fun saveToJson() {
-        ships.saveJsonData()
-        guns.saveJsonData()
+        ships.updatePlayerData()
+        guns.updatePlayerData()
+        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
     }
 
     inner class NavButton(val tabName: String, active: Boolean = false): Group() {

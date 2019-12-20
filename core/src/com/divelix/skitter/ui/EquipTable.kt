@@ -11,12 +11,13 @@ import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
+import com.divelix.skitter.PlayerData
 import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.vis.table
 
-class EquipTable(private val tabName: String, val assets: Assets): Table() {
+class EquipTable(private val tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
     private val equipSpecs = Array<Float>(6)
     private val modEffects = Array<Float>(6)
     private val finalEquipSpecs = Array<Float>(6)
@@ -33,9 +34,6 @@ class EquipTable(private val tabName: String, val assets: Assets): Table() {
     private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
     private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Color(0f, 0f, 0f, 0.3f)); fill()}))
 
-    val reader = JsonReader()
-    val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
-    val playerData = reader.parse(playerDataFile)
     val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
     var modsType = ""
     var equipFile = ""
@@ -118,15 +116,14 @@ class EquipTable(private val tabName: String, val assets: Assets): Table() {
             }.forEach { stockMods.add(Mod(index, it.get("name").asString(), level)) }
         }
         suitMods.forEach { suitMod -> // consider repetition
-            stockMods.filter { it.index == suitMod.index }.forEach {it.quantity--}
+            stockMods.filter { it.index == suitMod.index && it.level == suitMod.level }.forEach {it.quantity--}
         }
         stockMods.filter { it.quantity == -1 }.forEach { stockMods.removeValue(it, true) }
     }
 
-    fun saveJsonData() {
+    fun updatePlayerData() {
         suitMods.clear()
-        suitTable.children.filterIsInstance<ModIcon>().forEach { suitMods.add(it.mod) }
-        // update player_data.json
+        suitTable.children.filterIsInstance<Container<ModIcon>>().filter { it.actor is ModIcon }.forEach { suitMods.add(it.actor.mod) }
         for (field in playerData) {
             when(field.name) {
                 activeEquipName -> field.set(0, null) // TODO change when gun switch implemented
@@ -141,16 +138,18 @@ class EquipTable(private val tabName: String, val assets: Assets): Table() {
                     for (i in 0 until activeEquipMods.size)
                         activeEquipMods.remove(0)
 
-                    for (mod in suitMods) { // TODO change to forEach
-                        val jsonMod = JsonValue(JsonValue.ValueType.`object`)
-                        jsonMod.addChild("index", JsonValue(mod.index.toLong()))
-                        jsonMod.addChild("level", JsonValue(mod.level.toLong()))
+                    suitMods.forEach {
+                        val jsonMod = JsonValue(JsonValue.ValueType.`object`).apply {
+                            addChild("index", JsonValue(it.index.toLong()))
+                            addChild("level", JsonValue(it.level.toLong()))
+                        }
                         activeEquipMods.addChild(jsonMod)
+                        activeEquipMods.size++
                     }
                 }
             }
         }
-        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
+//        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
     }
 
     fun updateSpecs() {
