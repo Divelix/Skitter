@@ -32,7 +32,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     val stockTable: Table
 
     private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Color(0f, 0f, 0f, 0.3f)); fill()}))
+    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Constants.UI_COLOR); fill()}))
 
     val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
     var modsType = ""

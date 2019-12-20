@@ -58,7 +58,7 @@ class MenuScreen(game: Main): KtxScreen {
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(0.6f, 0.5f, 0.8f, 1f)
+        Gdx.gl.glClearColor(Constants.BG_COLOR.r, Constants.BG_COLOR.g, Constants.BG_COLOR.b, Constants.BG_COLOR.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         stage.act()

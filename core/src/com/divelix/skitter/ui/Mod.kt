@@ -15,7 +15,7 @@ import ktx.vis.table
 data class Mod(val index: Int, val name: String, var level: Int, var quantity: Int = 0)// TODO add isShip (for icon choosing)
 
 class ModIcon(val mod: Mod, val assets: Assets): Group() {
-    private val iconSize = Constants.MOD_WIDTH / 2f
+    private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
     private val bgColor = Color(1f, 1f, 0f, 1f)
     private val lvlColor = Color(0f, 0f, 0f, 1f)
     private val noLvlColor = Color(1f, 1f, 1f, 1f)
@@ -44,8 +44,10 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
             else -> Constants.STAR
         }
         val texture: Texture = assets.manager.get(textureName)
+        val aspectRatio = texture.width.toFloat() / texture.height.toFloat()
+        println(aspectRatio)
         val icon = Image(texture).apply {
-            setSize(iconSize, iconSize)
+            setSize(iconHeight * aspectRatio, iconHeight)
             setPosition((this@ModIcon.width - width) / 2f, (this@ModIcon.height - height) / 2f)
         }
         val quantityBg = Image(lvlDrawable).apply {
@@ -75,7 +77,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
 }
 
 class EmptyMod: Group() {
-    private val bgColor = Color(0f, 0f, 0f, 0.3f)
+    private val bgColor = Constants.UI_COLOR
 
     init {
         name = "EmptyMod"

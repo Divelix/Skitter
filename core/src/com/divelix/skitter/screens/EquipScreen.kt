@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.JsonReader
+import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.JsonWriter
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
@@ -42,14 +43,14 @@ class EquipScreen(val game: Main): KtxScreen {
     lateinit var gunTab: Container<NavButton>
     lateinit var content: Container<Table>
 
-    val carriage = Image(assets.manager.get<Texture>(Constants.CARRIAGE)).apply { touchable = Touchable.disabled }
-    val carriageBorderWidth = 7f
+    private val carriage = Image(assets.manager.get<Texture>(Constants.CARRIAGE)).apply { touchable = Touchable.disabled }
+    private val carriageBorderWidth = 7f
     var activeMod: ModIcon? = null
     var activeModContainer: Container<*>? = null
 
-    val reader = JsonReader()
-    val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
-    val playerData = reader.parse(playerDataFile)
+    private val reader = JsonReader()
+    private val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
+    val playerData: JsonValue = reader.parse(playerDataFile)
 
     init {
         ships = EquipTable(Constants.SHIPS_TAB, assets, reader, playerData)
@@ -181,10 +182,11 @@ class EquipScreen(val game: Main): KtxScreen {
         ships.updatePlayerData()
         guns.updatePlayerData()
         playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
+        println("saved to player_data.json")
     }
 
     inner class NavButton(val tabName: String, active: Boolean = false): Group() {
-        val upColor = Color(0f, 0f, 0f, 0.2f)
+        val upColor = Constants.UI_COLOR
         val downColor = Color(0f, 0f, 0f, 0f)
         val bg: Image
         val texture: Texture
@@ -240,7 +242,7 @@ class EquipScreen(val game: Main): KtxScreen {
         val iconWidth = 50f
 
         init {
-            setPosition(0f, 0f)
+            setPosition(x, y)
             setSize(btnSize.x, btnSize.y)
             // Background
             val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
@@ -258,7 +260,7 @@ class EquipScreen(val game: Main): KtxScreen {
             addListener(object: ClickListener() {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                     saveToJson()
-                    println("saved to player_data.json")
+                    game.screen = MenuScreen(game)
                     return super.touchDown(event, x, y, pointer, button)
                 }
             })
