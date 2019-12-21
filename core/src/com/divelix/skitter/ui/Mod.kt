@@ -16,9 +16,10 @@ data class Mod(val index: Int, val name: String, var level: Int, var quantity: I
 
 class ModIcon(val mod: Mod, val assets: Assets): Group() {
     private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
-    private val bgColor = Color(1f, 1f, 0f, 1f)
-    private val lvlColor = Color(0f, 0f, 0f, 1f)
-    private val noLvlColor = Color(1f, 1f, 1f, 1f)
+    val bgColor = Color(1f, 1f, 0f, 1f)
+    val lvlColor = Color(0f, 0f, 0f, 1f)
+    val noLvlColor = Color(1f, 1f, 1f, 1f)
+    val textureName: String
 
     val quantityLabel: VisLabel
 
@@ -33,7 +34,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
         val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(noLvlColor); fill()}))
 
         val bg = Image(bgDrawable).apply { setFillParent(true) }
-        val textureName = when (mod.index) {
+        textureName = when (mod.index) {
             1001 -> Constants.MOD_ICON_HEALTH
             1002 -> Constants.MOD_ICON_SPEED
 
@@ -45,7 +46,6 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
         }
         val texture: Texture = assets.manager.get(textureName)
         val aspectRatio = texture.width.toFloat() / texture.height.toFloat()
-        println(aspectRatio)
         val icon = Image(texture).apply {
             setSize(iconHeight * aspectRatio, iconHeight)
             setPosition((this@ModIcon.width - width) / 2f, (this@ModIcon.height - height) / 2f)

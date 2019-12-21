@@ -1,6 +1,5 @@
 package com.divelix.skitter.ui
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Container
@@ -11,10 +10,8 @@ import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
-import com.divelix.skitter.PlayerData
 import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.assets.toInternalFile
-import ktx.assets.toLocalFile
 import ktx.vis.table
 
 class EquipTable(private val tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
@@ -149,7 +146,6 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 }
             }
         }
-//        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
     }
 
     fun updateSpecs() {

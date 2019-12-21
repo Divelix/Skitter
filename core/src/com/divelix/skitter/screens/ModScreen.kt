@@ -1,282 +1,99 @@
 package com.divelix.skitter.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.*
-import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.viewport.FitViewport
+import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.ArrayMap
+import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.Mod
-import com.divelix.skitter.ui.ModImage
+import com.divelix.skitter.ui.ModIcon
+import com.divelix.skitter.ui.TabbedBar
+import com.divelix.skitter.utils.TopViewport
 import com.kotcrab.vis.ui.widget.VisLabel
-import com.kotcrab.vis.ui.widget.VisTable
-import ktx.actors.onChange
+import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
-import ktx.assets.toInternalFile
-import ktx.assets.toLocalFile
+import ktx.collections.gdxMapOf
 import ktx.vis.table
-import ktx.vis.window
 
 class ModScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
-    private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
+    private val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
-    private val stockTable: VisTable
+    private val bigMod = BigMod(ModIcon(Mod(1001, "HEALTH", 5), assets))
+    lateinit var descriptionLabel: VisLabel
+    val tabs = gdxMapOf<String, Table>()
 
-    private var coins: Int
-    lateinit var moneyLabel: VisLabel
-    lateinit var sellCostLabel: VisLabel
-    lateinit var upCostLabel: VisLabel
-    private val menuBtn: Image
-    private val stockMods = Array<Mod>(20)
-    var activeMod: ModImage? = null
-    var bigContainer: Container<*>? = null
-    val rootTable: VisTable
-    val fadeTime = 0.1f
-
-    private val reader = JsonReader()
-    private val playerDataFile = "json/player_data.json".toLocalFile()
-    private val playerData = reader.parse(playerDataFile)
-    private val modsData = reader.parse("json/mods.json".toInternalFile())
-    // GUN MODS
-    val _gunMods = modsData.get("mods").get("gun")
-    val gunMods = playerData.get("mods").get("gun")
-    val price = modsData.get("prices").asIntArray()
-    var cost = 0
+    private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
+    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Constants.UI_COLOR); fill()}))
 
     init {
-        // fill stockMods
-        for (mod in playerData.get("mods").get("gun")) {
-            val index = mod.get("index").asInt()
-            val level = mod.get("level").asInt()
-            val quantity = mod.get("quantity").asInt()
-
-            for (_mod in _gunMods) {
-                if (_mod.get("index").asInt() == index) {
-                    val name = _mod.get("name").asString()
-                    val effects = _mod.get("effects")
-                    stockMods.add(Mod(index, name, level, quantity))
-                    break
-                }
-            }
+        val shipTable = table {
+            setFillParent(true)
+            label("ship")
         }
-
-        coins = playerData.get("coins").asInt()
-
-        stockTable = table {
-            name = "StockTable"
-            defaults().width(Constants.MOD_WIDTH).height(Constants.MOD_HEIGHT).pad(2f)
-
-            for (i in 0 until stockMods.size + 8) {
-                if (i < stockMods.size) {
-                    container(ModImage(stockMods[i], assets)) { touchable = Touchable.enabled }
-                } else {
-                    container<ModImage> { touchable = Touchable.enabled }
-                }
-                if ((i + 1) % 4 == 0) row()
-            }
+        val gunTable = table {
+            setFillParent(true)
+            label("gun")
         }
+        tabs.put(Constants.SHIPS_TAB, shipTable)
+        tabs.put(Constants.GUNS_TAB, gunTable)
 
-        rootTable = table {
+        stage += table {
+            setFillParent(true)
             top()
-            setFillParent(true)
-            defaults().pad(5f)
-            moneyLabel = label("$coins", "mod-quantity").cell(align = Align.right, colspan = 3, padBottom = 50f)
+            defaults().expandX()
+            table {
+                right().pad(12f)
+                background = bgDrawable
+                label("2500")
+            }.cell(fillX = true)
             row()
             table {
-                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).name = "sellBtn"
-                row()
-                sellCostLabel = label("")
-            }
-            bigContainer = container<Image> {
-                size(150f)
-                touchable = Touchable.disabled
-            }
-            table {
-                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).name = "upBtn"
-                row()
-                upCostLabel = label("")
-            }
-            row()
-            scrollPane(stockTable).cell(colspan = 3)
-        }
-        menuBtn = Image(assets.manager.get<Texture>(Constants.APPLY_BTN)).apply {
-            name = "backBtn"
-            setSize(75f, 75f)
-//            setPosition(Gdx.graphics.width - width - 20f, 20f)
-        }
-
-        stage.addListener(object: ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                super.touchDown(event, x, y, pointer, button)
-                val actor = stage.hit(x, y, true) ?: return false
-                when (actor) {
-                    is Image -> when(actor.name) {
-//                        "sellBtn" -> stage += sellWindow.fadeIn(1f)
-                        "sellBtn" -> makeSellWindow()
-                        "upBtn" -> upgradeActiveMod()
-                        "backBtn" -> game.screen = MenuScreen(game)
+                pad(12f)
+                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).cell(width = 76f, height = 76f)
+                table {
+                    pad(0f, 12f, 0f, 12f)
+                    add(bigMod)
+                    row()
+                    table {
+                        background = bgDrawable
+                        scrollPane(
+                                table {
+                                    pad(12f)
+                                    descriptionLabel = label("dsfsdf dsfs d sdf sd fsdf sfdf sdfsd sdf hsdhsi hu dhsui hduh sduish udh sudh iush ids").apply {
+                                        setWrap(true)
+                                        setAlignment(Align.left)
+                                    }.cell(width = 126f) // width may be any value
+                                }
+                        ).cell(width = 150f, height = 78f)
                     }
-                    is ModImage -> makeModActive(actor)
                 }
-                return true
-            }
-        })
-        makeModActive((stockTable.children[0] as Container<*>).actor as ModImage)
-
-        stage += rootTable
-        stage += menuBtn
-        stage.isDebugAll = true
-    }
-
-    fun makeSellWindow() {
-        rootTable.touchable = Touchable.disabled
-        stage += window("Sell mode?") {
-            debugAll()
-            centerWindow()
-            defaults().expand()
-            padTop(25f) // title height
-            width = 200f
-            height = 100f
-            val quantitySlider = slider(1f, activeMod!!.mod.quantity.toFloat()).cell(width = 200f, colspan = 2)
-            row()
-            val quantityLabel = label("1").cell(colspan = 2)
-            quantitySlider.onChange {
-                quantityLabel.setText(quantitySlider.value.toInt().toString())
+                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f)
             }
             row()
-            textButton("Sell").cell(align = Align.left).addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    sellActiveMod(quantitySlider.value.toInt())
-                    rootTable.touchable = Touchable.enabled
-                    this@window.fadeOut(fadeTime)
-                }
-            })
-            textButton("Cancel").cell(align = Align.right).addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    rootTable.touchable = Touchable.enabled
-                    this@window.fadeOut(fadeTime)
-                }
-            })
-        }.fadeIn(fadeTime)
-    }
-
-    fun sellActiveMod(quantityToSell: Int) {
-        for (i in 0 until gunMods.size) {
-            if (gunMods[i].get("index").asInt() == activeMod!!.mod.index
-                    && gunMods[i].get("level").asInt() == activeMod!!.mod.level
-                    && gunMods[i].get("quantity").asInt() == activeMod!!.mod.quantity) {
-                if (activeMod!!.mod.quantity == quantityToSell) {
-                    gunMods.remove(i)
-                    activeMod!!.remove()
-                    bigContainer!!.actor.remove()
-                    //TODO also disable sell/up buttons or make active another mod here
-                } else {
-                    activeMod!!.mod.quantity -= quantityToSell
-                    gunMods[i].get("quantity").set(activeMod!!.mod.quantity.toLong(), null)
-                    activeMod!!.quantityLabel.setText(activeMod!!.mod.quantity.toString())
-                }
-                break
-            }
+            add(TabbedBar(tabs, assets)).growX()
         }
-        val income = cost * quantityToSell
-        coins += income
-        playerData.get("coins").set(coins.toLong(), null)
-        moneyLabel.setText(coins)
-        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
-        println("Sold $quantityToSell mods for $income")
-    }
-
-    fun upgradeActiveMod() {
-        if (cost > playerData.get("coins").asInt()) {
-            println("Not enough money") //TODO make window instead
-            return
-        }
-
-        for (i in 0 until gunMods.size) {
-            if (gunMods[i].get("index").asInt() == activeMod!!.mod.index
-                    && gunMods[i].get("level").asInt() == activeMod!!.mod.level
-                    && gunMods[i].get("quantity").asInt() == activeMod!!.mod.quantity) {
-                if (activeMod!!.mod.quantity == 1) {
-                    activeMod!!.mod.level++
-                    activeMod!!.levelLabel.setText("lvl ${activeMod!!.mod.level}")
-                    gunMods[i].get("level").set(activeMod!!.mod.level.toLong(), null)
-                } else {
-                    activeMod!!.mod.quantity--
-                    gunMods[i].get("quantity").set(activeMod!!.mod.quantity.toLong(), null)
-                    activeMod!!.quantityLabel.setText(activeMod!!.mod.quantity.toString())
-                    // Add new ModImage
-                    val upgradedMod = Mod(activeMod!!.mod.index, activeMod!!.mod.name, activeMod!!.mod.level + 1, 1)
-                    var j = 0
-                    while ((stockTable.children[stockMods.size + j] as Container<*>).actor != null) j++
-                    (stockTable.children[stockMods.size + j] as Container<*>).actor = ModImage(upgradedMod, assets)
-                    // Add new mod to player_data.json
-                    val jsonMod = JsonValue(JsonValue.ValueType.`object`)
-                    jsonMod.addChild("index", JsonValue(upgradedMod.index.toLong()))
-                    jsonMod.addChild("level", JsonValue(upgradedMod.level.toLong()))
-                    jsonMod.addChild("quantity", JsonValue(1))
-                    gunMods.addChild(jsonMod)
-                }
-                break
-            }
-        }
-        coins -= cost
-        playerData.get("coins").set(coins.toLong(), null)
-        moneyLabel.setText(coins)
-        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
-        println("Upgrade for $cost")
-    }
-
-    fun makeModActive(modImage: ModImage) {
-        if (activeMod != null) {
-            val a = activeMod as ModImage
-            a.children[a.children.size-1].remove()
-        }
-        activeMod = modImage
-        (activeMod as ModImage).addActor(Image(assets.manager.get<Texture>(Constants.MOD_GLOW)).apply {
-            touchable = Touchable.disabled
-            setFillParent(true)
-        })
-        bigContainer?.actor = Image(modImage.texture).apply { setFillParent(true) }
-
-        cost = price[activeMod!!.mod.level] - price[0]
-        sellCostLabel.setText("${price[activeMod!!.mod.level]}")
-        upCostLabel.setText("$cost")
-    }
-
-    override fun show() {
-        val handler = object: InputAdapter() {
-            override fun keyUp(keycode: Int): Boolean {
-                when(keycode) {
-                    Input.Keys.BACK -> game.screen = MenuScreen(game)
-                }
-                return true
-            }
-        }
-        val multiplexer = InputMultiplexer(handler, stage)
-        Gdx.input.inputProcessor = multiplexer
+        Gdx.input.inputProcessor = stage
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(0.6f, 0.5f, 0.8f, 1f)
+        Gdx.gl.glClearColor(Constants.BG_COLOR.r, Constants.BG_COLOR.g, Constants.BG_COLOR.b, Constants.BG_COLOR.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         stage.act()
@@ -284,11 +101,38 @@ class ModScreen(val game: Main): KtxScreen {
     }
 
     override fun resize(width: Int, height: Int) {
-        stage.viewport.update(width, height, true)
-//        menuBtn.setPosition(stage.camera.viewportWidth - menuBtn.width - 20f, 20f)
+        stage.viewport.update(width, height)
     }
 
-    override fun dispose() {
-        stage.dispose()
+    inner class BigMod(val modIcon: ModIcon): Group() {
+        private val iconHeight = 75f
+
+        init {
+            setSize(150f, 150f)
+            val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
+            val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(modIcon.bgColor); fill()}))
+            val lvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(modIcon.lvlColor); fill()}))
+            val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(modIcon.noLvlColor); fill()}))
+
+            val bg = Image(bgDrawable).apply { setFillParent(true) }
+            val texture: Texture = assets.manager.get(modIcon.textureName)
+            val aspectRatio = texture.width.toFloat() / texture.height.toFloat()
+            val icon = Image(texture).apply {
+                setSize(iconHeight * aspectRatio, iconHeight)
+                setPosition((this@BigMod.width - width) / 2f, (this@BigMod.height - height) / 2f)
+            }
+            val levelBars = table {
+                bottom().left()
+                pad(5f)
+                defaults().pad(2f)
+                for (i in 1..10) {
+                    image(if (i <= modIcon.mod.level) lvlDrawable else noLvlDrawable) {it.size(10f)}
+                }
+            }
+
+            addActor(bg)
+            addActor(icon)
+            addActor(levelBars)
+        }
     }
 }

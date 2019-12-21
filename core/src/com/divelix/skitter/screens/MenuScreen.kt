@@ -8,10 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
+import com.divelix.skitter.utils.BotViewport
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.vis.table
@@ -20,30 +20,26 @@ class MenuScreen(game: Main): KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
-    private val stage = Stage(FitViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
+    private val stage = Stage(BotViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
     init {
         stage += table {
             setFillParent(true)
-            debugAll()
-            table {
-                defaults().expandX().pad(10f)
-                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SHIPS_BTN)))
-                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MODS_BTN))).addListener(object: ClickListener() {
-                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                        game.screen = ModScreen(game)
-                        super.touchUp(event, x, y, pointer, button)
-                    }
-                })
-                image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.GUNS_BTN))).addListener(object: ClickListener() {
-                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                        game.screen = GunScreen(game)
-                        super.touchUp(event, x, y, pointer, button)
-                    }
-                })
-            }
+            bottom()
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_EQUIP))).cell(padRight = 75f).addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    game.screen = EquipScreen(game)
+                    super.touchUp(event, x, y, pointer, button)
+                }
+            })
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_MOD))).addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    game.screen = ModScreen(game)
+                    super.touchUp(event, x, y, pointer, button)
+                }
+            })
             row()
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.BUCKET_ICON))).addListener(object: ClickListener() {
+            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_PLAY))).cell(padTop = 75f, padBottom = 75f, colspan = 2).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     game.screen = PlayScreen(game)
                     super.touchUp(event, x, y, pointer, button)
@@ -63,5 +59,9 @@ class MenuScreen(game: Main): KtxScreen {
 
         stage.act()
         stage.draw()
+    }
+
+    override fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height)
     }
 }
