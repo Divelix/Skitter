@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.MathUtils
 import com.divelix.skitter.Assets
+import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import ktx.app.KtxScreen
 import ktx.graphics.use
@@ -27,13 +28,13 @@ class LoadingScreen(private val game: Main): KtxScreen {
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(0f, 0.1f, 0f, 1f)
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         progress = MathUtils.lerp(progress, assets.manager.progress, 0.1f)
 
         shape.use(ShapeRenderer.ShapeType.Filled) {
-            shape.color = Color.GREEN
+            shape.color = Constants.BG_COLOR
             shape.rect(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height*progress)
         }
         batch.use {

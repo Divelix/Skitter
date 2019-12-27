@@ -1,59 +1,29 @@
 package com.divelix.skitter.screens
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.ArrayMap
-import com.badlogic.gdx.utils.ObjectMap
-import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.ui.Mod
-import com.divelix.skitter.ui.ModIcon
-import com.divelix.skitter.ui.TabbedBar
-import com.divelix.skitter.utils.TopViewport
+import com.divelix.skitter.ui.*
 import com.kotcrab.vis.ui.widget.VisLabel
-import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import ktx.actors.plusAssign
-import ktx.app.KtxScreen
-import ktx.collections.gdxMapOf
+import ktx.log.info
 import ktx.vis.table
 
-class ModScreen(val game: Main): KtxScreen {
-    private val context = game.getContext()
-    private val batch = context.inject<SpriteBatch>()
-    private val assets = context.inject<Assets>()
-    private val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
-
+class ModScreen(game: Main): EditScreen(game) {
     private val bigMod = BigMod(ModIcon(Mod(1001, "HEALTH", 5), assets))
     lateinit var descriptionLabel: VisLabel
-    val tabs = gdxMapOf<String, Table>()
-
-    private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Constants.UI_COLOR); fill()}))
 
     init {
-        val shipTable = table {
-            setFillParent(true)
-            label("ship")
-        }
-        val gunTable = table {
-            setFillParent(true)
-            label("gun")
-        }
-        tabs.put(Constants.SHIPS_TAB, shipTable)
-        tabs.put(Constants.GUNS_TAB, gunTable)
-
         stage += table {
             setFillParent(true)
             top()
@@ -87,24 +57,46 @@ class ModScreen(val game: Main): KtxScreen {
                 image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f)
             }
             row()
-            add(TabbedBar(tabs, assets)).growX()
+            container(tabbedBar)
         }
-        Gdx.input.inputProcessor = stage
+        stage += carriage.apply { setPosition(-height, -width) }
+        stage += applyBtn
+        stage.addListener(makeStageListener())
     }
 
-    override fun render(delta: Float) {
-        Gdx.gl.glClearColor(Constants.BG_COLOR.r, Constants.BG_COLOR.g, Constants.BG_COLOR.b, Constants.BG_COLOR.a)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        stage.act()
-        stage.draw()
+    override fun processModIcon(modIcon: ModIcon) {
+        val container = (modIcon.parent as Container<*>)
+        val offset = Vector2(-carriageBorderWidth, -carriageBorderWidth)
+        val carriagePos = container.localToStageCoordinates(offset)
+        when (activeMod) {
+            modIcon -> deselect()
+            else -> {
+                activeMod = modIcon
+                activeModContainer = container
+                carriage.setPosition(carriagePos.x, carriagePos.y)
+            }
+        }
     }
 
-    override fun resize(width: Int, height: Int) {
-        stage.viewport.update(width, height)
+    override fun processEmptyMod(emptyMod: EmptyMod) {
+        info { "EmptyMod was clicked" }
     }
 
-    inner class BigMod(val modIcon: ModIcon): Group() {
+    override fun makeTabbedBar(): TabbedBar {
+        tabs.put(Constants.SHIPS_TAB, StockTable(Constants.SHIPS_TAB, assets, reader, playerData))
+        tabs.put(Constants.GUNS_TAB, StockTable(Constants.GUNS_TAB, assets, reader, playerData))
+        return TabbedBar(tabs, assets)
+    }
+
+    override fun updateSpecs() {
+        info { "make updateSpecs()" }
+    }
+
+    override fun saveToJson() {
+        info { "make saveToJson()" }
+    }
+
+    inner class BigMod(private val modIcon: ModIcon): Group() {
         private val iconHeight = 75f
 
         init {

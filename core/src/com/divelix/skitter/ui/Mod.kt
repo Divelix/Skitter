@@ -7,12 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.vis.table
 
-data class Mod(val index: Int, val name: String, var level: Int, var quantity: Int = 0)// TODO add isShip (for icon choosing)
+data class Mod(val index: Int, val name: String, var level: Int, var quantity: Int = 0, val effects: ObjectMap<String, Float>? = null)// TODO add isShip (for icon choosing)
 
 class ModIcon(val mod: Mod, val assets: Assets): Group() {
     private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
