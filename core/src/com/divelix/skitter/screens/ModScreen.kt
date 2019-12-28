@@ -4,11 +4,9 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.Constants
@@ -18,10 +16,12 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.actors.plusAssign
 import ktx.log.info
 import ktx.vis.table
+import ktx.collections.*
 
 class ModScreen(game: Main): EditScreen(game) {
     private val bigMod = BigMod(ModIcon(Mod(1001, "HEALTH", 5), assets))
-    lateinit var descriptionLabel: VisLabel
+    lateinit var modName: VisLabel
+    lateinit var modSpecs: VisLabel
 
     init {
         stage += table {
@@ -46,10 +46,12 @@ class ModScreen(game: Main): EditScreen(game) {
                         scrollPane(
                                 table {
                                     pad(12f)
-                                    descriptionLabel = label("dsfsdf dsfs d sdf sd fsdf sfdf sdfsd sdf hsdhsi hu dhsui hduh sduish udh sudh iush ids").apply {
+                                    modName = label("", "mod-name")
+                                    row()
+                                    modSpecs = label("").apply {
                                         setWrap(true)
-                                        setAlignment(Align.left)
-                                    }.cell(width = 126f) // width may be any value
+                                        setAlignment(Align.center)
+                                    }//.cell(width = 126f) // width may be any value
                                 }
                         ).cell(width = 150f, height = 78f)
                     }
@@ -76,6 +78,7 @@ class ModScreen(game: Main): EditScreen(game) {
                 carriage.setPosition(carriagePos.x, carriagePos.y)
             }
         }
+        updateUI()
     }
 
     override fun processEmptyMod(emptyMod: EmptyMod) {
@@ -88,8 +91,9 @@ class ModScreen(game: Main): EditScreen(game) {
         return TabbedBar(tabs, assets)
     }
 
-    override fun updateSpecs() {
-        info { "make updateSpecs()" }
+    override fun updateUI() {
+        info { "updateUI()" }
+        bigMod.setMod(activeMod)
     }
 
     override fun saveToJson() {
@@ -98,33 +102,62 @@ class ModScreen(game: Main): EditScreen(game) {
 
     inner class BigMod(private val modIcon: ModIcon): Group() {
         private val iconHeight = 75f
+        private val bg = Image(modIcon.bgDrawable).apply { setFillParent(true) }
+        private val icon: Image
+        private val levelBars: Table
 
         init {
             setSize(150f, 150f)
-            val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-            val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(modIcon.bgColor); fill()}))
-            val lvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(modIcon.lvlColor); fill()}))
-            val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(modIcon.noLvlColor); fill()}))
 
-            val bg = Image(bgDrawable).apply { setFillParent(true) }
             val texture: Texture = assets.manager.get(modIcon.textureName)
             val aspectRatio = texture.width.toFloat() / texture.height.toFloat()
-            val icon = Image(texture).apply {
+            icon = Image(texture).apply {
                 setSize(iconHeight * aspectRatio, iconHeight)
                 setPosition((this@BigMod.width - width) / 2f, (this@BigMod.height - height) / 2f)
             }
-            val levelBars = table {
+            levelBars = table {
                 bottom().left()
                 pad(5f)
                 defaults().pad(2f)
                 for (i in 1..10) {
-                    image(if (i <= modIcon.mod.level) lvlDrawable else noLvlDrawable) {it.size(10f)}
+                    image(if (i <= modIcon.mod.level) modIcon.lvlDrawable else modIcon.noLvlDrawable) {it.size(10f)}
                 }
             }
 
             addActor(bg)
             addActor(icon)
             addActor(levelBars)
+        }
+
+        fun setMod(modIcon: ModIcon?) {
+            if (modIcon != null) {
+                bg.drawable = modIcon.bgDrawable
+                val texture: Texture = assets.manager.get(modIcon.textureName)
+                val aspectRatio = texture.width.toFloat() / texture.height.toFloat()
+                icon.run {
+                    drawable = TextureRegionDrawable(texture)
+                    setSize(iconHeight * aspectRatio, iconHeight)
+                    setPosition((this@BigMod.width - width) / 2f, (this@BigMod.height - height) / 2f)
+                }
+                levelBars.isVisible = true
+                for (i in 1..10) {
+                    if (i <= modIcon.mod.level)
+                        (levelBars.children[i - 1] as Image).drawable = modIcon.lvlDrawable
+                    else
+                        (levelBars.children[i - 1] as Image).drawable = modIcon.noLvlDrawable
+                }
+                modName.setText("<${modIcon.mod.name}>")
+                modIcon.mod.effects?.forEach { (key, value) ->
+                    // TODO add multiple effects support
+                    modSpecs.setText("$key: x$value")
+                }
+            } else {
+                bg.drawable = bgDrawable
+                icon.drawable = null
+                levelBars.isVisible = false
+                modName.setText("")
+                modSpecs.setText("")
+            }
         }
     }
 }

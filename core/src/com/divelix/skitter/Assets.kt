@@ -104,6 +104,9 @@ class Assets: Disposable {
             label("score-label", extend = defaultStyle) {
                 fontColor = Color.BLACK
             }
+            label("mod-name", extend = defaultStyle) {
+                fontColor = Color.YELLOW
+            }
             label("mod-level", extend = defaultStyle) {
                 fontColor = Color.GREEN
             }

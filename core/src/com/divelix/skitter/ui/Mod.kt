@@ -22,6 +22,11 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
     val noLvlColor = Color(1f, 1f, 1f, 1f)
     val textureName: String
 
+    val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
+    val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(bgColor); fill()}))
+    val lvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(lvlColor); fill()}))
+    val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(noLvlColor); fill()}))
+
     val quantityLabel: VisLabel
 
     init {
@@ -29,10 +34,6 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
         touchable = Touchable.enabled
         setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
 
-        val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-        val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(bgColor); fill()}))
-        val lvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(lvlColor); fill()}))
-        val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(noLvlColor); fill()}))
 
         val bg = Image(bgDrawable).apply { setFillParent(true) }
         textureName = when (mod.index) {

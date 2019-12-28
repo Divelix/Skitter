@@ -95,7 +95,7 @@ abstract class EditScreen(val game: Main): KtxScreen {
     abstract fun processEmptyMod(emptyMod: EmptyMod)
     abstract fun makeTabbedBar(): TabbedBar
     abstract fun saveToJson()
-    abstract fun updateSpecs() //TODO rename to updateLabels
+    abstract fun updateUI()
     fun deselect() {
         activeMod = null
         activeModContainer = null
