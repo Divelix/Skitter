@@ -114,6 +114,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             setPosition(Constants.D_WIDTH - width - 20f, Constants.D_HEIGHT - height - 20f)
             addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    Data.renderTime = 0f
+                    Data.physicsTime = 0f
                     game.screen = MenuScreen(game)
                     super.touchUp(event, x, y, pointer, button)
                 }

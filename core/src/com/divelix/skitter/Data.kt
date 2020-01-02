@@ -3,6 +3,7 @@ package com.divelix.skitter
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
+import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 
 object Data {
@@ -17,13 +18,13 @@ object Data {
 
     init {
         val reader = JsonReader()
-        val playerReader = reader.parse("json/player_data.json".toLocalFile())
+        val playerReader = reader.parse("json/player_data.json".toInternalFile())
         val shipSpecs = playerReader.get("active_ship_specs")
         val shipData = ShipData(shipSpecs[0].asFloat(), shipSpecs[1].asFloat())
         val gunSpecs = playerReader.get("active_gun_specs")
         val gunData = GunData(gunSpecs[0].asFloat(), gunSpecs[1].asInt(), gunSpecs[2].asFloat(), gunSpecs[3].asFloat(), gunSpecs[4].asFloat(), gunSpecs[5].asFloat())
         playerData = PlayerData(shipData, gunData)
-        val enemyReader = reader.parse("json/enemies.json".toLocalFile())
+        val enemyReader = reader.parse("json/enemies.json".toInternalFile())
         val loverSpecs = enemyReader.get("enemies")[0].get("specs")
         loverData = LoverData(loverSpecs[0].asFloat(), loverSpecs[1].asFloat(), loverSpecs[2].asFloat())
         dynamicData = DynamicData(Vector2(), Array(10))

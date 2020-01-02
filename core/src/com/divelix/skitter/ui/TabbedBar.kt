@@ -4,22 +4,18 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
-import ktx.collections.*
 
-class TabbedBar(val tabsMap: ObjectMap<String, Table>, val assets: Assets): Table() {
-    private val tabs = Array<Tab>(2)
+class TabbedBar(val assets: Assets): Table() {
+    val tabs = arrayOf(Tab(Constants.SHIPS_TAB, null), Tab(Constants.GUNS_TAB, null))
     private val content = Container<Table>()
+    lateinit var activeTab: Tab
 
     private val upColor = Constants.UI_COLOR
     private val downColor = Color(0f, 0f, 0f, 0f)
@@ -28,22 +24,19 @@ class TabbedBar(val tabsMap: ObjectMap<String, Table>, val assets: Assets): Tabl
     val downDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(downColor); fill() }))
 
     init {
-        tabsMap.forEach { (k, v) ->  tabs.add(Tab(k, v))}
-
         tabs.forEach { add(it) }
         row()
         add(content).colspan(tabs.size)
-
-        makeActive(tabs[0])
     }
 
     fun makeActive(tab: Tab) {
         tabs.forEach { it.bg.drawable = upDrawable }
         tab.bg.drawable = downDrawable
         content.actor = tab.content
+        activeTab = tab
     }
 
-    inner class Tab(name: String, val content: Table?): Group() {
+    inner class Tab(val tabName: String, var content: Table?): Group() {
         private val tabHeight = 66f
         private val iconHeight = 50f
         val bg: Image
@@ -52,9 +45,9 @@ class TabbedBar(val tabsMap: ObjectMap<String, Table>, val assets: Assets): Tabl
 
         init {
             touchable = Touchable.enabled
-            setSize(Constants.D_WIDTH.toFloat() / tabsMap.size, tabHeight)
+            setSize(Constants.D_WIDTH.toFloat() / 2, tabHeight)
             bg = Image(upDrawable).apply { setFillParent(true) }
-            texture = when (name) {
+            texture = when (tabName) {
                 Constants.SHIPS_TAB -> assets.manager.get<Texture>(Constants.SHIP_ICON)
                 Constants.GUNS_TAB -> assets.manager.get<Texture>(Constants.GUN_ICON)
                 else -> error {"No texture for tab"}

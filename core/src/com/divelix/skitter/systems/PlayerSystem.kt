@@ -18,7 +18,7 @@ class PlayerSystem: IteratingSystem(Family.all(PlayerComponent::class.java).get(
         val healthCmp = cmHealth.get(entity)
         val moveCmp = cmMove.get(entity)
 
-        PlayScreen.health = healthCmp.health
+        PlayScreen.health = healthCmp.health.toInt() //TODO ponder on types mb
         transCmp.rotation = Data.dynamicData.dirVec.angle() - 90f
         moveCmp.direction.set(Data.dynamicData.dirVec)
     }

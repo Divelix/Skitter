@@ -28,6 +28,7 @@ import com.divelix.skitter.ui.ModIcon
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
+import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.vis.table
 
@@ -49,7 +50,7 @@ class EquipScreen(val game: Main): KtxScreen {
     var activeModContainer: Container<*>? = null
 
     private val reader = JsonReader()
-    private val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
+    private val playerDataFile = Constants.PLAYER_FILE.toInternalFile()// TODO on android should be local to save and internal to read
     val playerData: JsonValue = reader.parse(playerDataFile)
 
     init {
@@ -179,9 +180,9 @@ class EquipScreen(val game: Main): KtxScreen {
     }
 
     private fun saveToJson() {
-        ships.updatePlayerData()
-        guns.updatePlayerData()
-        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
+//        ships.updatePlayerData()
+//        guns.updatePlayerData()
+//        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
         println("saved to player_data.json")
     }
 

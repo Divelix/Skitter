@@ -2,25 +2,25 @@ package com.divelix.skitter.ui
 
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
-import ktx.assets.toInternalFile
 import ktx.vis.table
 
-class StockTable(tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
+class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue, modsData: JsonValue): Table() {
     val stockTable: Table
     private val stockMods = Array<Mod>(20)
+    private val playerEquipMods: JsonValue
+    private val equipMods: JsonValue
 
-    private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Constants.UI_COLOR); fill()}))
+    private val bgDrawable = TextureRegionDrawable(Texture(Pixmap(1, 1, Pixmap.Format.Alpha).apply {setColor(Constants.UI_COLOR); fill()}))
 
-    val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
     var modsType = ""
     var equipFile = ""
     var equipTypeName = ""
@@ -38,18 +38,18 @@ class StockTable(tabName: String, val assets: Assets, val reader: JsonReader, va
                 equipTypeName = "guns"
             }
         }
+        equipMods = modsData.get("mods").get(modsType)
+        playerEquipMods = playerData.get("mods").get(modsType)
         readJsonData()
         stockTable = makeStockTable()
 
         padTop(12f)
-        add(stockTable)
+        add(ScrollPane(stockTable))
 
-        updateSpecs()
+        updateLabels()
     }
 
     private fun readJsonData() {
-        val equipMods = modsData.get("mods").get(modsType)
-
         // fill stockMods
         playerData.get("mods").get(modsType).forEach {modDescription ->
             val index = modDescription.get("index").asInt()
@@ -75,10 +75,6 @@ class StockTable(tabName: String, val assets: Assets, val reader: JsonReader, va
         }
     }
 
-    private fun updateSpecs() {
-        println("Implement updateSpecs()")
-    }
-
     private fun makeStockTable(): Table {
         return table {
             name = "StockTable"
@@ -93,6 +89,34 @@ class StockTable(tabName: String, val assets: Assets, val reader: JsonReader, va
                     container(EmptyMod())
                 }
                 if ((i+1) % 4 == 0) row()
+            }
+        }
+    }
+
+    fun subtractMod(mod: Mod, quantity: Int) {
+        mod.quantity -= quantity
+        updateLabels()
+    }
+
+    fun addMod(mod: Mod) {
+        stockMods.add(mod)
+        val emptyContainer = stockTable.children.first { (it as Container<*>).actor is EmptyMod } as Container<*>
+        emptyContainer.actor = ModIcon(mod, assets)
+
+    }
+
+    fun updateLabels() {
+        stockTable.children.filterIsInstance<Container<*>>().forEach {
+            if (it.actor is ModIcon) {
+                val modIcon = it.actor as ModIcon
+                modIcon.updateLevelBars()
+                if (modIcon.mod.quantity > 0) {
+                    modIcon.quantityLabel.setText(modIcon.mod.quantity)
+                } else {
+                    modIcon.remove()
+                    stockMods.removeValue(modIcon.mod, true)
+                    it.actor = EmptyMod()
+                }
             }
         }
     }

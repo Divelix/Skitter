@@ -24,6 +24,7 @@ import com.divelix.skitter.Main
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.utils.TopViewport
 import ktx.app.KtxScreen
+import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.collections.gdxMapOf
 
@@ -33,14 +34,13 @@ abstract class EditScreen(val game: Main): KtxScreen {
     val assets = context.inject<Assets>()
     val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
     val reader = JsonReader()
-    val playerDataFile = Constants.PLAYER_FILE.toLocalFile()
+    val playerDataFile = Constants.PLAYER_FILE.toInternalFile()// TODO fix with .toLocalFile() on android
     val playerData: JsonValue = reader.parse(playerDataFile)
-
-    val tabs = gdxMapOf<String, Table>()
+    val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
 
     val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
     val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Constants.UI_COLOR); fill()}))
-    val tabbedBar: TabbedBar
+    val tabbedBar = TabbedBar(assets)
     val applyBtn = ApplyBtn(0f,  0f)
     val carriage = Image(assets.manager.get<Texture>(Constants.CARRIAGE)).apply { touchable = Touchable.disabled }
     val carriageBorderWidth = 7f
@@ -48,7 +48,6 @@ abstract class EditScreen(val game: Main): KtxScreen {
     var activeModContainer: Container<*>? = null
 
     init {
-        tabbedBar = makeTabbedBar()
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
@@ -71,13 +70,14 @@ abstract class EditScreen(val game: Main): KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height)
+//        applyBtn.setPosition(0f, Constants.D_HEIGHT - height.toFloat())
     }
 
     fun makeStageListener(): InputListener {
         return object: ClickListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                super.touchDown(event, x, y, pointer, button)
-                val actor = stage.hit(x, y, true) ?: return false
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                val actor = stage.hit(x, y, true) ?: return
                 when (actor) {
                     is ModIcon -> processModIcon(actor)
                     is EmptyMod -> processEmptyMod(actor)
@@ -86,17 +86,15 @@ abstract class EditScreen(val game: Main): KtxScreen {
                         tabbedBar.makeActive(actor)
                     }
                 }
-                return true
             }
         }
     }
 
     abstract fun processModIcon(modIcon: ModIcon)
     abstract fun processEmptyMod(emptyMod: EmptyMod)
-    abstract fun makeTabbedBar(): TabbedBar
-    abstract fun saveToJson()
     abstract fun updateUI()
-    fun deselect() {
+    abstract fun saveToJson()
+    open fun deselect() {
         activeMod = null
         activeModContainer = null
         carriage.setPosition(-carriage.width, -carriage.height)

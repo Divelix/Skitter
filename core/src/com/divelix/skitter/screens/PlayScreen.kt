@@ -17,6 +17,7 @@ import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
+import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import java.util.*
 
@@ -24,8 +25,8 @@ class PlayScreen(val game: Main): KtxScreen {
     companion object {
         var slowRate = Constants.DEFAULT_SLOW_RATE
         var isPaused = false
-        var ammo = Data.playerData.gun.capacity
-        var health = Data.playerData.ship.health
+        var ammo = 0
+        var health = 0
     }
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
@@ -43,7 +44,7 @@ class PlayScreen(val game: Main): KtxScreen {
         isPaused = false
         Data.score = 0
         Data.enemiesCount = 0
-        val playerReader = JsonReader().parse("json/player_data.json".toLocalFile())
+        val playerReader = JsonReader().parse("json/player_data.json".toInternalFile())
         val shipSpecs = playerReader.get("active_ship_specs")
         Data.playerData.ship.health = shipSpecs[0].asFloat()
         Data.playerData.ship.speed = shipSpecs[1].asFloat()
@@ -70,7 +71,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
         engine.addSystem(MovementSystem())
-        engine.addSystem(PhysicsDebugSystem(world, camera))
+//        engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem(game))
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())

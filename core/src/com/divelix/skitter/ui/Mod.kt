@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.kotcrab.vis.ui.widget.VisLabel
+import com.kotcrab.vis.ui.widget.VisTable
 import ktx.vis.table
 
 data class Mod(val index: Int, val name: String, var level: Int, var quantity: Int = 0, val effects: ObjectMap<String, Float>? = null)// TODO add isShip (for icon choosing)
@@ -28,6 +29,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
     val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(noLvlColor); fill()}))
 
     val quantityLabel: VisLabel
+    val levelBars: VisTable
 
     init {
         name = "ModIcon"
@@ -61,7 +63,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
             setPosition(quantityBg.x + (quantityBg.width-width)/2f, quantityBg.y + (quantityBg.height-height)/2f)
             isVisible = mod.quantity > 0
         }
-        val levelBars = table {
+        levelBars = table {
             bottom().left()
             pad(2f)
             defaults().pad(1f)
@@ -75,6 +77,12 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
         addActor(quantityBg.apply { touchable = Touchable.disabled })
         addActor(quantityLabel.apply { touchable = Touchable.disabled })
         addActor(levelBars.apply { touchable = Touchable.disabled })
+    }
+
+    fun updateLevelBars() {
+        for (i in 1..10) {
+            (levelBars.children[i - 1] as Image).drawable = if (i <= mod.level) lvlDrawable else noLvlDrawable
+        }
     }
 }
 
