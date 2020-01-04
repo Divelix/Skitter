@@ -83,6 +83,7 @@ object Constants {
     const val MODS_FILE = "json/mods.json"
     const val SHIPS_FILE = "json/ships.json"
     const val GUNS_FILE = "json/guns.json"
+    const val ENEMIES_FILE = "json/enemies.json"
 
     const val SHIPS_TAB = "ShipsTab"
     const val GUNS_TAB = "GunsTab"

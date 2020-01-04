@@ -69,7 +69,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
         val initPos = playerEntity.getComponent(B2dBodyComponent::class.java).body.position
         val initVelocity = playerEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
         val dirVec = aim.sub(initPos)
-        val angleInRad = dirVec.angleRad() - MathUtils.PI / 2f
+        val dirAngle = dirVec.angle() - 90f
         val width = 0.2f
         val height = 1f
         val speed = Data.playerData.gun.bulletSpeed
@@ -94,12 +94,12 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         isSensor = true // TODO Carefully
                     }
                     position.set(initPos)
-                    angle = angleInRad
                     bullet = true
                     userData = (this@entity).entity
-                    val velocity = Vector2(0f, 1f).scl(speed).rotateRad(angleInRad)
+                    val velocity = Vector2(0f, 1f).scl(speed).rotate(dirAngle)
                     velocity.add(initVelocity)
                     linearVelocity.set(velocity)
+                    angle = velocity.angleRad() - MathUtils.PI/2
                 }
             }
             with<CollisionComponent>()

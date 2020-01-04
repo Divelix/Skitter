@@ -54,7 +54,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val reloadPos = Vector2(310f, 580f)
 
     var isDriven = false
-    var isShipSlowdown = false
+    var isShipSlowdown = true
     val distVec = Vector2()
     val fixedPoint = Vector3()
     val floatPoint = Vector3()

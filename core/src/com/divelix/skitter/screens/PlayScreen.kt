@@ -19,6 +19,7 @@ import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
+import ktx.log.info
 import java.util.*
 
 class PlayScreen(val game: Main): KtxScreen {
@@ -40,11 +41,10 @@ class PlayScreen(val game: Main): KtxScreen {
     private val playerEntity: Entity
 
     init {
-        Gdx.app.log("PlayScreen","init")
         isPaused = false
         Data.score = 0
         Data.enemiesCount = 0
-        val playerReader = JsonReader().parse("json/player_data.json".toInternalFile())
+        val playerReader = JsonReader().parse(Constants.PLAYER_FILE.toInternalFile())
         val shipSpecs = playerReader.get("active_ship_specs")
         Data.playerData.ship.health = shipSpecs[0].asFloat()
         Data.playerData.ship.speed = shipSpecs[1].asFloat()
@@ -56,6 +56,7 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.playerData.gun.critChance = gunSpecs[4].asFloat()
         Data.playerData.gun.critMultiplier = gunSpecs[5].asFloat()
         ammo = Data.playerData.gun.capacity
+        Data.dynamicData.dirVec.set(0f, 0.000001f)// little init movement fixes 90deg ship rotation on init
 
         entityBuilder.createBattleground(-8f, -8f, 16f, 45f)
         entityBuilder.createObstacle(-6f, 5f, 2f, 4f)
@@ -71,7 +72,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
         engine.addSystem(MovementSystem())
-//        engine.addSystem(PhysicsDebugSystem(world, camera))
+        engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem(game))
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
@@ -103,10 +104,6 @@ class PlayScreen(val game: Main): KtxScreen {
         world.setContactListener(B2dContactListener())
     }
 
-    override fun show() {
-        Gdx.app.log("PlayScreen","show()")
-    }
-
     override fun render(delta: Float) {
         engine.update(delta)
         if (!isPaused) {
@@ -118,27 +115,27 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     override fun pause() {
-        Gdx.app.log("PlayScreen","pause()")
+        info("PlayScreen") { "pause()" }
         isPaused = true
     }
 
     override fun resume() {
-        Gdx.app.log("PlayScreen","resume()")
+        info("PlayScreen") { "resume()" }
         isPaused = false
     }
 
     override fun resize(width: Int, height: Int) {
-        Gdx.app.log("PlayScreen","resize()")
+        info("PlayScreen") { "resize()" }
         camera.setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
         hud.resize(width, height)
     }
 
     override fun hide() {
-        Gdx.app.log("PlayScreen","hide()")
+        info("PlayScreen") { "hide()" }
     }
 
     override fun dispose() {
-        Gdx.app.log("PlayScreen","dispose()")
+        info("PlayScreen") { "dispose()" }
         hud.dispose()
         engine.clearPools()
     }
@@ -171,7 +168,6 @@ class PlayScreen(val game: Main): KtxScreen {
         println("------------------------------------")
         println("-------------Game Over--------------")
         println("------------------------------------")
-        Data.dynamicData.dirVec.setZero()
         game.screen = MenuScreen(game)
     }
 }
