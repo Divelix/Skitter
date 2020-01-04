@@ -62,11 +62,22 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
         }
     }
 
-    private fun updatePlayerData() {
+    fun updatePlayerData() {
         for (field in playerData) {
             when(field.name) {
                 "mods" -> {// TODO update mods
                     val equipMods = field.get(modsType)
+                    for (i in 0 until equipMods.size)
+                        equipMods.remove(0)
+                    stockMods.forEach {
+                        val jsonMod = JsonValue(JsonValue.ValueType.`object`).apply {
+                            addChild("index", JsonValue(it.index.toLong()))
+                            addChild("level", JsonValue(it.level.toLong()))
+                            addChild("quantity", JsonValue(it.quantity.toLong()))
+                        }
+                        equipMods.addChild(jsonMod)
+                        equipMods.size++
+                    }
                 }
                 equipTypeName -> {// TODO update mods in equips
                     val activeEquipMods = field[0].get("mods")
@@ -93,8 +104,8 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
         }
     }
 
-    fun subtractMod(mod: Mod, quantity: Int) {
-        mod.quantity -= quantity
+    fun subtractMod(mod: Mod) {
+        mod.quantity--
         updateLabels()
     }
 
@@ -102,7 +113,6 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
         stockMods.add(mod)
         val emptyContainer = stockTable.children.first { (it as Container<*>).actor is EmptyMod } as Container<*>
         emptyContainer.actor = ModIcon(mod, assets)
-
     }
 
     fun updateLabels() {

@@ -13,11 +13,11 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.JsonValue
+import com.badlogic.gdx.utils.JsonWriter
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
@@ -26,7 +26,7 @@ import com.divelix.skitter.utils.TopViewport
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
-import ktx.collections.gdxMapOf
+import ktx.log.info
 
 abstract class EditScreen(val game: Main): KtxScreen {
     val context = game.getContext()
@@ -34,8 +34,8 @@ abstract class EditScreen(val game: Main): KtxScreen {
     val assets = context.inject<Assets>()
     val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
     val reader = JsonReader()
-    val playerDataFile = Constants.PLAYER_FILE.toInternalFile()// TODO fix with .toLocalFile() on android
-    val playerData: JsonValue = reader.parse(playerDataFile)
+    val playerFile = Constants.PLAYER_FILE.toLocalFile()
+    val playerData: JsonValue = reader.parse(playerFile)
     val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
 
     val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
@@ -93,7 +93,12 @@ abstract class EditScreen(val game: Main): KtxScreen {
     abstract fun processModIcon(modIcon: ModIcon)
     abstract fun processEmptyMod(emptyMod: EmptyMod)
     abstract fun updateUI()
-    abstract fun saveToJson()
+
+    open fun updatePlayerJson() {
+        playerFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
+        info { "player_data.json was updated" }
+    }
+
     open fun deselect() {
         activeMod = null
         activeModContainer = null
@@ -123,7 +128,7 @@ abstract class EditScreen(val game: Main): KtxScreen {
             addActor(icon)
             addListener(object: ClickListener() {
                 override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    saveToJson()
+                    updatePlayerJson()
                     game.screen = MenuScreen(game)
                     return super.touchDown(event, x, y, pointer, button)
                 }

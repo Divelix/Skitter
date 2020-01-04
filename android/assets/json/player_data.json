@@ -1,7 +1,7 @@
 {
 "id": 1,
 "name": "Serega",
-"coins": 20000,
+"coins": 200000,
 "active_ship": 0,
 "active_ship_specs": [ 100, 10.0 ],
 "active_gun": 0,

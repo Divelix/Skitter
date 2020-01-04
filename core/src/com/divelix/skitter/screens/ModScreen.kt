@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -16,20 +15,18 @@ import com.divelix.skitter.Main
 import com.divelix.skitter.ui.*
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import ktx.actors.onChange
 import ktx.actors.plusAssign
 import ktx.log.info
 import ktx.vis.table
 import ktx.collections.*
-import ktx.vis.window
 
 class ModScreen(game: Main): EditScreen(game) {
-    private val bigMod = BigMod(ModIcon(Mod(1001, "HEALTH", 5), assets))
+    private val bigMod = BigMod()
     private val sellPrices = modsData.get("sell_prices").asIntArray()
     private val upgradePrices = modsData.get("upgrade_prices").asIntArray()
     private var coins = playerData.get("coins").asInt()
 
-    val rootTable: VisTable
+    private val rootTable: VisTable
     lateinit var coinsLabel: VisLabel
     lateinit var modName: VisLabel
     lateinit var modSpecs: VisLabel
@@ -40,6 +37,7 @@ class ModScreen(game: Main): EditScreen(game) {
         tabbedBar.tabs[0].content = StockTable(tabbedBar.tabs[0].tabName, assets, playerData, modsData)
         tabbedBar.tabs[1].content = StockTable(tabbedBar.tabs[1].tabName, assets, playerData, modsData)
         tabbedBar.makeActive(tabbedBar.tabs[0])
+
         rootTable = table {
             setFillParent(true)
             top()
@@ -55,7 +53,7 @@ class ModScreen(game: Main): EditScreen(game) {
                 table {
                     image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).cell(width = 76f, height = 76f).addListener(object: ClickListener() {
                         override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                            makeSellWindow()
+                            if (activeMod != null) sellMod(activeMod!!.mod)
                             super.touchUp(event, x, y, pointer, button)
                         }
                     })
@@ -84,7 +82,10 @@ class ModScreen(game: Main): EditScreen(game) {
                 table {
                     image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f).addListener(object: ClickListener() {
                         override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                            upMod(activeMod!!.mod)
+                            if (activeMod != null) {
+                                upMod(activeMod!!.mod)
+                                bigMod.setMod(activeMod)
+                            }
                             super.touchUp(event, x, y, pointer, button)
                         }
                     })
@@ -100,61 +101,29 @@ class ModScreen(game: Main): EditScreen(game) {
         stage += applyBtn
         stage.addListener(makeStageListener())
 
-        val firstMod = (((tabbedBar.activeTab.content) as StockTable).stockTable.children[0] as Container<*>).actor as ModIcon
-        processModIcon(firstMod)
+        bigMod.setMod(null)
     }
 
-    fun makeSellWindow() {
-        rootTable.touchable = Touchable.disabled
-        stage += window("Sell mode?") {
-            debugAll()
-            centerWindow()
-            defaults().expand()
-            padTop(25f) // title height
-            width = 200f
-            height = 100f
-            val quantitySlider = slider(1f, activeMod!!.mod.quantity.toFloat()).cell(width = 200f, colspan = 2)
-            row()
-            val quantityLabel = label("1").cell(colspan = 2)
-            quantitySlider.onChange {
-                quantityLabel.setText(quantitySlider.value.toInt().toString())
-            }
-            row()
-            textButton("Sell").cell(align = Align.left).addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    sellMod(activeMod!!.mod, quantitySlider.value.toInt())
-                    rootTable.touchable = Touchable.enabled
-                    this@window.fadeOut(0.1f)
-                }
-            })
-            textButton("Cancel").cell(align = Align.right).addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    rootTable.touchable = Touchable.enabled
-                    this@window.fadeOut(0.1f)
-                }
-            })
-        }.fadeIn(0.1f)
-    }
-
-    fun sellMod(mod: Mod, quantity: Int) {
+    fun sellMod(mod: Mod) {
         val stockTable = tabbedBar.activeTab.content as StockTable
-        stockTable.subtractMod(mod, quantity)
-        deselect()
+        stockTable.subtractMod(mod)
+        if (mod.quantity == 0) deselect()
 
-        val income = sellPrices[mod.level-1] * quantity
+        val income = sellPrices[mod.level-1]
         coins += income
         playerData.get("coins").set(coins.toLong(), null) // TODO move to save function
         coinsLabel.setText(coins)
 
 //        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
-        println("Sold $quantity mods for $income")
+        println("Sold ${mod.name} mod for $income")
     }
 
     fun upMod(mod: Mod) {
         if (coins < upgradePrices[mod.level - 1]) {
             info { "not enough coins (need ${upgradePrices[mod.level - 1] - coins} more)" }
+            return
+        } else if (mod.level == 10) {
+            info { "max level" }
             return
         }
 
@@ -194,8 +163,10 @@ class ModScreen(game: Main): EditScreen(game) {
         info { "EmptyMod was clicked" }
     }
 
-    override fun saveToJson() {
-        info { "make saveToJson()" }
+    override fun updatePlayerJson() {
+        (tabbedBar.tabs[0].content as StockTable).updatePlayerData() // update ships
+        (tabbedBar.tabs[1].content as StockTable).updatePlayerData() // update guns
+        super.updatePlayerJson()
     }
 
     override fun deselect() {
@@ -203,27 +174,22 @@ class ModScreen(game: Main): EditScreen(game) {
         bigMod.setMod(null)
     }
 
-    inner class BigMod(private val modIcon: ModIcon): Group() {
+    inner class BigMod: Group() {
         private val iconHeight = 75f
-        private val bg = Image(modIcon.bgDrawable).apply { setFillParent(true) }
+        private val bg = Image(bgDrawable).apply { setFillParent(true) }
         private val icon: Image
         private val levelBars: Table
 
         init {
             setSize(150f, 150f)
 
-            val texture: Texture = assets.manager.get(modIcon.textureName)
-            val aspectRatio = texture.width.toFloat() / texture.height.toFloat()
-            icon = Image(texture).apply {
-                setSize(iconHeight * aspectRatio, iconHeight)
-                setPosition((this@BigMod.width - width) / 2f, (this@BigMod.height - height) / 2f)
-            }
+            icon = Image()
             levelBars = table {
                 bottom().left()
                 pad(5f)
                 defaults().pad(2f)
                 for (i in 1..10) {
-                    image(if (i <= modIcon.mod.level) modIcon.lvlDrawable else modIcon.noLvlDrawable) {it.size(10f)}
+                    image(bgDrawable) {it.size(10f)}
                 }
             }
 
@@ -262,6 +228,8 @@ class ModScreen(game: Main): EditScreen(game) {
                 levelBars.isVisible = false
                 modName.setText("")
                 modSpecs.setText("")
+                sellPriceLabel.setText("")
+                upgradePriceLabel.setText("")
             }
         }
     }
