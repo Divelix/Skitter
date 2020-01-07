@@ -137,7 +137,9 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             row()
             physicsTimeLabel = label("${Data.physicsTime}").cell(align = Align.left)
         }
-        ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin(), "reload-label")
+        ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin(), "reload-label").apply {
+            setFontScale(0.5f)
+        }
         stage += rootTable
         stage += ammoLabel
 //        stage.isDebugAll = true
@@ -158,7 +160,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
             // TODO fix that healthbar hardcode after ship json implementation
             val barWidth = stage.width * PlayScreen.health / 100f
             shape.rect(hpOffset + (stage.width - barWidth) / 2f, hpOffset,
-                    barWidth - hpOffset*2, hpHeight)
+                    barWidth * 0.9f, hpHeight)
 
             shape.color = scoreColor
             shape.circle(175f, 725f, 60f)

@@ -51,7 +51,10 @@ abstract class EditScreen(val game: Main): KtxScreen {
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
-                    Input.Keys.BACK -> game.screen = MenuScreen(game)
+                    Input.Keys.BACK -> {
+                        updatePlayerJson()
+                        game.screen = MenuScreen(game)
+                    }
                 }
                 return true
             }
