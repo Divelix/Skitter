@@ -14,7 +14,7 @@ import com.divelix.skitter.Constants
 
 class TabbedBar(val assets: Assets): Table() {
     val tabs = arrayOf(Tab(Constants.SHIPS_TAB, null), Tab(Constants.GUNS_TAB, null))
-    private val content = Container<Table>()
+    val content = Container<Table>()
     lateinit var activeTab: Tab
 
     private val upColor = Constants.UI_COLOR

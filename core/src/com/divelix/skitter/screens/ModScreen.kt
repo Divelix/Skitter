@@ -105,17 +105,14 @@ class ModScreen(game: Main): EditScreen(game) {
     }
 
     fun sellMod(mod: Mod) {
-        val stockTable = tabbedBar.activeTab.content as StockTable
+        val stockTable = tabbedBar.content.actor as StockTable
         stockTable.subtractMod(mod)
         if (mod.quantity == 0) deselect()
 
         val income = sellPrices[mod.level-1]
         coins += income
         playerData.get("coins").set(coins.toLong(), null) // TODO move to save function
-        coinsLabel.setText(coins)
-
-//        playerDataFile.writeString(playerData.prettyPrint(JsonWriter.OutputType.json, 100), false)
-        println("Sold ${mod.name} mod for $income")
+        updateUI()
     }
 
     fun upMod(mod: Mod) {
