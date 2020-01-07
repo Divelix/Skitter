@@ -2,6 +2,7 @@ package com.divelix.skitter.ui
 
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -22,6 +23,8 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     private val suitMods = Array<Mod>(8)
     private val stockMods = Array<Mod>(20)
     private val specNames = Array<String>()
+    private val equipMods: JsonValue
+    private val equipData: JsonValue
 
     private val infoTable: Table
     lateinit var specsTable: Table
@@ -55,6 +58,8 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 activeEquipSpecs = "active_gun_specs"
             }
         }
+        equipMods = modsData.get("mods").get(modsType)
+        equipData = reader.parse(equipFile.toInternalFile())
         readJsonData()
         infoTable = makeInfoTable()
         suitTable = makeSuitTable()
@@ -84,8 +89,6 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     }
 
     private fun readJsonData() {
-        val equipData = reader.parse(equipFile.toInternalFile())
-        val equipMods = modsData.get("mods").get(modsType)
         equipData.get("specs").forEach { specNames.add(it.asString()) }
         val allEquips = equipData.get(equipTypeName)
         val activeEquipDescription = playerData.get(equipTypeName)[playerData.get(activeEquipName).asInt()]
@@ -149,8 +152,6 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     }
 
     fun updateSpecs() {
-        val equipData = reader.parse(equipFile.toInternalFile())
-        val equipMods = modsData.get("mods").get(modsType) // TODO duplcate with readJsonData()
         for (i in 0 until equipSpecs.size) {
             finalEquipSpecs[i] = equipSpecs[i]
             modEffects[i] = 1f
@@ -168,7 +169,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
         }
         for (i in 0 until finalEquipSpecs.size) {
             finalEquipSpecs[i] = equipSpecs[i] * modEffects[i]
-            (specsTable.children[i] as VisLabel).setText("${finalEquipSpecs[i].toInt()}")
+            (specsTable.children[i] as VisLabel).setText("${MathUtils.round(finalEquipSpecs[i] * 10) / 10f}")
         }
     }
 
@@ -193,12 +194,12 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 defaults().left()
                 table {
                     defaults().left()
-                    specNames.forEach { label("${it.toUpperCase()}:", "mod-quantity"); row() }
+                    specNames.forEach { label("${it.toUpperCase()}:", "equip-specs").apply { setFontScale(0.25f) }; row() }
                 }
                 specsTable = table {
 //                    padLeft(5f)
                     defaults().left()
-                    equipSpecs.forEach { label(it.toString(), "mod-quantity");row() }
+                    equipSpecs.forEach { label(it.toString(), "equip-specs").apply { setFontScale(0.25f) };row() }
                 }
             }
         }

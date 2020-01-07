@@ -39,12 +39,15 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
 
         val bg = Image(bgDrawable).apply { setFillParent(true) }
         textureName = when (mod.index) {
-            1001 -> Constants.MOD_ICON_HEALTH
-            1002 -> Constants.MOD_ICON_SPEED
+            1001 -> Constants.MOD_SHIP_HEALTH
+            1002 -> Constants.MOD_SHIP_SPEED
 
-            2001 -> Constants.MOD_ICON_DAMAGE
-            2002 -> Constants.MOD_ICON_RELOAD
-            2003 -> Constants.MOD_ICON_CAPACITY
+            2001 -> Constants.MOD_GUN_DAMAGE
+            2002 -> Constants.MOD_GUN_CAPACITY
+            2003 -> Constants.MOD_GUN_RELOAD
+            2004 -> Constants.MOD_GUN_SPEED
+            2005 -> Constants.MOD_GUN_CRIT
+            2006 -> Constants.MOD_GUN_CHANCE
 
             else -> Constants.STAR
         }
@@ -97,43 +100,5 @@ class EmptyMod: Group() {
         val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(bgColor); fill()}))
         val img = Image(bgDrawable).apply { setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT) }
         addActor(img.apply { touchable = Touchable.disabled })
-    }
-}
-
-// Deprecated Mod appearance
-class ModImage(val mod: Mod, val assets: Assets): Group() {
-    val texture: Texture
-    val levelLabel: VisLabel
-    val quantityLabel: VisLabel
-
-    init {
-        touchable = Touchable.enabled
-        setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
-        texture = when(mod.index) {
-            // Gun stockMods
-            1 -> assets.manager.get(Constants.MOD_DAMAGE)
-            2 -> assets.manager.get(Constants.MOD_RELOAD_SPEED)
-            3 -> assets.manager.get(Constants.MOD_BULLET_SPEED)
-            4 -> assets.manager.get(Constants.BACKGROUND_IMAGE) //TODO add texture for CRIT_MULT
-
-            5 -> assets.manager.get(Constants.MOD_FIRE_DAMAGE)
-            6 -> assets.manager.get(Constants.MOD_COLD_DAMAGE)
-            else -> assets.manager.get(Constants.BACKGROUND_IMAGE)
-        }
-        levelLabel = VisLabel("lvl ${mod.level}", "mod-level").apply {
-            touchable = Touchable.disabled
-        }
-        quantityLabel = VisLabel("${mod.quantity}", "mod-quantity").apply {
-            setPosition(this@ModImage.width - width, this@ModImage.height - height)
-            touchable = Touchable.disabled
-        }
-
-        addActor(Image(texture).apply {
-            touchable = Touchable.disabled
-            setFillParent(true)
-        })
-        addActor(levelLabel)
-        addActor(quantityLabel)
-        addActor(quantityLabel)
     }
 }

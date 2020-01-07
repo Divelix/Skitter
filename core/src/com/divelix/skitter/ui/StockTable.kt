@@ -16,30 +16,25 @@ import ktx.vis.table
 class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue, modsData: JsonValue): Table() {
     val stockTable: Table
     private val stockMods = Array<Mod>(20)
-    private val playerEquipMods: JsonValue
     private val equipMods: JsonValue
 
     private val bgDrawable = TextureRegionDrawable(Texture(Pixmap(1, 1, Pixmap.Format.Alpha).apply {setColor(Constants.UI_COLOR); fill()}))
 
     var modsType = ""
-    var equipFile = ""
     var equipTypeName = ""
 
     init {
         when (tabName) {
             Constants.SHIPS_TAB -> {
                 modsType = "ship"
-                equipFile = Constants.SHIPS_FILE
                 equipTypeName = "ships"
             }
             Constants.GUNS_TAB -> {
                 modsType = "gun"
-                equipFile = Constants.GUNS_FILE
                 equipTypeName = "guns"
             }
         }
         equipMods = modsData.get("mods").get(modsType)
-        playerEquipMods = playerData.get("mods").get(modsType)
         readJsonData()
         stockTable = makeStockTable()
 

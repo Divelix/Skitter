@@ -40,14 +40,10 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.BACKGROUND_IMAGE)
         manager.load<Texture>(Constants.SHIP_ICON)
         manager.load<Texture>(Constants.GUN_ICON)
-        manager.load<Texture>(Constants.APPLY_BTN)
         manager.load<Texture>(Constants.APPLY_ICON)
         manager.load<Texture>(Constants.UP_BTN)
         manager.load<Texture>(Constants.SELL_BTN)
         manager.load<Texture>(Constants.PAUSE_BTN)
-        manager.load<Texture>(Constants.SHIPS_BTN)
-        manager.load<Texture>(Constants.GUNS_BTN)
-        manager.load<Texture>(Constants.MODS_BTN)
         manager.load<Texture>(Constants.BUCKET_ICON)
         manager.load<Texture>(Constants.PISTOL_ICON)
         manager.load<Texture>(Constants.CARRIAGE)
@@ -55,30 +51,23 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.BULLET_DEFAULT)
         manager.load<Texture>(Constants.AIM)
         manager.load<Texture>(Constants.WHITE_CIRCLE)
-        manager.load<Texture>(Constants.RIFLE)
-        manager.load<Texture>(Constants.UZI)
         manager.load<Texture>(Constants.MENU_PLAY)
         manager.load<Texture>(Constants.MENU_MOD)
         manager.load<Texture>(Constants.MENU_EQUIP)
-        manager.load<Texture>(Constants.MOD_GLOW)
-        manager.load<Texture>(Constants.MOD_RELOAD_SPEED)
-        manager.load<Texture>(Constants.MOD_BULLET_SPEED)
-        manager.load<Texture>(Constants.MOD_COLD_DAMAGE)
-        manager.load<Texture>(Constants.MOD_DAMAGE)
-        manager.load<Texture>(Constants.MOD_FIRE_DAMAGE)
-        manager.load<Texture>(Constants.MOD_HEALTH)
-        manager.load<Texture>(Constants.MOD_MANA)
-        manager.load<Texture>(Constants.MOD_ICON_HEALTH)
-        manager.load<Texture>(Constants.MOD_ICON_SPEED)
-        manager.load<Texture>(Constants.MOD_ICON_DAMAGE)
-        manager.load<Texture>(Constants.MOD_ICON_RELOAD)
-        manager.load<Texture>(Constants.MOD_ICON_CAPACITY)
+        manager.load<Texture>(Constants.MOD_SHIP_HEALTH)
+        manager.load<Texture>(Constants.MOD_SHIP_SPEED)
+        manager.load<Texture>(Constants.MOD_GUN_DAMAGE)
+        manager.load<Texture>(Constants.MOD_GUN_CAPACITY)
+        manager.load<Texture>(Constants.MOD_GUN_RELOAD)
+        manager.load<Texture>(Constants.MOD_GUN_SPEED)
+        manager.load<Texture>(Constants.MOD_GUN_CRIT)
+        manager.load<Texture>(Constants.MOD_GUN_CHANCE)
         manager.load<Texture>(Constants.STAR)
         manager.load<Sound>(Constants.HIT_SOUND)
         manager.load<Sound>(Constants.SHOT_SOUND)
         manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)
         val fontParams12 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
-            size = 12
+            size = 48
         }
         val fontParams16 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
             size = 16
@@ -110,7 +99,7 @@ class Assets: Disposable {
             label("mod-level", extend = defaultStyle) {
                 fontColor = Color.GREEN
             }
-            label("mod-quantity") {
+            label("equip-specs") {
                 font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_QUANTITY)
                 fontColor = Color.WHITE
             }

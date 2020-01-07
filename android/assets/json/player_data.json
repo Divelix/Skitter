@@ -5,7 +5,7 @@
 "active_ship": 0,
 "active_ship_specs": [ 100.0, 10.0 ],
 "active_gun": 0,
-"active_gun_specs": [ 62.999996185302734, 10.0, 1.0, 25.0, 2.0, 0.10000000149011612 ],
+"active_gun_specs": [ 30.0, 10.0, 1.0, 25.0, 2.0, 0.10000000149011612 ],
 "ships": [
 	{
 		"index": 1,
@@ -17,23 +17,21 @@
 	{
 		"index": 1,
 		"level": 1,
-		"mods": [
-			{ "index": 2001, "level": 1 }
-		]
+		"mods": []
 	}
 ],
 "mods": {
 	"ship": [
 		{ "index": 1001, "level": 1, "quantity": 1 },
-		{ "index": 1002, "level": 2, "quantity": 1 },
-		{ "index": 1002, "level": 7, "quantity": 1 }
+		{ "index": 1002, "level": 2, "quantity": 2 }
 	],
 	"gun": [
 		{ "index": 2001, "level": 1, "quantity": 1 },
-		{ "index": 2002, "level": 1, "quantity": 5 },
-		{ "index": 2002, "level": 3, "quantity": 2 },
-		{ "index": 2001, "level": 2, "quantity": 1 },
-		{ "index": 2003, "level": 2, "quantity": 1 }
+		{ "index": 2002, "level": 1, "quantity": 2 },
+		{ "index": 2003, "level": 1, "quantity": 3 },
+		{ "index": 2004, "level": 1, "quantity": 4 },
+		{ "index": 2005, "level": 1, "quantity": 5 },
+		{ "index": 2006, "level": 1, "quantity": 6 }
 	]
 }
 }
