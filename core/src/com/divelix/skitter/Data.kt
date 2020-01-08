@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import ktx.assets.toInternalFile
-import ktx.assets.toLocalFile
 
 object Data {
     var renderTime = 0f

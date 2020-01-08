@@ -2,10 +2,7 @@ package com.divelix.skitter.ui
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
@@ -36,22 +33,28 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val camera = OrthographicCamera()
     val stage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat(), camera), batch)
 
-    val rootTable: Table
+    private val rootTable: Table
     lateinit var fpsLabel: Label
     lateinit var renderTimeLabel: Label
     lateinit var physicsTimeLabel: Label
     lateinit var enemyCountLabel: Label
     lateinit var scoreLabel: Label
-    val ammoLabel: Label
+    private val ammoLabel: Label
 
-    val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
-    val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
-    var activeColor = touchpadColor
-    val healthColor = Color(1f, 0f, 0f, 1f)
-    val reloadFGColor = Color(1f, 1f, 0f, 1f)
-    val reloadBGColor = Color(1f, 1f, 0f, 0.3f)
-    val scoreColor = Color(0.7f, 0.7f, 0.7f, 1f)
-    val reloadPos = Vector2(310f, 580f)
+    private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
+    private val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
+    private var activeColor = touchpadColor
+    private val healthBgColor = Color(1f, 0f, 0f, 0.3f)
+    private val healthColor = Color(1f, 0f, 0f, 1f)
+    private val reloadFGColor = Color(1f, 1f, 0f, 1f)
+    private val reloadBGColor = Color(1f, 1f, 0f, 0.3f)
+    private val scoreColor = Color(0.7f, 0.7f, 0.7f, 1f)
+    private val reloadPos = Vector2(310f, 580f)
+
+    private val hpHeight = 10f
+    private val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
+    private val healthBgImg = Image(Texture(pixel.apply { setColor(healthBgColor); fill() }))
+    private val healthImg = Image(Texture(pixel.apply { setColor(healthColor); fill() }))
 
     var isDriven = false
     var isShipSlowdown = true
@@ -140,13 +143,23 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin(), "reload-label").apply {
             setFontScale(0.5f)
         }
+
         stage += rootTable
         stage += ammoLabel
+        stage += healthBgImg
+        stage += healthImg
 //        stage.isDebugAll = true
+
+        healthBgImg.run {
+            setSize(stage.width * 0.9f, hpHeight)
+            setPosition(stage.width * 0.05f, stage.width * 0.05f)
+        }
+        healthImg.run {
+            setSize(healthBgImg.width, healthBgImg.height)
+            setPosition(healthBgImg.x, healthBgImg.y)
+        }
     }
 
-    val hpOffset = 20f
-    val hpHeight = 10f
     fun update() {
         Gdx.gl.glEnable(GL20.GL_BLEND)
         shape.projectionMatrix = camera.combined
@@ -156,18 +169,17 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                 shape.circle(fixedPoint.x, fixedPoint.y, 10f)
                 shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
             }
-            shape.color = healthColor
-            // TODO fix that healthbar hardcode after ship json implementation
-            val barWidth = stage.width * PlayScreen.health / 100f
-            shape.rect(hpOffset + (stage.width - barWidth) / 2f, hpOffset,
-                    barWidth * 0.9f, hpHeight)
-
             shape.color = scoreColor
             shape.circle(175f, 725f, 60f)
             shape.color = reloadBGColor
             shape.circle(reloadPos, 30f)
             shape.color = reloadFGColor
             shape.arc(reloadPos, 30f, 90f, Data.reloadTimer / Data.playerData.gun.reloadTime * 360)
+        }
+        healthImg.run {
+            val hpWidth = stage.width * PlayScreen.health / Data.playerData.ship.health
+            width = hpWidth * 0.9f
+            x = hpWidth * 0.05f + (stage.width - hpWidth) / 2f
         }
         Gdx.gl.glDisable(GL20.GL_BLEND)
 
