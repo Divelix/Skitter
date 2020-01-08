@@ -41,6 +41,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
         textureName = when (mod.index) {
             1001 -> Constants.MOD_SHIP_HEALTH
             1002 -> Constants.MOD_SHIP_SPEED
+            1003 -> Constants.MOD_SHIP_CHUBBER
 
             2001 -> Constants.MOD_GUN_DAMAGE
             2002 -> Constants.MOD_GUN_CAPACITY

@@ -213,10 +213,11 @@ class ModScreen(game: Main): EditScreen(game) {
                         (levelBars.children[i - 1] as Image).drawable = modIcon.noLvlDrawable
                 }
                 modName.setText("<${modIcon.mod.name}>")
+                var specString = ""
                 modIcon.mod.effects?.forEach { (key, value) ->
-                    // TODO add multiple effects support
-                    modSpecs.setText("$key: x$value")
+                    specString += "$key: $value\n"
                 }
+                modSpecs.setText(specString)
                 sellPriceLabel.setText("${sellPrices[modIcon.mod.level-1]}")
                 upgradePriceLabel.setText("${upgradePrices[modIcon.mod.level-1]}")
             } else {

@@ -57,6 +57,7 @@ object Constants {
     const val MENU_EQUIP = "menu-equip.png"
     const val MOD_SHIP_HEALTH = "mods/mod-ship-health.png"
     const val MOD_SHIP_SPEED = "mods/mod-ship-speed.png"
+    const val MOD_SHIP_CHUBBER = "mods/mod-ship-chubber.png"
     const val MOD_GUN_DAMAGE = "mods/mod-gun-damage.png"
     const val MOD_GUN_CAPACITY = "mods/mod-gun-capacity.png"
     const val MOD_GUN_RELOAD = "mods/mod-gun-reload.png"

@@ -56,6 +56,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.MENU_EQUIP)
         manager.load<Texture>(Constants.MOD_SHIP_HEALTH)
         manager.load<Texture>(Constants.MOD_SHIP_SPEED)
+        manager.load<Texture>(Constants.MOD_SHIP_CHUBBER)
         manager.load<Texture>(Constants.MOD_GUN_DAMAGE)
         manager.load<Texture>(Constants.MOD_GUN_CAPACITY)
         manager.load<Texture>(Constants.MOD_GUN_RELOAD)
