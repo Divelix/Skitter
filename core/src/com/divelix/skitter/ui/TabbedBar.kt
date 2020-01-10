@@ -17,7 +17,7 @@ class TabbedBar(val assets: Assets): Table() {
     val content = Container<Table>()
     lateinit var activeTab: Tab
 
-    private val upColor = Constants.UI_COLOR
+    private val upColor = assets.UI_COLOR
     private val downColor = Color(0f, 0f, 0f, 0f)
     private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
     val upDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(upColor); fill() }))

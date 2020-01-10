@@ -32,7 +32,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     val stockTable: Table
 
     private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Constants.UI_COLOR); fill()}))
+    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(assets.UI_COLOR); fill()}))
 
     val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
     var modsType = ""
@@ -215,7 +215,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 if (i <= suitMods.size) {
                     container(ModIcon(suitMods[i - 1], assets))
                 } else {
-                    container(EmptyMod())
+                    container(EmptyMod(assets))
                 }
                 if (i % 4 == 0) row()
             }
@@ -233,7 +233,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 if (i < stockMods.size) {
                     container(ModIcon(stockMods[i], assets))
                 } else {
-                    container(EmptyMod())
+                    container(EmptyMod(assets))
                 }
                 if ((i+1) % 4 == 0) row()
             }

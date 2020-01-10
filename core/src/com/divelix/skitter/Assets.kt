@@ -3,6 +3,7 @@ package com.divelix.skitter
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -27,7 +28,11 @@ class Assets: Disposable {
     lateinit var uiSkin: Skin
     //    lateinit var font: BitmapFont
     lateinit var digitsFont: BitmapFont
-    lateinit var windowStyle: Window.WindowStyle // TODO ugly shit, delete later
+
+    val BG_COLOR = Color(0x684BA6FF)
+    val UI_COLOR = Color(0f, 0f, 0f, 0.3f)
+    val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
+    val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(UI_COLOR); fill()}))
 
     fun loadSplashAssets() {
         manager.load<Texture>(Constants.DIGITS_PNG)
@@ -144,9 +149,9 @@ class Assets: Disposable {
                 background = it["slider-vertical"]
             }
             scrollPane {}
-            windowStyle = window {
+            window {
                 titleFont = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
-                background = TextureRegionDrawable(manager.get<Texture>(Constants.BACKGROUND_IMAGE))
+                background = bgDrawable
             }
             tabbedPane("vertical") {
                 background = it["window-border-bg"]

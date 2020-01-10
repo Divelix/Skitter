@@ -44,7 +44,7 @@ class ModScreen(game: Main): EditScreen(game) {
             defaults().expandX()
             table {
                 right().pad(12f)
-                background = bgDrawable
+                background = assets.bgDrawable
                 coinsLabel = label("$coins", "mod-name")
             }.cell(fillX = true)
             row()
@@ -65,7 +65,7 @@ class ModScreen(game: Main): EditScreen(game) {
                     add(bigMod)
                     row()
                     table {
-                        background = bgDrawable
+                        background = assets.bgDrawable
                         scrollPane(
                                 table {
                                     pad(12f)
@@ -173,7 +173,7 @@ class ModScreen(game: Main): EditScreen(game) {
 
     inner class BigMod: Group() {
         private val iconHeight = 75f
-        private val bg = Image(bgDrawable).apply { setFillParent(true) }
+        private val bg = Image(assets.bgDrawable).apply { setFillParent(true) }
         private val icon: Image
         private val levelBars: Table
 
@@ -186,7 +186,7 @@ class ModScreen(game: Main): EditScreen(game) {
                 pad(5f)
                 defaults().pad(2f)
                 for (i in 1..10) {
-                    image(bgDrawable) {it.size(10f)}
+                    image(assets.bgDrawable) {it.size(10f)}
                 }
             }
 
@@ -221,7 +221,7 @@ class ModScreen(game: Main): EditScreen(game) {
                 sellPriceLabel.setText("${sellPrices[modIcon.mod.level-1]}")
                 upgradePriceLabel.setText("${upgradePrices[modIcon.mod.level-1]}")
             } else {
-                bg.drawable = bgDrawable
+                bg.drawable = assets.bgDrawable
                 icon.drawable = null
                 levelBars.isVisible = false
                 modName.setText("")

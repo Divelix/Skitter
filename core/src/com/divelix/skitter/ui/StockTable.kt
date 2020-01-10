@@ -18,7 +18,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
     private val stockMods = Array<Mod>(20)
     private val equipMods: JsonValue
 
-    private val bgDrawable = TextureRegionDrawable(Texture(Pixmap(1, 1, Pixmap.Format.Alpha).apply {setColor(Constants.UI_COLOR); fill()}))
+    private val bgDrawable = TextureRegionDrawable(Texture(Pixmap(1, 1, Pixmap.Format.Alpha).apply {setColor(assets.UI_COLOR); fill()}))
 
     var modsType = ""
     var equipTypeName = ""
@@ -92,7 +92,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
                 if (i < stockMods.size) {
                     container(ModIcon(stockMods[i], assets))
                 } else {
-                    container(EmptyMod())
+                    container(EmptyMod(assets))
                 }
                 if ((i+1) % 4 == 0) row()
             }
@@ -120,7 +120,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
                 } else {
                     modIcon.remove()
                     stockMods.removeValue(modIcon.mod, true)
-                    it.actor = EmptyMod()
+                    it.actor = EmptyMod(assets)
                 }
             }
         }

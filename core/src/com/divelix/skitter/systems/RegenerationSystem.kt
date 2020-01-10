@@ -7,12 +7,14 @@ import com.badlogic.ashley.systems.IntervalIteratingSystem
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.HealthComponent
 import com.divelix.skitter.components.RegenerationComponent
+import com.divelix.skitter.screens.PlayScreen
 
 class RegenerationSystem(interval: Float): IntervalIteratingSystem(Family.all(RegenerationComponent::class.java, HealthComponent::class.java).get(), interval) {
     private val cmRegen = ComponentMapper.getFor(RegenerationComponent::class.java)
     private val cmHealth = ComponentMapper.getFor(HealthComponent::class.java)
 
     override fun processEntity(entity: Entity?) {
+        if (PlayScreen.isPaused) return
         val regenCmp = cmRegen.get(entity)
         val healthCmp = cmHealth.get(entity)
 

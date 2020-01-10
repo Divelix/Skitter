@@ -38,8 +38,6 @@ abstract class EditScreen(val game: Main): KtxScreen {
     val playerData: JsonValue = reader.parse(playerFile)
     val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
 
-    val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Constants.UI_COLOR); fill()}))
     val tabbedBar = TabbedBar(assets)
     val applyBtn = ApplyBtn(0f,  0f)
     val carriage = Image(assets.manager.get<Texture>(Constants.CARRIAGE)).apply { touchable = Touchable.disabled }
@@ -64,7 +62,7 @@ abstract class EditScreen(val game: Main): KtxScreen {
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(Constants.BG_COLOR.r, Constants.BG_COLOR.g, Constants.BG_COLOR.b, Constants.BG_COLOR.a)
+        Gdx.gl.glClearColor(assets.BG_COLOR.r, assets.BG_COLOR.g, assets.BG_COLOR.b, assets.BG_COLOR.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         stage.act()

@@ -26,9 +26,6 @@ object Constants {
     const val MOD_WIDTH = 64f
     const val MOD_HEIGHT = 64f
 
-    val BG_COLOR = Color(0x684BA6FF)
-    val UI_COLOR = Color(0f, 0f, 0f, 0.3f)
-
     const val UISKIN_ATLAS = "uiskin.atlas"
     const val DIGITS_FNT = "fonts/digits.fnt"
     const val DIGITS_PNG = "fonts/digits.png"

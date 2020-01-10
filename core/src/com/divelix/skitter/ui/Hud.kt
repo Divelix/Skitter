@@ -9,9 +9,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
@@ -23,6 +26,7 @@ import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
 import ktx.graphics.*
 import ktx.vis.table
+import ktx.vis.window
 
 class Hud(val game: Main, val playCam: OrthographicCamera) {
     private val context = game.getContext()
@@ -44,13 +48,15 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
     private val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
     private var activeColor = touchpadColor
-    private val healthBgColor = Color(1f, 0f, 0f, 0.3f)
+    private val healthBgColor = Color(1f, 0f, 0f, 0.1f)
     private val healthColor = Color(1f, 0f, 0f, 1f)
     private val reloadFGColor = Color(1f, 1f, 0f, 1f)
     private val reloadBGColor = Color(1f, 1f, 0f, 0.3f)
     private val scoreColor = Color(0.7f, 0.7f, 0.7f, 1f)
     private val reloadPos = Vector2(310f, 580f)
 
+    private val pauseBtn: Image
+    private val pauseWindow: Window
     private val hpHeight = 10f
     private val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
     private val healthBgImg = Image(Texture(pixel.apply { setColor(healthBgColor); fill() }))
@@ -63,6 +69,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     val floatPoint = Vector3()
     val playerCtrl = object: InputAdapter() {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            if (PlayScreen.isPaused) return false
             isShipSlowdown = false
             when (pointer) {
                 0 -> {
@@ -79,6 +86,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         }
 
         override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
+            if (PlayScreen.isPaused) return false
             when (pointer) {
                 0 -> {
                     floatPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
@@ -96,6 +104,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         }
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            if (PlayScreen.isPaused) return false
             when (pointer) {
                 0 -> {
                     isShipSlowdown = true
@@ -112,18 +121,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     }
 
     init {
-        stage += Image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PAUSE_BTN))).apply {
-            setSize(50f, 50f)
-            setPosition(Constants.D_WIDTH - width - 20f, Constants.D_HEIGHT - height - 20f)
-            addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    Data.renderTime = 0f
-                    Data.physicsTime = 0f
-                    game.screen = MenuScreen(game)
-                    super.touchUp(event, x, y, pointer, button)
-                }
-            })
-        }
+        pauseWindow = makePauseWindow()
+        pauseBtn = makePauseButton()
         rootTable = table {
             setFillParent(true)
             top().pad(10f)
@@ -148,6 +147,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         stage += ammoLabel
         stage += healthBgImg
         stage += healthImg
+        stage += pauseBtn
+        stage += pauseWindow
 //        stage.isDebugAll = true
 
         healthBgImg.run {
@@ -207,5 +208,49 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
 
     fun dispose() {
         stage.dispose()
+    }
+
+    private fun makePauseButton(): Image {
+        return Image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PAUSE_BTN))).apply {
+            setSize(50f, 50f)
+            setPosition(Constants.D_WIDTH - width - 20f, Constants.D_HEIGHT - height - 20f)
+            addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    PlayScreen.isPaused = true
+                    pauseWindow.isVisible = true
+//                    Data.renderTime = 0f
+//                    Data.physicsTime = 0f
+//                    game.screen = MenuScreen(game)
+                    super.touchUp(event, x, y, pointer, button)
+                }
+            })
+        }
+    }
+
+    private fun makePauseWindow(): Window {
+        return window("Pause") {
+            isVisible = false
+            debugAll()
+            centerWindow()
+            defaults().expand()
+            padTop(25f) // title height
+            width = 200f
+            height = 100f
+            val quantityLabel = label("retwert").cell(colspan = 2)
+            row()
+            textButton("Exit").cell(align = Align.left).addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    game.screen = MenuScreen(game)
+                }
+            })
+            textButton("Resume").cell(align = Align.right).addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    PlayScreen.isPaused = false
+                    isVisible = false
+                }
+            })
+        }
     }
 }

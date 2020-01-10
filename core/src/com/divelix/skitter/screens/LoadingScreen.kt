@@ -34,7 +34,7 @@ class LoadingScreen(private val game: Main): KtxScreen {
         progress = MathUtils.lerp(progress, assets.manager.progress, 0.1f)
 
         shape.use(ShapeRenderer.ShapeType.Filled) {
-            shape.color = Constants.BG_COLOR
+            shape.color = assets.BG_COLOR
             shape.rect(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height*progress)
         }
         batch.use {

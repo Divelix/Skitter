@@ -88,7 +88,7 @@ class PlayScreen(val game: Main): KtxScreen {
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
-                    Input.Keys.BACK -> game.screen = MenuScreen(game)
+                    Input.Keys.BACK, Input.Keys.ESCAPE  -> game.screen = MenuScreen(game)
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
                     Input.Keys.A -> println(Data.dynamicData.aims)
@@ -109,9 +109,9 @@ class PlayScreen(val game: Main): KtxScreen {
         if (!isPaused) {
             shootBullets(Data.dynamicData.aims)
             clearDeadBodies()
+            if (health <= 0f) gameOver()
         }
         hud.update()
-        if (health <= 0f) gameOver()
     }
 
     override fun pause() {

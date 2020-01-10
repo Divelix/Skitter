@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.divelix.skitter.Constants
 import com.divelix.skitter.components.CollisionComponent
 import com.divelix.skitter.components.SpawnComponent
+import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.EntityBuilder
 import kotlin.math.sqrt
 
@@ -17,6 +18,7 @@ class SpawnSystem(interval: Float, val entityBuilder: EntityBuilder, val playerE
     private val cmSpawn = ComponentMapper.getFor(SpawnComponent::class.java)
 
     override fun processEntity(entity: Entity?) {
+        if (PlayScreen.isPaused) return
         val spawnCmp = cmSpawn.get(entity)
         val a = MathUtils.random() * MathUtils.PI2
         val r = spawnCmp.circle.radius * sqrt(MathUtils.random())

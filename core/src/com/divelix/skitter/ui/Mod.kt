@@ -90,8 +90,8 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
     }
 }
 
-class EmptyMod: Group() {
-    private val bgColor = Constants.UI_COLOR
+class EmptyMod(val assets: Assets): Group() {
+    private val bgColor = assets.UI_COLOR
 
     init {
         name = "EmptyMod"
