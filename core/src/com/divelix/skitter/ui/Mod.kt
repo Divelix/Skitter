@@ -91,15 +91,11 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
 }
 
 class EmptyMod(val assets: Assets): Group() {
-    private val bgColor = assets.UI_COLOR
-
     init {
         name = "EmptyMod"
         touchable = Touchable.enabled
         setSize(64f, 64f)
-        val pixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-        val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(bgColor); fill()}))
-        val img = Image(bgDrawable).apply { setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT) }
+        val img = Image(assets.bgDrawable).apply { setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT) }
         addActor(img.apply { touchable = Touchable.disabled })
     }
 }

@@ -1,11 +1,8 @@
 package com.divelix.skitter.ui
 
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.ObjectMap
@@ -17,8 +14,6 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
     val stockTable: Table
     private val stockMods = Array<Mod>(20)
     private val equipMods: JsonValue
-
-    private val bgDrawable = TextureRegionDrawable(Texture(Pixmap(1, 1, Pixmap.Format.Alpha).apply {setColor(assets.UI_COLOR); fill()}))
 
     var modsType = ""
     var equipTypeName = ""
@@ -84,7 +79,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
     private fun makeStockTable(): Table {
         return table {
             name = "StockTable"
-            background = bgDrawable
+            background = assets.bgDrawable
             pad(7f)
             defaults().pad(7f)
 

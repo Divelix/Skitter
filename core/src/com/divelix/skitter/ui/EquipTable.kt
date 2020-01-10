@@ -1,6 +1,5 @@
 package com.divelix.skitter.ui
 
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.ui.Container
@@ -30,9 +29,6 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     lateinit var specsTable: Table
     val suitTable: Table
     val stockTable: Table
-
-    private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    private val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(assets.UI_COLOR); fill()}))
 
     val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
     var modsType = ""
@@ -67,7 +63,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
 
         val topPart = table {
             name = "TopPart"
-            background = bgDrawable
+            background = assets.bgDrawable
             add(infoTable)
             row()
             add(suitTable)
@@ -185,7 +181,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 setAlignment(Align.center)
             }
             container(image(getEquipDrawable(1, tabName == Constants.SHIPS_TAB))) {
-                background = bgDrawable
+                background = assets.bgDrawable
                 pad(10f)
                 it.size(tableHeight, tableHeight)
             }
@@ -225,7 +221,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     private fun makeStockTable(): Table {
         return table {
             name = "StockTable"
-            background = bgDrawable
+            background = assets.bgDrawable
             pad(7f)
             defaults().pad(7f)
 

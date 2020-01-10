@@ -1,14 +1,11 @@
 package com.divelix.skitter.ui
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 
@@ -17,12 +14,6 @@ class TabbedBar(val assets: Assets): Table() {
     val content = Container<Table>()
     lateinit var activeTab: Tab
 
-    private val upColor = assets.UI_COLOR
-    private val downColor = Color(0f, 0f, 0f, 0f)
-    private val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    val upDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(upColor); fill() }))
-    val downDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(downColor); fill() }))
-
     init {
         tabs.forEach { add(it) }
         row()
@@ -30,8 +21,8 @@ class TabbedBar(val assets: Assets): Table() {
     }
 
     fun makeActive(tab: Tab) {
-        tabs.forEach { it.bg.drawable = upDrawable }
-        tab.bg.drawable = downDrawable
+        tabs.forEach { it.bg.drawable = assets.bgDrawable }
+        tab.bg.drawable = null
         content.actor = tab.content
         activeTab = tab
     }
@@ -46,7 +37,7 @@ class TabbedBar(val assets: Assets): Table() {
         init {
             touchable = Touchable.enabled
             setSize(Constants.D_WIDTH.toFloat() / 2, tabHeight)
-            bg = Image(upDrawable).apply { setFillParent(true) }
+            bg = Image(assets.bgDrawable).apply { setFillParent(true) }
             texture = when (tabName) {
                 Constants.SHIPS_TAB -> assets.manager.get<Texture>(Constants.SHIP_ICON)
                 Constants.GUNS_TAB -> assets.manager.get<Texture>(Constants.GUN_ICON)
