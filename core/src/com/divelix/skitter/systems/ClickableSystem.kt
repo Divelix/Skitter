@@ -29,7 +29,7 @@ class ClickableSystem(val camera: OrthographicCamera): IteratingSystem(Family.al
 //                println("HIT (${clickCmp.circle.x}; ${clickCmp.circle.y})")
 //                Data.dynamicData.aims.add(Vector2(clickCmp.circle.x, clickCmp.circle.y))
 //            }
-            Data.dynamicData.aims.add(Vector2(click.x, click.y))
+//            Data.dynamicData.aims.add(Vector2(click.x, click.y))
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.divelix.skitter.ui
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -9,8 +11,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -22,13 +22,14 @@ import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
+import com.divelix.skitter.utils.EntityBuilder
 import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
 import ktx.graphics.*
 import ktx.vis.table
 import ktx.vis.window
 
-class Hud(val game: Main, val playCam: OrthographicCamera) {
+class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: EntityBuilder, val playerEntity: Entity) {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val shape = context.inject<ShapeRenderer>()
@@ -62,6 +63,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
     private val healthBgImg = Image(Texture(pixel.apply { setColor(healthBgColor); fill() }))
     private val healthImg = Image(Texture(pixel.apply { setColor(healthColor); fill() }))
 
+    val aimPos = Vector2()
+    val clickPos = Vector3()
     var isDriven = false
     var isShipSlowdown = true
     val distVec = Vector2()
@@ -78,8 +81,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
 //                    floatPoint.set(fixedPoint) // fixes small bug // TODO che za bug?
                 }
                 1 -> {
-                    val click = playCam.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
-                    Data.dynamicData.aims.add(Vector2(click.x, click.y))
+                    playCam.unproject(clickPos.set(screenX.toFloat(), screenY.toFloat(), 0f))
+                    shoot(aimPos.set(clickPos.x, clickPos.y))
                 }
             }
             return true
@@ -95,7 +98,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                     val dist2 = distVec.len2()
                     if (dist2 > Constants.DEAD_BAND_2) {
                         activeColor = if (dist2 < Constants.MAX_TOUCHPAD_RADIUS_2) touchpadColor else touchpadLimitColor
-                        Data.dynamicData.dirVec.set(distVec).limit2(Constants.MAX_TOUCHPAD_RADIUS_2).scl(0.015f) // TODO assign scl() to ship speed spec
+                        Data.dirVec.set(distVec).limit2(Constants.MAX_TOUCHPAD_RADIUS_2).scl(0.015f) // TODO assign scl() to ship speed spec
                         isDriven = true
                     }
                 }
@@ -111,8 +114,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
                     if (isDriven) {
                         isDriven = false
                     } else {
-                        val click = playCam.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
-                        Data.dynamicData.aims.add(Vector2(click.x, click.y))
+                        playCam.unproject(clickPos.set(screenX.toFloat(), screenY.toFloat(), 0f))
+                        shoot(aimPos.set(clickPos.x, clickPos.y))
                     }
                 }
             }
@@ -161,6 +164,14 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         }
     }
 
+    fun shoot(aim: Vector2) {
+        if (PlayScreen.ammo <= 0) return
+        entityBuilder.createBullet(playerEntity, aim)
+        assets.manager.get<Sound>(Constants.SHOT_SOUND).play()
+        if (PlayScreen.ammo == Data.playerData.gun.capacity) Data.reloadTimer = 0f // fix for reload on first shot
+        PlayScreen.ammo--
+    }
+
     fun update() {
         Gdx.gl.glEnable(GL20.GL_BLEND)
         shape.projectionMatrix = camera.combined
@@ -197,7 +208,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera) {
         stage.act()
         stage.draw()
 
-        if (isShipSlowdown) Data.dynamicData.dirVec.scl(0.95f)
+        if (isShipSlowdown) Data.dirVec.scl(0.95f)
     }
 
     fun resize(width: Int, height: Int) {

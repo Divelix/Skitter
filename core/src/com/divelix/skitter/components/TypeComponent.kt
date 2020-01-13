@@ -6,10 +6,11 @@ class TypeComponent: Component {
     companion object {
         const val PLAYER: Short = 1
         const val ENEMY: Short = 2
-        const val BULLET: Short = 4
-        const val OBSTACLE: Short = 8
-        const val SPAWN: Short = 16
-        const val PUDDLE: Short = 32
+        const val PLAYER_BULLET: Short = 4
+        const val ENEMY_BULLET: Short = 8
+        const val OBSTACLE: Short = 16
+        const val SPAWN: Short = 32
+        const val PUDDLE: Short = 64
     }
     var type: Short? = null
 }

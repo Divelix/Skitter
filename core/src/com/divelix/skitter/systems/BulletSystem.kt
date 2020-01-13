@@ -13,20 +13,14 @@ import com.divelix.skitter.components.BulletComponent
 class BulletSystem: IteratingSystem(Family.all(BulletComponent::class.java).get()) {
     private val cmBullet = ComponentMapper.getFor(BulletComponent::class.java)
     private val cmBody = ComponentMapper.getFor(B2dBodyComponent::class.java)
-    private val cmBind = ComponentMapper.getFor(BindComponent::class.java)
-
-    private val leash = Vector2()
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
         val bulletCmp = cmBullet.get(entity)
         val bodyCmp = cmBody.get(entity)
-        val bindCmp = cmBind.get(entity)
 
-        val bulletPos = bodyCmp.body.position
-        val playerPos = bindCmp.entity.getComponent(B2dBodyComponent::class.java).body.position
-        leash.set(bulletPos.sub(playerPos))
+        bulletCmp.timer -= deltaTime
 
-        if (leash.len2() > Constants.BULLET_CRITICAL_DISTANCE_2)
+        if (bulletCmp.timer <= 0f)
             bulletCmp.isDead = true
 
         if (bulletCmp.isDead)

@@ -23,8 +23,8 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
     fun createPlayer(hp: Float): Entity {
         val entityType = TypeComponent.PLAYER
         return engine.entity {
-            with<TypeComponent> { type = entityType }
             with<PlayerComponent>()
+            with<TypeComponent> { type = entityType }
             with<HealthComponent> { health = hp }
             with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
@@ -43,7 +43,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE
+                        filter.maskBits = TypeComponent.ENEMY or TypeComponent.ENEMY_BULLET or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE
 //                    filter.groupIndex = -1
 //                    isSensor = true
                     }
@@ -64,10 +64,11 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
         return camEntity.getComponent(CameraComponent::class.java).camera
     }
 
-    fun createBullet(playerEntity: Entity, aim: Vector2) {
-        val entityType = TypeComponent.BULLET
-        val initPos = playerEntity.getComponent(B2dBodyComponent::class.java).body.position
-        val initVelocity = playerEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
+    fun createBullet(sourceEntity: Entity, aim: Vector2) {
+        val sourceType = sourceEntity.getComponent(TypeComponent::class.java).type // TODO mb use ComponentMapper
+        val entityType = if (sourceType == TypeComponent.PLAYER) TypeComponent.PLAYER_BULLET else TypeComponent.ENEMY_BULLET
+        val initPos = sourceEntity.getComponent(B2dBodyComponent::class.java).body.position
+        val initVelocity = sourceEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
         val dirVec = aim.sub(initPos)
         val dirAngle = dirVec.angle() - 90f
         val width = 0.2f
@@ -89,7 +90,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.ENEMY or TypeComponent.OBSTACLE
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.OBSTACLE or TypeComponent.ENEMY
 //                filter.groupIndex = 1
                         isSensor = true // TODO Carefully
                     }
@@ -103,16 +104,18 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 }
             }
             with<CollisionComponent>()
-            with<BindComponent> { entity = playerEntity }
         }
     }
 
-    fun createEnemy(x: Float, y: Float, entitySize: Float, playerEntity: Entity) {
+    fun createLover(x: Float, y: Float, playerEntity: Entity) {
         val entityType = TypeComponent.ENEMY
+        val entitySize = 2f
         engine.entity {
+            with<LoverComponent>()
             with<TypeComponent> { type = entityType }
             with<EnemyComponent> { damage = Data.loverData.damage }
             with<HealthComponent> { health = Data.loverData.health }
+            with<HealthBarComponent> { maxValue = Data.loverData.health }
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(entitySize, entitySize)
@@ -121,7 +124,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<MoveComponent> {
                 speed = Data.loverData.speed
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.ENEMY_DEFAULT)) }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOVER)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
@@ -137,9 +140,45 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 }
             }
             with<CollisionComponent>()
-            with<HealthBarComponent> { maxValue = Data.loverData.health }
             with<BindComponent> { entity = playerEntity }
 //            with<ClickableComponent> { circle.set(x, y, entitySize/2)} // TODO maybe return later for new mechanics
+        }
+        Data.enemiesCount++
+    }
+
+    fun createSniper(x: Float, y: Float, playerEntity: Entity) {
+        val entityType = TypeComponent.ENEMY
+        val entitySize = 1f
+        val sniperDamage = 10f
+        val sniperHealth = 50f
+        engine.entity {
+            with<SniperComponent>()
+            with<TypeComponent> { type = entityType }
+            with<EnemyComponent> { damage = sniperDamage }
+            with<HealthComponent> { health = sniperHealth }
+            with<HealthBarComponent> { maxValue = sniperHealth }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(entitySize, entitySize)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SNIPER)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.KinematicBody) {
+                    circle(radius = entitySize / 2f) {
+                        density = 10f
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.PLAYER_BULLET
+//                        filter.groupIndex = 1
+                    }
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
+            }
+            with<CollisionComponent>()
+            with<BindComponent> { entity = playerEntity }
         }
         Data.enemiesCount++
     }
@@ -167,7 +206,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.BULLET
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.PLAYER_BULLET
 //                        filter.groupIndex = 1
                     }
                     position.set(x, y)

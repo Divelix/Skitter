@@ -9,6 +9,11 @@
    "index": 1,
    "name": "Lover",
    "specs": [100, 5, 10]
+  },
+  {
+   "index": 2,
+   "name": "Sniper",
+   "specs": [100, 5, 10]
   }
  ]
 }

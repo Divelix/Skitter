@@ -13,7 +13,7 @@ object Data {
     var score = 0
     val playerData: PlayerData
     val loverData: LoverData
-    val dynamicData: DynamicData
+    val dirVec = Vector2()
 
     init {
         val reader = JsonReader()
@@ -26,12 +26,8 @@ object Data {
         val enemyReader = reader.parse(Constants.ENEMIES_FILE.toInternalFile())
         val loverSpecs = enemyReader.get("enemies")[0].get("specs")
         loverData = LoverData(loverSpecs[0].asFloat(), loverSpecs[1].asFloat(), loverSpecs[2].asFloat())
-        dynamicData = DynamicData(Vector2(), Array(10))
     }
 }
-
-data class DynamicData(val dirVec: Vector2,
-                       val aims: Array<Vector2>)
 
 data class PlayerData(val ship: ShipData,
                       var gun: GunData)
@@ -43,8 +39,8 @@ data class GunData(var damage: Float,
                    var capacity: Int,
                    var reloadTime: Float,
                    var bulletSpeed: Float,
-                   var critChance: Float,
-                   var critMultiplier: Float)
+                   var critMultiplier: Float,
+                   var critChance: Float)
 
 data class LoverData(var health: Float,
                      var speed: Float,

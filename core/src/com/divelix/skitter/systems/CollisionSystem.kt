@@ -8,10 +8,7 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.MenuScreen
 import ktx.ashley.has
-import ktx.ashley.hasNot
-import kotlin.experimental.or
 
 class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
@@ -37,18 +34,18 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
                 TypeComponent.PLAYER -> {
                     when (collidedTypeCmp.type) {
                         TypeComponent.ENEMY -> {
-                            println("player hit enemy")
+//                            println("player hit enemy")
                             val playerHealthCmp = cmHealth.get(entity)
                             val enemyCmp = cmEnemy.get(collidedEntity)
                             playerHealthCmp.health -= enemyCmp.damage
-                            println(playerHealthCmp.health)
+//                            println(playerHealthCmp.health)
                         }
                         TypeComponent.SPAWN -> {
                             println("PLAYER collided SPAWN")
                         }
                     }
                 }
-                TypeComponent.BULLET -> {
+                TypeComponent.PLAYER_BULLET -> {
                     val bulletCmp = cmBullet.get(entity)
                     if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                     when (collidedTypeCmp.type) {
@@ -62,6 +59,24 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
                         }
                         TypeComponent.OBSTACLE -> {
                             println("OBSTACLE")
+                        }
+                    }
+                    bulletCmp.isDead = true // always delete bullet after any collision
+                }
+                TypeComponent.ENEMY_BULLET -> {
+                    val bulletCmp = cmBullet.get(entity)
+                    if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
+                    when (collidedTypeCmp.type) {
+                        TypeComponent.PLAYER -> {
+                            hitSound.play()
+                            val playerHealthCmp = cmHealth.get(collidedEntity)
+                            if (playerHealthCmp.health > 10f)
+                                playerHealthCmp.health -= 10f
+                            else
+                                playerHealthCmp.health = 0f
+                        }
+                        TypeComponent.OBSTACLE -> {
+                            println("Sniper hit OBSTACLE!!!")
                         }
                     }
                     bulletCmp.isDead = true // always delete bullet after any collision

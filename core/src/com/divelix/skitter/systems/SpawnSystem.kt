@@ -4,11 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IntervalIteratingSystem
-import com.badlogic.ashley.systems.IntervalSystem
-import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.MathUtils
-import com.divelix.skitter.Constants
-import com.divelix.skitter.components.CollisionComponent
 import com.divelix.skitter.components.SpawnComponent
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.EntityBuilder
@@ -24,6 +20,6 @@ class SpawnSystem(interval: Float, val entityBuilder: EntityBuilder, val playerE
         val r = spawnCmp.circle.radius * sqrt(MathUtils.random())
         val x = spawnCmp.circle.x + r * MathUtils.cos(a)
         val y = spawnCmp.circle.y + r * MathUtils.sin(a)
-        entityBuilder.createEnemy(x, y, 2f, playerEntity)
+        entityBuilder.createLover(x, y, playerEntity)
     }
 }
