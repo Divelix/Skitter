@@ -32,9 +32,6 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
                 origin.set(size).scl(0.5f)
             }
-            with<MoveComponent> {
-                speed = Data.playerData.ship.speed
-            }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.BUCKET_ICON)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
@@ -121,8 +118,9 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
-            with<MoveComponent> {
-                speed = Data.loverData.speed
+            with<SteerComponent> {
+                maxSpeed = Data.loverData.maxSpeed
+                maxForce = Data.loverData.maxForce
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOVER)) }
             with<B2dBodyComponent> {
@@ -148,7 +146,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
 
     fun createSniper(x: Float, y: Float, playerEntity: Entity) {
         val entityType = TypeComponent.ENEMY
-        val entitySize = 1f
+        val entitySize = 1.5f
         val sniperDamage = 10f
         val sniperHealth = 50f
         engine.entity {

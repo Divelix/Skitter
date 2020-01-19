@@ -25,7 +25,7 @@ object Data {
         playerData = PlayerData(shipData, gunData)
         val enemyReader = reader.parse(Constants.ENEMIES_FILE.toInternalFile())
         val loverSpecs = enemyReader.get("enemies")[0].get("specs")
-        loverData = LoverData(loverSpecs[0].asFloat(), loverSpecs[1].asFloat(), loverSpecs[2].asFloat())
+        loverData = LoverData(loverSpecs[0].asFloat(), loverSpecs[1].asFloat(), loverSpecs[2].asFloat(), loverSpecs[3].asFloat())
     }
 }
 
@@ -43,5 +43,6 @@ data class GunData(var damage: Float,
                    var critChance: Float)
 
 data class LoverData(var health: Float,
-                     var speed: Float,
+                     var maxSpeed: Float,
+                     var maxForce: Float,
                      var damage: Float)

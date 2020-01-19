@@ -3,7 +3,6 @@ package com.divelix.skitter.utils
 import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.*
-import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.has
@@ -13,7 +12,7 @@ class B2dContactListener : ContactListener {
     private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
     private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
     private val cmSlow = ComponentMapper.getFor(SlowComponent::class.java)
-    private val cmMove = ComponentMapper.getFor(MoveComponent::class.java)
+    private val cmMove = ComponentMapper.getFor(SteerComponent::class.java)
 
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body // A is a body that was created earlier
@@ -42,8 +41,8 @@ class B2dContactListener : ContactListener {
                 if (entityB.has(cmSlow)) entityB.remove(SlowComponent::class.java)
                 val moveCmp = cmMove.get(entityB)
                 when (tCmpB.type) {
-                    TypeComponent.PLAYER -> moveCmp.speed = Data.playerData.ship.speed
-                    TypeComponent.ENEMY -> moveCmp.speed = Data.loverData.speed
+                    TypeComponent.PLAYER -> moveCmp.maxSpeed = Data.playerData.ship.speed
+                    TypeComponent.ENEMY -> moveCmp.maxSpeed = Data.loverData.maxSpeed
                 }
             }
         }

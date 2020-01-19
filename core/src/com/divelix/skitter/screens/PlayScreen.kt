@@ -137,31 +137,33 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnvironment() {
-        entityBuilder.createBattleground(-8f, -8f, 16f, 450f)
+        entityBuilder.createBattleground(-8f, -8f, 50f, 50f)
 //        entityBuilder.createObstacle(-6f, 5f, 2f, 4f)
 //        entityBuilder.createObstacle(6f, 5f, 2f, 4f)
-        entityBuilder.createPuddle(0f, 5f, 2f)
-        entityBuilder.createPuddle(0f, 15f, 2f)
-        entityBuilder.createPuddle(0f, 25f, 2f)
-        entityBuilder.createPuddle(0f, 35f, 2f)
-        entityBuilder.createPuddle(0f, 45f, 2f)
-        entityBuilder.createPuddle(0f, 55f, 2f)
-        entityBuilder.createSpawn(0f, 10f, 2f)
-        entityBuilder.createObstacle(8f, -4f, 2f, 2f)
+//        entityBuilder.createPuddle(0f, 5f, 2f)
+//        entityBuilder.createPuddle(0f, 15f, 2f)
+//        entityBuilder.createPuddle(0f, 25f, 2f)
+//        entityBuilder.createPuddle(0f, 35f, 2f)
+//        entityBuilder.createPuddle(0f, 45f, 2f)
+//        entityBuilder.createPuddle(0f, 55f, 2f)
+//        entityBuilder.createSpawn(0f, 10f, 2f)
+//        entityBuilder.createObstacle(8f, -4f, 2f, 2f)
     }
 
     private fun makeEnemies() {
-        entityBuilder.createLover(-3f, 5f, playerEntity)
-        entityBuilder.createLover(3f, 6f, playerEntity)
-        entityBuilder.createLover(-5f, -5f, playerEntity)
-        entityBuilder.createSniper(5f, -5f, playerEntity)
+        entityBuilder.createLover(-3f, 10f, playerEntity)
+//        entityBuilder.createLover(3f, 6f, playerEntity)
+//        entityBuilder.createLover(-5f, -5f, playerEntity)
+//        entityBuilder.createSniper(5f, -5f, playerEntity)
+//        entityBuilder.createSniper(-5f, 15f, playerEntity)
+//        entityBuilder.createSniper(5f, 25f, playerEntity)
     }
 
     private fun createEngineSystems() {
         engine.addSystem(CameraSystem())
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
-        engine.addSystem(MovementSystem())
+        engine.addSystem(SteeringSystem())
         engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem(game))
         engine.addSystem(PlayerSystem())
