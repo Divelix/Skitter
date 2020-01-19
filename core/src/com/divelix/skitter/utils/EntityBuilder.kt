@@ -36,7 +36,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = Constants.PLAYER_SIZE / 2f) {
-                        density = 10f
+                        density = 1f
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
@@ -126,7 +126,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
-                        density = 10f
+                        density = 0.01f
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
