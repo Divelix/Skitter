@@ -106,7 +106,6 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
 
     fun createLover(x: Float, y: Float, playerEntity: Entity) {
         val entityType = TypeComponent.ENEMY
-        val entitySize = 2f
         engine.entity {
             with<LoverComponent>()
             with<TypeComponent> { type = entityType }
@@ -115,7 +114,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<HealthBarComponent> { maxValue = Data.loverData.health }
             with<TransformComponent> {
                 position.set(x, y, 0f)
-                size.set(entitySize, entitySize)
+                size.set(0.9f, 1.5f)
                 origin.set(size).scl(0.5f)
             }
             with<SteerComponent> {
@@ -125,14 +124,13 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOVER)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
-                    circle(radius = entitySize / 2f) {
-                        density = 0.01f
+                    polygon(Vector2(0f, 0.75f), Vector2(-0.45f, -0.75f), Vector2(0.45f, -0.75f)) {
+                        density = 1f
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-//                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.BULLET or TypeComponent.ENEMY
-//                        filter.groupIndex = 1
                     }
+                    angularDamping = 15f
                     position.set(x, y)
                     userData = (this@entity).entity
                 }

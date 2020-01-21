@@ -14,6 +14,7 @@ class LoverSystem: IteratingSystem(Family.all(LoverComponent::class.java).get())
     private val cmBody = ComponentMapper.getFor(B2dBodyComponent::class.java)
     private val loverPos = Vector2()
     private val targetPos = Vector2()
+    private val steering = Vector2()
     private val behavior = Behaviors.PURSUIT
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
@@ -31,8 +32,11 @@ class LoverSystem: IteratingSystem(Family.all(LoverComponent::class.java).get())
             Behaviors.SEEK -> {
                 // steering = desired - velocity
                 val desired = targetPos.sub(loverPos).setLength(steerCmp.maxSpeed)
-                val steering = desired.sub(bodyCmp.body.linearVelocity).limit(steerCmp.maxForce)
-                steerCmp.steering.set(steering)
+                steering.set(desired.sub(bodyCmp.body.linearVelocity).limit(steerCmp.maxForce))
+            }
+            Behaviors.FLEE -> {
+                val desired = loverPos.sub(targetPos).setLength(steerCmp.maxSpeed)
+                steering.set(desired.sub(bodyCmp.body.linearVelocity).limit(steerCmp.maxForce))
             }
             Behaviors.ARRIVE -> {
                 val maxDistance = 10f
@@ -40,28 +44,26 @@ class LoverSystem: IteratingSystem(Family.all(LoverComponent::class.java).get())
                 val distance = targetPos.dst(loverPos)
                 val maxSpeed = if (distance < maxDistance) steerCmp.maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else steerCmp.maxSpeed
                 val desired = targetPos.sub(loverPos).setLength(maxSpeed)
-                val steering = desired.sub(bodyCmp.body.linearVelocity).limit(steerCmp.maxForce)
-                steerCmp.steering.set(steering)
-//                println(bodyCmp.body.mass)
+                steering.set(desired.sub(bodyCmp.body.linearVelocity).limit(steerCmp.maxForce))
             }
             Behaviors.PURSUIT -> {
                 val maxDistance = 10f
                 val minDistance = 2f // lover radius + player radius
                 val targetPrediction = targetBodyCmp.body.linearVelocity
-                println(targetPrediction.len())
                 val distance = targetPos.dst(loverPos)
                 val maxSpeed = if (distance < maxDistance) steerCmp.maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else steerCmp.maxSpeed
                 val desired = targetPos.sub(loverPos).setLength(maxSpeed)
-                val steering = desired.sub(bodyCmp.body.linearVelocity).add(targetPrediction).limit(steerCmp.maxForce)
-//                println(steering.len())
-                steerCmp.steering.set(steering)
+                steering.set(desired.sub(bodyCmp.body.linearVelocity).add(targetPrediction).limit(steerCmp.maxForce))
             }
         }
+        steering.scl(1f / bodyCmp.body.mass)
+        steerCmp.steering.set(steering)
     }
 
     enum class Behaviors {
-        SEEK,
-        ARRIVE,
-        PURSUIT
+        SEEK, // move to target
+        FLEE, // move from target
+        ARRIVE, // slow down on approach
+        PURSUIT // move to predicted position of target
     }
 }

@@ -16,8 +16,9 @@ class SteeringSystem: IteratingSystem(Family.all(SteerComponent::class.java).get
         val moveCmp = cmMove.get(entity)
         val bodyCmp = cmBody.get(entity)
 
-        bodyCmp.body.setTransform(bodyCmp.body.position, moveCmp.steering.angleRad())
-        bodyCmp.body.applyForceToCenter(moveCmp.steering, true)
+//        bodyCmp.body.setTransform(bodyCmp.body.position, moveCmp.steering.angleRad())
+//        bodyCmp.body.applyForceToCenter(moveCmp.steering, true)
+        bodyCmp.body.applyForce(moveCmp.steering, bodyCmp.body.getWorldPoint(Vector2(0f, 0.75f)), true)
     }
 
 }

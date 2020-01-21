@@ -66,6 +66,7 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
+                    Input.Keys.Z -> for (i in 1..50) entityBuilder.createLover(10f, 10f, playerEntity)
                 }
                 return true
             }
@@ -137,7 +138,7 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnvironment() {
-        entityBuilder.createBattleground(-8f, -8f, 50f, 50f)
+        entityBuilder.createBattleground(-8f, -8f, 100f, 100f)
 //        entityBuilder.createObstacle(-6f, 5f, 2f, 4f)
 //        entityBuilder.createObstacle(6f, 5f, 2f, 4f)
 //        entityBuilder.createPuddle(0f, 5f, 2f)
@@ -151,7 +152,7 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnemies() {
-        entityBuilder.createLover(-3f, 10f, playerEntity)
+        entityBuilder.createLover(-2f, 7f, playerEntity)
 //        entityBuilder.createLover(3f, 6f, playerEntity)
 //        entityBuilder.createLover(-5f, -5f, playerEntity)
 //        entityBuilder.createSniper(5f, -5f, playerEntity)
