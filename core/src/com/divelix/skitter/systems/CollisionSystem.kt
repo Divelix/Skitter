@@ -18,79 +18,109 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
     private val cmBullet = ComponentMapper.getFor(BulletComponent::class.java)
     private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
     private val cmSlow = ComponentMapper.getFor(SlowComponent::class.java)
+    private val cmAgent = ComponentMapper.getFor(AgentComponent::class.java)
 
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val collisionCmp = cmCollision.get(entity)
-        val typeCmp = cmType.get(entity)
+        val collidedEntity = collisionCmp.collisionEntity ?: return
+        if (collisionCmp.isBeginContact) {
+            processBeginContact(entity, collidedEntity)
+        } else {
+            processEndContact(entity, collidedEntity)
+        }
+        collisionCmp.collisionEntity = null // collision handled reset component
+    }
 
-        val collidedEntity = collisionCmp.collisionEntity
-        if (collidedEntity != null) {
-            val collidedTypeCmp = cmType.get(collidedEntity)
-
-            when(typeCmp.type) {
-                TypeComponent.PLAYER -> {
-                    when (collidedTypeCmp.type) {
-                        TypeComponent.ENEMY -> {
+    private fun processBeginContact(entity1: Entity, entity2: Entity) {
+        val type1 = cmCollision.get(entity2).collidedCategoryBits
+        val type2 = cmCollision.get(entity1).collidedCategoryBits
+        when(type1) {
+            TypeComponent.PLAYER -> {
+                when (type2) {
+                    TypeComponent.ENEMY -> {
 //                            println("player hit enemy")
-                            val playerHealthCmp = cmHealth.get(entity)
-                            val enemyCmp = cmEnemy.get(collidedEntity)
-                            playerHealthCmp.health -= enemyCmp.damage
+                        val playerHealthCmp = cmHealth.get(entity1)
+                        val enemyCmp = cmEnemy.get(entity2)
+                        playerHealthCmp.health -= enemyCmp.damage
 //                            println(playerHealthCmp.health)
-                        }
-                        TypeComponent.SPAWN -> {
-                            println("PLAYER collided SPAWN")
-                        }
                     }
-                }
-                TypeComponent.PLAYER_BULLET -> {
-                    val bulletCmp = cmBullet.get(entity)
-                    if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
-                    when (collidedTypeCmp.type) {
-                        TypeComponent.ENEMY -> {
-                            hitSound.play()
-                            val enemyHealthCmp = cmHealth.get(collidedEntity)
-                            if (enemyHealthCmp.health > Data.playerData.gun.damage)
-                                enemyHealthCmp.health -= Data.playerData.gun.damage
-                            else
-                                enemyHealthCmp.health = 0f
-                        }
-                        TypeComponent.OBSTACLE -> {
-                            println("OBSTACLE")
-                        }
-                    }
-                    bulletCmp.isDead = true // always delete bullet after any collision
-                }
-                TypeComponent.ENEMY_BULLET -> {
-                    val bulletCmp = cmBullet.get(entity)
-                    if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
-                    when (collidedTypeCmp.type) {
-                        TypeComponent.PLAYER -> {
-                            hitSound.play()
-                            val playerHealthCmp = cmHealth.get(collidedEntity)
-                            if (playerHealthCmp.health > 10f)
-                                playerHealthCmp.health -= 10f
-                            else
-                                playerHealthCmp.health = 0f
-                        }
-                        TypeComponent.OBSTACLE -> {
-                            println("Sniper hit OBSTACLE!!!")
-                        }
-                    }
-                    bulletCmp.isDead = true // always delete bullet after any collision
-                }
-                TypeComponent.PUDDLE -> {
-                    when (collidedTypeCmp.type) {
-                        TypeComponent.PLAYER, TypeComponent.ENEMY -> {
-                            if (!collidedEntity.has(cmDecay)) collidedEntity.add(DecayComponent())
-                            if (!collidedEntity.has(cmSlow)) collidedEntity.add(SlowComponent())
-                        }
+                    TypeComponent.SPAWN -> {
+                        println("PLAYER collided SPAWN")
                     }
                 }
             }
-            collisionCmp.collisionEntity = null // collision handled reset component
+            TypeComponent.PLAYER_BULLET -> {
+                val bulletCmp = cmBullet.get(entity1)
+                if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
+                when (type2) {
+                    TypeComponent.ENEMY -> {
+                        hitSound.play()
+                        val enemyHealthCmp = cmHealth.get(entity2)
+                        if (enemyHealthCmp.health > Data.playerData.gun.damage)
+                            enemyHealthCmp.health -= Data.playerData.gun.damage
+                        else
+                            enemyHealthCmp.health = 0f
+                    }
+                    TypeComponent.OBSTACLE -> {
+                        println("OBSTACLE")
+                    }
+                }
+                bulletCmp.isDead = true // always delete bullet after any collision
+            }
+            TypeComponent.ENEMY_BULLET -> {
+                val bulletCmp = cmBullet.get(entity1)
+                if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
+                when (type2) {
+                    TypeComponent.PLAYER -> {
+                        hitSound.play()
+                        val playerHealthCmp = cmHealth.get(entity2)
+                        if (playerHealthCmp.health > 10f)
+                            playerHealthCmp.health -= 10f
+                        else
+                            playerHealthCmp.health = 0f
+                    }
+                    TypeComponent.OBSTACLE -> {
+                        println("Sniper hit OBSTACLE!!!")
+                    }
+                }
+                bulletCmp.isDead = true // always delete bullet after any collision
+            }
+            TypeComponent.PUDDLE -> {
+                when (type2) {
+                    TypeComponent.PLAYER, TypeComponent.ENEMY -> {
+                        if (!entity2.has(cmDecay)) entity2.add(DecayComponent())
+                        if (!entity2.has(cmSlow)) entity2.add(SlowComponent())
+                    }
+                }
+            }
+            TypeComponent.AGENT_SENSOR -> {
+                when (type2) {
+                    TypeComponent.PLAYER, TypeComponent.ENEMY -> {
+                            val ents = cmAgent.get(entity1).visibleEntities
+                            ents.add(entity2)
+                            println(ents)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun processEndContact (entity1: Entity, entity2: Entity) {
+        val type1 = cmCollision.get(entity2).collidedCategoryBits
+        val type2 = cmCollision.get(entity1).collidedCategoryBits
+        when (type1) {
+            TypeComponent.AGENT_SENSOR -> {
+                when (type2) {
+                    TypeComponent.PLAYER, TypeComponent.ENEMY -> {
+                        val ents = cmAgent.get(entity1).visibleEntities
+                        ents.removeValue(entity2, true)
+                        println(ents)
+                    }
+                }
+            }
         }
     }
 }

@@ -3,49 +3,39 @@ package com.divelix.skitter.utils
 import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.*
-import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
-import ktx.ashley.has
 
 class B2dContactListener : ContactListener {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
-    private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
-    private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
-    private val cmSlow = ComponentMapper.getFor(SlowComponent::class.java)
-    private val cmMove = ComponentMapper.getFor(SteerComponent::class.java)
 
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body // A is a body that was created earlier
         val bodyB = contact.fixtureB.body
-        if (bodyA.userData is Entity && bodyB.userData is Entity) {
-            val entityA = bodyA.userData as Entity
-            val entityB = bodyB.userData as Entity
-            val cCmpA = cmCollision.get(entityA)
-            val cCmpB = cmCollision.get(entityB)
-            cCmpA.collisionEntity = entityB
-            cCmpB.collisionEntity = entityA
-        }
+        val entityA = bodyA.userData as Entity
+        val entityB = bodyB.userData as Entity
+        val cCmpA = cmCollision.get(entityA)
+        val cCmpB = cmCollision.get(entityB)
+        cCmpA.collisionEntity = entityB
+        cCmpB.collisionEntity = entityA
+        cCmpA.isBeginContact = true
+        cCmpB.isBeginContact = true
+        cCmpA.collidedCategoryBits = contact.fixtureB.filterData.categoryBits
+        cCmpB.collidedCategoryBits = contact.fixtureA.filterData.categoryBits
     }
 
-    override fun endContact(contact: Contact) {//TODO seems like a hardcode a little, ponder on it later
+    override fun endContact(contact: Contact) {
         val bodyA = contact.fixtureA.body // A is a body that was created earlier
         val bodyB = contact.fixtureB.body
-        if (bodyA.userData is Entity && bodyB.userData is Entity) {
-            val entityA = bodyA.userData as Entity
-            val entityB = bodyB.userData as Entity
-            val tCmpA = cmType.get(entityA)
-            val tCmpB = cmType.get(entityB)
-            if (tCmpA == null || tCmpB == null) return // kostyl to filter bullets (cause NPE as they die on beginContact())
-            if (tCmpA.type == TypeComponent.PUDDLE) {
-                if (entityB.has(cmDecay)) entityB.remove(DecayComponent::class.java)
-                if (entityB.has(cmSlow)) entityB.remove(SlowComponent::class.java)
-                val moveCmp = cmMove.get(entityB)
-                when (tCmpB.type) {
-                    TypeComponent.PLAYER -> moveCmp.maxSpeed = Data.playerData.ship.speed
-                    TypeComponent.ENEMY -> moveCmp.maxSpeed = Data.loverData.maxSpeed
-                }
-            }
-        }
+        val entityA = bodyA.userData as Entity
+        val entityB = bodyB.userData as Entity
+        val cCmpA = cmCollision.get(entityA) ?: return
+        val cCmpB = cmCollision.get(entityB) ?: return // :? return - filter bullets (cause NPE as they die on beginContact())
+        cCmpA.collisionEntity = entityB
+        cCmpB.collisionEntity = entityA
+        cCmpA.isBeginContact = false
+        cCmpB.isBeginContact = false
+        cCmpA.collidedCategoryBits = contact.fixtureB.filterData.categoryBits
+        cCmpB.collidedCategoryBits = contact.fixtureA.filterData.categoryBits
     }
     override fun preSolve(contact: Contact, oldManifold: Manifold) {}
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {}

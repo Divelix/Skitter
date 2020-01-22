@@ -16,6 +16,8 @@ import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.box2d.body
+import ktx.box2d.revoluteJointWith
+import ktx.box2d.weldJointWith
 import kotlin.experimental.or
 
 class EntityBuilder(private val engine: PooledEngine, private val world: World, private val assets: Assets) {
@@ -40,7 +42,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.ENEMY or TypeComponent.ENEMY_BULLET or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE
+                        filter.maskBits = TypeComponent.ENEMY or TypeComponent.ENEMY_BULLET or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE or TypeComponent.AGENT_SENSOR
 //                    filter.groupIndex = -1
 //                    isSensor = true
                     }
@@ -138,6 +140,47 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
             with<CollisionComponent>()
             with<BindComponent> { entity = playerEntity }
 //            with<ClickableComponent> { circle.set(x, y, entitySize/2)} // TODO maybe return later for new mechanics
+        }
+        Data.enemiesCount++
+    }
+
+    fun createAgent(x: Float, y: Float) {
+        val entityType = TypeComponent.ENEMY
+        engine.entity {
+            with<AgentComponent>()
+            with<TypeComponent> { type = entityType }
+            with<EnemyComponent> { damage = 10f }
+            with<HealthComponent> { health = 100f }
+            with<HealthBarComponent> { maxValue = 100f }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(0.9f, 1.5f)
+                origin.set(size).scl(0.5f)
+            }
+            with<SteerComponent> {
+                maxSpeed = 20f
+                maxForce = 20f
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOVER)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    polygon(Vector2(0f, 0.75f), Vector2(-0.45f, -0.75f), Vector2(0.45f, -0.75f)) {
+                        density = 1f
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                    }
+                    circle(5f, Vector2(0f, 0f)) {
+                        isSensor = true
+                        filter.categoryBits = TypeComponent.AGENT_SENSOR
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY
+                    }
+                    angularDamping = 15f
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }.apply { println(mass) }
+            }
+            with<CollisionComponent>()
         }
         Data.enemiesCount++
     }

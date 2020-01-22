@@ -138,7 +138,7 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnvironment() {
-        entityBuilder.createBattleground(-8f, -8f, 100f, 100f)
+        entityBuilder.createBattleground(-8f, -8f, 32f, 32f)
 //        entityBuilder.createObstacle(-6f, 5f, 2f, 4f)
 //        entityBuilder.createObstacle(6f, 5f, 2f, 4f)
 //        entityBuilder.createPuddle(0f, 5f, 2f)
@@ -152,7 +152,9 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnemies() {
-        entityBuilder.createLover(-2f, 7f, playerEntity)
+        entityBuilder.createAgent(0f, 7f)
+        entityBuilder.createAgent(4f, 7f)
+//        entityBuilder.createLover(-2f, 7f, playerEntity)
 //        entityBuilder.createLover(3f, 6f, playerEntity)
 //        entityBuilder.createLover(-5f, -5f, playerEntity)
 //        entityBuilder.createSniper(5f, -5f, playerEntity)

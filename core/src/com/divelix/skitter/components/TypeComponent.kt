@@ -11,6 +11,7 @@ class TypeComponent: Component {
         const val OBSTACLE: Short = 16
         const val SPAWN: Short = 32
         const val PUDDLE: Short = 64
+        const val AGENT_SENSOR: Short = 128
     }
     var type: Short? = null
 }
