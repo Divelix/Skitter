@@ -66,7 +66,7 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
-                    Input.Keys.Z -> for (i in 1..50) entityBuilder.createLover(10f, 10f, playerEntity)
+                    Input.Keys.Z -> entityBuilder.createAgent(12f, 7f)
                 }
                 return true
             }
@@ -138,7 +138,12 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnvironment() {
-        entityBuilder.createBattleground(-8f, -8f, 32f, 32f)
+//        entityBuilder.createBattleground(-8f, -8f, 32f, 32f)
+        entityBuilder.createWall(Vector2(-8f, -8f), Vector2(-8f, 20f))
+        entityBuilder.createWall(Vector2(-8f, 20f), Vector2(20f, 20f))
+        entityBuilder.createWall(Vector2(20f, 20f), Vector2(20f, -8f))
+        entityBuilder.createWall(Vector2(20f, -8f), Vector2(-8f, -8f))
+        entityBuilder.createWall(Vector2(-5f, -5f), Vector2(-7f, 8f))
 //        entityBuilder.createObstacle(-6f, 5f, 2f, 4f)
 //        entityBuilder.createObstacle(6f, 5f, 2f, 4f)
 //        entityBuilder.createPuddle(0f, 5f, 2f)
@@ -153,7 +158,7 @@ class PlayScreen(val game: Main): KtxScreen {
 
     private fun makeEnemies() {
         entityBuilder.createAgent(0f, 7f)
-        entityBuilder.createAgent(4f, 7f)
+//        entityBuilder.createAgent(12f, 7f)
 //        entityBuilder.createLover(-2f, 7f, playerEntity)
 //        entityBuilder.createLover(3f, 6f, playerEntity)
 //        entityBuilder.createLover(-5f, -5f, playerEntity)
@@ -171,13 +176,14 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(CollisionSystem(game))
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
-        engine.addSystem(LoverSystem())
-        engine.addSystem(SniperSystem(1f, entityBuilder))
+//        engine.addSystem(LoverSystem())
+//        engine.addSystem(SniperSystem(1f, entityBuilder))
         engine.addSystem(BulletSystem())
-        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
+//        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
         engine.addSystem(DecaySystem(0.1f))
         engine.addSystem(RegenerationSystem(0.5f))
-        engine.addSystem(SlowSystem())
+//        engine.addSystem(SlowSystem())
+        engine.addSystem(AgentSystem())
 //        engine.addSystem(ClickableSystem(camera))
     }
 

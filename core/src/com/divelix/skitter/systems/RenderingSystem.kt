@@ -30,7 +30,6 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
     private val comparator = ZComparator()
     private val bulletShader = ShaderProgram(file(Constants.VERTEX_SHADER), file(Constants.FRAGMENT_SHADER))
 
-    private val cmType: ComponentMapper<TypeComponent> = ComponentMapper.getFor(TypeComponent::class.java)
     private val cmTexture: ComponentMapper<TextureComponent> = ComponentMapper.getFor(TextureComponent::class.java)
     private val cmTransform: ComponentMapper<TransformComponent> = ComponentMapper.getFor(TransformComponent::class.java)
     private val cmHealthBar: ComponentMapper<HealthBarComponent> = ComponentMapper.getFor(HealthBarComponent::class.java)
@@ -70,7 +69,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
         batch.projectionMatrix = camera.combined
 //        batch.enableBlending()
         batch.use {
-//            batch.draw(bgReg, -200f, -200f, 400f, 400f)
+            batch.draw(bgReg, -200f, -200f, 400f, 400f)
 
             for (entity in entities) {
                 val textureCmp = cmTexture.get(entity)

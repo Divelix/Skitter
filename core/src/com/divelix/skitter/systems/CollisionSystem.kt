@@ -98,10 +98,10 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
             }
             TypeComponent.AGENT_SENSOR -> {
                 when (type2) {
-                    TypeComponent.PLAYER, TypeComponent.ENEMY -> {
-                            val ents = cmAgent.get(entity1).visibleEntities
-                            ents.add(entity2)
-                            println(ents)
+                    TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
+                            val visibleEntities = cmAgent.get(entity1).visibleEntities
+                            visibleEntities.add(entity2)
+                            println("Added: ${cmType.get(entity2).type}")
                     }
                 }
             }
@@ -114,10 +114,10 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
         when (type1) {
             TypeComponent.AGENT_SENSOR -> {
                 when (type2) {
-                    TypeComponent.PLAYER, TypeComponent.ENEMY -> {
-                        val ents = cmAgent.get(entity1).visibleEntities
-                        ents.removeValue(entity2, true)
-                        println(ents)
+                    TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
+                        val visibleEntities = cmAgent.get(entity1).visibleEntities
+                        visibleEntities.removeValue(entity2, true)
+                        println("Removed: ${cmType.get(entity2).type}")
                     }
                 }
             }

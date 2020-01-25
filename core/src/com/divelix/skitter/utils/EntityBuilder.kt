@@ -173,8 +173,9 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     circle(5f, Vector2(0f, 0f)) {
                         isSensor = true
                         filter.categoryBits = TypeComponent.AGENT_SENSOR
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.OBSTACLE
                     }
+                    linearDamping = 1f
                     angularDamping = 15f
                     position.set(x, y)
                     userData = (this@entity).entity
@@ -339,14 +340,29 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                                            Vector2(width, height),
                                            Vector2(width, 0f))
                     loop(*vertices) {
-                        density = 10f
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-//                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.BULLET or TypeComponent.ENEMY
-//                        filter.groupIndex = 1
                     }
                     position.set(x, y)
+                    userData = (this@entity).entity
+                }
+            }
+            with<CollisionComponent>()
+        }
+    }
+
+    fun createWall(point1: Vector2, point2: Vector2) {
+        val entityType = TypeComponent.OBSTACLE
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.StaticBody) {
+                    edge(point1, point2) {
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                    }
                     userData = (this@entity).entity
                 }
             }
