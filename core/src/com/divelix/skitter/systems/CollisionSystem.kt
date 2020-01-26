@@ -12,7 +12,7 @@ import ktx.ashley.has
 
 class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
-    private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
+    private val cmBody = ComponentMapper.getFor(B2dBodyComponent::class.java)
     private val cmHealth = ComponentMapper.getFor(HealthComponent::class.java)
     private val cmEnemy = ComponentMapper.getFor(EnemyComponent::class.java)
     private val cmBullet = ComponentMapper.getFor(BulletComponent::class.java)
@@ -99,9 +99,14 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
             TypeComponent.AGENT_SENSOR -> {
                 when (type2) {
                     TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
-                            val visibleEntities = cmAgent.get(entity1).visibleEntities
-                            visibleEntities.add(entity2)
-                            println("Added: ${cmType.get(entity2).type}")
+                        val visibleEntities = cmAgent.get(entity1).visibleEntities
+                        visibleEntities.add(entity2)
+//                        print("add - ")
+//                        for (e in visibleEntities) {
+//                            val shape = cmBody.get(e).body.fixtureList[0].shape.type
+//                            print("$shape ")
+//                        }
+//                        print("\n")
                     }
                 }
             }
@@ -116,8 +121,13 @@ class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponen
                 when (type2) {
                     TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
                         val visibleEntities = cmAgent.get(entity1).visibleEntities
-                        visibleEntities.removeValue(entity2, true)
-                        println("Removed: ${cmType.get(entity2).type}")
+                        visibleEntities.remove(entity2)
+//                        print("sub - ")
+//                        for (e in visibleEntities) {
+//                            val shape = cmBody.get(e).body.fixtureList[0].shape.type
+//                            print("$shape ")
+//                        }
+//                        print("\n")
                     }
                 }
             }

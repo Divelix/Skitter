@@ -158,6 +158,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 origin.set(size).scl(0.5f)
             }
             with<SteerComponent> {
+                steeringPoint.set(0f, 0.75f) // just front vertex from body component
                 maxSpeed = 20f
                 maxForce = 20f
             }
@@ -170,13 +171,13 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         restitution = 0f
                         filter.categoryBits = entityType
                     }
-                    circle(5f, Vector2(0f, 0f)) {
+                    circle(7f, Vector2(0f, 0f)) {
                         isSensor = true
                         filter.categoryBits = TypeComponent.AGENT_SENSOR
                         filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.OBSTACLE
                     }
                     linearDamping = 1f
-                    angularDamping = 15f
+                    angularDamping = 100f
                     position.set(x, y)
                     userData = (this@entity).entity
                 }.apply { println(mass) }
@@ -223,7 +224,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
         Data.enemiesCount++
     }
 
-    fun createObstacle(x: Float, y: Float, width: Float, height: Float) {
+    fun createRectObstacle(x: Float, y: Float, width: Float, height: Float) {
         val entityType = TypeComponent.OBSTACLE
         engine.entity {
             with<TypeComponent> { type = entityType }
@@ -248,6 +249,31 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         filter.categoryBits = entityType
                         filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.PLAYER_BULLET
 //                        filter.groupIndex = 1
+                    }
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
+            }
+            with<CollisionComponent>()
+        }
+    }
+
+    fun createCircleObstacle(x: Float, y: Float, radius: Float) {
+        val entityType = TypeComponent.OBSTACLE
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(radius * 2f, radius * 2f)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.WHITE_CIRCLE)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.StaticBody) {
+                    circle(radius = radius) {
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
                     }
                     position.set(x, y)
                     userData = (this@entity).entity

@@ -57,7 +57,7 @@ class LoverSystem: IteratingSystem(Family.all(LoverComponent::class.java).get())
             }
         }
         steering.scl(1f / bodyCmp.body.mass)
-        steerCmp.steering.set(steering)
+        steerCmp.steeringForce.set(steering)
     }
 
     enum class Behaviors {
