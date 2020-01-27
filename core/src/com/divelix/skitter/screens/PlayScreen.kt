@@ -24,7 +24,7 @@ class PlayScreen(val game: Main): KtxScreen {
         var slowRate = Constants.DEFAULT_SLOW_RATE
         var isPaused = false
         var ammo = 0
-        var health = 0
+        var health = 0f
     }
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
@@ -66,7 +66,7 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
-                    Input.Keys.Z -> entityBuilder.createAgent(12f, 7f)
+                    Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
                 }
                 return true
             }
@@ -76,11 +76,11 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     override fun render(delta: Float) {
-        engine.update(delta)
         if (!isPaused) {
             clearDeadBodies()
             if (health <= 0f) gameOver()
         }
+        engine.update(delta)
         hud.update()
     }
 
@@ -126,6 +126,7 @@ class PlayScreen(val game: Main): KtxScreen {
         val playerReader = JsonReader().parse(Constants.PLAYER_FILE.toInternalFile())
         val shipSpecs = playerReader.get("active_ship_specs")
         Data.playerData.ship.health = shipSpecs[0].asFloat()
+        health = Data.playerData.ship.health
         Data.playerData.ship.speed = shipSpecs[1].asFloat()
         val gunSpecs = playerReader.get("active_gun_specs")
         Data.playerData.gun.damage = gunSpecs[0].asFloat()
@@ -143,7 +144,6 @@ class PlayScreen(val game: Main): KtxScreen {
         entityBuilder.createWall(Vector2(-8f, 50f), Vector2(50f, 50f))
         entityBuilder.createWall(Vector2(50f, 50f), Vector2(50f, -8f))
         entityBuilder.createWall(Vector2(50f, -8f), Vector2(-8f, -8f))
-        entityBuilder.createWall(Vector2(-5f, -5f), Vector2(-7f, 8f))
         entityBuilder.createCircleObstacle(10f, 20f, 3f)
 //        entityBuilder.createPuddle(0f, 5f, 2f)
 //        entityBuilder.createPuddle(0f, 15f, 2f)

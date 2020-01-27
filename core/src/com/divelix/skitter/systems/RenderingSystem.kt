@@ -43,8 +43,8 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
 
     init {
         bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
-        bgReg.setRegion(0, 0, 5000, 5000)
-        val redPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888) .apply {
+        bgReg.setRegion(0, 0, 500, 500)
+        val redPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
             setColor(1f, 0f, 0f, 1f)
             fill()
         }
@@ -69,7 +69,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
         batch.projectionMatrix = camera.combined
 //        batch.enableBlending()
         batch.use {
-            batch.draw(bgReg, -200f, -200f, 400f, 400f)
+            batch.draw(bgReg, -8f, -8f, 58f, 58f)
 
             for (entity in entities) {
                 val textureCmp = cmTexture.get(entity)

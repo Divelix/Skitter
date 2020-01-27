@@ -20,7 +20,7 @@ class PlayerSystem: IteratingSystem(Family.all(PlayerComponent::class.java).get(
         val healthCmp = cmHealth.get(entity)
         val bodyCmp = cmBody.get(entity)
 
-        PlayScreen.health = healthCmp.health.toInt() //TODO ponder on types mb
+        PlayScreen.health = healthCmp.health
         transCmp.rotation = Data.dirVec.angle() - 90f
 
         velocity.set(Data.dirVec).scl(Data.playerData.ship.speed)

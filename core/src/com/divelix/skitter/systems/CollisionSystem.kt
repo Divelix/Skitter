@@ -12,7 +12,6 @@ import ktx.ashley.has
 
 class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
     private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
-    private val cmBody = ComponentMapper.getFor(B2dBodyComponent::class.java)
     private val cmHealth = ComponentMapper.getFor(HealthComponent::class.java)
     private val cmEnemy = ComponentMapper.getFor(EnemyComponent::class.java)
     private val cmBullet = ComponentMapper.getFor(BulletComponent::class.java)
