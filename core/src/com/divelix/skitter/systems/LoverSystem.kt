@@ -1,17 +1,17 @@
 package com.divelix.skitter.systems
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import com.divelix.skitter.components.*
+import ktx.ashley.allOf
+import ktx.ashley.mapperFor
 
-class LoverSystem: IteratingSystem(Family.all(LoverComponent::class.java).get()) {
-    private val cmTrans = ComponentMapper.getFor(TransformComponent::class.java)
-    private val cmBind = ComponentMapper.getFor(BindComponent::class.java)
-    private val cmSteer = ComponentMapper.getFor(SteerComponent::class.java)
-    private val cmBody = ComponentMapper.getFor(B2dBodyComponent::class.java)
+class LoverSystem: IteratingSystem(allOf(LoverComponent::class).get()) {
+    private val cmTrans = mapperFor<TransformComponent>()
+    private val cmBind = mapperFor<BindComponent>()
+    private val cmSteer = mapperFor<SteerComponent>()
+    private val cmBody = mapperFor<B2dBodyComponent>()
     private val loverPos = Vector2()
     private val targetPos = Vector2()
     private val steering = Vector2()

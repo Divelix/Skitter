@@ -1,8 +1,6 @@
 package com.divelix.skitter.systems
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.CircleShape
@@ -11,13 +9,15 @@ import com.badlogic.gdx.physics.box2d.Shape
 import com.divelix.skitter.components.*
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.Behaviors
+import ktx.ashley.allOf
+import ktx.ashley.mapperFor
 import ktx.math.*
 
-class AgentSystem: IteratingSystem(Family.all(AgentComponent::class.java).get()) {
-    private val cmAgent = ComponentMapper.getFor(AgentComponent::class.java)
-    private val cmSteer = ComponentMapper.getFor(SteerComponent::class.java)
-    private val cmBody = ComponentMapper.getFor(B2dBodyComponent::class.java)
-    private val cmType = ComponentMapper.getFor(TypeComponent::class.java)
+class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
+    private val cmAgent = mapperFor<AgentComponent>()
+    private val cmSteer = mapperFor<SteerComponent>()
+    private val cmBody = mapperFor<B2dBodyComponent>()
+    private val cmType = mapperFor<TypeComponent>()
     private val behaviors = Behaviors()
     private val steering = Vector2()
 

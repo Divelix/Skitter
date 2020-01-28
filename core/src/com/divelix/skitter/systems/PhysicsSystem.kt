@@ -1,8 +1,6 @@
 package com.divelix.skitter.systems
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.math.MathUtils
@@ -13,13 +11,15 @@ import com.divelix.skitter.Data
 import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.screens.PlayScreen
+import ktx.ashley.allOf
+import ktx.ashley.mapperFor
 
 class PhysicsSystem(private val world: World, private val blackList: ArrayList<Body>):
-        IteratingSystem(Family.all(B2dBodyComponent::class.java, TransformComponent::class.java).get()) {
+        IteratingSystem(allOf(B2dBodyComponent::class, TransformComponent::class).get()) {
 
     private val bodiesQueue: Array<Entity> = Array()
-    private val cmTrans = ComponentMapper.getFor(TransformComponent::class.java)
-    private val cmBody = ComponentMapper.getFor(B2dBodyComponent::class.java)
+    private val cmTrans = mapperFor<TransformComponent>()
+    private val cmBody = mapperFor<B2dBodyComponent>()
 
     private var accumulator = 0f
 

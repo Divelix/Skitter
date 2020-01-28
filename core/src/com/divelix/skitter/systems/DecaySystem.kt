@@ -1,17 +1,16 @@
 package com.divelix.skitter.systems
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IntervalIteratingSystem
-import com.divelix.skitter.Data
 import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.components.HealthComponent
 import com.divelix.skitter.screens.PlayScreen
+import ktx.ashley.allOf
+import ktx.ashley.mapperFor
 
-class DecaySystem(interval: Float): IntervalIteratingSystem(Family.all(DecayComponent::class.java, HealthComponent::class.java).get(), interval) {
-    private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
-    private val cmHealth = ComponentMapper.getFor(HealthComponent::class.java)
+class DecaySystem(interval: Float): IntervalIteratingSystem(allOf(DecayComponent::class, HealthComponent::class).get(), interval) {
+    private val cmDecay = mapperFor<DecayComponent>()
+    private val cmHealth = mapperFor<HealthComponent>()
 
     override fun processEntity(entity: Entity?) {
         if (PlayScreen.isPaused) return

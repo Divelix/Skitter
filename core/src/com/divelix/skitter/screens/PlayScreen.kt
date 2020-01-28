@@ -30,6 +30,7 @@ class PlayScreen(val game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
 
     private val world = World(Vector2(0f, 0f), true).apply { setContactListener(B2dContactListener()) }
+    private val debugRenderer = Box2DDebugRenderer()
     private val engine = PooledEngine()
     private val entityBuilder = EntityBuilder(engine, world, assets)
     private val camera: OrthographicCamera // follows player
@@ -81,6 +82,7 @@ class PlayScreen(val game: Main): KtxScreen {
             if (health <= 0f) gameOver()
         }
         engine.update(delta)
+        debugRenderer.render(world, camera.combined)
         hud.update()
     }
 
@@ -170,7 +172,6 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
         engine.addSystem(SteeringSystem())
-        engine.addSystem(PhysicsDebugSystem(world, camera))
         engine.addSystem(CollisionSystem(game))
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())

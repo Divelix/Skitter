@@ -8,16 +8,18 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
+import ktx.ashley.allOf
 import ktx.ashley.has
+import ktx.ashley.mapperFor
 
-class CollisionSystem(game: Main) : IteratingSystem(Family.all(CollisionComponent::class.java).get()) {
-    private val cmCollision = ComponentMapper.getFor(CollisionComponent::class.java)
-    private val cmHealth = ComponentMapper.getFor(HealthComponent::class.java)
-    private val cmEnemy = ComponentMapper.getFor(EnemyComponent::class.java)
-    private val cmBullet = ComponentMapper.getFor(BulletComponent::class.java)
-    private val cmDecay = ComponentMapper.getFor(DecayComponent::class.java)
-    private val cmSlow = ComponentMapper.getFor(SlowComponent::class.java)
-    private val cmAgent = ComponentMapper.getFor(AgentComponent::class.java)
+class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::class).get()) {
+    private val cmCollision = mapperFor<CollisionComponent>()
+    private val cmHealth = mapperFor<HealthComponent>()
+    private val cmEnemy = mapperFor<EnemyComponent>()
+    private val cmBullet = mapperFor<BulletComponent>()
+    private val cmDecay = mapperFor<DecayComponent>()
+    private val cmSlow = mapperFor<SlowComponent>()
+    private val cmAgent = mapperFor<AgentComponent>()
 
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)

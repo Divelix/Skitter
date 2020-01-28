@@ -1,8 +1,6 @@
 package com.divelix.skitter.systems
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
@@ -15,14 +13,15 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
-import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
+import ktx.ashley.allOf
 import ktx.ashley.has
+import ktx.ashley.mapperFor
 import ktx.assets.file
 import ktx.graphics.use
 import ktx.inject.Context
 
-class RenderingSystem(context: Context, private val camera: OrthographicCamera) : SortedIteratingSystem(Family.all(TransformComponent::class.java, TextureComponent::class.java).get(), ZComparator()) {
+class RenderingSystem(context: Context, private val camera: OrthographicCamera) : SortedIteratingSystem(allOf(TransformComponent::class, TextureComponent::class).get(), ZComparator()) {
 
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
@@ -30,10 +29,10 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
     private val comparator = ZComparator()
     private val bulletShader = ShaderProgram(file(Constants.VERTEX_SHADER), file(Constants.FRAGMENT_SHADER))
 
-    private val cmTexture: ComponentMapper<TextureComponent> = ComponentMapper.getFor(TextureComponent::class.java)
-    private val cmTransform: ComponentMapper<TransformComponent> = ComponentMapper.getFor(TransformComponent::class.java)
-    private val cmHealthBar: ComponentMapper<HealthBarComponent> = ComponentMapper.getFor(HealthBarComponent::class.java)
-    private val cmHealth: ComponentMapper<HealthComponent> = ComponentMapper.getFor(HealthComponent::class.java)
+    private val cmTexture = mapperFor<TextureComponent>()
+    private val cmTrans = mapperFor<TransformComponent>()
+    private val cmHealthBar = mapperFor<HealthBarComponent>()
+    private val cmHealth = mapperFor<HealthComponent>()
 
     private var timer = 0f
 
@@ -73,7 +72,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
 
             for (entity in entities) {
                 val textureCmp = cmTexture.get(entity)
-                val transformCmp = cmTransform.get(entity)
+                val transformCmp = cmTrans.get(entity)
 
                 if (textureCmp.region == null || transformCmp.isHidden) continue
 
@@ -113,7 +112,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
 }
 
 class ZComparator : Comparator<Entity> {
-    private val cmTrans: ComponentMapper<TransformComponent> = ComponentMapper.getFor(TransformComponent::class.java)
+    private val cmTrans = mapperFor<TransformComponent>()
 
     override fun compare(entityA: Entity, entityB: Entity): Int {
         val az = cmTrans.get(entityA).position.z
