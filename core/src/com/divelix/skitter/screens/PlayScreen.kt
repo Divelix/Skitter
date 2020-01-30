@@ -56,8 +56,6 @@ class PlayScreen(val game: Main): KtxScreen {
 
         createEngineSystems()
 
-        ShaderProgram.pedantic = false
-
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {

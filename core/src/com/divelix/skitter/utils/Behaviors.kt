@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.CircleShape
 import com.badlogic.gdx.physics.box2d.EdgeShape
+import ktx.math.div
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -14,21 +15,30 @@ class Behaviors {
     val targetPos = Vector2()
     val agentVel = Vector2()
     val targetVel = Vector2()
-    //    values for wander()
+
+    // wander()
     private val circleCenter = Vector2()
     private val circleDistance = 3f
     private val circleRadius = 5f
     private val displacement = Vector2(0f, 1f).scl(circleRadius)
     private var wanderAngle = 0f
     private val wanderAngleDelta = MathUtils.PI2
-    //    obstacle avoid vals
+
+    // pursuit()
+    private val maxDistance = 7f
+    private val minDistance = 2f
+    private val difference = Vector2()
+
+    // align()
+    var neighborsCount = 0
+    val alignVel = Vector2()
+    val cohesionVel = Vector2()
+
+    //    obstacle avoidance vals
     private val p0 = Vector2()
     private val p1 = Vector2()
     private val p2 = Vector2()
     private val normal = Vector2()
-
-    private var neighborsCount = 0
-    val totalVel = Vector2()
 
     fun wander(): Vector2 {
         circleCenter.set(agentVel).nor().scl(circleDistance)
@@ -50,6 +60,39 @@ class Behaviors {
         return desired.nor()
     }
 
+    fun arrive(): Vector2 {
+        difference.set(targetPos).sub(agentPos)
+        val distance = difference.len()
+        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
+        val desired = difference.setLength(speed).sub(agentVel)
+        return desired.nor()
+    }
+
+    fun pursuit(): Vector2 {
+        difference.set(targetPos).sub(agentPos)
+        val distance = difference.len()
+        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
+        val desired = difference.setLength(speed).sub(agentVel)
+        desired.add(targetVel)
+        return desired.nor()
+    }
+
+    fun align(): Vector2 {
+        return if (neighborsCount > 0) alignVel.div(neighborsCount) else alignVel.setZero()
+    }
+
+    fun cohesion(): Vector2 {
+        // TODO finish
+        return if (neighborsCount > 0) cohesionVel.div(neighborsCount) else cohesionVel.setZero()
+    }
+
+    fun separation(): Vector2 {
+        TODO("make separation")
+    }
+
+    fun acumAlign() = alignVel.add(targetVel)
+    fun acumCohesion() = cohesionVel.add(targetVel)
+
     fun avoidWall(edge: EdgeShape): Vector2 {
         p0.set(agentPos)
         edge.getVertex1(p1)
@@ -65,15 +108,6 @@ class Behaviors {
         normal.set(agentPos.sub(targetPos))
         val dstToObs = normal.len() - circle.radius
         return if (dstToObs < 2f) normal.nor() else normal.setZero()
-    }
-
-    fun align(): Vector2 {
-        return if (neighborsCount > 0) totalVel.scl(1f / neighborsCount) else totalVel.setZero()
-    }
-
-    fun acumAlign() {
-        neighborsCount++
-        totalVel.add(targetVel)
     }
 
     private fun dstBetweenPointAndLine(p0: Vector2, p1: Vector2, p2: Vector2): Float {

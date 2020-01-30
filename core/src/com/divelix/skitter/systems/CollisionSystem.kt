@@ -20,6 +20,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
     private val cmDecay = mapperFor<DecayComponent>()
     private val cmSlow = mapperFor<SlowComponent>()
     private val cmAgent = mapperFor<AgentComponent>()
+    private val cmBody = mapperFor<B2dBodyComponent>()
 
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
@@ -32,7 +33,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
         } else {
             processEndContact(entity, collidedEntity)
         }
-        collisionCmp.collisionEntity = null // collision handled reset component
+        collisionCmp.collisionEntity = null
     }
 
     private fun processBeginContact(entity1: Entity, entity2: Entity) {
@@ -102,15 +103,17 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
                     TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
                         val visibleEntities = cmAgent.get(entity1).visibleEntities
                         visibleEntities.add(entity2)
-//                        print("add - ")
-//                        for (e in visibleEntities) {
-//                            val shape = cmBody.get(e).body.fixtureList[0].shape.type
-//                            print("$shape ")
-//                        }
-//                        print("\n")
+                        print("add - ")
+                        for (e in visibleEntities) {
+                            val shape = cmBody.get(e).body.fixtureList[0].shape.type
+                            print("$shape ")
+                        }
+                        print("\n")
+//                        cmBody.get(entity1).body.applyForceToCenter(0f, 100f, true)
                     }
                 }
             }
+            TypeComponent.ENEMY -> println("enemy!!!")
         }
     }
 
@@ -123,12 +126,12 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
                     TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
                         val visibleEntities = cmAgent.get(entity1).visibleEntities
                         visibleEntities.remove(entity2)
-//                        print("sub - ")
-//                        for (e in visibleEntities) {
-//                            val shape = cmBody.get(e).body.fixtureList[0].shape.type
-//                            print("$shape ")
-//                        }
-//                        print("\n")
+                        print("sub - ")
+                        for (e in visibleEntities) {
+                            val shape = cmBody.get(e).body.fixtureList[0].shape.type
+                            print("$shape ")
+                        }
+                        print("\n")
                     }
                 }
             }

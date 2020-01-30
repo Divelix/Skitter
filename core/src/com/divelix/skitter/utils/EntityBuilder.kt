@@ -144,9 +144,9 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
         Data.enemiesCount++
     }
 
-    fun createAgent(x: Float, y: Float) {
+    fun createAgent(x: Float, y: Float): Entity {
         val entityType = TypeComponent.ENEMY
-        engine.entity {
+        return engine.entity {
             with<AgentComponent>()
             with<TypeComponent> { type = entityType }
             with<EnemyComponent> { damage = 10f }
@@ -177,10 +177,10 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.OBSTACLE
                     }
                     linearDamping = 1f
-                    angularDamping = 100f
+                    angularDamping = 50f
                     position.set(x, y)
                     userData = (this@entity).entity
-                }.apply { println(mass) }
+                }//.apply { println(mass) }
             }
             with<CollisionComponent>()
         }

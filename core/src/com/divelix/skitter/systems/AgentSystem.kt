@@ -18,6 +18,7 @@ class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
     private val cmSteer = mapperFor<SteerComponent>()
     private val cmBody = mapperFor<B2dBodyComponent>()
     private val cmType = mapperFor<TypeComponent>()
+
     private val behaviors = Behaviors()
     private val steering = Vector2()
 
@@ -28,6 +29,7 @@ class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
         val steerCmp = cmSteer.get(entity)
         behaviors.maxSpeed = steerCmp.maxSpeed
         behaviors.agentPos.set(bodyCmp.body.position)
+//        println(bodyCmp.body.getWorldPoint(steerCmp.steeringPoint))
         behaviors.agentVel.set(bodyCmp.body.linearVelocity)
 
         steering.setZero()
@@ -42,8 +44,12 @@ class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
                 behaviors.targetVel.set(seenBodyCmp.body.linearVelocity)
 
                 when (cmType.get(seen).type) {
-                    TypeComponent.PLAYER -> steering += behaviors.flee()
-                    TypeComponent.ENEMY -> behaviors.acumAlign()
+                    TypeComponent.PLAYER -> steering += behaviors.pursuit()
+//                    TypeComponent.ENEMY -> {
+//                        behaviors.neighborsCount++
+//                        behaviors.acumAlign()
+////                        behaviors.acumCohesion()
+//                    }
                     TypeComponent.OBSTACLE -> {
                         val obs = seenBodyCmp.body.fixtureList[0].shape
                         when (obs.type) {
@@ -55,10 +61,21 @@ class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
                 }
             }
             steering += behaviors.align()
-            behaviors.totalVel.setZero()
+            steering += behaviors.cohesion()
+            behaviors.alignVel.setZero()
+            behaviors.cohesionVel.setZero()
         }
-        if (steering.len2() < 0.1f) steering += behaviors.wander()
-        steering.scl(1f / bodyCmp.body.mass).setLength(30f) // TODO hardcoded 50f
+//        if (steering.len2() < 0.1f) steering += behaviors.wander()
+        steering.scl(1f / bodyCmp.body.mass).setLength(30f) // TODO hardcoded length
         steerCmp.steeringForce.set(steering)
+
+        // TODO delete this kostyl that was made for tests
+        val bodyX = bodyCmp.body.position.x
+        val bodyY = bodyCmp.body.position.y
+        val bodyA = bodyCmp.body.angle
+        if (bodyX < -8f) bodyCmp.body.setTransform(50f, bodyY, bodyA)
+        if (bodyY < -8f) bodyCmp.body.setTransform(bodyX, 50f, bodyA)
+        if (bodyX > 50f) bodyCmp.body.setTransform(-8f, bodyY, bodyA)
+        if (bodyY > 50f) bodyCmp.body.setTransform(bodyX, -8f, bodyA)
     }
 }

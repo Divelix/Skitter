@@ -20,7 +20,7 @@ import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.vis.table
 
-class TestScreen(val game: Main): KtxScreen {
+class TestUIScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
