@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.*
@@ -21,9 +22,9 @@ import java.util.*
 
 class TestAIScreen(val game: Main): KtxScreen {
     companion object {
-        const val D_WIDTH = 1200
+        const val D_WIDTH = 700
         const val D_HEIGHT = 700
-        const val WIDTH = 50f
+        const val WIDTH = 80f
         const val HEIGHT = WIDTH * D_HEIGHT / D_WIDTH
         var slowRate = Constants.DEFAULT_SLOW_RATE
         var isPaused = false
@@ -32,7 +33,7 @@ class TestAIScreen(val game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
 
     private val world = World(Vector2(0f, 0f), true).apply { setContactListener(B2dContactListener()) }
-    private val debugRenderer = Box2DDebugRenderer()
+    private val debugRenderer = Box2DDebugRenderer(true, true, false, true, true, true)
     private val engine = PooledEngine()
     private val entityBuilder = EntityBuilder(engine, world, assets)
     private val camera = OrthographicCamera()
@@ -41,9 +42,10 @@ class TestAIScreen(val game: Main): KtxScreen {
     private val touchPos = Vector3()
     private val agents = ObjectSet<Entity>()
 
+//    val firstAgent = entityBuilder.createAgent(0f, 10f)
+
     init {
         isPaused = false
-
 //        makeEnvironment()
 //        makeEnemies()
 
@@ -51,14 +53,20 @@ class TestAIScreen(val game: Main): KtxScreen {
 
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
+                val cmBody = mapperFor<B2dBodyComponent>()
                 when(keycode) {
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
+                    Input.Keys.S -> println("agents.size = ${agents.size}")
+                    Input.Keys.F -> println("FPS = ${Gdx.graphics.framesPerSecond}")
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
                     Input.Keys.BACKSPACE -> {
-                        val cmBody = mapperFor<B2dBodyComponent>()
                         for (agent in agents) cmBody.get(agent).isDead = true
                         agents.clear()
+                    }
+                    Input.Keys.R -> {
+                        val f = 500f
+                        for (agent in agents) cmBody.get(agent).body.applyForceToCenter(MathUtils.random(-f, f), MathUtils.random(-f, f), true)
                     }
                 }
                 return true
@@ -72,31 +80,31 @@ class TestAIScreen(val game: Main): KtxScreen {
             clearDeadBodies()
         }
         engine.update(delta)
-        debugRenderer.render(world, camera.combined)
+//        debugRenderer.render(world, camera.combined)
         controlCamera()
     }
 
     override fun pause() {
-        info("PlayScreen") { "pause()" }
+        info("TestAIScreen") { "pause()" }
         isPaused = true
     }
 
     override fun resume() {
-        info("PlayScreen") { "resume()" }
+        info("TestAIScreen") { "resume()" }
         isPaused = false
     }
 
     override fun resize(width: Int, height: Int) {
-        info("PlayScreen") { "resize()" }
+        info("TestAIScreen") { "resize()" }
         camera.setToOrtho(false, WIDTH, HEIGHT)
     }
 
     override fun hide() {
-        info("PlayScreen") { "hide()" }
+        info("TestAIScreen") { "hide()" }
     }
 
     override fun dispose() {
-        info("PlayScreen") { "dispose()" }
+        info("TestAIScreen") { "dispose()" }
         engine.clearPools()
     }
 
@@ -149,8 +157,6 @@ class TestAIScreen(val game: Main): KtxScreen {
             camera.unproject(touchPos)
             val agent = entityBuilder.createAgent(touchPos.x, touchPos.y)
             agents.add(agent)
-            val cmBody = mapperFor<B2dBodyComponent>()
-//            cmBody.get(agent).body.applyForceToCenter(100f, 0f, true)
         }
     }
 }

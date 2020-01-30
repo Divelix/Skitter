@@ -16,8 +16,6 @@ import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.box2d.body
-import ktx.box2d.revoluteJointWith
-import ktx.box2d.weldJointWith
 import kotlin.experimental.or
 
 class EntityBuilder(private val engine: PooledEngine, private val world: World, private val assets: Assets) {
@@ -42,7 +40,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.ENEMY or TypeComponent.ENEMY_BULLET or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE or TypeComponent.AGENT_SENSOR
+                        filter.maskBits = TypeComponent.AGENT or TypeComponent.ENEMY_BULLET or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE or TypeComponent.AGENT_SENSOR
 //                    filter.groupIndex = -1
 //                    isSensor = true
                     }
@@ -89,7 +87,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.OBSTACLE or TypeComponent.ENEMY
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.OBSTACLE or TypeComponent.AGENT
 //                filter.groupIndex = 1
                         isSensor = true // TODO Carefully
                     }
@@ -107,7 +105,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
     }
 
     fun createLover(x: Float, y: Float, playerEntity: Entity) {
-        val entityType = TypeComponent.ENEMY
+        val entityType = TypeComponent.AGENT
         engine.entity {
             with<LoverComponent>()
             with<TypeComponent> { type = entityType }
@@ -145,7 +143,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
     }
 
     fun createAgent(x: Float, y: Float): Entity {
-        val entityType = TypeComponent.ENEMY
+        val entityType = TypeComponent.AGENT
         return engine.entity {
             with<AgentComponent>()
             with<TypeComponent> { type = entityType }
@@ -174,7 +172,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     circle(7f, Vector2(0f, 0f)) {
                         isSensor = true
                         filter.categoryBits = TypeComponent.AGENT_SENSOR
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.OBSTACLE
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.AGENT or TypeComponent.OBSTACLE
                     }
                     linearDamping = 1f
                     angularDamping = 50f
@@ -188,7 +186,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
     }
 
     fun createSniper(x: Float, y: Float, playerEntity: Entity) {
-        val entityType = TypeComponent.ENEMY
+        val entityType = TypeComponent.AGENT
         val entitySize = 1.5f
         val sniperDamage = 10f
         val sniperHealth = 50f
@@ -247,7 +245,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                         friction = 0f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.ENEMY or TypeComponent.PLAYER_BULLET
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.AGENT or TypeComponent.PLAYER_BULLET
 //                        filter.groupIndex = 1
                     }
                     position.set(x, y)

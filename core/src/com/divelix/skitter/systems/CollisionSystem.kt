@@ -42,7 +42,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
         when(type1) {
             TypeComponent.PLAYER -> {
                 when (type2) {
-                    TypeComponent.ENEMY -> {
+                    TypeComponent.AGENT -> {
 //                            println("player hit enemy")
                         val playerHealthCmp = cmHealth.get(entity1)
                         val enemyCmp = cmEnemy.get(entity2)
@@ -58,7 +58,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
                 val bulletCmp = cmBullet.get(entity1)
                 if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                 when (type2) {
-                    TypeComponent.ENEMY -> {
+                    TypeComponent.AGENT -> {
                         hitSound.play()
                         val enemyHealthCmp = cmHealth.get(entity2)
                         if (enemyHealthCmp.health > Data.playerData.gun.damage)
@@ -92,7 +92,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
             }
             TypeComponent.PUDDLE -> {
                 when (type2) {
-                    TypeComponent.PLAYER, TypeComponent.ENEMY -> {
+                    TypeComponent.PLAYER, TypeComponent.AGENT -> {
                         if (!entity2.has(cmDecay)) entity2.add(DecayComponent())
                         if (!entity2.has(cmSlow)) entity2.add(SlowComponent())
                     }
@@ -100,7 +100,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
             }
             TypeComponent.AGENT_SENSOR -> {
                 when (type2) {
-                    TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
+                    TypeComponent.PLAYER, TypeComponent.AGENT, TypeComponent.OBSTACLE -> {
                         val visibleEntities = cmAgent.get(entity1).visibleEntities
                         visibleEntities.add(entity2)
                         print("add - ")
@@ -113,7 +113,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
                     }
                 }
             }
-            TypeComponent.ENEMY -> println("enemy!!!")
+            TypeComponent.AGENT -> println("enemy!!!")
         }
     }
 
@@ -123,7 +123,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
         when (type1) {
             TypeComponent.AGENT_SENSOR -> {
                 when (type2) {
-                    TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
+                    TypeComponent.PLAYER, TypeComponent.AGENT, TypeComponent.OBSTACLE -> {
                         val visibleEntities = cmAgent.get(entity1).visibleEntities
                         visibleEntities.remove(entity2)
                         print("sub - ")
