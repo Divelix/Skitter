@@ -180,7 +180,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     userData = (this@entity).entity
                 }//.apply { println(mass) }
             }
-            with<CollisionComponent>()
+//            with<CollisionComponent>()
         }
         Data.enemiesCount++
     }
@@ -277,7 +277,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     userData = (this@entity).entity
                 }
             }
-            with<CollisionComponent>()
+//            with<CollisionComponent>()
         }
     }
 

@@ -21,12 +21,12 @@ class B2dContactListener : ContactListener {
         when(typeA) {
             TypeComponent.AGENT -> {
                 when(typeB) {
-                    TypeComponent.AGENT_SENSOR -> {
-                        val agentCmp = cmAgent.get(entityB)
-                        val ve = agentCmp.visibleEntities
-                        ve.add(entityA)
-//                        println(ve)
-                    }
+                    TypeComponent.AGENT_SENSOR -> cmAgent.get(entityB).visibleEntities.add(entityA)
+                }
+            }
+            TypeComponent.OBSTACLE -> {
+                when(typeB) {
+                    TypeComponent.AGENT_SENSOR -> cmAgent.get(entityB).visibleEntities.add(entityA)
                 }
             }
         }
