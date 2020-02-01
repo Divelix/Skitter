@@ -15,6 +15,7 @@ class Behaviors {
     val neighbors = Array<Body>()
     val circles = Array<Body>()
     val walls = Array<Body>()
+    var player: Body? = null
 
     private val wanderForce = Vector2()
     private val separationForce = Vector2()
@@ -46,6 +47,7 @@ class Behaviors {
         neighbors.clear()
         circles.clear()
         walls.clear()
+        player = null
         separationForce.setZero()
         alignmentForce.setZero()
         cohesionForce.setZero()
@@ -143,13 +145,33 @@ class Behaviors {
         return wallObsForce
     }
 
+    fun seek(agent: Body): Vector2 {
+        diff.set(player!!.position).sub(agent.position).setLength(maxSpeed)
+        diff.sub(agent.linearVelocity)
+        diff.nor()
+        diff *= maxSpeed
+        diff.limit(maxForce)
+        return diff
+    }
+
+    fun flee(agent: Body): Vector2 = -seek(agent)
+
+//    fun arrive(): Vector2 {
+//        difference.set(targetPos).sub(agentPos)
+//        val distance = difference.len()
+//        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
+//        val desired = difference.setLength(speed).sub(agentVel)
+//        return desired.nor()
+//    }
+
     fun computeSteering(agent: Body): Vector2 {
         steeringForce += separation(agent)
         steeringForce += alignment(agent)
         steeringForce += cohesion(agent)
-//        steeringForce += wander(agent)
         steeringForce += avoidCircles(agent)
         steeringForce += avoidWalls(agent)
+        if (player != null) steeringForce += flee(agent)
+//        if (agent.linearVelocity.len2() < 400f) steeringForce += wander(agent)
 
         steeringForce /= agent.mass
         return steeringForce
@@ -166,25 +188,6 @@ class Behaviors {
 //    private val p2 = Vector2()
 //    private val normal = Vector2()
 
-//    fun seek(): Vector2 {
-//        val desired = targetPos.sub(agentPos).setLength(maxSpeed)
-//        desired.sub(agentVel)
-//        return desired.nor()
-//    }
-//
-//    fun flee(): Vector2 {
-//        val desired = agentPos.sub(targetPos).setLength(maxSpeed)
-//        desired.sub(agentVel)
-//        return desired.nor()
-//    }
-
-//    fun arrive(): Vector2 {
-//        difference.set(targetPos).sub(agentPos)
-//        val distance = difference.len()
-//        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
-//        val desired = difference.setLength(speed).sub(agentVel)
-//        return desired.nor()
-//    }
 //
 //    fun pursuit(): Vector2 {
 //        difference.set(targetPos).sub(agentPos)

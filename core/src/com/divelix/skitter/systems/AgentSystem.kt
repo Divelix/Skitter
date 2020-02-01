@@ -35,7 +35,7 @@ class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
             }
 
             when (cmType.get(seen).type) {
-//                    TypeComponent.PLAYER -> steering += behaviors.pursuit()
+                TypeComponent.PLAYER -> behaviors.player = seenBodyCmp.body
                 TypeComponent.AGENT -> behaviors.neighbors.add(seenBodyCmp.body)
                 TypeComponent.OBSTACLE -> {
                     val obs = seenBodyCmp.body.fixtureList[0].shape
@@ -49,7 +49,7 @@ class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
         }
 //        if (steering.len2() < 0.1f) steering += behaviors.wander()
         val steering = behaviors.computeSteering(bodyCmp.body)
-        steering.setLength(15f) // TODO hardcoded length
+        steering.setLength(40f) // TODO hardcoded length
         steerCmp.steeringForce.set(steering)
 
 //        // TODO crutch for teleport on edges (remove later)

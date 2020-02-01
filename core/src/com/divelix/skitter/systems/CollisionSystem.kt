@@ -12,6 +12,7 @@ import ktx.ashley.allOf
 import ktx.ashley.has
 import ktx.ashley.mapperFor
 
+//TODO remove redundant class
 class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::class).get()) {
     private val cmCollision = mapperFor<CollisionComponent>()
     private val cmHealth = mapperFor<HealthComponent>()

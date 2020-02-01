@@ -49,7 +49,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     userData = this@entity.entity
                 }
             }
-            with<CollisionComponent>()
+//            with<CollisionComponent>()
         }
     }
 
@@ -100,7 +100,7 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                     angle = velocity.angleRad() - MathUtils.PI/2
                 }
             }
-            with<CollisionComponent>()
+//            with<CollisionComponent>()
         }
     }
 

@@ -29,7 +29,7 @@ class PlayScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
 
-    private val world = World(Vector2(0f, 0f), true).apply { setContactListener(B2dContactListener()) }
+    private val world = World(Vector2(0f, 0f), true).apply { setContactListener(B2dContactListener(game)) }
     private val debugRenderer = Box2DDebugRenderer()
     private val engine = PooledEngine()
     private val entityBuilder = EntityBuilder(engine, world, assets)
@@ -156,7 +156,8 @@ class PlayScreen(val game: Main): KtxScreen {
 
     private fun makeEnemies() {
         entityBuilder.createAgent(0f, 10f)
-//        entityBuilder.createAgent(12f, 7f)
+//        entityBuilder.createAgent(3f, 10f)
+//        entityBuilder.createAgent(1.5f, 12f)
 //        entityBuilder.createLover(-2f, 7f, playerEntity)
 //        entityBuilder.createLover(3f, 6f, playerEntity)
 //        entityBuilder.createLover(-5f, -5f, playerEntity)
@@ -170,7 +171,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
         engine.addSystem(SteeringSystem())
-        engine.addSystem(CollisionSystem(game))
+//        engine.addSystem(CollisionSystem(game))
         engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
 //        engine.addSystem(LoverSystem())
