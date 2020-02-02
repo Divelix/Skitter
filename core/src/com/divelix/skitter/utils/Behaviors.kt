@@ -130,7 +130,7 @@ class Behaviors {
             val edge = wall.fixtureList[0].shape as EdgeShape
             edge.getVertex1(p1)
             edge.getVertex2(p2)
-            if (dstBetweenPointAndLine(agent.position, p1, p2) < 5f) {
+            if (dstBetweenPointAndLine(agent.position, p1, p2) < 2f) {
                 diff.set(p2).sub(p1)
                 val angle = if (agent.position.sub(p1).angle(diff) < 0f) 90f else -90f
                 diff.nor()
@@ -156,13 +156,26 @@ class Behaviors {
 
     fun flee(agent: Body): Vector2 = -seek(agent)
 
-//    fun arrive(): Vector2 {
-//        difference.set(targetPos).sub(agentPos)
-//        val distance = difference.len()
-//        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
-//        val desired = difference.setLength(speed).sub(agentVel)
-//        return desired.nor()
-//    }
+    fun arrive(agent: Body): Vector2 {
+        val minDistance = 2f
+        val maxDistance = 7f
+        diff.set(player!!.position).sub(agent.position)
+        val distance = diff.len()
+        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
+        diff.setLength(speed).sub(agent.linearVelocity)
+        return diff
+    }
+
+    fun pursuit(agent: Body): Vector2 {
+        val minDistance = 2f
+        val maxDistance = 7f
+        diff.set(player!!.position).sub(agent.position)
+        val distance = diff.len()
+        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
+        diff.setLength(speed).sub(agent.linearVelocity)
+        diff.add(player!!.linearVelocity)
+        return diff
+    }
 
     fun computeSteering(agent: Body): Vector2 {
         steeringForce += separation(agent)
@@ -176,27 +189,6 @@ class Behaviors {
         steeringForce /= agent.mass
         return steeringForce
     }
-
-//    // pursuit()
-//    private val maxDistance = 7f
-//    private val minDistance = 2f
-//    private val difference = Vector2()
-
-//    //    obstacle avoidance vals
-//    private val p0 = Vector2()
-//    private val p1 = Vector2()
-//    private val p2 = Vector2()
-//    private val normal = Vector2()
-
-//
-//    fun pursuit(): Vector2 {
-//        difference.set(targetPos).sub(agentPos)
-//        val distance = difference.len()
-//        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
-//        val desired = difference.setLength(speed).sub(agentVel)
-//        desired.add(targetVel)
-//        return desired.nor()
-//    }
 
     private fun dstBetweenPointAndLine(p0: Vector2, p1: Vector2, p2: Vector2): Float {
 //        val nom = (p2.y - p1.y) * p0.x - (p2.x - p1.x) * p0.y + p2.x * p1.y - p2.y * p1.x

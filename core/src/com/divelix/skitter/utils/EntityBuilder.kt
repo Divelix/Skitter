@@ -181,8 +181,8 @@ class EntityBuilder(private val engine: PooledEngine, private val world: World, 
                 }//.apply { println(mass) }
             }
 //            with<CollisionComponent>()
+            Data.enemiesCount++
         }
-        Data.enemiesCount++
     }
 
     fun createSniper(x: Float, y: Float, playerEntity: Entity) {
