@@ -144,7 +144,9 @@ class PlayScreen(val game: Main): KtxScreen {
         entityBuilder.createWall(Vector2(-8f, 50f), Vector2(50f, 50f))
         entityBuilder.createWall(Vector2(50f, 50f), Vector2(50f, -8f))
         entityBuilder.createWall(Vector2(50f, -8f), Vector2(-8f, -8f))
-        entityBuilder.createCircleObstacle(10f, 20f, 3f)
+//        entityBuilder.createCircleObstacle(10f, 20f, 3f)
+        entityBuilder.createRectObstacle(-5f, 5f, 3f, 20f)
+        entityBuilder.createRectObstacle(2f, 5f, 3f, 20f)
 //        entityBuilder.createPuddle(0f, 5f, 2f)
 //        entityBuilder.createPuddle(0f, 15f, 2f)
 //        entityBuilder.createPuddle(0f, 25f, 2f)
@@ -155,7 +157,7 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnemies() {
-        entityBuilder.createAgent(0f, 10f)
+//        entityBuilder.createAgent(0f, 10f)
 //        entityBuilder.createAgent(3f, 10f)
 //        entityBuilder.createAgent(1.5f, 12f)
 //        entityBuilder.createLover(-2f, 7f, playerEntity)

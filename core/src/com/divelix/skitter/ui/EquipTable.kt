@@ -175,7 +175,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
             val textWidth = 99f
             val tableHeight = 100f
             pad(14f, 14f, 0f, 14f)
-            label("Description for this specific gun") {
+            label("Description for this specific equipment") {
                 it.size(textWidth, tableHeight)
                 setWrap(true)
                 setAlignment(Align.center)

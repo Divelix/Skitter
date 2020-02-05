@@ -28,6 +28,7 @@ class B2dContactListener(game: Main) : ContactListener {
         val typeA = contact.fixtureA.filterData.categoryBits
         val typeB = contact.fixtureB.filterData.categoryBits
 
+        println("A is $typeA; B is $typeB")
         when(typeB) {
             TypeComponent.AGENT_SENSOR -> {
                 when (typeA) {
@@ -55,6 +56,18 @@ class B2dContactListener(game: Main) : ContactListener {
                         else
                             agentHealthCmp.health = 0f
                     }
+                    TypeComponent.OBSTACLE -> println("wall or rectangle obstacle")
+                }
+                bulletCmp.isDead = true // always delete bullet after any collision
+            }
+        }
+
+        when(typeA) {
+            TypeComponent.PLAYER_BULLET -> {
+                val bulletCmp = cmBullet.get(entityA)
+                if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
+                when(typeB) {
+                    TypeComponent.OBSTACLE -> println("fckn circle obstacle")
                 }
                 bulletCmp.isDead = true // always delete bullet after any collision
             }

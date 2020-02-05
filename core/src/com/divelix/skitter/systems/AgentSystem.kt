@@ -40,8 +40,9 @@ class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
                 TypeComponent.OBSTACLE -> {
                     val obs = seenBodyCmp.body.fixtureList[0].shape
                     when (obs.type) {
-                        Shape.Type.Edge -> behaviors.walls.add(seenBodyCmp.body)
                         Shape.Type.Circle -> behaviors.circles.add(seenBodyCmp.body)
+                        Shape.Type.Edge -> behaviors.walls.add(seenBodyCmp.body)
+                        Shape.Type.Polygon -> behaviors.rects.add(seenBodyCmp.body)
                         else -> println("This shape was not implemented")
                     }
                 }

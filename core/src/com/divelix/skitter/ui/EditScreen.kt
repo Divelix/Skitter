@@ -32,7 +32,8 @@ abstract class EditScreen(val game: Main): KtxScreen {
     val context = game.getContext()
     val batch = context.inject<SpriteBatch>()
     val assets = context.inject<Assets>()
-    val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
+    val aspectRatio = Gdx.graphics.height.toFloat() /Gdx.graphics.width
+    val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio), batch)
     val reader = JsonReader()
     val playerFile = Constants.PLAYER_FILE.toLocalFile()
     val playerData: JsonValue = reader.parse(playerFile)

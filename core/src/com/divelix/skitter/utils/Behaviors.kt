@@ -5,16 +5,16 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.CircleShape
 import com.badlogic.gdx.physics.box2d.EdgeShape
+import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.utils.Array
 import ktx.math.*
 import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class Behaviors {
     val neighbors = Array<Body>()
     val circles = Array<Body>()
     val walls = Array<Body>()
+    val rects = Array<Body>()
     var player: Body? = null
 
     private val wanderForce = Vector2()
@@ -23,6 +23,7 @@ class Behaviors {
     private val cohesionForce = Vector2()
     private val circleObsForce = Vector2()
     private val wallObsForce = Vector2()
+    private val rectObsForce = Vector2()
     private val steeringForce = Vector2()
 
     val maxSpeed = 20f
@@ -39,6 +40,8 @@ class Behaviors {
     val diff = Vector2()
     val p1 = Vector2()
     val p2 = Vector2()
+    val p3 = Vector2()
+    val p4 = Vector2()
     val a = Vector2()
     val b = Vector2()
     val c = Vector2()
@@ -47,6 +50,7 @@ class Behaviors {
         neighbors.clear()
         circles.clear()
         walls.clear()
+        rects.clear()
         player = null
         separationForce.setZero()
         alignmentForce.setZero()
@@ -130,7 +134,9 @@ class Behaviors {
             val edge = wall.fixtureList[0].shape as EdgeShape
             edge.getVertex1(p1)
             edge.getVertex2(p2)
-            if (dstBetweenPointAndLine(agent.position, p1, p2) < 2f) {
+            p1.set(wall.getWorldPoint(p1))
+            p2.set(wall.getWorldPoint(p2))
+            if (dstBetweenPointAndLine(agent.position, p1, p2) < 3f) {
                 diff.set(p2).sub(p1)
                 val angle = if (agent.position.sub(p1).angle(diff) < 0f) 90f else -90f
                 diff.nor()
@@ -143,6 +149,21 @@ class Behaviors {
         wallObsForce *= maxSpeed
         wallObsForce.limit(maxForce)
         return wallObsForce
+    }
+
+    fun avoidRects(agent: Body): Vector2 {
+        for (rect in rects) {
+            val rectangle = rect.fixtureList[0].shape as PolygonShape
+            rectangle.getVertex(0, p1)
+            rectangle.getVertex(1, p2)
+            rectangle.getVertex(2, p3)
+            rectangle.getVertex(3, p4)
+            p1.set(rect.getWorldPoint(p1))
+            p2.set(rect.getWorldPoint(p2))
+            p3.set(rect.getWorldPoint(p3))
+            p4.set(rect.getWorldPoint(p4))
+        }
+        return rectObsForce
     }
 
     fun seek(agent: Body): Vector2 {
@@ -183,6 +204,7 @@ class Behaviors {
         steeringForce += cohesion(agent)
         steeringForce += avoidCircles(agent)
         steeringForce += avoidWalls(agent)
+        steeringForce += avoidRects(agent)
         if (player != null) steeringForce += flee(agent)
 //        if (agent.linearVelocity.len2() < 400f) steeringForce += wander(agent)
 

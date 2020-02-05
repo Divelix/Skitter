@@ -75,7 +75,7 @@ class TestAIScreen(val game: Main): KtxScreen {
             clearDeadBodies()
         }
         engine.update(delta)
-//        debugRenderer.render(world, camera.combined)
+        debugRenderer.render(world, camera.combined)
         controlCamera()
     }
 
@@ -120,7 +120,10 @@ class TestAIScreen(val game: Main): KtxScreen {
         entityBuilder.createWall(Vector2(-8f, 50f), Vector2(50f, 50f))
         entityBuilder.createWall(Vector2(50f, 50f), Vector2(50f, -8f))
         entityBuilder.createWall(Vector2(50f, -8f), Vector2(-8f, -8f))
-        entityBuilder.createCircleObstacle(10f, 20f, 3f)
+//        entityBuilder.createCircleObstacle(10f, 20f, 3f)
+//        entityBuilder.createRectObstacle(10f, 20f, 7f, 8f)
+        entityBuilder.createWall(Vector2(10f, 0f), Vector2(10f, 20f))
+        entityBuilder.createWall(Vector2(15f, 0f), Vector2(15f, 20f))
     }
 
     private fun makeEnemies() {
