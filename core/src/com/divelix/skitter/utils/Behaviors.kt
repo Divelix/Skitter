@@ -151,20 +151,20 @@ class Behaviors {
         return wallObsForce
     }
 
-    fun avoidRects(agent: Body): Vector2 {
-        for (rect in rects) {
-            val rectangle = rect.fixtureList[0].shape as PolygonShape
-            rectangle.getVertex(0, p1)
-            rectangle.getVertex(1, p2)
-            rectangle.getVertex(2, p3)
-            rectangle.getVertex(3, p4)
-            p1.set(rect.getWorldPoint(p1))
-            p2.set(rect.getWorldPoint(p2))
-            p3.set(rect.getWorldPoint(p3))
-            p4.set(rect.getWorldPoint(p4))
-        }
-        return rectObsForce
-    }
+//    fun avoidRects(agent: Body): Vector2 {
+//        for (rect in rects) {
+//            val rectangle = rect.fixtureList[0].shape as PolygonShape
+//            rectangle.getVertex(0, p1)
+//            rectangle.getVertex(1, p2)
+//            rectangle.getVertex(2, p3)
+//            rectangle.getVertex(3, p4)
+//            p1.set(rect.getWorldPoint(p1))
+//            p2.set(rect.getWorldPoint(p2))
+//            p3.set(rect.getWorldPoint(p3))
+//            p4.set(rect.getWorldPoint(p4))
+//        }
+//        return rectObsForce
+//    }
 
     fun seek(agent: Body): Vector2 {
         diff.set(player!!.position).sub(agent.position).setLength(maxSpeed)
@@ -204,7 +204,7 @@ class Behaviors {
         steeringForce += cohesion(agent)
         steeringForce += avoidCircles(agent)
         steeringForce += avoidWalls(agent)
-        steeringForce += avoidRects(agent)
+//        steeringForce += avoidRects(agent)
         if (player != null) steeringForce += flee(agent)
 //        if (agent.linearVelocity.len2() < 400f) steeringForce += wander(agent)
 

@@ -11,10 +11,10 @@ object DesktopLauncher {
     fun main(arg: Array<String>) {
         LwjglApplication(Main(), LwjglApplicationConfiguration().apply {
             title = Constants.TITLE
-            width = TestAIScreen.D_WIDTH // for TestAIScreen
-            height = TestAIScreen.D_HEIGHT
-//            width = Constants.D_WIDTH
-//            height = Constants.D_HEIGHT
+//            width = TestAIScreen.D_WIDTH // for TestAIScreen
+//            height = TestAIScreen.D_HEIGHT
+            width = Constants.D_WIDTH
+            height = Constants.D_HEIGHT
 //            resizable = false
         })
     }

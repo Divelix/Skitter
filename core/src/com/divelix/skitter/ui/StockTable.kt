@@ -69,9 +69,9 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
                         equipMods.size++
                     }
                 }
-                equipTypeName -> {// TODO update mods in equips
-                    val activeEquipMods = field[0].get("mods")
-                }
+//                equipTypeName -> {// TODO update mods in equips
+//                    val activeEquipMods = field[0].get("mods")
+//                }
             }
         }
     }

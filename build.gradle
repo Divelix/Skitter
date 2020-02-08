@@ -26,7 +26,7 @@ allprojects {
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.2'
         visuiVersion = '1.4.4'
-        ktxVersion = '1.9.9-b2'
+        ktxVersion = '1.9.10-b4'
     }
 
     repositories {

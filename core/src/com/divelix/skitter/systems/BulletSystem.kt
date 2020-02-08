@@ -8,7 +8,7 @@ import ktx.ashley.allOf
 import ktx.ashley.mapperFor
 
 class BulletSystem: IteratingSystem(allOf(BulletComponent::class).get()) {
-    private val cmBullet = mapperFor <BulletComponent>()
+    private val cmBullet = mapperFor<BulletComponent>()
     private val cmBody = mapperFor<B2dBodyComponent>()
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {

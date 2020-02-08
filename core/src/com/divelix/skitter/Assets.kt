@@ -114,6 +114,9 @@ class Assets: Disposable {
                 font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD)
                 fontColor = Color.BLACK
             }
+            label("damage-label", extend = "reload-label") {
+                fontColor = Color.WHITE
+            }
             button {
                 up = it["button"]
                 down = it["button-blue"]

@@ -105,9 +105,9 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
         playerData.get("mods").get(modsType).forEach {modDescription ->
             val index = modDescription.get("index").asInt()
             val level = modDescription.get("level").asInt()
-            val quantity = modDescription.get("quantity").asInt()
+//            val quantity = modDescription.get("quantity").asInt()
             equipMods.filter { mod ->
-                val effects = mod.get("effects")
+//                val effects = mod.get("effects")
                 mod.get("index").asInt() == index
             }.forEach { stockMods.add(Mod(index, it.get("name").asString(), level)) }
         }

@@ -23,10 +23,10 @@ class ClickableSystem(val camera: OrthographicCamera): IteratingSystem(allOf(Cli
 
         if (Gdx.input.justTouched()) {
             val click = camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
-//            if (clickCmp.circle.contains(click.x, click.y)) {
-//                println("HIT (${clickCmp.circle.x}; ${clickCmp.circle.y})")
+            if (clickCmp.circle.contains(click.x, click.y)) {
+                println("HIT (${clickCmp.circle.x}; ${clickCmp.circle.y})")
 //                Data.dynamicData.aims.add(Vector2(clickCmp.circle.x, clickCmp.circle.y))
-//            }
+            }
 //            Data.dynamicData.aims.add(Vector2(click.x, click.y))
         }
     }

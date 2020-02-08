@@ -29,7 +29,7 @@ class TestAIScreen(val game: Main): KtxScreen {
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
 
-    private val world = World(Vector2(0f, 0f), true).apply { setContactListener(B2dContactListener(game)) }
+    private val world = World(Vector2(0f, 0f), true)
     private val debugRenderer = Box2DDebugRenderer(true, true, false, true, true, true)
     private val engine = PooledEngine()
     private val entityBuilder = EntityBuilder(engine, world, assets)
@@ -40,6 +40,7 @@ class TestAIScreen(val game: Main): KtxScreen {
     private val agents = ObjectSet<Entity>()
 
     init {
+        world.setContactListener(B2dContactListener(game, entityBuilder))
         PlayScreen.isPaused = false
         makeEnvironment()
 //        makeEnemies()

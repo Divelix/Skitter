@@ -8,10 +8,11 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
-import ktx.ashley.mapperFor
+import com.divelix.skitter.screens.PlayScreen
+import ktx.ashley.*
 import java.lang.NullPointerException
 
-class B2dContactListener(game: Main) : ContactListener {
+class B2dContactListener(game: Main, val entityBuilder: EntityBuilder) : ContactListener {
     private val cmCollision = mapperFor<CollisionComponent>()
     private val cmAgent = mapperFor<AgentComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
@@ -28,7 +29,7 @@ class B2dContactListener(game: Main) : ContactListener {
         val typeA = contact.fixtureA.filterData.categoryBits
         val typeB = contact.fixtureB.filterData.categoryBits
 
-        println("A is $typeA; B is $typeB")
+//        println("A is $typeA; B is $typeB")
         when(typeB) {
             TypeComponent.AGENT_SENSOR -> {
                 when (typeA) {
@@ -49,12 +50,16 @@ class B2dContactListener(game: Main) : ContactListener {
                 if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                 when(typeA) {
                     TypeComponent.AGENT -> {
+                        val damage = Data.playerData.gun.damage
+//                        PlayScreen.damagePairs.add(Pair(damage.toInt(), bodyA))
                         hitSound.play()
                         val agentHealthCmp = cmHealth.get(entityA)
-                        if (agentHealthCmp.health > Data.playerData.gun.damage)
-                            agentHealthCmp.health -= Data.playerData.gun.damage
+                        if (agentHealthCmp.health > damage)
+                            agentHealthCmp.health -= damage
                         else
                             agentHealthCmp.health = 0f
+
+                        entityBuilder.createDamageLabel(damage.toInt(), entityA)
                     }
                     TypeComponent.OBSTACLE -> println("wall or rectangle obstacle")
                 }
@@ -67,7 +72,7 @@ class B2dContactListener(game: Main) : ContactListener {
                 val bulletCmp = cmBullet.get(entityA)
                 if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                 when(typeB) {
-                    TypeComponent.OBSTACLE -> println("fckn circle obstacle")
+                    TypeComponent.OBSTACLE -> println("circle obstacle")
                 }
                 bulletCmp.isDead = true // always delete bullet after any collision
             }

@@ -4,16 +4,19 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.*
-import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
 import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
+import com.divelix.skitter.utils.DamageLabel
 import com.divelix.skitter.utils.EntityBuilder
+import ktx.actors.plusAssign
+import ktx.actors.txt
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
 import ktx.log.info
@@ -25,11 +28,12 @@ class PlayScreen(val game: Main): KtxScreen {
         var isPaused = false
         var ammo = 0
         var health = 0f
+        val damagePairs = Array<Pair<Int, Body>>()
     }
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
 
-    private val world = World(Vector2(0f, 0f), true).apply { setContactListener(B2dContactListener(game)) }
+    private val world = World(Vector2(0f, 0f), true)
     private val debugRenderer = Box2DDebugRenderer()
     private val engine = PooledEngine()
     private val entityBuilder = EntityBuilder(engine, world, assets)
@@ -39,6 +43,7 @@ class PlayScreen(val game: Main): KtxScreen {
     private val blackList = ArrayList<Body>() // list of bodies to kill
 
     init {
+        world.setContactListener(B2dContactListener(game, entityBuilder))
         Data.renderTime = 0f
         Data.physicsTime = 0f
         Data.score = 0
@@ -62,10 +67,16 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.BACK, Input.Keys.ESCAPE  -> game.screen = MenuScreen(game)
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
+                    Input.Keys.C -> println(camera.position)
                     Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
+                    Input.Keys.P -> hud.stage += DamageLabel().apply {
+                        txt = "10"
+                        setPosition(100f, 100f)
+                        animate(1f)
+                    }
                 }
                 return true
             }
@@ -145,8 +156,8 @@ class PlayScreen(val game: Main): KtxScreen {
         entityBuilder.createWall(Vector2(50f, 50f), Vector2(50f, -8f))
         entityBuilder.createWall(Vector2(50f, -8f), Vector2(-8f, -8f))
 //        entityBuilder.createCircleObstacle(10f, 20f, 3f)
-        entityBuilder.createRectObstacle(-5f, 5f, 3f, 20f)
-        entityBuilder.createRectObstacle(2f, 5f, 3f, 20f)
+//        entityBuilder.createRectObstacle(-5f, 5f, 3f, 20f)
+//        entityBuilder.createRectObstacle(2f, 5f, 3f, 20f)
 //        entityBuilder.createPuddle(0f, 5f, 2f)
 //        entityBuilder.createPuddle(0f, 15f, 2f)
 //        entityBuilder.createPuddle(0f, 25f, 2f)
@@ -157,7 +168,7 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnemies() {
-//        entityBuilder.createAgent(0f, 10f)
+        entityBuilder.createAgent(0f, 10f)
 //        entityBuilder.createAgent(3f, 10f)
 //        entityBuilder.createAgent(1.5f, 12f)
 //        entityBuilder.createLover(-2f, 7f, playerEntity)
@@ -170,11 +181,11 @@ class PlayScreen(val game: Main): KtxScreen {
 
     private fun createEngineSystems() {
         engine.addSystem(CameraSystem())
-        engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
+        engine.addSystem(PlayerSystem())
+        engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(SteeringSystem())
 //        engine.addSystem(CollisionSystem(game))
-        engine.addSystem(PlayerSystem())
         engine.addSystem(EnemySystem())
 //        engine.addSystem(LoverSystem())
 //        engine.addSystem(SniperSystem(1f, entityBuilder))
@@ -184,6 +195,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(RegenerationSystem(0.5f))
 //        engine.addSystem(SlowSystem())
         engine.addSystem(AgentSystem())
+        engine.addSystem(DamageLabelSystem(camera))
 //        engine.addSystem(ClickableSystem(camera))
     }
 

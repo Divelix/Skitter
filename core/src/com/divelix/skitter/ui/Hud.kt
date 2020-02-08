@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -25,6 +27,9 @@ import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.EntityBuilder
 import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
+import com.badlogic.gdx.utils.Array
+import com.divelix.skitter.utils.DamageLabelsPool
 import ktx.graphics.*
 import ktx.vis.table
 import ktx.vis.window
@@ -45,6 +50,9 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     lateinit var enemyCountLabel: Label
     lateinit var scoreLabel: Label
     private val ammoLabel: Label
+    val labelsPool = DamageLabelsPool()
+    val damagePairs = Array<Pair<Label, Body>>()
+    val labelPos = Vector3()
 
     private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
     private val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
@@ -205,6 +213,13 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             pack()
             setPosition(reloadPos.x - width/2f, reloadPos.y - height/2f)
         }
+
+//        updateDamageLabels()
+        for (label in Data.damageLabels) {
+            stage += label
+            Data.damageLabels.removeValue(label, true)
+        }
+
         stage.act()
         stage.draw()
 
@@ -247,7 +262,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             padTop(25f) // title height
             width = 200f
             height = 100f
-            val quantityLabel = label("retwert").cell(colspan = 2)
+//            val quantityLabel = label("retwert").cell(colspan = 2)
             row()
             textButton("Exit").cell(align = Align.left).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -264,4 +279,34 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             })
         }
     }
+
+    private fun updateDamageLabels() {
+        for (pair in damagePairs) {
+            labelPos.set(pair.second.position, 0f)
+            playCam.project(labelPos)
+            pair.first.setPosition(labelPos.x, labelPos.y)
+        }
+
+        for (pair in PlayScreen.damagePairs) {
+            val label = labelsPool.obtain()
+            label.txt = pair.first.toString()
+            val damagePair = Pair(label, pair.second)
+//            damagePairs.add(damagePair)
+//            labelPos.set(damagePair.second.position, 0f)
+//            playCam.project(labelPos)
+            damagePair.first.setPosition(labelPos.x, labelPos.y)
+            stage += label
+            val finishAction = Actions.run {
+                label.remove()
+                labelsPool.free(label)
+                damagePairs.removeValue(damagePair, true)
+                println("freeeeeeeee")
+            }
+            val labelAnimation = alpha(0f) then fadeIn(0.5f) then fadeOut(0.5f) then finishAction
+            label += labelAnimation
+            labelsPool.free(label)
+            PlayScreen.damagePairs.removeValue(pair, true)
+        }
+    }
+
 }
