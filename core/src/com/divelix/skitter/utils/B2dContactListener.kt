@@ -2,6 +2,8 @@ package com.divelix.skitter.utils
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
@@ -9,17 +11,22 @@ import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
 import com.divelix.skitter.screens.PlayScreen
+import ktx.actors.txt
 import ktx.ashley.*
 import java.lang.NullPointerException
 
-class B2dContactListener(game: Main, val entityBuilder: EntityBuilder) : ContactListener {
+class B2dContactListener(game: Main, val camera: OrthographicCamera) : ContactListener {
     private val cmCollision = mapperFor<CollisionComponent>()
     private val cmAgent = mapperFor<AgentComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
     private val cmBullet = mapperFor<BulletComponent>()
+    private val cmDamage = mapperFor<DamageLabelComponent>()
+    private val cmTrans = mapperFor<TransformComponent>()
 
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
+
+    val temp = Vector3()
 
     override fun beginContact(contact: Contact) {
         val bodyA = contact.fixtureA.body // A is a body that was created earlier
@@ -59,7 +66,16 @@ class B2dContactListener(game: Main, val entityBuilder: EntityBuilder) : Contact
                         else
                             agentHealthCmp.health = 0f
 
-                        entityBuilder.createDamageLabel(damage.toInt(), entityA)
+                        Data.damageLabelsPool.obtain().run {
+                            txt = "${damage.toInt()}"
+                            temp.set(cmTrans.get(entityA).position)
+                            camera.project(temp)
+                            prevPos.set(temp.x, temp.y)
+                            setPosition(temp.x, temp.y)
+                            cmDamage.get(entityA).damageLabels.add(this)
+                            Data.damageLabels.add(this)
+                            animate()
+                        }
                     }
                     TypeComponent.OBSTACLE -> println("wall or rectangle obstacle")
                 }

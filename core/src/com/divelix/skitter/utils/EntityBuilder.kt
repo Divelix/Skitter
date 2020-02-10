@@ -185,29 +185,9 @@ class EntityBuilder(private val engine: PooledEngine,
                     userData = (this@entity).entity
                 }//.apply { println(mass) }
             }
+            with<DamageLabelComponent>()
 //            with<CollisionComponent>()
             Data.enemiesCount++
-        }
-    }
-
-    fun createDamageLabel(damage: Int, damagedEntity: Entity) {
-        val duration = 1f
-//        val initPos = cmTrans.get(damagedEntity).position
-        val dmgLabel = Data.damageLabelsPool.obtain().apply {
-            txt = damage.toString()
-//            setPosition(initPos.x, initPos.y)
-            animate(duration)
-        }
-        Data.damageLabels.add(dmgLabel)
-
-        engine.entity {
-            with<DamageLabelComponent> {
-                damageLabel = dmgLabel
-                timer = duration
-            }
-            with<BindComponent> {
-                entity = damagedEntity
-            }
         }
     }
 

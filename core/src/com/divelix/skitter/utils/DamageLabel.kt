@@ -11,21 +11,22 @@ import ktx.actors.plusAssign
 import ktx.actors.then
 
 class DamageLabel: Label("", VisUI.getSkin()), Pool.Poolable {
+    val duration = 1f
+    var ecsTimer = duration
+    val prevPos = Vector2()
     private val shift = Vector2()
-    private val prevPos = Vector2()
 
     override fun reset() {
-        println("reset DamageLabel")
+        ecsTimer = duration
     }
 
-    fun animate(duration: Float) {
+    fun animate() {
         val removeAction = Actions.run {
             remove()
             Data.damageLabelsPool.free(this)
-            println("damage label actor was removed from stage")
         }
         val alphaAnim = Actions.alpha(0f) then Actions.fadeIn(duration / 2f) then Actions.fadeOut(duration / 2f)
-        val moveAnim = Actions.moveBy(0f, 20f, duration)
+        val moveAnim = Actions.moveBy(0f, 40f, duration)
         val removeAnim = Actions.delay(duration) then removeAction
         this += alphaAnim along moveAnim along removeAnim
     }

@@ -43,7 +43,6 @@ class PlayScreen(val game: Main): KtxScreen {
     private val blackList = ArrayList<Body>() // list of bodies to kill
 
     init {
-        world.setContactListener(B2dContactListener(game, entityBuilder))
         Data.renderTime = 0f
         Data.physicsTime = 0f
         Data.score = 0
@@ -72,17 +71,13 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
-                    Input.Keys.P -> hud.stage += DamageLabel().apply {
-                        txt = "10"
-                        setPosition(100f, 100f)
-                        animate(1f)
-                    }
                 }
                 return true
             }
         }
         val multiplexer = InputMultiplexer(handler, hud.stage, hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
+        world.setContactListener(B2dContactListener(game, camera))
     }
 
     override fun render(delta: Float) {

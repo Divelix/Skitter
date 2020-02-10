@@ -40,7 +40,6 @@ class TestAIScreen(val game: Main): KtxScreen {
     private val agents = ObjectSet<Entity>()
 
     init {
-        world.setContactListener(B2dContactListener(game, entityBuilder))
         PlayScreen.isPaused = false
         makeEnvironment()
 //        makeEnemies()
@@ -69,6 +68,7 @@ class TestAIScreen(val game: Main): KtxScreen {
             }
         }
         Gdx.input.inputProcessor = handler
+        world.setContactListener(B2dContactListener(game, camera))
     }
 
     override fun render(delta: Float) {

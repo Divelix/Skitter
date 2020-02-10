@@ -217,6 +217,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
 //        updateDamageLabels()
         for (label in Data.damageLabels) {
             stage += label
+            println("addition to stage pos: (${label.x}; ${label.y})")
             Data.damageLabels.removeValue(label, true)
         }
 
