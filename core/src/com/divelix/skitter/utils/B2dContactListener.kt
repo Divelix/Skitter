@@ -10,13 +10,11 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.PlayScreen
 import ktx.actors.txt
 import ktx.ashley.*
 import java.lang.NullPointerException
 
 class B2dContactListener(game: Main, val camera: OrthographicCamera) : ContactListener {
-    private val cmCollision = mapperFor<CollisionComponent>()
     private val cmAgent = mapperFor<AgentComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
     private val cmBullet = mapperFor<BulletComponent>()
@@ -29,66 +27,28 @@ class B2dContactListener(game: Main, val camera: OrthographicCamera) : ContactLi
     val temp = Vector3()
 
     override fun beginContact(contact: Contact) {
-        val bodyA = contact.fixtureA.body // A is a body that was created earlier
-        val bodyB = contact.fixtureB.body
-        val entityA = bodyA.userData as Entity
-        val entityB = bodyB.userData as Entity
-        val typeA = contact.fixtureA.filterData.categoryBits
-        val typeB = contact.fixtureB.filterData.categoryBits
-
-//        println("A is $typeA; B is $typeB")
-        when(typeB) {
-            TypeComponent.AGENT_SENSOR -> {
-                when (typeA) {
-                    TypeComponent.AGENT, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
-                        cmAgent.get(entityB).visibleEntities.add(entityA)
-                    }
-                }
-            }
-            TypeComponent.PLAYER -> {
-                when (typeA) {
-                    TypeComponent.AGENT -> {
-                        println("A is AGENT; B is PLAYER")
-                    }
-                }
-            }
-            TypeComponent.PLAYER_BULLET -> {
-                val bulletCmp = cmBullet.get(entityB)
-                if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
-                when(typeA) {
-                    TypeComponent.AGENT -> {
-                        val damage = Data.playerData.gun.damage
-//                        PlayScreen.damagePairs.add(Pair(damage.toInt(), bodyA))
-                        hitSound.play()
-                        val agentHealthCmp = cmHealth.get(entityA)
-                        if (agentHealthCmp.health > damage)
-                            agentHealthCmp.health -= damage
-                        else
-                            agentHealthCmp.health = 0f
-
-                        Data.damageLabelsPool.obtain().run {
-                            txt = "${damage.toInt()}"
-                            temp.set(cmTrans.get(entityA).position)
-                            camera.project(temp)
-                            prevPos.set(temp.x, temp.y)
-                            setPosition(temp.x, temp.y)
-                            cmDamage.get(entityA).damageLabels.add(this)
-                            Data.damageLabels.add(this)
-                            animate()
-                        }
-                    }
-                    TypeComponent.OBSTACLE -> println("wall or rectangle obstacle")
-                }
-                bulletCmp.isDead = true // always delete bullet after any collision
-            }
-        }
+        val isLess = contact.fixtureA.filterData.categoryBits < contact.fixtureB.filterData.categoryBits
+        val fixA = if (isLess) contact.fixtureA else contact.fixtureB
+        val fixB = if (isLess) contact.fixtureB else contact.fixtureA
+        val entityA = fixA.body.userData as Entity
+        val entityB = fixB.body.userData as Entity
+        val typeA = fixA.filterData.categoryBits
+        val typeB = fixB.filterData.categoryBits
 
         when(typeA) {
+            TypeComponent.AGENT_SENSOR -> {
+                when (typeB) {
+                    TypeComponent.AGENT, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
+                        cmAgent.get(entityA).visibleEntities.add(entityB)
+                    }
+                }
+            }
             TypeComponent.PLAYER_BULLET -> {
                 val bulletCmp = cmBullet.get(entityA)
                 if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                 when(typeB) {
-                    TypeComponent.OBSTACLE -> println("circle obstacle")
+                    TypeComponent.AGENT -> bulletHitsAgent(entityB)
+                    TypeComponent.OBSTACLE -> println("wall or rectangle obstacle")
                 }
                 bulletCmp.isDead = true // always delete bullet after any collision
             }
@@ -96,20 +56,21 @@ class B2dContactListener(game: Main, val camera: OrthographicCamera) : ContactLi
     }
 
     override fun endContact(contact: Contact) {
-        val bodyA = contact.fixtureA.body // A is a body that was created earlier
-        val bodyB = contact.fixtureB.body
-        val entityA = bodyA.userData as Entity
-        val entityB = bodyB.userData as Entity
-        val typeA = contact.fixtureA.filterData.categoryBits
-        val typeB = contact.fixtureB.filterData.categoryBits
+        val isLess = contact.fixtureA.filterData.categoryBits < contact.fixtureB.filterData.categoryBits
+        val fixA = if (isLess) contact.fixtureA else contact.fixtureB
+        val fixB = if (isLess) contact.fixtureB else contact.fixtureA
+        val entityA = fixA.body.userData as Entity
+        val entityB = fixB.body.userData as Entity
+        val typeA = fixA.filterData.categoryBits
+        val typeB = fixB.filterData.categoryBits
 
-        when(typeB) {
+        when(typeA) {
             TypeComponent.AGENT_SENSOR -> {
-                when(typeA) {
+                when(typeB) {
                     TypeComponent.AGENT, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
-                        val agentCmp = cmAgent.get(entityB)
+                        val agentCmp = cmAgent.get(entityA)
                         val ve = try {agentCmp.visibleEntities} catch (e: NullPointerException) {return}
-                        ve.remove(entityA)
+                        ve.remove(entityB)
                     }
                 }
             }
@@ -118,6 +79,27 @@ class B2dContactListener(game: Main, val camera: OrthographicCamera) : ContactLi
 
     override fun preSolve(contact: Contact, oldManifold: Manifold) {}
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {}
+
+    private fun bulletHitsAgent(agentEntity: Entity) {
+        val damage = Data.playerData.gun.damage
+        hitSound.play()
+        val agentHealthCmp = cmHealth.get(agentEntity)
+        if (agentHealthCmp.health > damage)
+            agentHealthCmp.health -= damage
+        else
+            agentHealthCmp.health = 0f
+
+        Data.damageLabelsPool.obtain().run {
+            txt = "${damage.toInt()}"
+            temp.set(cmTrans.get(agentEntity).position)
+            camera.project(temp)
+            prevPos.set(temp.x, temp.y)
+            setPosition(temp.x, temp.y)
+            cmDamage.get(agentEntity).damageLabels.add(this)
+            Data.damageLabels.add(this)
+            animate()
+        }
+    }
 }
 // groupIndex:
 // 0 -> categoryBits, maskBits

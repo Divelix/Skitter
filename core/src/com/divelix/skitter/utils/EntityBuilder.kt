@@ -14,16 +14,13 @@ import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
-import ktx.actors.txt
 import ktx.ashley.entity
-import ktx.ashley.mapperFor
 import ktx.box2d.body
 import kotlin.experimental.or
 
 class EntityBuilder(private val engine: PooledEngine,
                     private val world: World,
                     private val assets: Assets) {
-    val cmTrans = mapperFor<TransformComponent>()
 
     fun createPlayer(hp: Float): Entity {
         val entityType = TypeComponent.PLAYER
@@ -54,7 +51,6 @@ class EntityBuilder(private val engine: PooledEngine,
                     userData = this@entity.entity
                 }
             }
-//            with<CollisionComponent>()
         }
     }
 
@@ -105,7 +101,6 @@ class EntityBuilder(private val engine: PooledEngine,
                     angle = velocity.angleRad() - MathUtils.PI/2
                 }
             }
-//            with<CollisionComponent>()
         }
     }
 
@@ -186,7 +181,6 @@ class EntityBuilder(private val engine: PooledEngine,
                 }//.apply { println(mass) }
             }
             with<DamageLabelComponent>()
-//            with<CollisionComponent>()
             Data.enemiesCount++
         }
     }

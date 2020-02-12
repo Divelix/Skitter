@@ -68,7 +68,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
         batch.projectionMatrix = camera.combined
 //        batch.enableBlending()
         batch.use {
-            batch.draw(bgReg, -8f, -8f, 58f, 58f)
+            batch.draw(bgReg, -10f, -10f, 20f, 50f)
 
             for (entity in entities) {
                 val textureCmp = cmTexture.get(entity)

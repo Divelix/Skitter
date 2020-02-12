@@ -217,7 +217,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
 //        updateDamageLabels()
         for (label in Data.damageLabels) {
             stage += label
-            println("addition to stage pos: (${label.x}; ${label.y})")
             Data.damageLabels.removeValue(label, true)
         }
 
@@ -280,34 +279,4 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             })
         }
     }
-
-    private fun updateDamageLabels() {
-        for (pair in damagePairs) {
-            labelPos.set(pair.second.position, 0f)
-            playCam.project(labelPos)
-            pair.first.setPosition(labelPos.x, labelPos.y)
-        }
-
-        for (pair in PlayScreen.damagePairs) {
-            val label = labelsPool.obtain()
-            label.txt = pair.first.toString()
-            val damagePair = Pair(label, pair.second)
-//            damagePairs.add(damagePair)
-//            labelPos.set(damagePair.second.position, 0f)
-//            playCam.project(labelPos)
-            damagePair.first.setPosition(labelPos.x, labelPos.y)
-            stage += label
-            val finishAction = Actions.run {
-                label.remove()
-                labelsPool.free(label)
-                damagePairs.removeValue(damagePair, true)
-                println("freeeeeeeee")
-            }
-            val labelAnimation = alpha(0f) then fadeIn(0.5f) then fadeOut(0.5f) then finishAction
-            label += labelAnimation
-            labelsPool.free(label)
-            PlayScreen.damagePairs.removeValue(pair, true)
-        }
-    }
-
 }

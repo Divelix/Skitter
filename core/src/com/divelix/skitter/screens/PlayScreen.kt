@@ -4,19 +4,16 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
 import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
-import com.divelix.skitter.utils.DamageLabel
 import com.divelix.skitter.utils.EntityBuilder
-import ktx.actors.plusAssign
-import ktx.actors.txt
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
 import ktx.log.info
@@ -28,7 +25,6 @@ class PlayScreen(val game: Main): KtxScreen {
         var isPaused = false
         var ammo = 0
         var health = 0f
-        val damagePairs = Array<Pair<Int, Body>>()
     }
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
@@ -71,6 +67,7 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
+                    Input.Keys.G -> entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
                 }
                 return true
             }
@@ -146,10 +143,10 @@ class PlayScreen(val game: Main): KtxScreen {
 
     private fun makeEnvironment() {
 //        entityBuilder.createBattleground(-8f, -8f, 32f, 32f)
-        entityBuilder.createWall(Vector2(-8f, -8f), Vector2(-8f, 50f))
-        entityBuilder.createWall(Vector2(-8f, 50f), Vector2(50f, 50f))
-        entityBuilder.createWall(Vector2(50f, 50f), Vector2(50f, -8f))
-        entityBuilder.createWall(Vector2(50f, -8f), Vector2(-8f, -8f))
+        entityBuilder.createWall(Vector2(-10f, -10f), Vector2(-10f, 40f))
+        entityBuilder.createWall(Vector2(-10f, 40f), Vector2(10f, 40f))
+        entityBuilder.createWall(Vector2(10f, 40f), Vector2(10f, -10f))
+        entityBuilder.createWall(Vector2(10f, -10f), Vector2(-10f, -10f))
 //        entityBuilder.createCircleObstacle(10f, 20f, 3f)
 //        entityBuilder.createRectObstacle(-5f, 5f, 3f, 20f)
 //        entityBuilder.createRectObstacle(2f, 5f, 3f, 20f)
