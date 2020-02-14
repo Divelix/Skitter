@@ -68,7 +68,7 @@ class TestAIScreen(val game: Main): KtxScreen {
             }
         }
         Gdx.input.inputProcessor = handler
-        world.setContactListener(B2dContactListener(game, camera))
+//        world.setContactListener(B2dContactListener(game, camera))
     }
 
     override fun render(delta: Float) {

@@ -63,7 +63,7 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
                     Input.Keys.C -> println(camera.position)
-                    Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
+//                    Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
@@ -72,9 +72,9 @@ class PlayScreen(val game: Main): KtxScreen {
                 return true
             }
         }
-        val multiplexer = InputMultiplexer(handler, hud.stage, hud.playerCtrl)
+        val multiplexer = InputMultiplexer(handler, hud.hudStage, hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
-        world.setContactListener(B2dContactListener(game, camera))
+        world.setContactListener(B2dContactListener(game, camera, hud))
     }
 
     override fun render(delta: Float) {
@@ -83,7 +83,7 @@ class PlayScreen(val game: Main): KtxScreen {
             if (health <= 0f) gameOver()
         }
         engine.update(delta)
-        debugRenderer.render(world, camera.combined)
+//        debugRenderer.render(world, camera.combined)
         hud.update()
     }
 
@@ -149,25 +149,13 @@ class PlayScreen(val game: Main): KtxScreen {
         entityBuilder.createWall(Vector2(10f, -10f), Vector2(-10f, -10f))
 //        entityBuilder.createCircleObstacle(10f, 20f, 3f)
 //        entityBuilder.createRectObstacle(-5f, 5f, 3f, 20f)
-//        entityBuilder.createRectObstacle(2f, 5f, 3f, 20f)
-//        entityBuilder.createPuddle(0f, 5f, 2f)
-//        entityBuilder.createPuddle(0f, 15f, 2f)
-//        entityBuilder.createPuddle(0f, 25f, 2f)
-//        entityBuilder.createPuddle(0f, 35f, 2f)
-//        entityBuilder.createPuddle(0f, 45f, 2f)
 //        entityBuilder.createPuddle(0f, 55f, 2f)
 //        entityBuilder.createSpawn(0f, 10f, 2f)
     }
 
     private fun makeEnemies() {
         entityBuilder.createAgent(0f, 10f)
-//        entityBuilder.createAgent(3f, 10f)
-//        entityBuilder.createAgent(1.5f, 12f)
-//        entityBuilder.createLover(-2f, 7f, playerEntity)
-//        entityBuilder.createLover(3f, 6f, playerEntity)
 //        entityBuilder.createLover(-5f, -5f, playerEntity)
-//        entityBuilder.createSniper(5f, -5f, playerEntity)
-//        entityBuilder.createSniper(-5f, 15f, playerEntity)
 //        entityBuilder.createSniper(5f, 25f, playerEntity)
     }
 

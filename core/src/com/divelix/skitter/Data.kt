@@ -1,10 +1,7 @@
 package com.divelix.skitter
 
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
-import com.divelix.skitter.utils.DamageLabel
-import com.divelix.skitter.utils.DamageLabelsPool
 import ktx.assets.toInternalFile
 
 object Data {
@@ -16,9 +13,6 @@ object Data {
     val playerData: PlayerData
     val loverData: LoverData
     val dirVec = Vector2()
-
-    val damageLabelsPool = DamageLabelsPool()
-    val damageLabels = Array<DamageLabel>()
 
     init {
         val reader = JsonReader()

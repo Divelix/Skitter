@@ -7,9 +7,9 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.MenuScreen
@@ -27,9 +28,9 @@ import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.EntityBuilder
 import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
-import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.utils.Array
-import com.divelix.skitter.utils.DamageLabelsPool
+import com.divelix.skitter.components.DamageLabelComponent
+import com.divelix.skitter.components.TransformComponent
+import ktx.ashley.mapperFor
 import ktx.graphics.*
 import ktx.vis.table
 import ktx.vis.window
@@ -41,7 +42,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private val assets = context.inject<Assets>()
 
     val camera = OrthographicCamera()
-    val stage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat(), camera), batch)
+    val aspectRatio = Gdx.graphics.height.toFloat() /Gdx.graphics.width
+    val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio, camera), batch)
 
     private val rootTable: Table
     lateinit var fpsLabel: Label
@@ -50,9 +52,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     lateinit var enemyCountLabel: Label
     lateinit var scoreLabel: Label
     private val ammoLabel: Label
-    val labelsPool = DamageLabelsPool()
-    val damagePairs = Array<Pair<Label, Body>>()
-    val labelPos = Vector3()
+    val damageLabelsPool = DamageLabelsPool()
 
     private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
     private val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
@@ -149,17 +149,27 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             renderTimeLabel = label("${Data.renderTime}").cell(align = Align.left)
             row()
             physicsTimeLabel = label("${Data.physicsTime}").cell(align = Align.left)
+            row()
+            textButton("makeAgent") {
+                addListener(object : ClickListener() {
+                    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                        println("Stage size: (${stage.width}; ${stage.height})")
+                        entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
+                        return super.touchDown(event, x, y, pointer, button)
+                    }
+                })
+            }.cell(align = Align.left)
         }
         ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin(), "reload-label").apply {
             setFontScale(0.5f)
         }
 
-        stage += rootTable
-        stage += ammoLabel
-        stage += healthBgImg
-        stage += healthImg
-        stage += pauseBtn
-        stage += pauseWindow
+        hudStage += rootTable
+        hudStage += ammoLabel
+        hudStage += healthBgImg
+        hudStage += healthImg
+        hudStage += pauseBtn
+        hudStage += pauseWindow
 //        stage.isDebugAll = true
 
         healthBgImg.run {
@@ -214,26 +224,20 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             setPosition(reloadPos.x - width/2f, reloadPos.y - height/2f)
         }
 
-//        updateDamageLabels()
-        for (label in Data.damageLabels) {
-            stage += label
-            Data.damageLabels.removeValue(label, true)
-        }
-
-        stage.act()
-        stage.draw()
+        hudStage.act()
+        hudStage.draw()
 
         if (isShipSlowdown) Data.dirVec.scl(0.95f)
     }
 
     fun resize(width: Int, height: Int) {
         Gdx.app.log("Hud","resize: $width; $height")
-        stage.viewport.update(width, height, true)
+        hudStage.viewport.update(width, height, true)
 //        camera.setToOrtho(false, width.toFloat(), height.toFloat())
     }
 
     fun dispose() {
-        stage.dispose()
+        hudStage.dispose()
     }
 
     private fun makePauseButton(): Image {
@@ -277,6 +281,60 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
                     isVisible = false
                 }
             })
+        }
+    }
+
+    val temp = Vector3()
+    private val cmDamage = mapperFor<DamageLabelComponent>()
+    private val cmTrans = mapperFor<TransformComponent>()
+    fun makeDamageLabel(damage: Float, damagedEntity: Entity) {
+        damageLabelsPool.obtain().run {
+            txt = "${damage.toInt()}"
+            temp.set(cmTrans.get(damagedEntity).position)
+            playCam.project(temp)
+            val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
+            println(ratio)
+            temp.scl(ratio)
+            prevPos.set(temp.x, temp.y)
+            setPosition(temp.x, temp.y)
+            println("LABEL ($x; $y)")
+            hudStage += this
+            cmDamage.get(damagedEntity).damageLabels.add(this)
+            animate()
+        }
+    }
+
+    inner class DamageLabelsPool(initialCapacity: Int = 10, max: Int = 20): Pool<DamageLabel>(initialCapacity, max) {
+        override fun newObject(): DamageLabel {
+            return DamageLabel()
+        }
+    }
+
+    inner class DamageLabel: Label("", VisUI.getSkin()), Pool.Poolable {
+        val duration = 1f
+        var ecsTimer = duration
+        val prevPos = Vector2()
+        private val shift = Vector2()
+
+        override fun reset() {
+            ecsTimer = duration
+        }
+
+        fun animate() {
+            val removeAction = Actions.run {
+                remove()
+                damageLabelsPool.free(this)
+            }
+            val alphaAnim = Actions.alpha(0f) then Actions.fadeIn(duration / 2f) then Actions.fadeOut(duration / 2f)
+            val moveAnim = Actions.moveBy(0f, 40f, duration)
+            val removeAnim = Actions.delay(duration) then removeAction
+            this += alphaAnim along moveAnim along removeAnim
+        }
+
+        fun moveTo(nextPos: Vector2) {
+            shift.set(nextPos).sub(prevPos)
+            moveBy(shift.x, shift.y)
+            prevPos.set(nextPos)
         }
     }
 }
