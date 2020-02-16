@@ -293,11 +293,9 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             temp.set(cmTrans.get(damagedEntity).position)
             playCam.project(temp)
             val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
-            println(ratio)
             temp.scl(ratio)
             prevPos.set(temp.x, temp.y)
             setPosition(temp.x, temp.y)
-            println("LABEL ($x; $y)")
             hudStage += this
             cmDamage.get(damagedEntity).damageLabels.add(this)
             animate()

@@ -148,7 +148,7 @@ class PlayScreen(val game: Main): KtxScreen {
         entityBuilder.createWall(Vector2(10f, 40f), Vector2(10f, -10f))
         entityBuilder.createWall(Vector2(10f, -10f), Vector2(-10f, -10f))
 //        entityBuilder.createCircleObstacle(10f, 20f, 3f)
-//        entityBuilder.createRectObstacle(-5f, 5f, 3f, 20f)
+        entityBuilder.createRectObstacle(-5f, 5f, 3f, 3f)
 //        entityBuilder.createPuddle(0f, 55f, 2f)
 //        entityBuilder.createSpawn(0f, 10f, 2f)
     }
