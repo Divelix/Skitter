@@ -250,7 +250,6 @@ class EntityBuilder(private val engine: PooledEngine,
                     userData = (this@entity).entity
                 }
             }
-            with<CollisionComponent>()
         }
     }
 
@@ -294,6 +293,24 @@ class EntityBuilder(private val engine: PooledEngine,
                 }
             }
 //            with<CollisionComponent>()
+        }
+    }
+
+    fun createBg(x: Float, y: Float, width: Float, height: Float) {
+        val scale = 25
+        engine.entity {
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(width, height)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> {
+                val bg = assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE)
+                bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
+                val bgReg = TextureRegion(bg)
+                bgReg.setRegion(0, 0, width.toInt() * scale, height.toInt() * scale)
+                region = bgReg
+            }
         }
     }
 

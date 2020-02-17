@@ -99,7 +99,7 @@ class PlayScreen(val game: Main): KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         info("PlayScreen") { "resize()" }
-        camera.setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
+        camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * hud.aspectRatio)
         hud.resize(width, height)
     }
 
@@ -143,12 +143,18 @@ class PlayScreen(val game: Main): KtxScreen {
 
     private fun makeEnvironment() {
 //        entityBuilder.createBattleground(-8f, -8f, 32f, 32f)
+        entityBuilder.createBg(0f, 15f, 20f, 50f)
         entityBuilder.createWall(Vector2(-10f, -10f), Vector2(-10f, 40f))
         entityBuilder.createWall(Vector2(-10f, 40f), Vector2(10f, 40f))
         entityBuilder.createWall(Vector2(10f, 40f), Vector2(10f, -10f))
         entityBuilder.createWall(Vector2(10f, -10f), Vector2(-10f, -10f))
 //        entityBuilder.createCircleObstacle(10f, 20f, 3f)
-        entityBuilder.createRectObstacle(-5f, 5f, 3f, 3f)
+        entityBuilder.createRectObstacle(-5f, 0f, 3f, 10f)
+        entityBuilder.createRectObstacle(-5f, 15f, 3f, 10f)
+        entityBuilder.createRectObstacle(-5f, 30f, 3f, 10f)
+        entityBuilder.createRectObstacle(5f, 0f, 3f, 10f)
+        entityBuilder.createRectObstacle(5f, 15f, 3f, 10f)
+        entityBuilder.createRectObstacle(5f, 30f, 3f, 10f)
 //        entityBuilder.createPuddle(0f, 55f, 2f)
 //        entityBuilder.createSpawn(0f, 10f, 2f)
     }

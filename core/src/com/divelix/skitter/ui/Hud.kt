@@ -71,6 +71,9 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private val healthBgImg = Image(Texture(pixel.apply { setColor(healthBgColor); fill() }))
     private val healthImg = Image(Texture(pixel.apply { setColor(healthColor); fill() }))
 
+    val temp = Vector3()
+    private val cmDamage = mapperFor<DamageLabelComponent>()
+    private val cmTrans = mapperFor<TransformComponent>()
     val aimPos = Vector2()
     val clickPos = Vector3()
     var isDriven = false
@@ -153,7 +156,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             textButton("makeAgent") {
                 addListener(object : ClickListener() {
                     override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                        println("Stage size: (${stage.width}; ${stage.height})")
                         entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
                         return super.touchDown(event, x, y, pointer, button)
                     }
@@ -284,9 +286,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         }
     }
 
-    val temp = Vector3()
-    private val cmDamage = mapperFor<DamageLabelComponent>()
-    private val cmTrans = mapperFor<TransformComponent>()
     fun makeDamageLabel(damage: Float, damagedEntity: Entity) {
         damageLabelsPool.obtain().run {
             txt = "${damage.toInt()}"
@@ -312,10 +311,16 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         val duration = 1f
         var ecsTimer = duration
         val prevPos = Vector2()
+        val latestPos = Vector3()
         private val shift = Vector2()
 
         override fun reset() {
             ecsTimer = duration
+        }
+
+        override fun act(delta: Float) {
+            moveTo(latestPos)
+            super.act(delta)
         }
 
         fun animate() {
@@ -329,10 +334,15 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             this += alphaAnim along moveAnim along removeAnim
         }
 
-        fun moveTo(nextPos: Vector2) {
-            shift.set(nextPos).sub(prevPos)
+        private fun moveTo(point: Vector3) {
+            temp.set(point)
+            playCam.project(temp)
+            val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
+            temp.scl(ratio)
+
+            shift.set(temp.x, temp.y).sub(prevPos)
             moveBy(shift.x, shift.y)
-            prevPos.set(nextPos)
+            prevPos.set(temp.x, temp.y)
         }
     }
 }

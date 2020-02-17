@@ -30,7 +30,7 @@ class Behaviors {
 
     val maxSpeed = 20f
     val maxForce = 20f
-    val critDstToObs = 3f
+    val critDstToObs = 2f
 
     // wander()
     private val circleCenter = Vector2()
@@ -46,6 +46,7 @@ class Behaviors {
     val a = Vector2()
     val b = Vector2()
     val c = Vector2()
+    val size = Vector2()
 
     fun reset() {
         neighbors.clear()
@@ -160,7 +161,7 @@ class Behaviors {
 //            rectangle.getVertex(1, p2)// r-b
             rectangle.getVertex(2, p2)// r-t
 //            rectangle.getVertex(3, p4)// l-t
-            val size = p2 - p1
+            size.set(p2).sub(p1)
             val dst2rect = dstToRect(agent.position, rect.position, size)
             if (dst2rect < critDstToObs) {
                 diff.set(agent.position).sub(rect.position)

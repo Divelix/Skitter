@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Array
-import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.components.*
 import ktx.ashley.allOf
@@ -24,7 +23,6 @@ import ktx.inject.Context
 class RenderingSystem(context: Context, private val camera: OrthographicCamera) : SortedIteratingSystem(allOf(TransformComponent::class, TextureComponent::class).get(), ZComparator()) {
 
     private val batch = context.inject<SpriteBatch>()
-    private val assets = context.inject<Assets>()
     private val entities = Array<Entity>()
     private val comparator = ZComparator()
     private val bulletShader = ShaderProgram(file(Constants.VERTEX_SHADER), file(Constants.FRAGMENT_SHADER))
@@ -36,19 +34,14 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
 
     private var timer = 0f
 
-    private val bg = assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE)
-    private val bgReg = TextureRegion(bg)
     private val healthBarReg: TextureRegion
 
     init {
-        bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
-        bgReg.setRegion(0, 0, 500, 500)
         val redPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
             setColor(1f, 0f, 0f, 1f)
             fill()
         }
         healthBarReg = TextureRegion(Texture(redPixel))
-//        camera.position.set(Constants.B2D_WIDTH / 2f, Constants.B2D_HEIGHT / 2f, 0f)
         ShaderProgram.pedantic = false // SpriteBatch won'stockTable send ALL info to shader program
         println(if(bulletShader.isCompiled) "shader successfully compiled" else bulletShader.log)
         batch.shader = bulletShader
@@ -68,16 +61,12 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
         batch.projectionMatrix = camera.combined
 //        batch.enableBlending()
         batch.use {
-            batch.draw(bgReg, -10f, -10f, 20f, 50f)
-
             for (entity in entities) {
                 val textureCmp = cmTexture.get(entity)
                 val transformCmp = cmTrans.get(entity)
 
                 if (textureCmp.region == null || transformCmp.isHidden) continue
 
-//            val width = texture.region!!.regionWidth.toFloat()
-//            val height = texture.region!!.regionHeight.toFloat()
                 val width = transformCmp.size.x
                 val height = transformCmp.size.y
 
