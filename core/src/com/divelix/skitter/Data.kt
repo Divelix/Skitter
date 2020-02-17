@@ -3,6 +3,7 @@ package com.divelix.skitter
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.JsonReader
 import ktx.assets.toInternalFile
+import ktx.assets.toLocalFile
 
 object Data {
     var renderTime = 0f
@@ -16,7 +17,7 @@ object Data {
 
     init {
         val reader = JsonReader()
-        val playerReader = reader.parse(Constants.PLAYER_FILE.toInternalFile())
+        val playerReader = reader.parse(Constants.PLAYER_FILE.toLocalFile())
         val shipSpecs = playerReader.get("active_ship_specs")
         val shipData = ShipData(shipSpecs[0].asFloat(), shipSpecs[1].asFloat())
         val gunSpecs = playerReader.get("active_gun_specs")

@@ -16,6 +16,7 @@ import com.divelix.skitter.ui.Hud
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
+import ktx.assets.toLocalFile
 import ktx.log.info
 import java.util.*
 
@@ -126,7 +127,7 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun loadPlayerData() {
-        val playerReader = JsonReader().parse(Constants.PLAYER_FILE.toInternalFile())
+        val playerReader = JsonReader().parse(Constants.PLAYER_FILE.toLocalFile())
         val shipSpecs = playerReader.get("active_ship_specs")
         Data.playerData.ship.health = shipSpecs[0].asFloat()
         health = Data.playerData.ship.health
