@@ -185,6 +185,36 @@ class EntityBuilder(private val engine: PooledEngine,
         }
     }
 
+    fun createJumper(x: Float, y: Float) {
+        val entityType = TypeComponent.AGENT
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<JumperComponent>()
+            with<EnemyComponent> { damage = 10f }
+            with<HealthComponent> { health = 100f }
+            with<HealthBarComponent> { maxValue = 100f }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(1f, 1f)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SNIPER)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    circle(0.5f, Vector2(0f, 0f)) {
+                        filter.categoryBits = TypeComponent.AGENT
+//                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.AGENT or TypeComponent.OBSTACLE
+                    }
+                    linearDamping = 10f
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }//.apply { println(mass) }
+            }
+            with<DamageLabelComponent>()
+            Data.enemiesCount++
+        }
+    }
+
     fun createSniper(x: Float, y: Float, playerEntity: Entity) {
         val entityType = TypeComponent.AGENT
         val entitySize = 1.5f

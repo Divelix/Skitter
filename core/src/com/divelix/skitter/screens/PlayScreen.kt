@@ -15,7 +15,6 @@ import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
-import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.log.info
 import java.util.*
@@ -53,7 +52,7 @@ class PlayScreen(val game: Main): KtxScreen {
         playerEntity = entityBuilder.createPlayer(Data.playerData.ship.health)
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera, entityBuilder, playerEntity)
-        makeEnemies()
+//        makeEnemies()
 
         createEngineSystems()
 
@@ -68,7 +67,8 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
-                    Input.Keys.G -> entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
+//                    Input.Keys.G -> entityBuilder.createJumper(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
+                    Input.Keys.G -> entityBuilder.createJumper(0f, 10f)
                 }
                 return true
             }
@@ -150,12 +150,12 @@ class PlayScreen(val game: Main): KtxScreen {
         entityBuilder.createWall(Vector2(10f, 40f), Vector2(10f, -10f))
         entityBuilder.createWall(Vector2(10f, -10f), Vector2(-10f, -10f))
 //        entityBuilder.createCircleObstacle(10f, 20f, 3f)
-        entityBuilder.createRectObstacle(-5f, 0f, 3f, 10f)
-        entityBuilder.createRectObstacle(-5f, 15f, 3f, 10f)
-        entityBuilder.createRectObstacle(-5f, 30f, 3f, 10f)
-        entityBuilder.createRectObstacle(5f, 0f, 3f, 10f)
-        entityBuilder.createRectObstacle(5f, 15f, 3f, 10f)
-        entityBuilder.createRectObstacle(5f, 30f, 3f, 10f)
+//        entityBuilder.createRectObstacle(-5f, 0f, 3f, 10f)
+//        entityBuilder.createRectObstacle(-5f, 15f, 3f, 10f)
+//        entityBuilder.createRectObstacle(-5f, 30f, 3f, 10f)
+//        entityBuilder.createRectObstacle(5f, 0f, 3f, 10f)
+//        entityBuilder.createRectObstacle(5f, 15f, 3f, 10f)
+//        entityBuilder.createRectObstacle(5f, 30f, 3f, 10f)
 //        entityBuilder.createPuddle(0f, 55f, 2f)
 //        entityBuilder.createSpawn(0f, 10f, 2f)
     }
@@ -184,6 +184,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(AgentSystem())
         engine.addSystem(DamageLabelSystem(camera))
 //        engine.addSystem(ClickableSystem(camera))
+        engine.addSystem(JumperSystem())
     }
 
     private fun gameOver() {

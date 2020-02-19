@@ -26,17 +26,7 @@ class MenuScreen(game: Main): KtxScreen {
     private val assets = context.inject<Assets>()
     private val stage = Stage(BotViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
-    val reader = JsonReader()
-    val localPF = Constants.PLAYER_FILE.toLocalFile()
-    val internalPF = Constants.PLAYER_FILE.toInternalFile()
-
     init {
-        val localD = reader.parse(localPF)
-//        val internalD = reader.parse(internalPF)
-//        println(localD)
-//        println(internalD)
-        localPF.writeString(localD.prettyPrint(JsonWriter.OutputType.json, 100), false)
-        println(localD)
         stage += table {
             setFillParent(true)
             bottom()

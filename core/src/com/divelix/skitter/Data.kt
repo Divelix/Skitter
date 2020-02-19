@@ -3,7 +3,6 @@ package com.divelix.skitter
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.JsonReader
 import ktx.assets.toInternalFile
-import ktx.assets.toLocalFile
 
 object Data {
     var renderTime = 0f
@@ -16,13 +15,11 @@ object Data {
     val dirVec = Vector2()
 
     init {
-        val reader = JsonReader()
-        val playerReader = reader.parse(Constants.PLAYER_FILE.toLocalFile())
-        val shipSpecs = playerReader.get("active_ship_specs")
-        val shipData = ShipData(shipSpecs[0].asFloat(), shipSpecs[1].asFloat())
-        val gunSpecs = playerReader.get("active_gun_specs")
-        val gunData = GunData(gunSpecs[0].asFloat(), gunSpecs[1].asInt(), gunSpecs[2].asFloat(), gunSpecs[3].asFloat(), gunSpecs[4].asFloat(), gunSpecs[5].asFloat())
+        val shipData = ShipData(0f, 0f)
+        val gunData = GunData(0f, 0, 0f, 0f, 0f, 0f)
         playerData = PlayerData(shipData, gunData)
+
+        val reader = JsonReader()
         val enemyReader = reader.parse(Constants.ENEMIES_FILE.toInternalFile())
         val loverSpecs = enemyReader.get("enemies")[0].get("specs")
         loverData = LoverData(loverSpecs[0].asFloat(), loverSpecs[1].asFloat(), loverSpecs[2].asFloat(), loverSpecs[3].asFloat())
@@ -30,7 +27,7 @@ object Data {
 }
 
 data class PlayerData(val ship: ShipData,
-                      var gun: GunData)
+                      val gun: GunData)
 
 data class ShipData(var health: Float,
                     var speed: Float)
