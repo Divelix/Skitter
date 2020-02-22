@@ -67,8 +67,8 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
-//                    Input.Keys.G -> entityBuilder.createJumper(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
-                    Input.Keys.G -> entityBuilder.createJumper(0f, 10f)
+                    Input.Keys.A -> entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
+                    Input.Keys.J -> entityBuilder.createJumper(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
                 }
                 return true
             }
