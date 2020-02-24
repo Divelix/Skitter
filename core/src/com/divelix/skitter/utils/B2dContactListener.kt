@@ -1,10 +1,8 @@
 package com.divelix.skitter.utils
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
@@ -12,8 +10,6 @@ import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
 import com.divelix.skitter.ui.Hud
-import ktx.actors.plusAssign
-import ktx.actors.txt
 import ktx.ashley.*
 import java.lang.NullPointerException
 
@@ -46,10 +42,17 @@ class B2dContactListener(game: Main, val camera: OrthographicCamera, val hud: Hu
                 val bulletCmp = cmBullet.get(entityA)
                 if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                 when(typeB) {
-                    TypeComponent.AGENT -> bulletHitsAgent(entityB)
-                    TypeComponent.OBSTACLE -> println("wall or rectangle obstacle")
+                    TypeComponent.AGENT -> bulletHitsTarget(entityB)
+                    TypeComponent.OBSTACLE -> {
+                        if (entityB.has(cmHealth)) bulletHitsTarget(entityB)
+                    }
                 }
                 bulletCmp.isDead = true // always delete bullet after any collision
+            }
+            TypeComponent.PLAYER -> {
+                when(typeB) {
+                    TypeComponent.DOOR -> println("DOOOOOR")
+                }
             }
         }
     }
@@ -79,16 +82,16 @@ class B2dContactListener(game: Main, val camera: OrthographicCamera, val hud: Hu
     override fun preSolve(contact: Contact, oldManifold: Manifold) {}
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {}
 
-    private fun bulletHitsAgent(agentEntity: Entity) {
+    private fun bulletHitsTarget(targetEntity: Entity) {
         val damage = Data.playerData.gun.damage
         hitSound.play()
-        val agentHealthCmp = cmHealth.get(agentEntity)
-        if (agentHealthCmp.health > damage)
-            agentHealthCmp.health -= damage
+        val targetHealthCmp = cmHealth.get(targetEntity)
+        if (targetHealthCmp.health > damage)
+            targetHealthCmp.health -= damage
         else
-            agentHealthCmp.health = 0f
+            targetHealthCmp.health = 0f
 
-        hud.makeDamageLabel(damage, agentEntity)
+        hud.makeDamageLabel(damage, targetEntity)
     }
 }
 // groupIndex:

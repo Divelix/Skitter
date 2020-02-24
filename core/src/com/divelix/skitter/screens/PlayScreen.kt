@@ -7,14 +7,18 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
+import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
+import ktx.ashley.has
+import ktx.ashley.mapperFor
 import ktx.assets.toLocalFile
 import ktx.log.info
 import java.util.*
@@ -37,6 +41,7 @@ class PlayScreen(val game: Main): KtxScreen {
     private val playerEntity: Entity
     private val hud: Hud
     private val blackList = ArrayList<Body>() // list of bodies to kill
+    private val levelEntities = Array<Entity>()
 
     init {
         Data.renderTime = 0f
@@ -49,7 +54,7 @@ class PlayScreen(val game: Main): KtxScreen {
         loadPlayerData()
 
         makeEnvironment()
-        playerEntity = entityBuilder.createPlayer(Data.playerData.ship.health)
+        playerEntity = entityBuilder.createPlayer(5f, 2f)
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera, entityBuilder, playerEntity)
 //        makeEnemies()
@@ -69,6 +74,16 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
                     Input.Keys.A -> entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
                     Input.Keys.J -> entityBuilder.createJumper(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
+                    Input.Keys.R -> {
+                        val cmBody = mapperFor<B2dBodyComponent>()
+                        levelEntities.forEach {
+                            if (it.has(cmBody)) world.destroyBody(cmBody.get(it).body)
+                            engine.removeEntity(it)
+                        }
+                        val b = playerEntity.getComponent(B2dBodyComponent::class.java).body
+                        b.setTransform(5f, 2f, 0f)
+                        Data.dirVec.set(0f, 0.000001f)
+                    }
                 }
                 return true
             }
@@ -84,7 +99,7 @@ class PlayScreen(val game: Main): KtxScreen {
             if (health <= 0f) gameOver()
         }
         engine.update(delta)
-//        debugRenderer.render(world, camera.combined)
+        debugRenderer.render(world, camera.combined)
         hud.update()
     }
 
@@ -100,7 +115,6 @@ class PlayScreen(val game: Main): KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         info("PlayScreen") { "resize()" }
-        camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * hud.aspectRatio)
         hud.resize(width, height)
     }
 
@@ -143,12 +157,12 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun makeEnvironment() {
-//        entityBuilder.createBattleground(-8f, -8f, 32f, 32f)
-        entityBuilder.createBg(0f, 15f, 20f, 50f)
-        entityBuilder.createWall(Vector2(-10f, -10f), Vector2(-10f, 40f))
-        entityBuilder.createWall(Vector2(-10f, 40f), Vector2(10f, 40f))
-        entityBuilder.createWall(Vector2(10f, 40f), Vector2(10f, -10f))
-        entityBuilder.createWall(Vector2(10f, -10f), Vector2(-10f, -10f))
+        makeBattleground(0f, 0f, 10f, 20f)
+//        entityBuilder.createBreakableObstacle(1f, 10f)
+//        entityBuilder.createBreakableObstacle(0f, 10f)
+//        entityBuilder.createBreakableObstacle(-1f, 10f)
+        entityBuilder.createDoor(5f, 19.5f)
+
 //        entityBuilder.createCircleObstacle(10f, 20f, 3f)
 //        entityBuilder.createRectObstacle(-5f, 0f, 3f, 10f)
 //        entityBuilder.createRectObstacle(-5f, 15f, 3f, 10f)
@@ -158,6 +172,14 @@ class PlayScreen(val game: Main): KtxScreen {
 //        entityBuilder.createRectObstacle(5f, 30f, 3f, 10f)
 //        entityBuilder.createPuddle(0f, 55f, 2f)
 //        entityBuilder.createSpawn(0f, 10f, 2f)
+    }
+
+    fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {
+        levelEntities.add(entityBuilder.createBg(x + width / 2f, y + height / 2f, width, height))
+        levelEntities.add(entityBuilder.createWall(Vector2(x, y), Vector2(x, y + height)))
+        levelEntities.add(entityBuilder.createWall(Vector2(x, y + height), Vector2(x + width, y + height)))
+        levelEntities.add(entityBuilder.createWall(Vector2(x + width, y + height), Vector2(x + width, y)))
+        levelEntities.add(entityBuilder.createWall(Vector2(x + width, y), Vector2(x, y)))
     }
 
     private fun makeEnemies() {
@@ -173,7 +195,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(SteeringSystem())
 //        engine.addSystem(CollisionSystem(game))
-        engine.addSystem(EnemySystem())
+        engine.addSystem(HealthSystem())
 //        engine.addSystem(LoverSystem())
 //        engine.addSystem(SniperSystem(1f, entityBuilder))
         engine.addSystem(BulletSystem())

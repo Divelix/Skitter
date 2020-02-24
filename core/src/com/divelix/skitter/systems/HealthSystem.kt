@@ -7,7 +7,7 @@ import com.divelix.skitter.components.*
 import ktx.ashley.allOf
 import ktx.ashley.mapperFor
 
-class EnemySystem: IteratingSystem(allOf(EnemyComponent::class).get()) {
+class HealthSystem: IteratingSystem(allOf(HealthComponent::class).get()) {
     private val cmBody = mapperFor<B2dBodyComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
 
@@ -17,8 +17,8 @@ class EnemySystem: IteratingSystem(allOf(EnemyComponent::class).get()) {
 
         if (healthCmp.health <= 0f && !bodyCmp.isDead) {
             bodyCmp.isDead = true
-            Data.enemiesCount--
-            Data.score += 100
+//            Data.enemiesCount--
+//            Data.score += 100
         }
     }
 }

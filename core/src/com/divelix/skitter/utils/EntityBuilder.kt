@@ -2,6 +2,7 @@ package com.divelix.skitter.utils
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
@@ -15,6 +16,7 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
+import ktx.ashley.mapperFor
 import ktx.box2d.body
 import kotlin.experimental.or
 
@@ -22,15 +24,15 @@ class EntityBuilder(private val engine: PooledEngine,
                     private val world: World,
                     private val assets: Assets) {
 
-    fun createPlayer(hp: Float): Entity {
+    fun createPlayer(x: Float, y: Float): Entity {
         val entityType = TypeComponent.PLAYER
         return engine.entity {
             with<PlayerComponent>()
             with<TypeComponent> { type = entityType }
-            with<HealthComponent> { health = hp }
-            with<RegenerationComponent> { amount = 1f }
+            with<HealthComponent> { health = Data.playerData.ship.health }
+//            with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
-                position.set(0f, 0f, 1f)
+                position.set(x, y, 1f)
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
                 origin.set(size).scl(0.5f)
             }
@@ -42,12 +44,12 @@ class EntityBuilder(private val engine: PooledEngine,
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.AGENT or TypeComponent.ENEMY_BULLET or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE or TypeComponent.AGENT_SENSOR
+                        filter.maskBits = TypeComponent.AGENT or TypeComponent.ENEMY_BULLET or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE or TypeComponent.AGENT_SENSOR or TypeComponent.DOOR
 //                    filter.groupIndex = -1
 //                    isSensor = true
                     }
                     fixedRotation = true
-                    position.set(0f, 0f)
+                    position.set(x, y)
                     userData = this@entity.entity
                 }
             }
@@ -56,7 +58,14 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createCamera(playerEntity: Entity): OrthographicCamera {
         val camEntity = engine.entity {
-            with<CameraComponent> { camera.position.set(0f, 0f, 1f) }
+            val playerPos = playerEntity.getComponent(TransformComponent::class.java).position
+            with<CameraComponent> {
+                camera.run {
+                    setToOrtho(false, Constants.WIDTH, Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width)
+                    position.set(playerPos)
+                    update()
+                }
+            }
             with<BindComponent> { entity = playerEntity }
         }
         return camEntity.getComponent(CameraComponent::class.java).camera
@@ -175,7 +184,7 @@ class EntityBuilder(private val engine: PooledEngine,
                         filter.maskBits = TypeComponent.PLAYER or TypeComponent.AGENT or TypeComponent.OBSTACLE
                     }
                     linearDamping = 1f
-                    angularDamping = 50f
+                    angularDamping = 30f
                     position.set(x, y)
                     userData = (this@entity).entity
                 }//.apply { println(mass) }
@@ -283,6 +292,42 @@ class EntityBuilder(private val engine: PooledEngine,
         }
     }
 
+    fun createBreakableObstacle(x: Float, y: Float, width: Float = 2f, height: Float = 2f) {
+        val entityType = TypeComponent.OBSTACLE
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<HealthComponent> { health = 100f }
+            with<HealthBarComponent> { maxValue = 100f }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(width, height)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> {
+                val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
+                    setColor(0.7f, 0.7f, 0.1f, 1f)
+                    fill()
+                }
+                region = TextureRegion(Texture(pixel))
+            }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    box(width = width, height = height) {
+                        density = 10f
+                        friction = 0f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                    }
+                    linearDamping = 10f
+                    angularDamping = 50f
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
+            }
+            with<DamageLabelComponent>()
+        }
+    }
+
     fun createCircleObstacle(x: Float, y: Float, radius: Float) {
         val entityType = TypeComponent.OBSTACLE
         engine.entity {
@@ -308,9 +353,9 @@ class EntityBuilder(private val engine: PooledEngine,
         }
     }
 
-    fun createWall(point1: Vector2, point2: Vector2) {
+    fun createWall(point1: Vector2, point2: Vector2): Entity {
         val entityType = TypeComponent.OBSTACLE
-        engine.entity {
+        return engine.entity {
             with<TypeComponent> { type = entityType }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
@@ -326,9 +371,9 @@ class EntityBuilder(private val engine: PooledEngine,
         }
     }
 
-    fun createBg(x: Float, y: Float, width: Float, height: Float) {
+    fun createBg(x: Float, y: Float, width: Float, height: Float): Entity {
         val scale = 25
-        engine.entity {
+        return engine.entity {
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(width, height)
@@ -340,6 +385,38 @@ class EntityBuilder(private val engine: PooledEngine,
                 val bgReg = TextureRegion(bg)
                 bgReg.setRegion(0, 0, width.toInt() * scale, height.toInt() * scale)
                 region = bgReg
+            }
+        }
+    }
+
+    fun createDoor(x: Float, y: Float, width: Float = 4f, height: Float = 1f) {
+        val entityType = TypeComponent.DOOR
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(width, height)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> {
+                val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
+                    setColor(1f, 0.0f, 0.8f, 1f)
+                    fill()
+                }
+                region = TextureRegion(Texture(pixel))
+            }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.StaticBody) {
+                    box(width = width, height = height) {
+                        density = 10f
+                        friction = 0f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                        isSensor = true
+                    }
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
             }
         }
     }
@@ -394,42 +471,6 @@ class EntityBuilder(private val engine: PooledEngine,
 //                        filter.maskBits = TypeComponent.PLAYER
 //                        filter.groupIndex = 1
                         isSensor = true
-                    }
-                    position.set(x, y)
-                    userData = (this@entity).entity
-                }
-            }
-            with<CollisionComponent>()
-        }
-    }
-
-    fun createBattleground(x: Float, y: Float, width: Float, height: Float) {
-        val entityType = TypeComponent.OBSTACLE
-        engine.entity {
-            with<TypeComponent> { type = entityType }
-            with<TransformComponent> {
-                position.set(x, y, 0f)
-                size.set(width, height)
-                origin.setZero()
-            }
-            with<TextureComponent> {
-                val texture = assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE)
-//                val texture = Texture("anti-seamless.png")
-                val textureRegion = TextureRegion(texture)
-                texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
-                textureRegion.setRegion(0, 0, (width*Constants.PPM).toInt(), (height*Constants.PPM).toInt())
-                region = textureRegion
-            }
-            with<B2dBodyComponent> {
-                body = world.body(type = BodyDef.BodyType.StaticBody) {
-                    val vertices = arrayOf(Vector2(0f, 0f),
-                                           Vector2(0f, height),
-                                           Vector2(width, height),
-                                           Vector2(width, 0f))
-                    loop(*vertices) {
-                        friction = 0.5f
-                        restitution = 0f
-                        filter.categoryBits = entityType
                     }
                     position.set(x, y)
                     userData = (this@entity).entity

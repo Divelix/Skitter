@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.ObjectSet
 import com.divelix.skitter.*
 import com.divelix.skitter.components.B2dBodyComponent
-import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.app.KtxScreen
@@ -135,7 +134,7 @@ class TestAIScreen(val game: Main): KtxScreen {
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
         engine.addSystem(CollisionSystem(game))
-        engine.addSystem(EnemySystem())
+        engine.addSystem(HealthSystem())
         engine.addSystem(BulletSystem())
         engine.addSystem(SteeringSystem())
         engine.addSystem(AgentSystem())

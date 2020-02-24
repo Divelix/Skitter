@@ -213,12 +213,12 @@ class Behaviors {
 
     fun computeSteering(agent: Body): Vector2 {
         steeringForce += separation(agent)
-        steeringForce += alignment(agent)
+        steeringForce += alignment(agent).scl(0.5f)
         steeringForce += cohesion(agent)
         steeringForce += avoidCircles(agent)
         steeringForce += avoidWalls(agent)
-        steeringForce += avoidRects(agent)
-        if (player != null) steeringForce += flee(agent)
+        steeringForce += avoidRects(agent).scl(10f)
+        if (player != null) steeringForce += seek(agent)
 //        if (agent.linearVelocity.len2() < 400f) steeringForce += wander(agent)
 
         steeringForce /= agent.mass

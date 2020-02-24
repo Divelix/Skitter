@@ -22,46 +22,7 @@ class JsonScreen(game: Main): KtxScreen {
 
     init {
         val json = Json()
-        var complexStr = """{
-      "bool": true,
-      "simple": {
-        "int": 31,
-        "bool": true,
-        "str": "abracadabra"
-      },
-      "list": [1, 1, 2, 3, 5, 8, 13],
-      "sList": [
-      {
-      "int": 1,
-      "bool": true,
-      "str": "lalala"
-      },
-      {
-      "int": 2,
-      "bool": true,
-      "str": "azaza"
-      }
-      ]
-    }"""
-        var complex = json.fromJson<Complex>(complexStr)
-//        println(complex.list.javaClass)
-//        println(listOf(1, 2, 3).javaClass)
-        complex = Complex().apply {
-            bool = true
-            simple = Simple().apply {
-                int = 123
-                bool = true
-                str = "simpl"
-            }
-            list = mutableListOf(1, 2, 3)
-            sList = mutableListOf(Simple(1, true, "s1"), Simple(2, true, "s2"), Simple(3, true, "s3"))
-        }
-        complexStr = json.toJson(complex)
-        complex = json.fromJson<Complex>(complexStr)
-        complexStr = json.toJson(complex)
-        complex = json.fromJson<Complex>(complexStr)
-        complexStr = json.toJson(complex)
-        println(json.prettyPrint(complexStr))
+        testComplex(json)
 
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
@@ -89,7 +50,7 @@ private data class Simple(
 private data class Complex(
         var bool: Boolean = false,
         var simple: Simple = Simple(),
-        var list: List<Int> = emptyList(),
+        var list: Array<Int> = Array(),
         var sList: List<Simple> = emptyList()
 )
 
@@ -109,4 +70,47 @@ private data class Custom(
         json.writeValue("simple", simple)
         json.writeValue("list", list)
     }
+}
+
+fun testComplex(json: Json) {
+    var complexStr = """{
+      "bool": true,
+      "simple": {
+        "int": 31,
+        "bool": true,
+        "str": "abracadabra"
+      },
+      "list": [1, 1, 2, 3, 5, 8, 13],
+      "sList": [
+      {
+      "int": 1,
+      "bool": true,
+      "str": "lalala"
+      },
+      {
+      "int": 2,
+      "bool": true,
+      "str": "azaza"
+      }
+      ]
+    }"""
+    var complex = json.fromJson<Complex>(complexStr)
+    complex = Complex().apply {
+        bool = true
+        simple = Simple().apply {
+            int = 123
+            bool = true
+            str = "simpl"
+        }
+        list = Array()
+        list.add(11)
+        list.add(99)
+        sList = mutableListOf(Simple(1, true, "s1"), Simple(2, true, "s2"), Simple(3, true, "s3"))
+    }
+    complexStr = json.toJson(complex)
+    complex = json.fromJson<Complex>(complexStr)
+    complexStr = json.toJson(complex)
+    complex = json.fromJson<Complex>(complexStr)
+    complexStr = json.toJson(complex)
+    println(json.prettyPrint(complexStr))
 }

@@ -20,6 +20,7 @@ class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
     override fun processEntity(entity: Entity?, deltaTime: Float) {
         val cameraCmp = cmCamera.get(entity)
         val bindCmp = cmBind.get(entity)
+        camPos.set(cameraCmp.camera.position.x, cameraCmp.camera.position.y)
         bodPos.set(cmBody.get(bindCmp.entity).body.position)
         difVec.set(bodPos).sub(camPos)
         if (difVec.len2() > Constants.CAMERA_RADIUS_2) {

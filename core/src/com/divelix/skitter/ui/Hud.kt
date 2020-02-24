@@ -42,7 +42,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private val assets = context.inject<Assets>()
 
     val camera = OrthographicCamera()
-    val aspectRatio = Gdx.graphics.height.toFloat() /Gdx.graphics.width
+    val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
     val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio, camera), batch)
 
     private val rootTable: Table
@@ -62,7 +62,8 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private val reloadFGColor = Color(1f, 1f, 0f, 1f)
     private val reloadBGColor = Color(1f, 1f, 0f, 0.3f)
     private val scoreColor = Color(0.7f, 0.7f, 0.7f, 1f)
-    private val reloadPos = Vector2(310f, 580f)
+//    private val reloadPos = Vector2(310f, 580f)
+    private val reloadPos = Vector2(hudStage.width - 15f - 30f, hudStage.height - 20f - 50f - 20f - 30f)
 
     private val pauseBtn: Image
     private val pauseWindow: Window
@@ -172,7 +173,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         hudStage += healthImg
         hudStage += pauseBtn
         hudStage += pauseWindow
-//        stage.isDebugAll = true
+//        hudStage.isDebugAll = true
 
         healthBgImg.run {
             setSize(stage.width * 0.9f, hpHeight)
@@ -235,7 +236,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     fun resize(width: Int, height: Int) {
         Gdx.app.log("Hud","resize: $width; $height")
         hudStage.viewport.update(width, height, true)
-//        camera.setToOrtho(false, width.toFloat(), height.toFloat())
     }
 
     fun dispose() {
@@ -245,7 +245,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private fun makePauseButton(): Image {
         return Image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PAUSE_BTN))).apply {
             setSize(50f, 50f)
-            setPosition(Constants.D_WIDTH - width - 20f, Constants.D_HEIGHT - height - 20f)
+            setPosition(hudStage.width - width - 20f, hudStage.height - height - 20f)
             addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     PlayScreen.isPaused = true

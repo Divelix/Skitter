@@ -5,7 +5,7 @@
 "active_ship": 0,
 "active_ship_specs": [ 100.0, 10.0 ],
 "active_gun": 0,
-"active_gun_specs": [ 33.0, 10.0, 1.0, 25.0, 2.0, 0.10000000149011612 ],
+"active_gun_specs": [ 30.0, 10.0, 1.0, 25.0, 2.0, 0.10000000149011612 ],
 "ships": [
 	{
 		"index": 1,
@@ -17,9 +17,7 @@
 	{
 		"index": 1,
 		"level": 1,
-		"mods": [
-			{ "index": 2001, "level": 1 }
-		]
+		"mods": []
 	}
 ],
 "mods": {
