@@ -20,8 +20,8 @@ import ktx.ashley.mapperFor
 import ktx.box2d.body
 import kotlin.experimental.or
 
-class EntityBuilder(private val engine: PooledEngine,
-                    private val world: World,
+class EntityBuilder(val engine: PooledEngine,
+                    val world: World,
                     private val assets: Assets) {
 
     fun createPlayer(x: Float, y: Float): Entity {
@@ -148,7 +148,7 @@ class EntityBuilder(private val engine: PooledEngine,
             with<BindComponent> { entity = playerEntity }
 //            with<ClickableComponent> { circle.set(x, y, entitySize/2)} // TODO maybe return later for new mechanics
         }
-        Data.enemiesCount++
+        LevelGenerator.enemiesCount++
     }
 
     fun createAgent(x: Float, y: Float): Entity {
@@ -190,7 +190,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 }//.apply { println(mass) }
             }
             with<DamageLabelComponent>()
-            Data.enemiesCount++
+            LevelGenerator.enemiesCount++
         }
     }
 
@@ -220,7 +220,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 }//.apply { println(mass) }
             }
             with<DamageLabelComponent>()
-            Data.enemiesCount++
+            LevelGenerator.enemiesCount++
         }
     }
 
@@ -258,7 +258,7 @@ class EntityBuilder(private val engine: PooledEngine,
             with<CollisionComponent>()
             with<BindComponent> { entity = playerEntity }
         }
-        Data.enemiesCount++
+        LevelGenerator.enemiesCount++
     }
 
     fun createRectObstacle(x: Float, y: Float, width: Float, height: Float) {
@@ -389,9 +389,9 @@ class EntityBuilder(private val engine: PooledEngine,
         }
     }
 
-    fun createDoor(x: Float, y: Float, width: Float = 4f, height: Float = 1f) {
+    fun createDoor(x: Float, y: Float, width: Float = 4f, height: Float = 1f): Entity {
         val entityType = TypeComponent.DOOR
-        engine.entity {
+        return engine.entity {
             with<TypeComponent> { type = entityType }
             with<TransformComponent> {
                 position.set(x, y, 0f)

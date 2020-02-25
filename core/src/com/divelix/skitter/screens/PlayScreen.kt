@@ -16,6 +16,7 @@ import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
 import com.divelix.skitter.utils.EntityBuilder
+import com.divelix.skitter.utils.LevelGenerator
 import ktx.app.KtxScreen
 import ktx.ashley.has
 import ktx.ashley.mapperFor
@@ -41,23 +42,23 @@ class PlayScreen(val game: Main): KtxScreen {
     private val playerEntity: Entity
     private val hud: Hud
     private val blackList = ArrayList<Body>() // list of bodies to kill
-    private val levelEntities = Array<Entity>()
+    private val levelGenerator: LevelGenerator
 
     init {
         Data.renderTime = 0f
         Data.physicsTime = 0f
         Data.score = 0
-        Data.enemiesCount = 0
+        LevelGenerator.enemiesCount = 0
         Data.dirVec.set(0f, 0.000001f)// little init movement fixes 90deg ship rotation on init
         isPaused = false
 
         loadPlayerData()
 
-        makeEnvironment()
         playerEntity = entityBuilder.createPlayer(5f, 2f)
         camera = entityBuilder.createCamera(playerEntity)
         hud = Hud(game, camera, entityBuilder, playerEntity)
-//        makeEnemies()
+        levelGenerator = LevelGenerator(entityBuilder, playerEntity)
+        levelGenerator.makeLevel()
 
         createEngineSystems()
 
@@ -75,14 +76,7 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.A -> entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
                     Input.Keys.J -> entityBuilder.createJumper(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
                     Input.Keys.R -> {
-                        val cmBody = mapperFor<B2dBodyComponent>()
-                        levelEntities.forEach {
-                            if (it.has(cmBody)) world.destroyBody(cmBody.get(it).body)
-                            engine.removeEntity(it)
-                        }
-                        val b = playerEntity.getComponent(B2dBodyComponent::class.java).body
-                        b.setTransform(5f, 2f, 0f)
-                        Data.dirVec.set(0f, 0.000001f)
+                        levelGenerator.goToNextLevel()
                     }
                 }
                 return true
@@ -154,38 +148,6 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.playerData.gun.critMultiplier = gunSpecs[4].asFloat()
         Data.playerData.gun.critChance = gunSpecs[5].asFloat()
         ammo = Data.playerData.gun.capacity
-    }
-
-    private fun makeEnvironment() {
-        makeBattleground(0f, 0f, 10f, 20f)
-//        entityBuilder.createBreakableObstacle(1f, 10f)
-//        entityBuilder.createBreakableObstacle(0f, 10f)
-//        entityBuilder.createBreakableObstacle(-1f, 10f)
-        entityBuilder.createDoor(5f, 19.5f)
-
-//        entityBuilder.createCircleObstacle(10f, 20f, 3f)
-//        entityBuilder.createRectObstacle(-5f, 0f, 3f, 10f)
-//        entityBuilder.createRectObstacle(-5f, 15f, 3f, 10f)
-//        entityBuilder.createRectObstacle(-5f, 30f, 3f, 10f)
-//        entityBuilder.createRectObstacle(5f, 0f, 3f, 10f)
-//        entityBuilder.createRectObstacle(5f, 15f, 3f, 10f)
-//        entityBuilder.createRectObstacle(5f, 30f, 3f, 10f)
-//        entityBuilder.createPuddle(0f, 55f, 2f)
-//        entityBuilder.createSpawn(0f, 10f, 2f)
-    }
-
-    fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {
-        levelEntities.add(entityBuilder.createBg(x + width / 2f, y + height / 2f, width, height))
-        levelEntities.add(entityBuilder.createWall(Vector2(x, y), Vector2(x, y + height)))
-        levelEntities.add(entityBuilder.createWall(Vector2(x, y + height), Vector2(x + width, y + height)))
-        levelEntities.add(entityBuilder.createWall(Vector2(x + width, y + height), Vector2(x + width, y)))
-        levelEntities.add(entityBuilder.createWall(Vector2(x + width, y), Vector2(x, y)))
-    }
-
-    private fun makeEnemies() {
-        entityBuilder.createAgent(0f, 10f)
-//        entityBuilder.createLover(-5f, -5f, playerEntity)
-//        entityBuilder.createSniper(5f, 25f, playerEntity)
     }
 
     private fun createEngineSystems() {

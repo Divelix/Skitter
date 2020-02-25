@@ -8,7 +8,6 @@ object Data {
     var renderTime = 0f
     var physicsTime = 0f
     var reloadTimer = 0f
-    var enemiesCount = 0
     var score = 0
     val playerData: PlayerData
     val loverData: LoverData

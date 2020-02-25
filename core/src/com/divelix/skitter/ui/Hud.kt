@@ -30,6 +30,7 @@ import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
 import com.divelix.skitter.components.DamageLabelComponent
 import com.divelix.skitter.components.TransformComponent
+import com.divelix.skitter.utils.LevelGenerator
 import ktx.ashley.mapperFor
 import ktx.graphics.*
 import ktx.vis.table
@@ -145,7 +146,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
 //            pad(20f)
             scoreLabel = label("${Data.score}", "score-label").cell(colspan = 2)
             row()
-            enemyCountLabel = label("${Data.enemiesCount}").cell(height = 50f, align = Align.left)
+            enemyCountLabel = label("${LevelGenerator.enemiesCount}").cell(height = 50f, align = Align.left)
 //            ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }.cell(align = Align.right)
             row()
             fpsLabel = label("${Gdx.graphics.framesPerSecond}").cell(align = Align.left)
@@ -220,7 +221,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         renderTimeLabel.setText("Render time: ${Data.renderTime.toInt()}")
         physicsTimeLabel.setText("Physics time: ${Data.physicsTime.toInt()}")
         scoreLabel.setText("${Data.score}")
-        enemyCountLabel.setText("Enemies: ${Data.enemiesCount}")
+        enemyCountLabel.setText("Enemies: ${LevelGenerator.enemiesCount}")
         ammoLabel.run {
             setText("${PlayScreen.ammo}")
             pack()
