@@ -7,19 +7,16 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
-import com.divelix.skitter.components.B2dBodyComponent
+import com.divelix.skitter.components.CameraComponent
 import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
 import com.divelix.skitter.utils.EntityBuilder
-import com.divelix.skitter.utils.LevelGenerator
+import com.divelix.skitter.utils.LevelManager
 import ktx.app.KtxScreen
-import ktx.ashley.has
-import ktx.ashley.mapperFor
 import ktx.assets.toLocalFile
 import ktx.log.info
 import java.util.*
@@ -42,23 +39,24 @@ class PlayScreen(val game: Main): KtxScreen {
     private val playerEntity: Entity
     private val hud: Hud
     private val blackList = ArrayList<Body>() // list of bodies to kill
-    private val levelGenerator: LevelGenerator
+    private val levelManager: LevelManager
 
     init {
         Data.renderTime = 0f
         Data.physicsTime = 0f
         Data.score = 0
-        LevelGenerator.enemiesCount = 0
+        LevelManager.enemiesCount = 0
         Data.dirVec.set(0f, 0.000001f)// little init movement fixes 90deg ship rotation on init
         isPaused = false
 
         loadPlayerData()
 
         playerEntity = entityBuilder.createPlayer(5f, 2f)
-        camera = entityBuilder.createCamera(playerEntity)
+        val cameraEntity = entityBuilder.createCamera(playerEntity)
+        camera = cameraEntity.getComponent(CameraComponent::class.java).camera
         hud = Hud(game, camera, entityBuilder, playerEntity)
-        levelGenerator = LevelGenerator(entityBuilder, playerEntity)
-        levelGenerator.makeLevel()
+        levelManager = LevelManager(entityBuilder, playerEntity, cameraEntity)
+        levelManager.goToNextLevel()
 
         createEngineSystems()
 
@@ -75,16 +73,13 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
                     Input.Keys.A -> entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
                     Input.Keys.J -> entityBuilder.createJumper(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
-                    Input.Keys.R -> {
-                        levelGenerator.goToNextLevel()
-                    }
                 }
                 return true
             }
         }
         val multiplexer = InputMultiplexer(handler, hud.hudStage, hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
-        world.setContactListener(B2dContactListener(game, camera, hud))
+        world.setContactListener(B2dContactListener(game, hud, levelManager))
     }
 
     override fun render(delta: Float) {
@@ -93,6 +88,7 @@ class PlayScreen(val game: Main): KtxScreen {
             if (health <= 0f) gameOver()
         }
         engine.update(delta)
+        levelManager.update()
         debugRenderer.render(world, camera.combined)
         hud.update()
     }

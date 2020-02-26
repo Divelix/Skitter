@@ -22,6 +22,11 @@ class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
         val bindCmp = cmBind.get(entity)
         camPos.set(cameraCmp.camera.position.x, cameraCmp.camera.position.y)
         bodPos.set(cmBody.get(bindCmp.entity).body.position)
+        if (cameraCmp.needCenter) {
+            cameraCmp.camera.position.set(bodPos, 0f)
+            cameraCmp.needCenter = false
+            return
+        }
         difVec.set(bodPos).sub(camPos)
         if (difVec.len2() > Constants.CAMERA_RADIUS_2) {
             radVec.set(Constants.CAMERA_RADIUS, 0f).rotate(difVec.angle())

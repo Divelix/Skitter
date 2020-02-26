@@ -3,7 +3,6 @@ package com.divelix.skitter.utils
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -16,7 +15,6 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
-import ktx.ashley.mapperFor
 import ktx.box2d.body
 import kotlin.experimental.or
 
@@ -56,19 +54,14 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createCamera(playerEntity: Entity): OrthographicCamera {
-        val camEntity = engine.entity {
+    fun createCamera(playerEntity: Entity): Entity {
+        return engine.entity {
             val playerPos = playerEntity.getComponent(TransformComponent::class.java).position
             with<CameraComponent> {
-                camera.run {
-                    setToOrtho(false, Constants.WIDTH, Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width)
-                    position.set(playerPos)
-                    update()
-                }
+                camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width)
             }
             with<BindComponent> { entity = playerEntity }
         }
-        return camEntity.getComponent(CameraComponent::class.java).camera
     }
 
     fun createBullet(sourceEntity: Entity, aim: Vector2) {
@@ -148,7 +141,7 @@ class EntityBuilder(val engine: PooledEngine,
             with<BindComponent> { entity = playerEntity }
 //            with<ClickableComponent> { circle.set(x, y, entitySize/2)} // TODO maybe return later for new mechanics
         }
-        LevelGenerator.enemiesCount++
+        LevelManager.enemiesCount++
     }
 
     fun createAgent(x: Float, y: Float): Entity {
@@ -190,7 +183,7 @@ class EntityBuilder(val engine: PooledEngine,
                 }//.apply { println(mass) }
             }
             with<DamageLabelComponent>()
-            LevelGenerator.enemiesCount++
+            LevelManager.enemiesCount++
         }
     }
 
@@ -220,7 +213,7 @@ class EntityBuilder(val engine: PooledEngine,
                 }//.apply { println(mass) }
             }
             with<DamageLabelComponent>()
-            LevelGenerator.enemiesCount++
+            LevelManager.enemiesCount++
         }
     }
 
@@ -258,7 +251,7 @@ class EntityBuilder(val engine: PooledEngine,
             with<CollisionComponent>()
             with<BindComponent> { entity = playerEntity }
         }
-        LevelGenerator.enemiesCount++
+        LevelManager.enemiesCount++
     }
 
     fun createRectObstacle(x: Float, y: Float, width: Float, height: Float) {

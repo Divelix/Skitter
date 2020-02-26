@@ -7,8 +7,10 @@ import com.divelix.skitter.Constants
 
 class CameraComponent: Component, Pool.Poolable {
     val camera = OrthographicCamera()
+    var needCenter = true
 
     override fun reset() {
         camera.position.set(0f, 0f, 0f)
+        needCenter = true
     }
 }
