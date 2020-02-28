@@ -1,9 +1,7 @@
 package com.divelix.skitter.utils
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
@@ -12,15 +10,15 @@ import com.divelix.skitter.components.CameraComponent
 import com.divelix.skitter.screens.MenuScreen
 import ktx.ashley.has
 import ktx.ashley.mapperFor
-import ktx.box2d.body
 import ktx.collections.*
 
 class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerEntity: Entity, val cameraEntity: Entity) {
     companion object {
         var enemiesCount = 0
+        var isNextLvlRequired = true
     }
     var level = 0
-    var isEnemiesCreated = false
+    var isDoorAllowed = false
     val levelEntities = Array<Entity>()
     val cmBody = mapperFor<B2dBodyComponent>()
     val cmCamera = mapperFor<CameraComponent>()
@@ -32,16 +30,15 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
     val doorPos = Vector2()
 
     fun update() {
-        if (isEnemiesCreated && enemiesCount == 0) {
-            isEnemiesCreated = false
-            levelEntities + entityBuilder.createDoor(doorPos.x, doorPos.y)
+        if (isNextLvlRequired) {
+            goToNextLevel()
+            isNextLvlRequired = false
+            isDoorAllowed = true
         }
-    }
-
-    fun makeBody() {
-//        entityBuilder.createRectObstacle(2f, 2f, 2f, 2f)
-        entityBuilder.createWall(Vector2(1f, 1f), Vector2(2f, MathUtils.random(3f, 5f)))
-        println("made body")
+        if (isDoorAllowed && enemiesCount == 0) {
+            entityBuilder.createDoor(doorPos.x, doorPos.y)
+            isDoorAllowed = false
+        }
     }
 
     fun goToNextLevel() {
@@ -51,10 +48,7 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
             game.screen = MenuScreen(game)
             return
         }
-        println("Starting to build lvl $level")
         buildLevel(level)
-        isEnemiesCreated = true
-        println("Level $level is ready; $isEnemiesCreated")
     }
 
     fun buildLevel(level: Int) {
@@ -73,7 +67,6 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
             }
         }
         levelEntities.clear()
-        println("Cleared old level, levelEntities.size = ${levelEntities.size}")
     }
 
     fun makeEnemies(levelSize: Vector2) {

@@ -57,7 +57,6 @@ class PlayScreen(val game: Main): KtxScreen {
         camera = cameraEntity.getComponent(CameraComponent::class.java).camera
         hud = Hud(game, camera, entityBuilder, playerEntity)
         levelManager = LevelManager(game, entityBuilder, playerEntity, cameraEntity)
-        levelManager.goToNextLevel()
 
         createEngineSystems()
 
@@ -83,7 +82,7 @@ class PlayScreen(val game: Main): KtxScreen {
         }
         val multiplexer = InputMultiplexer(handler, hud.hudStage, hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
-        world.setContactListener(B2dContactListener(game, hud, levelManager, entityBuilder))
+        world.setContactListener(B2dContactListener(game, hud))
     }
 
     override fun render(delta: Float) {

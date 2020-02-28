@@ -16,7 +16,7 @@ import com.divelix.skitter.ui.Hud
 import ktx.ashley.*
 import java.lang.NullPointerException
 
-class B2dContactListener(val game: Main, val hud: Hud, val levelManager: LevelManager, val entityBuilder: EntityBuilder) : ContactListener {
+class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
     private val cmAgent = mapperFor<AgentComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
     private val cmBullet = mapperFor<BulletComponent>()
@@ -56,9 +56,8 @@ class B2dContactListener(val game: Main, val hud: Hud, val levelManager: LevelMa
             TypeComponent.PLAYER -> {
                 when(typeB) {
                     TypeComponent.DOOR -> {
+                        LevelManager.isNextLvlRequired = true
                         cmBody.get(entityB).isDead = true
-//                        levelManager.goToNextLevel()
-//                        game.screen = MenuScreen(game)
                     }
                 }
             }
