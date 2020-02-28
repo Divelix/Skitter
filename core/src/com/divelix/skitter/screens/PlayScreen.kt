@@ -18,6 +18,7 @@ import com.divelix.skitter.utils.EntityBuilder
 import com.divelix.skitter.utils.LevelManager
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
+import ktx.box2d.body
 import ktx.log.info
 import java.util.*
 
@@ -55,7 +56,7 @@ class PlayScreen(val game: Main): KtxScreen {
         val cameraEntity = entityBuilder.createCamera(playerEntity)
         camera = cameraEntity.getComponent(CameraComponent::class.java).camera
         hud = Hud(game, camera, entityBuilder, playerEntity)
-        levelManager = LevelManager(entityBuilder, playerEntity, cameraEntity)
+        levelManager = LevelManager(game, entityBuilder, playerEntity, cameraEntity)
         levelManager.goToNextLevel()
 
         createEngineSystems()
@@ -73,13 +74,16 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
                     Input.Keys.A -> entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
                     Input.Keys.J -> entityBuilder.createJumper(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
+                    Input.Keys.N -> levelManager.goToNextLevel()
+                    Input.Keys.L -> println(levelManager.levelEntities.size)
+                    Input.Keys.M -> entityBuilder.createWall(Vector2(1f, 1f), Vector2(2f, 3f))
                 }
                 return true
             }
         }
         val multiplexer = InputMultiplexer(handler, hud.hudStage, hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
-        world.setContactListener(B2dContactListener(game, hud, levelManager))
+        world.setContactListener(B2dContactListener(game, hud, levelManager, entityBuilder))
     }
 
     override fun render(delta: Float) {
@@ -87,8 +91,8 @@ class PlayScreen(val game: Main): KtxScreen {
             clearDeadBodies()
             if (health <= 0f) gameOver()
         }
-        engine.update(delta)
         levelManager.update()
+        engine.update(delta)
         debugRenderer.render(world, camera.combined)
         hud.update()
     }

@@ -3,20 +3,24 @@ package com.divelix.skitter.utils
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
+import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.ui.Hud
 import ktx.ashley.*
 import java.lang.NullPointerException
 
-class B2dContactListener(game: Main, val hud: Hud, val levelManager: LevelManager) : ContactListener {
+class B2dContactListener(val game: Main, val hud: Hud, val levelManager: LevelManager, val entityBuilder: EntityBuilder) : ContactListener {
     private val cmAgent = mapperFor<AgentComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
     private val cmBullet = mapperFor<BulletComponent>()
+    private val cmBody = mapperFor<B2dBodyComponent>()
 
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
@@ -51,7 +55,11 @@ class B2dContactListener(game: Main, val hud: Hud, val levelManager: LevelManage
             }
             TypeComponent.PLAYER -> {
                 when(typeB) {
-                    TypeComponent.DOOR -> levelManager.goToNextLevel()
+                    TypeComponent.DOOR -> {
+                        cmBody.get(entityB).isDead = true
+//                        levelManager.goToNextLevel()
+//                        game.screen = MenuScreen(game)
+                    }
                 }
             }
         }

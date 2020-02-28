@@ -350,6 +350,11 @@ class EntityBuilder(val engine: PooledEngine,
         val entityType = TypeComponent.OBSTACLE
         return engine.entity {
             with<TypeComponent> { type = entityType }
+            with<TransformComponent> {// needed to be seen by PhysicsSystem (as should go to blackList)
+                position.set(point1.x, point1.y, 1f)
+                size.set(1f, 1f)
+                origin.set(size).scl(0.5f)
+            }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     edge(point1, point2) {
@@ -360,7 +365,6 @@ class EntityBuilder(val engine: PooledEngine,
                     userData = (this@entity).entity
                 }
             }
-//            with<CollisionComponent>()
         }
     }
 
