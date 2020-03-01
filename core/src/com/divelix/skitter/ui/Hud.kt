@@ -31,6 +31,7 @@ import ktx.actors.*
 import com.divelix.skitter.components.DamageLabelComponent
 import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.utils.LevelManager
+import com.divelix.skitter.utils.ScaledLabel
 import ktx.ashley.mapperFor
 import ktx.graphics.*
 import ktx.vis.table
@@ -47,12 +48,12 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio, camera), batch)
 
     private val rootTable: Table
-    lateinit var fpsLabel: Label
-    lateinit var renderTimeLabel: Label
-    lateinit var physicsTimeLabel: Label
-    lateinit var enemyCountLabel: Label
-    lateinit var scoreLabel: Label
-    private val ammoLabel: Label
+    private val fpsLabel = ScaledLabel()
+    private val renderTimeLabel = ScaledLabel()
+    private val physicsTimeLabel = ScaledLabel()
+    private val enemyCountLabel = ScaledLabel()
+    private val scoreLabel = ScaledLabel(styleName = "score-label")
+    private val ammoLabel =  ScaledLabel(styleName = "reload-label")
     val damageLabelsPool = DamageLabelsPool()
 
     private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
@@ -144,16 +145,15 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             top().pad(10f)
             defaults().expandX()
 //            pad(20f)
-            scoreLabel = label("${Data.score}", "score-label").cell(colspan = 2)
+            add(scoreLabel).colspan(2)
             row()
-            enemyCountLabel = label("${LevelManager.enemiesCount}").cell(height = 50f, align = Align.left)
-//            ammoLabel = label("${Data.playerData.gun.capacity}") { color = Color.ORANGE }.cell(align = Align.right)
+            add(enemyCountLabel).height(50f).left()
             row()
-            fpsLabel = label("${Gdx.graphics.framesPerSecond}").cell(align = Align.left)
+            add(fpsLabel).left()
             row()
-            renderTimeLabel = label("${Data.renderTime}").cell(align = Align.left)
+            add(renderTimeLabel).left()
             row()
-            physicsTimeLabel = label("${Data.physicsTime}").cell(align = Align.left)
+            add(physicsTimeLabel).left()
             row()
             textButton("makeAgent") {
                 addListener(object : ClickListener() {
@@ -163,9 +163,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
                     }
                 })
             }.cell(align = Align.left)
-        }
-        ammoLabel = Label("${PlayScreen.ammo}", VisUI.getSkin(), "reload-label").apply {
-            setFontScale(0.5f)
         }
 
         hudStage += rootTable
@@ -290,10 +287,12 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     fun makeDamageLabel(damage: Float, damagedEntity: Entity) {
         damageLabelsPool.obtain().run {
             txt = "${damage.toInt()}"
+            pack()
             temp.set(cmTrans.get(damagedEntity).position)
             playCam.project(temp)
             val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
             temp.scl(ratio)
+            temp.x -= width / 2f // center label
             prevPos.set(temp.x, temp.y)
             setPosition(temp.x, temp.y)
             hudStage += this
@@ -308,7 +307,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         }
     }
 
-    inner class DamageLabel: Label("", VisUI.getSkin()), Pool.Poolable {
+    inner class DamageLabel: ScaledLabel("", "damage-label"), Pool.Poolable {
         val duration = 1f
         var ecsTimer = duration
         val prevPos = Vector2()
@@ -340,6 +339,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             playCam.project(temp)
             val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
             temp.scl(ratio)
+            temp.x -= width / 2f // center label
 
             shift.set(temp.x, temp.y).sub(prevPos)
             moveBy(shift.x, shift.y)

@@ -13,9 +13,11 @@ import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.*
+import com.divelix.skitter.utils.ScaledLabel
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.plusAssign
+import ktx.actors.txt
 import ktx.log.info
 import ktx.vis.table
 import ktx.collections.*
@@ -27,11 +29,11 @@ class ModScreen(game: Main): EditScreen(game) {
     private var coins = playerData.get("coins").asInt()
 
     private val rootTable: VisTable
-    lateinit var coinsLabel: VisLabel
-    lateinit var modName: VisLabel
-    lateinit var modSpecs: VisLabel
-    lateinit var sellPriceLabel: VisLabel
-    lateinit var upgradePriceLabel: VisLabel
+    private val coinsLabel = ScaledLabel("$coins", "mod-name")
+    private val modName = ScaledLabel("", "mod-name")
+    private val modSpecs = ScaledLabel()
+    private val sellPriceLabel = ScaledLabel("0", "mod-name")
+    private val upgradePriceLabel = ScaledLabel("0", "mod-name")
 
     init {
         tabbedBar.tabs[0].content = StockTable(tabbedBar.tabs[0].tabName, assets, playerData, modsData)
@@ -45,7 +47,7 @@ class ModScreen(game: Main): EditScreen(game) {
             table {
                 right().pad(12f)
                 background = assets.bgDrawable
-                coinsLabel = label("$coins", "mod-name")
+                add(coinsLabel)
             }.cell(fillX = true)
             row()
             table {
@@ -58,7 +60,7 @@ class ModScreen(game: Main): EditScreen(game) {
                         }
                     })
                     row()
-                    sellPriceLabel = label("0", "mod-name").cell(padTop = 12f)
+                    add(sellPriceLabel).padTop(12f)
                 }
                 table {
                     pad(0f, 12f, 0f, 12f)
@@ -69,12 +71,12 @@ class ModScreen(game: Main): EditScreen(game) {
                         scrollPane(
                                 table {
                                     pad(12f)
-                                    modName = label("", "mod-name")
+                                    add(modName)
                                     row()
-                                    modSpecs = label("").apply {
+                                    add(modSpecs.apply {
                                         setWrap(true)
                                         setAlignment(Align.center)
-                                    }//.cell(width = 126f) // width may be any value
+                                    })//.cell(width = 126f) // width may be any value
                                 }
                         ).cell(width = 150f, height = 78f)
                     }
@@ -90,7 +92,7 @@ class ModScreen(game: Main): EditScreen(game) {
                         }
                     })
                     row()
-                    upgradePriceLabel = label("0", "mod-name").cell(padTop = 12f)
+                    add(upgradePriceLabel).padTop(12f)
                 }
             }
             row()
@@ -138,7 +140,7 @@ class ModScreen(game: Main): EditScreen(game) {
     }
 
     override fun updateUI() {
-        coinsLabel.setText(coins)
+        coinsLabel.txt = coins.toString()
     }
 
     override fun processModIcon(modIcon: ModIcon) {
@@ -212,22 +214,22 @@ class ModScreen(game: Main): EditScreen(game) {
                     else
                         (levelBars.children[i - 1] as Image).drawable = modIcon.noLvlDrawable
                 }
-                modName.setText("<${modIcon.mod.name}>")
+                modName.txt = "<${modIcon.mod.name}>"
                 var specString = ""
                 modIcon.mod.effects?.forEach { (key, value) ->
                     specString += "$key: $value\n"
                 }
-                modSpecs.setText(specString)
-                sellPriceLabel.setText("${sellPrices[modIcon.mod.level-1]}")
-                upgradePriceLabel.setText("${upgradePrices[modIcon.mod.level-1]}")
+                modSpecs.txt = specString
+                sellPriceLabel.txt = "${sellPrices[modIcon.mod.level-1]}"
+                upgradePriceLabel.txt = "${upgradePrices[modIcon.mod.level-1]}"
             } else {
                 bg.drawable = assets.bgDrawable
                 icon.drawable = null
                 levelBars.isVisible = false
-                modName.setText("")
-                modSpecs.setText("")
-                sellPriceLabel.setText("")
-                upgradePriceLabel.setText("")
+                modName.txt = ""
+                modSpecs.txt = ""
+                sellPriceLabel.txt = ""
+                upgradePriceLabel.txt = ""
             }
         }
     }

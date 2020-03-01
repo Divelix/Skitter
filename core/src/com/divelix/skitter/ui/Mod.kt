@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
+import com.divelix.skitter.utils.ScaledLabel
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import ktx.vis.table
@@ -28,7 +29,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
     val lvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(lvlColor); fill()}))
     val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(noLvlColor); fill()}))
 
-    val quantityLabel: VisLabel
+    val quantityLabel: ScaledLabel
     val levelBars: VisTable
 
     init {
@@ -63,7 +64,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
             setPosition(this@ModIcon.width - width, this@ModIcon.height - height)
             isVisible = mod.quantity > 0
         }
-        quantityLabel = VisLabel("${mod.quantity}").apply {
+        quantityLabel = ScaledLabel("${mod.quantity}").apply {
             setPosition(quantityBg.x + (quantityBg.width-width)/2f, quantityBg.y + (quantityBg.height-height)/2f)
             isVisible = mod.quantity > 0
         }

@@ -10,7 +10,9 @@ import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
+import com.divelix.skitter.utils.ScaledLabel
 import com.kotcrab.vis.ui.widget.VisLabel
+import ktx.actors.txt
 import ktx.assets.toInternalFile
 import ktx.vis.table
 
@@ -29,6 +31,8 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     lateinit var specsTable: Table
     val suitTable: Table
     val stockTable: Table
+
+    val infoLabel = ScaledLabel()
 
     val modsData = reader.parse(Constants.MODS_FILE.toInternalFile())
     var modsType = ""
@@ -165,7 +169,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
         }
         for (i in 0 until finalEquipSpecs.size) {
             finalEquipSpecs[i] = equipSpecs[i] * modEffects[i]
-            (specsTable.children[i] as VisLabel).setText("${MathUtils.round(finalEquipSpecs[i] * 10) / 10f}")
+            (specsTable.children[i] as ScaledLabel).txt = "${MathUtils.round(finalEquipSpecs[i] * 10) / 10f}"
         }
     }
 
@@ -175,11 +179,11 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
             val textWidth = 99f
             val tableHeight = 100f
             pad(14f, 14f, 0f, 14f)
-            label("Description for this specific equipment") {
-                it.size(textWidth, tableHeight)
+            add(infoLabel.apply {
+                txt = "Description for this specific equipment"
                 setWrap(true)
                 setAlignment(Align.center)
-            }
+            }).size(textWidth, tableHeight)
             container(image(getEquipDrawable(1, tabName == Constants.SHIPS_TAB))) {
                 background = assets.bgDrawable
                 pad(10f)
@@ -190,12 +194,20 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 defaults().left()
                 table {
                     defaults().left()
-                    specNames.forEach { label("${it.toUpperCase()}:", "equip-specs").apply { setFontScale(0.25f) }; row() }
+                    specNames.forEach {
+                        add(ScaledLabel("${it.toUpperCase()}:", "equip-specs", 0.25f))
+//                        label("${it.toUpperCase()}:", "equip-specs").apply { setFontScale(0.25f) }
+                        row()
+                    }
                 }
                 specsTable = table {
 //                    padLeft(5f)
                     defaults().left()
-                    equipSpecs.forEach { label(it.toString(), "equip-specs").apply { setFontScale(0.25f) };row() }
+                    equipSpecs.forEach {
+                        add(ScaledLabel(it.toString(), "equip-specs", 0.25f))
+//                        label(it.toString(), "equip-specs").apply { setFontScale(0.25f) }
+                        row()
+                    }
                 }
             }
         }
