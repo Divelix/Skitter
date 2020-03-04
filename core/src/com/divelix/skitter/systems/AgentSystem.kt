@@ -2,15 +2,12 @@ package com.divelix.skitter.systems
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Shape
 import com.divelix.skitter.components.*
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.Behaviors
 import ktx.ashley.allOf
 import ktx.ashley.mapperFor
-import ktx.math.divAssign
-import ktx.math.plusAssign
 
 class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
     private val cmAgent = mapperFor<AgentComponent>()

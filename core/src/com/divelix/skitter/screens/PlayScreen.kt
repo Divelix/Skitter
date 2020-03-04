@@ -92,7 +92,7 @@ class PlayScreen(val game: Main): KtxScreen {
         }
         levelManager.update()
         engine.update(delta)
-        debugRenderer.render(world, camera.combined)
+//        debugRenderer.render(world, camera.combined)
         hud.update()
     }
 

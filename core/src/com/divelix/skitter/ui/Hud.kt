@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -26,7 +25,6 @@ import com.divelix.skitter.*
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.EntityBuilder
-import com.kotcrab.vis.ui.VisUI
 import ktx.actors.*
 import com.divelix.skitter.components.DamageLabelComponent
 import com.divelix.skitter.components.TransformComponent
@@ -109,10 +107,10 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
                     floatPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
                     camera.unproject(floatPoint)
                     distVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
-                    val dist2 = distVec.len2()
-                    if (dist2 > Constants.DEAD_BAND_2) {
-                        activeColor = if (dist2 < Constants.MAX_TOUCHPAD_RADIUS_2) touchpadColor else touchpadLimitColor
-                        Data.dirVec.set(distVec).limit2(Constants.MAX_TOUCHPAD_RADIUS_2).scl(0.015f) // TODO assign scl() to ship speed spec
+                    val dist = distVec.len()
+                    if (dist > Constants.DEAD_BAND) {
+                        activeColor = if (dist < Constants.MAX_TOUCHPAD_RADIUS) touchpadColor else touchpadLimitColor
+                        Data.dirVec.set(distVec).limit(Constants.MAX_TOUCHPAD_RADIUS).scl(1f / Constants.MAX_TOUCHPAD_RADIUS)
                         isDriven = true
                     }
                 }
@@ -154,15 +152,15 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             add(renderTimeLabel).left()
             row()
             add(physicsTimeLabel).left()
-            row()
-            textButton("makeAgent") {
-                addListener(object : ClickListener() {
-                    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                        entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
-                        return super.touchDown(event, x, y, pointer, button)
-                    }
-                })
-            }.cell(align = Align.left)
+//            row()
+//            textButton("makeAgent") {
+//                addListener(object : ClickListener() {
+//                    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+//                        entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
+//                        return super.touchDown(event, x, y, pointer, button)
+//                    }
+//                })
+//            }.cell(align = Align.left)
         }
 
         hudStage += rootTable
@@ -271,6 +269,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             textButton("Exit").cell(align = Align.left).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
+                    LevelManager.isNextLvlRequired = true
                     game.screen = MenuScreen(game)
                 }
             })

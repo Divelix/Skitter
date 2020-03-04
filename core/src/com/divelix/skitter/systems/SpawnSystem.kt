@@ -20,6 +20,6 @@ class SpawnSystem(interval: Float, val entityBuilder: EntityBuilder, val playerE
         val r = spawnCmp.circle.radius * sqrt(MathUtils.random())
         val x = spawnCmp.circle.x + r * MathUtils.cos(a)
         val y = spawnCmp.circle.y + r * MathUtils.sin(a)
-        entityBuilder.createLover(x, y, playerEntity)
+//        entityBuilder.createLover(x, y, playerEntity)
     }
 }

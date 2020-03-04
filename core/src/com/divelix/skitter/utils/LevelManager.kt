@@ -1,6 +1,7 @@
 package com.divelix.skitter.utils
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Data
@@ -24,7 +25,7 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
     val cmCamera = mapperFor<CameraComponent>()
     val battlegroundSizes = gdxArrayOf(
             Vector2(8f, 10f),
-            Vector2(10f, 20f),
+//            Vector2(10f, 20f),
             Vector2(15f, 30f)
     )
     val doorPos = Vector2()
@@ -55,7 +56,8 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
         val levelSize = battlegroundSizes[level - 1]
         makeBattleground(0f, 0f, levelSize.x, levelSize.y)
         resetPlayerTo(levelSize.x / 2f, 1f)
-        makeEnemies(levelSize)
+        if (level > 1) makeObstacles()
+//        makeEnemies(levelSize)
     }
 
     fun destroyLevel() {
@@ -70,7 +72,11 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
     }
 
     fun makeEnemies(levelSize: Vector2) {
-        entityBuilder.createAgent(4f, 6f)
+//        entityBuilder.createAgent(4f, 6f)
+        if (level <= 1) return
+        for (i in 0..10) {
+            entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
+        }
 //        entityBuilder.createLover(-5f, -5f, playerEntity)
 //        entityBuilder.createSniper(5f, 25f, playerEntity)
     }
@@ -82,6 +88,20 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
         levelEntities + entityBuilder.createWall(Vector2(x + width, y + height), Vector2(x + width, y))
         levelEntities + entityBuilder.createWall(Vector2(x + width, y), Vector2(x, y))
         doorPos.set(x + width / 2f, y + height - 0.5f)
+    }
+
+    fun makeObstacles() {
+        levelEntities + entityBuilder.createBreakableObstacle(1f, 7f)
+        levelEntities + entityBuilder.createBreakableObstacle(3f, 7f)
+        levelEntities + entityBuilder.createBreakableObstacle(5f, 7f)
+        levelEntities + entityBuilder.createBreakableObstacle(7f, 7f)
+        levelEntities + entityBuilder.createBreakableObstacle(9f, 7f)
+
+        levelEntities + entityBuilder.createBreakableObstacle(14f, 15f)
+        levelEntities + entityBuilder.createBreakableObstacle(12f, 15f)
+        levelEntities + entityBuilder.createBreakableObstacle(10f, 15f)
+        levelEntities + entityBuilder.createBreakableObstacle(8f, 15f)
+        levelEntities + entityBuilder.createBreakableObstacle(6f, 15f)
     }
 
     fun resetPlayerTo(x: Float, y: Float) {

@@ -48,21 +48,6 @@ class Behaviors {
     val c = Vector2()
     val size = Vector2()
 
-    fun reset() {
-        neighbors.clear()
-        circles.clear()
-        walls.clear()
-        rects.clear()
-        player = null
-        separationForce.setZero()
-        alignmentForce.setZero()
-        cohesionForce.setZero()
-        circleObsForce.setZero()
-        wallObsForce.setZero()
-        rectObsForce.setZero()
-        steeringForce.setZero()
-    }
-
     fun wander(agent: Body): Vector2 {
         circleCenter.set(agent.linearVelocity).nor().scl(circleDistance)
         wanderAngle += MathUtils.random() * wanderAngleDelta - wanderAngleDelta / 2f
@@ -130,7 +115,6 @@ class Behaviors {
         circleObsForce.limit(maxForce)
         return circleObsForce
     }
-
 
     fun avoidWalls(agent: Body): Vector2 {
         for (wall in walls) {
@@ -213,16 +197,31 @@ class Behaviors {
 
     fun computeSteering(agent: Body): Vector2 {
         steeringForce += separation(agent)
-        steeringForce += alignment(agent).scl(0.5f)
+        steeringForce += alignment(agent)
         steeringForce += cohesion(agent)
         steeringForce += avoidCircles(agent)
         steeringForce += avoidWalls(agent)
-        steeringForce += avoidRects(agent).scl(10f)
+        steeringForce += avoidRects(agent)
         if (player != null) steeringForce += seek(agent)
 //        if (agent.linearVelocity.len2() < 400f) steeringForce += wander(agent)
 
         steeringForce /= agent.mass
         return steeringForce
+    }
+
+    fun reset() {
+        neighbors.clear()
+        circles.clear()
+        walls.clear()
+        rects.clear()
+        player = null
+        separationForce.setZero()
+        alignmentForce.setZero()
+        cohesionForce.setZero()
+        circleObsForce.setZero()
+        wallObsForce.setZero()
+        rectObsForce.setZero()
+        steeringForce.setZero()
     }
 
     private fun dstBetweenPointAndLine(p0: Vector2, p1: Vector2, p2: Vector2): Float {

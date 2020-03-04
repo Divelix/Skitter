@@ -91,8 +91,7 @@ class EntityBuilder(val engine: PooledEngine,
                         restitution = 0f
                         filter.categoryBits = entityType
                         filter.maskBits = TypeComponent.PLAYER or TypeComponent.AGENT or TypeComponent.OBSTACLE
-//                filter.groupIndex = 1
-                        isSensor = true // TODO Carefully
+//                        isSensor = true
                     }
                     position.set(initPos)
                     bullet = true
@@ -104,44 +103,6 @@ class EntityBuilder(val engine: PooledEngine,
                 }
             }
         }
-    }
-
-    fun createLover(x: Float, y: Float, playerEntity: Entity) {
-        val entityType = TypeComponent.AGENT
-        engine.entity {
-            with<LoverComponent>()
-            with<TypeComponent> { type = entityType }
-            with<EnemyComponent> { damage = Data.loverData.damage }
-            with<HealthComponent> { health = Data.loverData.health }
-            with<HealthBarComponent> { maxValue = Data.loverData.health }
-            with<TransformComponent> {
-                position.set(x, y, 0f)
-                size.set(0.9f, 1.5f)
-                origin.set(size).scl(0.5f)
-            }
-            with<SteerComponent> {
-                maxSpeed = Data.loverData.maxSpeed
-                maxForce = Data.loverData.maxForce
-            }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOVER)) }
-            with<B2dBodyComponent> {
-                body = world.body(type = BodyDef.BodyType.DynamicBody) {
-                    polygon(Vector2(0f, 0.75f), Vector2(-0.45f, -0.75f), Vector2(0.45f, -0.75f)) {
-                        density = 1f
-                        friction = 0.5f
-                        restitution = 0f
-                        filter.categoryBits = entityType
-                    }
-                    angularDamping = 15f
-                    position.set(x, y)
-                    userData = (this@entity).entity
-                }
-            }
-            with<CollisionComponent>()
-            with<BindComponent> { entity = playerEntity }
-//            with<ClickableComponent> { circle.set(x, y, entitySize/2)} // TODO maybe return later for new mechanics
-        }
-        LevelManager.enemiesCount++
     }
 
     fun createAgent(x: Float, y: Float): Entity {

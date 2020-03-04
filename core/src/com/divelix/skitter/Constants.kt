@@ -1,7 +1,5 @@
 package com.divelix.skitter
 
-import com.badlogic.gdx.graphics.Color
-
 object Constants {
     const val TITLE = "Skitter"
     const val D_WIDTH = 350
@@ -19,7 +17,8 @@ object Constants {
     // Controls params
     const val CAMERA_RADIUS = 2f
     const val CAMERA_RADIUS_2 = CAMERA_RADIUS * CAMERA_RADIUS
-    const val DEAD_BAND_2 = 500f
+    const val DEAD_BAND = 20f
+    const val DEAD_BAND_2 = DEAD_BAND * DEAD_BAND
     const val MAX_TOUCHPAD_RADIUS = 100f
     const val MAX_TOUCHPAD_RADIUS_2 = MAX_TOUCHPAD_RADIUS * MAX_TOUCHPAD_RADIUS
 
