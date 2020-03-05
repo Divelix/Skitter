@@ -1,4 +1,4 @@
-package com.divelix.skitter.screens
+package com.divelix.skitter.screens.experimental
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*

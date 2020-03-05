@@ -14,7 +14,6 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.*
 import com.divelix.skitter.utils.ScaledLabel
-import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.plusAssign
 import ktx.actors.txt
