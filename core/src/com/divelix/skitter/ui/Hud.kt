@@ -7,7 +7,6 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -183,7 +182,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
 
     fun shoot(aim: Vector2) {
         if (PlayScreen.ammo <= 0) return
-        entityBuilder.createBullet(playerEntity, aim)
+        entityBuilder.createPlayerBullet(playerEntity, aim)
         assets.manager.get<Sound>(Constants.SHOT_SOUND).play()
         if (PlayScreen.ammo == Data.playerData.gun.capacity) Data.reloadTimer = 0f // fix for reload on first shot
         PlayScreen.ammo--

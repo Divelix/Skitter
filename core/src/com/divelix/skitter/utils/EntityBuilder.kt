@@ -15,12 +15,15 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
+import ktx.ashley.mapperFor
 import ktx.box2d.body
 import kotlin.experimental.or
 
 class EntityBuilder(val engine: PooledEngine,
                     val world: World,
                     private val assets: Assets) {
+
+    val cmBody = mapperFor<B2dBodyComponent>()
 
     fun createPlayer(x: Float, y: Float): Entity {
         val entityType = TypeComponent.PLAYER
@@ -42,9 +45,7 @@ class EntityBuilder(val engine: PooledEngine,
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.AGENT or TypeComponent.ENEMY_BULLET or TypeComponent.OBSTACLE or TypeComponent.SPAWN or TypeComponent.PUDDLE or TypeComponent.AGENT_SENSOR or TypeComponent.DOOR
-//                    filter.groupIndex = -1
-//                    isSensor = true
+                        filter.maskBits = TypeComponent.PLAYER_MB
                     }
                     fixedRotation = true
                     position.set(x, y)
@@ -64,11 +65,11 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createBullet(sourceEntity: Entity, aim: Vector2) {
-        val sourceType = sourceEntity.getComponent(TypeComponent::class.java).type // TODO mb use ComponentMapper
-        val entityType = if (sourceType == TypeComponent.PLAYER) TypeComponent.PLAYER_BULLET else TypeComponent.ENEMY_BULLET
-        val initPos = sourceEntity.getComponent(B2dBodyComponent::class.java).body.position
-        val initVelocity = sourceEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
+    fun createPlayerBullet(sourceEntity: Entity, aim: Vector2) {
+        val entityType = TypeComponent.PLAYER_BULLET
+        val sourceBody = cmBody.get(sourceEntity).body
+        val initPos = sourceBody.position
+        val initVelocity = sourceBody.linearVelocity
         val dirVec = aim.sub(initPos)
         val dirAngle = dirVec.angle() - 90f
         val width = 0.2f
@@ -90,7 +91,47 @@ class EntityBuilder(val engine: PooledEngine,
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.AGENT or TypeComponent.OBSTACLE
+                        filter.maskBits = TypeComponent.PLAYER_BULLET_MB
+//                        isSensor = true
+                    }
+                    position.set(initPos)
+                    bullet = true
+                    userData = (this@entity).entity
+                    val velocity = Vector2(0f, 1f).scl(speed).rotate(dirAngle)
+                    velocity.add(initVelocity)
+                    linearVelocity.set(velocity)
+                    angle = velocity.angleRad() - MathUtils.PI/2
+                }
+            }
+        }
+    }
+
+    fun createEnemyBullet(sourceEntity: Entity, aim: Vector2) {
+        val entityType = TypeComponent.ENEMY_BULLET
+        val initPos = sourceEntity.getComponent(B2dBodyComponent::class.java).body.position
+        val initVelocity = sourceEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
+        val dirVec = aim.sub(initPos)
+        val dirAngle = dirVec.angle() - 90f
+        val width = 0.5f
+        val height = 0.5f
+        val speed = Data.playerData.gun.bulletSpeed
+        engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<BulletComponent>()
+            with<TransformComponent> {
+                position.set(initPos.x, initPos.y, 0f)
+                size.set(width, height)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    box(width = width, height = height) {
+                        density = 10f
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                        filter.maskBits = TypeComponent.ENEMY_BULLET_MB
 //                        isSensor = true
                     }
                     position.set(initPos)
@@ -135,7 +176,7 @@ class EntityBuilder(val engine: PooledEngine,
                     circle(7f, Vector2(0f, 0f)) {
                         isSensor = true
                         filter.categoryBits = TypeComponent.AGENT_SENSOR
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.AGENT or TypeComponent.OBSTACLE
+                        filter.maskBits = TypeComponent.AGENT_SENSOR_MB
                     }
                     linearDamping = 1f
                     angularDamping = 30f
@@ -178,12 +219,12 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createSniper(x: Float, y: Float, playerEntity: Entity) {
+    fun createSniper(x: Float, y: Float, playerEntity: Entity): Entity {
         val entityType = TypeComponent.AGENT
         val entitySize = 1.5f
         val sniperDamage = 10f
-        val sniperHealth = 50f
-        engine.entity {
+        val sniperHealth = 200f
+        return engine.entity {
             with<SniperComponent>()
             with<TypeComponent> { type = entityType }
             with<EnemyComponent> { damage = sniperDamage }
@@ -196,23 +237,24 @@ class EntityBuilder(val engine: PooledEngine,
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SNIPER)) }
             with<B2dBodyComponent> {
-                body = world.body(type = BodyDef.BodyType.KinematicBody) {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
                         density = 10f
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.PLAYER_BULLET
-//                        filter.groupIndex = 1
+                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.PLAYER_BULLET or TypeComponent.OBSTACLE
                     }
+                    linearDamping = 10f
                     position.set(x, y)
                     userData = (this@entity).entity
                 }
             }
             with<CollisionComponent>()
             with<BindComponent> { entity = playerEntity }
+            with<DamageLabelComponent>()
+            LevelManager.enemiesCount++
         }
-        LevelManager.enemiesCount++
     }
 
     fun createRectObstacle(x: Float, y: Float, width: Float, height: Float) {

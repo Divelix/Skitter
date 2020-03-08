@@ -7,9 +7,12 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
@@ -19,7 +22,9 @@ import com.kotcrab.vis.ui.widget.VisScrollPane
 import ktx.actors.plusAssign
 import ktx.actors.txt
 import ktx.app.KtxScreen
+import ktx.style.defaultStyle
 import ktx.vis.table
+import ktx.collections.*
 
 class SwipeMenuScreen(game: Main): KtxScreen {
     val context = game.getContext()
@@ -28,13 +33,24 @@ class SwipeMenuScreen(game: Main): KtxScreen {
     val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
     val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio), batch)
 
-    lateinit var infoLabel: Label
-    lateinit var  scrollP: VisScrollPane
+    val infoLabel: Label
+    val scrollP: PagedScrollPane
 
     init {
+        val pages = Array<Table>()
+        val page1 = table {
+            add(Image(assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
+        }
+        val page2 = table {
+            add(Image(assets.manager.get<Texture>(Constants.SELL_BTN))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
+        }
+        val page3 = table {
+            add(Image(assets.manager.get<Texture>(Constants.UP_BTN))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
+        }
+        pages + arrayOf(page1, page2, page3)
+        scrollP = PagedScrollPane(pages)
+
         val bigTable = table {
-            width = Gdx.graphics.width * 3f
-            height = Gdx.graphics.height.toFloat()
             table {
                 add(Image(assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
             }
@@ -47,7 +63,11 @@ class SwipeMenuScreen(game: Main): KtxScreen {
         }
         val rootTable = table {
             setFillParent(true)
-            scrollP = scrollPane(bigTable) { setScrollingDisabled(false, true) }
+//            scrollP = scrollPane(bigTable) {
+//                setScrollingDisabled(false, true)
+//                setOverscroll(false, false)
+//            }
+            add(scrollP)
         }
         infoLabel = Label("Scroll: ${scrollP.scrollX}", VisUI.getSkin())
         stage += rootTable
@@ -76,8 +96,46 @@ class SwipeMenuScreen(game: Main): KtxScreen {
         stage.act()
         stage.draw()
     }
+}
 
-    override fun resize(width: Int, height: Int) {
-        super.resize(width, height)
+class PagedScrollPane(val pages: Array<Table>): VisScrollPane(null, defaultStyle) {
+    val bigTable: Table
+    var isFlinged = false
+
+    init {
+        setScrollingDisabled(false, true)
+        setOverscroll(false, false)
+        setScrollbarsVisible(false)
+        bigTable = table {
+            pages.forEach { add(it) }
+        }
+        super.setActor(bigTable)
     }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        if (isFlinged && isFlinging) {
+            isFlinged = false
+            println("ACTION")
+            scrollFor(velocityX)
+        } else {
+            if (!isFlinging) isFlinged = true
+        }
+    }
+
+    fun scrollFor(flingVelocity: Float) {
+        val currentPageIndex = MathUtils.floor(scrollX / width)
+        var desiredPageIndex = currentPageIndex
+        if (flingVelocity < 0f) {
+            // move to right closest
+            desiredPageIndex++
+        } else {
+            // move to left closest
+            desiredPageIndex--
+        }
+        println("desired page:$desiredPageIndex")
+        scrollX = desiredPageIndex * width
+    }
+
+
 }

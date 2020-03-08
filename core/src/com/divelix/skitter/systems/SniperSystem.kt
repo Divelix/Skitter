@@ -22,6 +22,6 @@ class SniperSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalI
         val targetTransCmp = cmTrans.get(bindCmp.entity)
 
         targetPos.set(targetTransCmp.position.x, targetTransCmp.position.y)
-        entityBuilder.createBullet(entity!!, targetPos)
+        entityBuilder.createEnemyBullet(entity!!, targetPos)
     }
 }

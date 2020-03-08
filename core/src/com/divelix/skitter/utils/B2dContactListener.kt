@@ -42,7 +42,7 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
                     }
                 }
             }
-            TypeComponent.PLAYER_BULLET -> {
+            TypeComponent.PLAYER_BULLET, TypeComponent.ENEMY_BULLET -> {
                 val bulletCmp = cmBullet.get(entityA)
                 if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                 when(typeB) {
@@ -104,5 +104,5 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
 // groupIndex:
 // 0 -> categoryBits, maskBits
 // !0 and !same -> categoryBits, maskBits
-// - (same) -> won'stockTable collide no matter what
+// - (same) -> won't collide no matter what
 // + (same) -> will collide no matter what
