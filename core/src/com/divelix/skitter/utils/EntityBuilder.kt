@@ -140,7 +140,7 @@ class EntityBuilder(val engine: PooledEngine,
                     val velocity = Vector2(0f, 1f).scl(speed).rotate(dirAngle)
                     velocity.add(initVelocity)
                     linearVelocity.set(velocity)
-                    angle = velocity.angleRad() - MathUtils.PI/2
+                    angle = velocity.angleRad() - MathUtils.PI / 2f
                 }
             }
         }
