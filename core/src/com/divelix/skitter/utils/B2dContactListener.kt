@@ -90,15 +90,18 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {}
 
     private fun bulletHitsTarget(targetEntity: Entity) {
-        val damage = Data.playerData.gun.damage
-        hitSound.play()
         val targetHealthCmp = cmHealth.get(targetEntity)
-        if (targetHealthCmp.health > damage)
-            targetHealthCmp.health -= damage
-        else
-            targetHealthCmp.health = 0f
-
-        hud.makeDamageLabel(damage, targetEntity)
+        if (targetHealthCmp.isIntHp) {
+            targetHealthCmp.health--
+        } else {
+            val damage = Data.playerData.gun.damage
+            if (targetHealthCmp.health > damage)
+                targetHealthCmp.health -= damage
+            else
+                targetHealthCmp.health = 0f
+            hud.makeDamageLabel(damage, targetEntity)
+        }
+        hitSound.play()
     }
 }
 // groupIndex:

@@ -28,8 +28,8 @@ class ParticleScreen(game: Main): KtxScreen {
     val myEffect = ParticleEffect()
 
     init {
-        myEffect.load(file("effects/gas-burner.p"), file(""))
-        myEffect.scaleEffect(0.1f)
+        myEffect.load(file("effects/fire.p"), file(""))
+//        myEffect.scaleEffect(0.1f)
         effectPool = ParticleEffectPool(myEffect, 5, 10)
 
         val handler = object: InputAdapter() {
@@ -37,6 +37,7 @@ class ParticleScreen(game: Main): KtxScreen {
                 when (keycode) {
                     Input.Keys.R -> refresh()
                     Input.Keys.G -> generate(10)
+                    Input.Keys.P -> println(effects.size)
                 }
                 return super.keyDown(keycode)
             }
@@ -60,7 +61,7 @@ class ParticleScreen(game: Main): KtxScreen {
                 }
             }
         }
-        println("FPS: ${Gdx.graphics.framesPerSecond}; effects: ${effects.size}")
+//        println("FPS: ${Gdx.graphics.framesPerSecond}; effects: ${effects.size}")
     }
 
     override fun resize(width: Int, height: Int) {

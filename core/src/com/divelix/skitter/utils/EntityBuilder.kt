@@ -47,6 +47,7 @@ class EntityBuilder(val engine: PooledEngine,
                         filter.categoryBits = entityType
                         filter.maskBits = TypeComponent.PLAYER_MB
                     }
+                    linearDamping = 10f
                     fixedRotation = true
                     position.set(x, y)
                     userData = this@entity.entity
@@ -114,7 +115,7 @@ class EntityBuilder(val engine: PooledEngine,
         val dirAngle = dirVec.angle() - 90f
         val width = 0.5f
         val height = 0.5f
-        val speed = Data.playerData.gun.bulletSpeed
+        val speed = 10f
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<BulletComponent>()
@@ -127,7 +128,7 @@ class EntityBuilder(val engine: PooledEngine,
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
-                        density = 10f
+                        density = 50f
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
@@ -292,8 +293,11 @@ class EntityBuilder(val engine: PooledEngine,
         val entityType = TypeComponent.OBSTACLE
         engine.entity {
             with<TypeComponent> { type = entityType }
-            with<HealthComponent> { health = 100f }
-            with<HealthBarComponent> { maxValue = 100f }
+            with<HealthComponent> {
+                isIntHp = true
+                health = 5f
+            }
+            with<HealthBarComponent> { maxValue = 5f }
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(width, height)
@@ -307,7 +311,7 @@ class EntityBuilder(val engine: PooledEngine,
                 region = TextureRegion(Texture(pixel))
             }
             with<B2dBodyComponent> {
-                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                body = world.body(type = BodyDef.BodyType.KinematicBody) {
                     box(width = width, height = height) {
                         density = 10f
                         friction = 0f

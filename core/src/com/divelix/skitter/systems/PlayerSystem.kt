@@ -23,8 +23,9 @@ class PlayerSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
         PlayScreen.health = healthCmp.health
         transCmp.rotation = Data.dirVec.angle() - 90f
 
-        velocity.set(Data.dirVec).scl(Data.playerData.ship.speed)
-        bodyCmp.body.linearVelocity = velocity
+        velocity.set(Data.dirVec).scl(Data.playerData.ship.speed).scl(50f) // TODO hardcoded scl
+        bodyCmp.body.applyForceToCenter(velocity, true)
+//        bodyCmp.body.linearVelocity = velocity
 
     }
 }

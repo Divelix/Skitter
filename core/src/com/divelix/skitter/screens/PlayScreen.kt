@@ -18,7 +18,6 @@ import com.divelix.skitter.utils.EntityBuilder
 import com.divelix.skitter.utils.LevelManager
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
-import ktx.box2d.body
 import ktx.log.info
 import java.util.*
 
@@ -41,6 +40,7 @@ class PlayScreen(val game: Main): KtxScreen {
     private val hud: Hud
     private val blackList = ArrayList<Body>() // list of bodies to kill
     private val levelManager: LevelManager
+    var intHp = 0f
 
     init {
         Data.renderTime = 0f
@@ -67,7 +67,6 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
                     Input.Keys.C -> println(camera.position)
-//                    Input.Keys.V -> println("HudCam: (${hud.camera.viewportWidth}; ${hud.camera.viewportHeight})")
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
@@ -157,7 +156,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(SteeringSystem())
 //        engine.addSystem(CollisionSystem(game))
         engine.addSystem(HealthSystem())
-        engine.addSystem(SniperSystem(0.2f, entityBuilder))
+        engine.addSystem(SniperSystem(1.5f, entityBuilder))
         engine.addSystem(BulletSystem())
 //        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
         engine.addSystem(DecaySystem(0.1f))

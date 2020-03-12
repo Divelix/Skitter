@@ -74,9 +74,9 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
     fun makeEnemies(levelSize: Vector2) {
         if (level <= 1) return
 //        for (i in 0..10) entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
-//        entityBuilder.createAgent(4f, 6f)
+        entityBuilder.createAgent(4f, 6f)
         entityBuilder.createSniper(5f, 25f, playerEntity)
-//        entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
+        entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
     }
 
     fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {

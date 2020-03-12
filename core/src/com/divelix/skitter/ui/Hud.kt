@@ -225,7 +225,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         hudStage.act()
         hudStage.draw()
 
-        if (isShipSlowdown) Data.dirVec.scl(0.95f)
+        if (isShipSlowdown && Data.dirVec.len2() > 0.0001f) Data.dirVec.scl(0.1f)
     }
 
     fun resize(width: Int, height: Int) {
