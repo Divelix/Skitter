@@ -33,7 +33,7 @@ class AgentSystem: IteratingSystem(allOf(AgentComponent::class).get()) {
 
             when (cmType.get(seen).type) {
                 TypeComponent.PLAYER -> behaviors.player = seenBodyCmp.body
-                TypeComponent.AGENT -> behaviors.neighbors.add(seenBodyCmp.body)
+                TypeComponent.ENEMY -> behaviors.neighbors.add(seenBodyCmp.body)
                 TypeComponent.OBSTACLE -> {
                     val obs = seenBodyCmp.body.fixtureList[0].shape
                     when (obs.type) {

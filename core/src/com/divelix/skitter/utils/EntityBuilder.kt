@@ -17,10 +17,9 @@ import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.ashley.mapperFor
 import ktx.box2d.body
-import kotlin.experimental.or
 
 class EntityBuilder(val engine: PooledEngine,
-                    val world: World,
+                    private val world: World,
                     private val assets: Assets) {
 
     val cmBody = mapperFor<B2dBodyComponent>()
@@ -53,6 +52,7 @@ class EntityBuilder(val engine: PooledEngine,
                     userData = this@entity.entity
                 }
             }
+            with<DamageLabelComponent>()
         }
     }
 
@@ -78,7 +78,9 @@ class EntityBuilder(val engine: PooledEngine,
         val speed = Data.playerData.gun.bulletSpeed
         engine.entity {
             with<TypeComponent> { type = entityType }
-            with<BulletComponent>()
+            with<BulletComponent> {
+                damage = Data.playerData.gun.damage
+            }
             with<TransformComponent> {
                 position.set(initPos.x, initPos.y, 0f)
                 size.set(width, height)
@@ -118,7 +120,9 @@ class EntityBuilder(val engine: PooledEngine,
         val speed = 10f
         engine.entity {
             with<TypeComponent> { type = entityType }
-            with<BulletComponent>()
+            with<BulletComponent> {
+                damage = 10f // TODO load enemy damage from json
+            }
             with<TransformComponent> {
                 position.set(initPos.x, initPos.y, 0f)
                 size.set(width, height)
@@ -148,11 +152,11 @@ class EntityBuilder(val engine: PooledEngine,
     }
 
     fun createAgent(x: Float, y: Float): Entity {
-        val entityType = TypeComponent.AGENT
+        val entityType = TypeComponent.ENEMY
         return engine.entity {
             with<AgentComponent>()
             with<TypeComponent> { type = entityType }
-            with<EnemyComponent> { damage = 10f }
+            with<EnemyComponent>()// { damage = 10f }
             with<HealthComponent> { health = 100f }
             with<HealthBarComponent> { maxValue = 100f }
             with<TransformComponent> {
@@ -191,11 +195,11 @@ class EntityBuilder(val engine: PooledEngine,
     }
 
     fun createJumper(x: Float, y: Float) {
-        val entityType = TypeComponent.AGENT
+        val entityType = TypeComponent.ENEMY
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<JumperComponent>()
-            with<EnemyComponent> { damage = 10f }
+            with<EnemyComponent>()// { damage = 10f }
             with<HealthComponent> { health = 100f }
             with<HealthBarComponent> { maxValue = 100f }
             with<TransformComponent> {
@@ -207,8 +211,8 @@ class EntityBuilder(val engine: PooledEngine,
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(0.5f, Vector2(0f, 0f)) {
-                        filter.categoryBits = TypeComponent.AGENT
-//                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.AGENT or TypeComponent.OBSTACLE
+                        filter.categoryBits = TypeComponent.ENEMY
+                        filter.maskBits = TypeComponent.ENEMY_MB
                     }
                     linearDamping = 10f
                     position.set(x, y)
@@ -221,14 +225,14 @@ class EntityBuilder(val engine: PooledEngine,
     }
 
     fun createSniper(x: Float, y: Float, playerEntity: Entity): Entity {
-        val entityType = TypeComponent.AGENT
+        val entityType = TypeComponent.ENEMY
         val entitySize = 1.5f
         val sniperDamage = 10f
         val sniperHealth = 200f
         return engine.entity {
             with<SniperComponent>()
             with<TypeComponent> { type = entityType }
-            with<EnemyComponent> { damage = sniperDamage }
+            with<EnemyComponent>()// { damage = sniperDamage }
             with<HealthComponent> { health = sniperHealth }
             with<HealthBarComponent> { maxValue = sniperHealth }
             with<TransformComponent> {
@@ -244,15 +248,88 @@ class EntityBuilder(val engine: PooledEngine,
                         friction = 0.5f
                         restitution = 0f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.PLAYER or TypeComponent.PLAYER_BULLET or TypeComponent.OBSTACLE
+                        filter.maskBits = TypeComponent.ENEMY_MB
                     }
                     linearDamping = 10f
                     position.set(x, y)
                     userData = (this@entity).entity
                 }
             }
-            with<CollisionComponent>()
             with<BindComponent> { entity = playerEntity }
+            with<DamageLabelComponent>()
+            LevelManager.enemiesCount++
+        }
+    }
+
+    fun createWomb(x: Float, y: Float): Entity {
+        val entityType = TypeComponent.ENEMY
+        val entitySize = 2f
+        val wombHealth = 300f
+        return engine.entity {
+            with<WombComponent>()
+            with<TypeComponent> { type = entityType }
+            with<EnemyComponent>()
+            with<HealthComponent> { health = wombHealth }
+            with<HealthBarComponent> { maxValue = wombHealth }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(entitySize, entitySize)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.WOMB)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    circle(radius = entitySize / 2f) {
+                        density = 20f
+                        friction = 0.5f
+                        restitution = 0f
+                        filter.categoryBits = entityType
+                        filter.maskBits = TypeComponent.ENEMY_MB
+                    }
+                    linearDamping = 10f
+                    angularDamping = 10f
+                    position.set(x, y)
+                    userData = (this@entity).entity
+                }
+            }
+            with<DamageLabelComponent>()
+            LevelManager.enemiesCount++
+        }
+    }
+
+    fun createKid(womb: Entity): Entity {
+        val entityType = TypeComponent.ENEMY
+        val entitySize = 0.5f
+        val kidHealth = 10f
+        val initPos = cmBody.get(womb).body.position.apply {
+            x += MathUtils.random(-1f, 1f)
+            y += MathUtils.random(-1f, 1f)
+        }
+        return engine.entity {
+            with<KidComponent>()
+            with<TypeComponent> { type = entityType }
+            with<EnemyComponent>()
+            with<HealthComponent> { health = kidHealth }
+            with<HealthBarComponent> { maxValue = kidHealth }
+            with<TransformComponent> {
+                position.set(initPos.x, initPos.y, 0f)
+                size.set(entitySize, entitySize)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.KID)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    circle(radius = entitySize / 2f) {
+                        density = 1f
+                        filter.categoryBits = entityType
+                        filter.maskBits = TypeComponent.ENEMY_MB
+                    }
+                    linearDamping = 10f
+                    angularDamping = 10f
+                    position.set(initPos)
+                    userData = (this@entity).entity
+                }
+            }
             with<DamageLabelComponent>()
             LevelManager.enemiesCount++
         }

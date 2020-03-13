@@ -2,16 +2,11 @@ package com.divelix.skitter.utils
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
-import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.ui.Hud
 import ktx.ashley.*
 import java.lang.NullPointerException
@@ -37,7 +32,7 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
         when(typeA) {
             TypeComponent.AGENT_SENSOR -> {
                 when (typeB) {
-                    TypeComponent.AGENT, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
+                    TypeComponent.ENEMY, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
                         cmAgent.get(entityA).visibleEntities.add(entityB)
                     }
                 }
@@ -46,9 +41,9 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
                 val bulletCmp = cmBullet.get(entityA)
                 if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                 when(typeB) {
-                    TypeComponent.AGENT -> bulletHitsTarget(entityB)
+                    TypeComponent.ENEMY, TypeComponent.PLAYER -> bulletHitsTarget(bulletCmp.damage, entityB)
                     TypeComponent.OBSTACLE -> {
-                        if (entityB.has(cmHealth)) bulletHitsTarget(entityB)
+                        if (entityB.has(cmHealth)) bulletHitsTarget(bulletCmp.damage, entityB)
                     }
                 }
                 bulletCmp.isDead = true // always delete bullet after any collision
@@ -76,7 +71,7 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
         when(typeA) {
             TypeComponent.AGENT_SENSOR -> {
                 when(typeB) {
-                    TypeComponent.AGENT, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
+                    TypeComponent.ENEMY, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
                         val agentCmp = cmAgent.get(entityA)
                         val ve = try {agentCmp.visibleEntities} catch (e: NullPointerException) {return}
                         ve.remove(entityB)
@@ -89,12 +84,11 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
     override fun preSolve(contact: Contact, oldManifold: Manifold) {}
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {}
 
-    private fun bulletHitsTarget(targetEntity: Entity) {
+    private fun bulletHitsTarget(damage: Float, targetEntity: Entity) {
         val targetHealthCmp = cmHealth.get(targetEntity)
         if (targetHealthCmp.isIntHp) {
             targetHealthCmp.health--
         } else {
-            val damage = Data.playerData.gun.damage
             if (targetHealthCmp.health > damage)
                 targetHealthCmp.health -= damage
             else
