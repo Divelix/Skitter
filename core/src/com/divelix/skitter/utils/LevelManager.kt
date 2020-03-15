@@ -75,6 +75,7 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
         if (level <= 1) return
 //        for (i in 0..10) entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
 //        entityBuilder.createAgent(4f, 6f)
+//        entityBuilder.createAgent(8f, 6f)
 //        entityBuilder.createSniper(5f, 25f, playerEntity)
 //        entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
         val womb = entityBuilder.createWomb(5f, 7f)

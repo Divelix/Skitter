@@ -4,6 +4,6 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.ObjectSet
 
-class AgentComponent: Component { // VisionComponent name makes more sense
+class VisionComponent: Component {
     val visibleEntities = ObjectSet<Entity>(5)
 }

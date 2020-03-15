@@ -13,6 +13,7 @@ import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.allOf
 import ktx.ashley.mapperFor
+import kotlin.math.min
 
 class PhysicsSystem(private val world: World, private val blackList: ArrayList<Body>):
         IteratingSystem(allOf(B2dBodyComponent::class, TransformComponent::class).get()) {
@@ -28,7 +29,7 @@ class PhysicsSystem(private val world: World, private val blackList: ArrayList<B
         super.update(deltaTime)
         Data.renderTime += deltaTime
         reloadAmmo(deltaTime)
-        val frameTime = Math.min(deltaTime, 0.25f)
+        val frameTime = min(deltaTime, 0.25f)
         accumulator += frameTime
         if (accumulator >= Constants.B2D_STEP_TIME) {
             val stepTime = Constants.B2D_STEP_TIME / PlayScreen.slowRate

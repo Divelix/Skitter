@@ -17,6 +17,7 @@ import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.ashley.mapperFor
 import ktx.box2d.body
+import ktx.collections.gdxSetOf
 
 class EntityBuilder(val engine: PooledEngine,
                     private val world: World,
@@ -154,7 +155,12 @@ class EntityBuilder(val engine: PooledEngine,
     fun createAgent(x: Float, y: Float): Entity {
         val entityType = TypeComponent.ENEMY
         return engine.entity {
-            with<AgentComponent>()
+            with<VisionComponent>()
+            with<SteerComponent> {
+                steeringPoint.set(0f, 0.75f) // just front vertex from body component
+                maxSpeed = 20f
+                maxForce = 20f
+            }
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()// { damage = 10f }
             with<HealthComponent> { health = 100f }
@@ -163,11 +169,6 @@ class EntityBuilder(val engine: PooledEngine,
                 position.set(x, y, 0f)
                 size.set(0.9f, 1.5f)
                 origin.set(size).scl(0.5f)
-            }
-            with<SteerComponent> {
-                steeringPoint.set(0f, 0.75f) // just front vertex from body component
-                maxSpeed = 20f
-                maxForce = 20f
             }
             with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOVER)) }
             with<B2dBodyComponent> {
@@ -180,8 +181,8 @@ class EntityBuilder(val engine: PooledEngine,
                     }
                     circle(7f, Vector2(0f, 0f)) {
                         isSensor = true
-                        filter.categoryBits = TypeComponent.AGENT_SENSOR
-                        filter.maskBits = TypeComponent.AGENT_SENSOR_MB
+                        filter.categoryBits = TypeComponent.VISION_SENSOR
+                        filter.maskBits = TypeComponent.VISION_SENSOR_MB
                     }
                     linearDamping = 1f
                     angularDamping = 30f
@@ -306,7 +307,19 @@ class EntityBuilder(val engine: PooledEngine,
             y += MathUtils.random(-1f, 1f)
         }
         return engine.entity {
-            with<KidComponent>()
+            with<VisionComponent>()
+            with<SteerComponent> {
+                behaviors.addAll(
+                        Behaviors.WANDER,
+                        Behaviors.FLEE,
+                        Behaviors.SEPARATION,
+                        Behaviors.ALIGNMENT,
+                        Behaviors.COHESION,
+                        Behaviors.OBSTACLE_AVOIDANCE)
+                maxSpeed = 10f
+                maxForce = 10f
+                finalForce = 5f
+            }
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()
             with<HealthComponent> { health = kidHealth }
@@ -322,10 +335,15 @@ class EntityBuilder(val engine: PooledEngine,
                     circle(radius = entitySize / 2f) {
                         density = 1f
                         filter.categoryBits = entityType
-                        filter.maskBits = TypeComponent.ENEMY_MB
+//                        filter.maskBits = TypeComponent.ENEMY_MB
                     }
-                    linearDamping = 10f
-                    angularDamping = 10f
+                    circle(3f, Vector2(0f, 0f)) {
+                        isSensor = true
+                        filter.categoryBits = TypeComponent.VISION_SENSOR
+                        filter.maskBits = TypeComponent.VISION_SENSOR_MB
+                    }
+                    linearDamping = 1f
+                    angularDamping = 30f
                     position.set(initPos)
                     userData = (this@entity).entity
                 }

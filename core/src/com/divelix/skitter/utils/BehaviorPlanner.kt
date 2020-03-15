@@ -7,12 +7,30 @@ import com.badlogic.gdx.physics.box2d.CircleShape
 import com.badlogic.gdx.physics.box2d.EdgeShape
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.ObjectSet
 import ktx.math.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
-class Behaviors {
+enum class Behaviors {
+    WANDER, // moves randomly in own direction
+    SEEK, // moves to player
+    FLEE, // moves from player
+    ARRIVE, // moves to player and slows down proportional to distance
+    PURSUIT, // as arrive, but predicts player position
+    SEPARATION, // force away from neighbors
+    ALIGNMENT, // averages own velocity according to its neighbors velocity
+    COHESION, // forces to neighbors average position
+    OBSTACLE_AVOIDANCE
+}
+
+class BehaviorPlanner {
+    var behaviors: ObjectSet<Behaviors>? = null
+    var maxSpeed = 0f
+    var maxForce = 0f
+    var critDstToObs = 2f
+
     val neighbors = Array<Body>()
     val circles = Array<Body>()
     val walls = Array<Body>()
@@ -27,10 +45,6 @@ class Behaviors {
     private val wallObsForce = Vector2()
     private val rectObsForce = Vector2()
     private val steeringForce = Vector2()
-
-    val maxSpeed = 20f
-    val maxForce = 20f
-    val critDstToObs = 2f
 
     // wander()
     private val circleCenter = Vector2()
@@ -60,7 +74,7 @@ class Behaviors {
         return wanderForce
     }
 
-    fun separation(agent: Body): Vector2 {
+    private fun separation(agent: Body): Vector2 {
         for (neighbor in neighbors) {
             val distance = agent.position.dst(neighbor.position)
             if (distance < 5f) {
@@ -76,7 +90,7 @@ class Behaviors {
         return separationForce
     }
 
-    fun alignment(agent: Body): Vector2 {
+    private fun alignment(agent: Body): Vector2 {
         for (neighbor in neighbors) {
             alignmentForce += neighbor.linearVelocity
         }
@@ -88,7 +102,7 @@ class Behaviors {
         return alignmentForce
     }
 
-    fun cohesion(agent: Body): Vector2 {
+    private fun cohesion(agent: Body): Vector2 {
         if (neighbors.size == 0) return cohesionForce
         for (neighbor in neighbors)
             cohesionForce += neighbor.position
@@ -100,7 +114,40 @@ class Behaviors {
         return  cohesionForce
     }
 
-    fun avoidCircles(agent: Body): Vector2 {
+    private fun seek(agent: Body): Vector2 {
+        if (player == null) return diff.setZero()
+        diff.set(player!!.position).sub(agent.position).setLength(maxSpeed)
+        diff.sub(agent.linearVelocity)
+        diff.nor()
+        diff *= maxSpeed
+        diff.limit(maxForce)
+        return diff
+    }
+
+    private fun flee(agent: Body): Vector2 = -seek(agent)
+
+    private fun arrive(agent: Body): Vector2 {
+        val minDistance = 2f
+        val maxDistance = 7f
+        diff.set(player!!.position).sub(agent.position)
+        val distance = diff.len()
+        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
+        diff.setLength(speed).sub(agent.linearVelocity)
+        return diff
+    }
+
+    private fun pursuit(agent: Body): Vector2 {
+        val minDistance = 2f
+        val maxDistance = 7f
+        diff.set(player!!.position).sub(agent.position)
+        val distance = diff.len()
+        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
+        diff.setLength(speed).sub(agent.linearVelocity)
+        diff.add(player!!.linearVelocity)
+        return diff
+    }
+
+    private fun avoidCircles(agent: Body): Vector2 {
         for (circle in circles) {
             val distance = agent.position.dst(circle.position) - (circle.fixtureList[0].shape as CircleShape).radius
             if (distance < critDstToObs) {
@@ -116,7 +163,7 @@ class Behaviors {
         return circleObsForce
     }
 
-    fun avoidWalls(agent: Body): Vector2 {
+    private fun avoidWalls(agent: Body): Vector2 {
         for (wall in walls) {
             val edge = wall.fixtureList[0].shape as EdgeShape
             edge.getVertex1(p1)
@@ -138,7 +185,7 @@ class Behaviors {
         return wallObsForce
     }
 
-    fun avoidRects(agent: Body): Vector2 {
+    private fun avoidRects(agent: Body): Vector2 {
         for (rect in rects) {
             val rectangle = rect.fixtureList[0].shape as PolygonShape
             rectangle.getVertex(0, p1)// l-b
@@ -163,58 +210,38 @@ class Behaviors {
         return rectObsForce
     }
 
-    fun seek(agent: Body): Vector2 {
-        diff.set(player!!.position).sub(agent.position).setLength(maxSpeed)
-        diff.sub(agent.linearVelocity)
-        diff.nor()
-        diff *= maxSpeed
-        diff.limit(maxForce)
-        return diff
-    }
-
-    fun flee(agent: Body): Vector2 = -seek(agent)
-
-    fun arrive(agent: Body): Vector2 {
-        val minDistance = 2f
-        val maxDistance = 7f
-        diff.set(player!!.position).sub(agent.position)
-        val distance = diff.len()
-        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
-        diff.setLength(speed).sub(agent.linearVelocity)
-        return diff
-    }
-
-    fun pursuit(agent: Body): Vector2 {
-        val minDistance = 2f
-        val maxDistance = 7f
-        diff.set(player!!.position).sub(agent.position)
-        val distance = diff.len()
-        val speed = if (distance < maxDistance) maxSpeed * (distance - minDistance) / (maxDistance - minDistance) else maxSpeed
-        diff.setLength(speed).sub(agent.linearVelocity)
-        diff.add(player!!.linearVelocity)
-        return diff
+    private fun avoidObs(agent: Body): Vector2 {
+        avoidCircles(agent)
+        avoidWalls(agent)
+        avoidRects(agent)
+        return circleObsForce.add(wallObsForce).add(rectObsForce)
     }
 
     fun computeSteering(agent: Body): Vector2 {
-        steeringForce += separation(agent)
-        steeringForce += alignment(agent)
-        steeringForce += cohesion(agent)
-        steeringForce += avoidCircles(agent)
-        steeringForce += avoidWalls(agent)
-        steeringForce += avoidRects(agent)
-        if (player != null) steeringForce += seek(agent)
-//        if (agent.linearVelocity.len2() < 400f) steeringForce += wander(agent)
-
+        if (behaviors == null) return steeringForce
+        behaviors!!.forEach {
+            steeringForce += when (it) {
+                Behaviors.WANDER -> wander(agent)
+                Behaviors.SEEK -> seek(agent)
+                Behaviors.FLEE -> flee(agent)
+                Behaviors.ARRIVE -> arrive(agent)
+                Behaviors.PURSUIT -> pursuit(agent)
+                Behaviors.SEPARATION -> separation(agent)
+                Behaviors.ALIGNMENT -> alignment(agent)
+                Behaviors.COHESION -> cohesion(agent)
+                Behaviors.OBSTACLE_AVOIDANCE -> avoidObs(agent)
+            }
+        }
         steeringForce /= agent.mass
         return steeringForce
     }
 
     fun reset() {
+        player = null
         neighbors.clear()
         circles.clear()
         walls.clear()
         rects.clear()
-        player = null
         separationForce.setZero()
         alignmentForce.setZero()
         cohesionForce.setZero()
@@ -225,9 +252,6 @@ class Behaviors {
     }
 
     private fun dstBetweenPointAndLine(p0: Vector2, p1: Vector2, p2: Vector2): Float {
-//        val nom = (p2.y - p1.y) * p0.x - (p2.x - p1.x) * p0.y + p2.x * p1.y - p2.y * p1.x
-//        val den = (p2.y - p1.y).pow(2) + (p2.x - p1.x).pow(2)
-//        return abs(nom) / sqrt(den)
         a.set(p1).sub(p0)
         b.set(p2).sub(p0)
         c.set(p1).sub(p2)

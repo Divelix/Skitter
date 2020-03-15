@@ -12,7 +12,7 @@ import ktx.ashley.*
 import java.lang.NullPointerException
 
 class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
-    private val cmAgent = mapperFor<AgentComponent>()
+    private val cmAgent = mapperFor<VisionComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
     private val cmBullet = mapperFor<BulletComponent>()
     private val cmBody = mapperFor<B2dBodyComponent>()
@@ -30,7 +30,7 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
         val typeB = fixB.filterData.categoryBits
 
         when(typeA) {
-            TypeComponent.AGENT_SENSOR -> {
+            TypeComponent.VISION_SENSOR -> {
                 when (typeB) {
                     TypeComponent.ENEMY, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
                         cmAgent.get(entityA).visibleEntities.add(entityB)
@@ -69,7 +69,7 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
         val typeB = fixB.filterData.categoryBits
 
         when(typeA) {
-            TypeComponent.AGENT_SENSOR -> {
+            TypeComponent.VISION_SENSOR -> {
                 when(typeB) {
                     TypeComponent.ENEMY, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
                         val agentCmp = cmAgent.get(entityA)

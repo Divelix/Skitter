@@ -91,7 +91,7 @@ class PlayScreen(val game: Main): KtxScreen {
         }
         levelManager.update()
         engine.update(delta)
-//        debugRenderer.render(world, camera.combined)
+        debugRenderer.render(world, camera.combined)
         hud.update()
     }
 
@@ -153,7 +153,6 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(PhysicsSystem(world, blackList))
         engine.addSystem(PlayerSystem())
         engine.addSystem(RenderingSystem(context, camera))
-        engine.addSystem(SteeringSystem())
 //        engine.addSystem(CollisionSystem(game))
         engine.addSystem(HealthSystem())
         engine.addSystem(SniperSystem(1.5f, entityBuilder))
@@ -162,7 +161,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(DecaySystem(0.1f))
         engine.addSystem(RegenerationSystem(0.5f))
 //        engine.addSystem(SlowSystem())
-        engine.addSystem(AgentSystem())
+        engine.addSystem(BehaviorSystem())
         engine.addSystem(DamageLabelSystem(camera))
 //        engine.addSystem(ClickableSystem(camera))
         engine.addSystem(JumperSystem())

@@ -2,10 +2,14 @@ package com.divelix.skitter.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.math.Vector2
+import com.divelix.skitter.utils.Behaviors
+import ktx.collections.gdxSetOf
 
 class SteerComponent: Component {
-    val steeringForce = Vector2()
+    val behaviors = gdxSetOf<Behaviors>()
     val steeringPoint = Vector2()
-    var maxSpeed = 1f
-    var maxForce = 1f
+    val steeringForce = Vector2()
+    var maxSpeed = 0f
+    var maxForce = 0f
+    var finalForce = 0f
 }

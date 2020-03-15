@@ -20,7 +20,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
     private val cmBullet = mapperFor<BulletComponent>()
     private val cmDecay = mapperFor<DecayComponent>()
     private val cmSlow = mapperFor<SlowComponent>()
-    private val cmAgent = mapperFor<AgentComponent>()
+    private val cmAgent = mapperFor<VisionComponent>()
     private val cmBody = mapperFor<B2dBodyComponent>()
 
     private val assets = game.getContext().inject<Assets>()
@@ -99,7 +99,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
                     }
                 }
             }
-            TypeComponent.AGENT_SENSOR -> {
+            TypeComponent.VISION_SENSOR -> {
                 when (type2) {
                     TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
                         val visibleEntities = cmAgent.get(entity1).visibleEntities
@@ -122,7 +122,7 @@ class CollisionSystem(game: Main) : IteratingSystem(allOf(CollisionComponent::cl
         val type1 = cmCollision.get(entity2).collidedCategoryBits
         val type2 = cmCollision.get(entity1).collidedCategoryBits
         when (type1) {
-            TypeComponent.AGENT_SENSOR -> {
+            TypeComponent.VISION_SENSOR -> {
                 when (type2) {
                     TypeComponent.PLAYER, TypeComponent.ENEMY, TypeComponent.OBSTACLE -> {
                         val visibleEntities = cmAgent.get(entity1).visibleEntities
