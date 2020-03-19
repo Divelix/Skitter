@@ -29,8 +29,7 @@ class PhysicsSystem(private val world: World, private val blackList: ArrayList<B
         super.update(deltaTime)
         Data.renderTime += deltaTime
         reloadAmmo(deltaTime)
-        val frameTime = min(deltaTime, 0.25f)
-        accumulator += frameTime
+        accumulator += min(deltaTime, 0.25f)
         if (accumulator >= Constants.B2D_STEP_TIME) {
             val stepTime = Constants.B2D_STEP_TIME / PlayScreen.slowRate
             Data.physicsTime += stepTime

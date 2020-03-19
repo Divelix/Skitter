@@ -13,7 +13,7 @@ class PlayerSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
     private val cmTrans = mapperFor<TransformComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
     private val cmBody = mapperFor<B2dBodyComponent>()
-    private val velocity = Vector2()
+    private val force = Vector2()
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
         val transCmp = cmTrans.get(entity)
@@ -23,8 +23,8 @@ class PlayerSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
         PlayScreen.health = healthCmp.health
         transCmp.rotation = Data.dirVec.angle() - 90f
 
-        velocity.set(Data.dirVec).scl(Data.playerData.ship.speed).scl(50f) // TODO hardcoded scl
-        bodyCmp.body.applyForceToCenter(velocity, true)
+        force.set(Data.dirVec).scl(Data.playerData.ship.speed).scl(50f) // TODO hardcoded scl
+        bodyCmp.body.applyForceToCenter(force, true)
 //        bodyCmp.body.linearVelocity = velocity
 
     }

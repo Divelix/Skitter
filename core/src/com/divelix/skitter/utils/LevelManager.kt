@@ -78,8 +78,7 @@ class LevelManager(val game: Main, val entityBuilder: EntityBuilder, val playerE
 //        entityBuilder.createAgent(8f, 6f)
 //        entityBuilder.createSniper(5f, 25f, playerEntity)
 //        entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
-        val womb = entityBuilder.createWomb(5f, 7f)
-        for (i in 1..10) entityBuilder.createKid(womb)
+        entityBuilder.createWomb(5f, 7f)
     }
 
     fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {

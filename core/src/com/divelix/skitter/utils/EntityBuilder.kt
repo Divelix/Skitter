@@ -17,7 +17,7 @@ import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.ashley.mapperFor
 import ktx.box2d.body
-import ktx.collections.gdxSetOf
+import ktx.collections.*
 
 class EntityBuilder(val engine: PooledEngine,
                     private val world: World,
@@ -309,7 +309,7 @@ class EntityBuilder(val engine: PooledEngine,
         return engine.entity {
             with<VisionComponent>()
             with<SteerComponent> {
-                behaviors.addAll(
+                behaviors + arrayOf(
                         Behaviors.WANDER,
                         Behaviors.FLEE,
                         Behaviors.SEPARATION,
@@ -546,7 +546,6 @@ class EntityBuilder(val engine: PooledEngine,
                     userData = (this@entity).entity
                 }
             }
-            with<CollisionComponent>()
         }
     }
 
@@ -575,7 +574,6 @@ class EntityBuilder(val engine: PooledEngine,
                     userData = (this@entity).entity
                 }
             }
-            with<CollisionComponent>()
         }
     }
 }

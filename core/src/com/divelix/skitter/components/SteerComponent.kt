@@ -3,7 +3,7 @@ package com.divelix.skitter.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.math.Vector2
 import com.divelix.skitter.utils.Behaviors
-import ktx.collections.gdxSetOf
+import ktx.collections.*
 
 class SteerComponent: Component {
     val behaviors = gdxSetOf<Behaviors>()

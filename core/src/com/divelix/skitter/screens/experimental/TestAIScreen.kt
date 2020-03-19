@@ -134,7 +134,6 @@ class TestAIScreen(val game: Main): KtxScreen {
     private fun createEngineSystems() {
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(world, blackList))
-        engine.addSystem(CollisionSystem(game))
         engine.addSystem(HealthSystem())
         engine.addSystem(BulletSystem())
         engine.addSystem(BehaviorSystem())

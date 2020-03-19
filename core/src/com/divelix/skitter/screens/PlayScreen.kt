@@ -40,7 +40,6 @@ class PlayScreen(val game: Main): KtxScreen {
     private val hud: Hud
     private val blackList = ArrayList<Body>() // list of bodies to kill
     private val levelManager: LevelManager
-    var intHp = 0f
 
     init {
         Data.renderTime = 0f
@@ -153,7 +152,6 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(PhysicsSystem(world, blackList))
         engine.addSystem(PlayerSystem())
         engine.addSystem(RenderingSystem(context, camera))
-//        engine.addSystem(CollisionSystem(game))
         engine.addSystem(HealthSystem())
         engine.addSystem(SniperSystem(1.5f, entityBuilder))
         engine.addSystem(BulletSystem())
@@ -165,6 +163,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(DamageLabelSystem(camera))
 //        engine.addSystem(ClickableSystem(camera))
         engine.addSystem(JumperSystem())
+        engine.addSystem(WombSystem(5f, entityBuilder))
     }
 
     private fun gameOver() {
