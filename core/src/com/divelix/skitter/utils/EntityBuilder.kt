@@ -160,6 +160,10 @@ class EntityBuilder(val engine: PooledEngine,
                 steeringPoint.set(0f, 0.75f) // just front vertex from body component
                 maxSpeed = 20f
                 maxForce = 20f
+                finalForce = 20f
+                behaviors + arrayOf(
+                        Behaviors.WANDER
+                )
             }
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()// { damage = 10f }
@@ -301,7 +305,6 @@ class EntityBuilder(val engine: PooledEngine,
     fun createKid(womb: Entity): Entity {
         val entityType = TypeComponent.ENEMY
         val entitySize = 0.5f
-        val kidHealth = 10f
         val initPos = cmBody.get(womb).body.position.apply {
             x += MathUtils.random(-1f, 1f)
             y += MathUtils.random(-1f, 1f)
@@ -309,21 +312,23 @@ class EntityBuilder(val engine: PooledEngine,
         return engine.entity {
             with<VisionComponent>()
             with<SteerComponent> {
+                maxSpeed = 10f
+                maxForce = 10f
+                finalForce = 5f
                 behaviors + arrayOf(
-                        Behaviors.WANDER,
+//                        Behaviors.WANDER,
                         Behaviors.FLEE,
                         Behaviors.SEPARATION,
                         Behaviors.ALIGNMENT,
                         Behaviors.COHESION,
                         Behaviors.OBSTACLE_AVOIDANCE)
-                maxSpeed = 10f
-                maxForce = 10f
-                finalForce = 5f
             }
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()
-            with<HealthComponent> { health = kidHealth }
-            with<HealthBarComponent> { maxValue = kidHealth }
+            with<HealthComponent> {
+                isIntHp = true
+                health = 1f
+            }
             with<TransformComponent> {
                 position.set(initPos.x, initPos.y, 0f)
                 size.set(entitySize, entitySize)
@@ -345,6 +350,39 @@ class EntityBuilder(val engine: PooledEngine,
                     linearDamping = 1f
                     angularDamping = 30f
                     position.set(initPos)
+                    userData = (this@entity).entity
+                }
+            }
+            with<DamageLabelComponent>()
+            LevelManager.enemiesCount++
+        }
+    }
+
+    fun createRadial(x: Float, y: Float): Entity {
+        val entityType = TypeComponent.ENEMY
+        val entitySize = 1.5f
+        return engine.entity {
+            with<TypeComponent> { type = entityType }
+            with<EnemyComponent>()
+            with<RadialComponent>()
+            with<HealthComponent> { health = 100f }
+            with<HealthBarComponent> { maxValue = 100f }
+            with<TransformComponent> {
+                position.set(x, y, 0f)
+                size.set(entitySize, entitySize)
+                origin.set(size).scl(0.5f)
+            }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.RADIAL)) }
+            with<B2dBodyComponent> {
+                body = world.body(type = BodyDef.BodyType.DynamicBody) {
+                    circle(radius = entitySize / 2f) {
+                        density = 10f
+                        filter.categoryBits = entityType
+//                        filter.maskBits = TypeComponent.ENEMY_MB
+                    }
+                    linearDamping = 1f
+                    angularDamping = 30f
+                    position.set(x, y)
                     userData = (this@entity).entity
                 }
             }

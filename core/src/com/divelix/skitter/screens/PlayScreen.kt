@@ -33,7 +33,7 @@ class PlayScreen(val game: Main): KtxScreen {
 
     private val world = World(Vector2(0f, 0f), true)
     private val debugRenderer = Box2DDebugRenderer()
-    private val engine = PooledEngine()
+    private val engine = PooledEngine(50, 200, 50, 100)
     private val entityBuilder = EntityBuilder(engine, world, assets)
     private val camera: OrthographicCamera // follows player
     private val playerEntity: Entity
@@ -156,14 +156,15 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(SniperSystem(1.5f, entityBuilder))
         engine.addSystem(BulletSystem())
 //        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
-        engine.addSystem(DecaySystem(0.1f))
-        engine.addSystem(RegenerationSystem(0.5f))
+//        engine.addSystem(DecaySystem(0.1f))
+//        engine.addSystem(RegenerationSystem(0.5f))
 //        engine.addSystem(SlowSystem())
         engine.addSystem(BehaviorSystem())
         engine.addSystem(DamageLabelSystem(camera))
 //        engine.addSystem(ClickableSystem(camera))
         engine.addSystem(JumperSystem())
         engine.addSystem(WombSystem(5f, entityBuilder))
+        engine.addSystem(RadialSystem(2f))
     }
 
     private fun gameOver() {

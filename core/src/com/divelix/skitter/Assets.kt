@@ -56,6 +56,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.SNIPER)
         manager.load<Texture>(Constants.WOMB)
         manager.load<Texture>(Constants.KID)
+        manager.load<Texture>(Constants.RADIAL)
         manager.load<Texture>(Constants.BULLET_DEFAULT)
         manager.load<Texture>(Constants.AIM)
         manager.load<Texture>(Constants.WHITE_CIRCLE)
