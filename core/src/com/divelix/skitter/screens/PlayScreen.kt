@@ -65,15 +65,13 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.BACK, Input.Keys.ESCAPE  -> game.screen = MenuScreen(game)
                     Input.Keys.SPACE -> isPaused = !isPaused
                     Input.Keys.B -> println(world.bodyCount)
-                    Input.Keys.C -> println(camera.position)
                     Input.Keys.D -> playerEntity.add(DecayComponent())
                     Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
-                    Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
-                    Input.Keys.A -> entityBuilder.createAgent(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
-                    Input.Keys.J -> entityBuilder.createJumper(MathUtils.random(-10f, 10f), MathUtils.random(-10f, 40f))
+                    Input.Keys.A -> entityBuilder.createAgent(MathUtils.random(0f, 15f), MathUtils.random(0f, 30f))
+                    Input.Keys.J -> entityBuilder.createJumper(MathUtils.random(0f, 15f), MathUtils.random(0f, 30f))
                     Input.Keys.N -> levelManager.goToNextLevel()
-                    Input.Keys.L -> println(levelManager.levelEntities.size)
                     Input.Keys.M -> entityBuilder.createWall(Vector2(1f, 1f), Vector2(2f, 3f))
+                    Input.Keys.R -> entityBuilder.createRadial(MathUtils.random(0f, 15f), MathUtils.random(0f, 30f))
                 }
                 return true
             }
@@ -156,7 +154,7 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.addSystem(SniperSystem(1.5f, entityBuilder))
         engine.addSystem(BulletSystem())
 //        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
-//        engine.addSystem(DecaySystem(0.1f))
+        engine.addSystem(DecaySystem(0.1f))
 //        engine.addSystem(RegenerationSystem(0.5f))
 //        engine.addSystem(SlowSystem())
         engine.addSystem(BehaviorSystem())
@@ -164,7 +162,7 @@ class PlayScreen(val game: Main): KtxScreen {
 //        engine.addSystem(ClickableSystem(camera))
         engine.addSystem(JumperSystem())
         engine.addSystem(WombSystem(5f, entityBuilder))
-        engine.addSystem(RadialSystem(2f))
+        engine.addSystem(RadialSystem(2f, entityBuilder))
     }
 
     private fun gameOver() {

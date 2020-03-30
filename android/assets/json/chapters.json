@@ -1,0 +1,19 @@
+{
+"name": "First Chapter",
+"levels": [
+	{
+		"size": [ 15, 30 ],
+		"enemies": [
+			{ "enemyType": "SNIPER", "quantity": 2 },
+			{ "enemyType": "RADIAL", "quantity": 3 }
+		]
+	},
+	{
+		"size": [ 15, 20 ],
+		"enemies": [
+			{ "enemyType": "SNIPER", "quantity": 1 },
+			{ "enemyType": "RADIAL", "quantity": 1 }
+		]
+	}
+]
+}

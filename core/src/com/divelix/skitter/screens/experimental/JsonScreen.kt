@@ -5,24 +5,36 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
+import com.badlogic.gdx.utils.JsonWriter
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Main
 import com.divelix.skitter.screens.MenuScreen
+import com.divelix.skitter.utils.Chapter
+import com.divelix.skitter.utils.EnemyBundle
+import com.divelix.skitter.utils.EnemyType
+import com.divelix.skitter.utils.Level
 import ktx.app.KtxScreen
+import ktx.assets.toLocalFile
+import ktx.collections.gdxArrayOf
 import ktx.json.*
-
 
 class JsonScreen(game: Main): KtxScreen {
     private val context = game.getContext()
-    private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
 
     init {
-        val json = Json()
-        testComplex(json)
+        val json = Json().apply {
+            setUsePrototypes(false) // to not erase default values (false, 0)
+            setSerializer(Vector2AsArraySerializer())
+            setSerializer(Vector3AsArraySerializer())
+        }
+//        testComplex(json)
+        testChapter(json)
 
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
@@ -41,6 +53,8 @@ class JsonScreen(game: Main): KtxScreen {
     }
 }
 
+private enum class Names { SEREGA, SVETA, MASHA }
+
 private data class Simple(
         var int: Int = 0,
         var bool: Boolean = false,
@@ -49,6 +63,9 @@ private data class Simple(
 
 private data class Complex(
         var bool: Boolean = false,
+        var name: Names = Names.SEREGA,
+        var vec2: Vector2 = Vector2(),
+        var vec3: Vector3 = Vector3(),
         var simple: Simple = Simple(),
         var list: Array<Int> = Array(),
         var sList: List<Simple> = emptyList()
@@ -96,7 +113,10 @@ fun testComplex(json: Json) {
     }"""
     var complex = json.fromJson<Complex>(complexStr)
     complex = Complex().apply {
-        bool = true
+        bool = false
+        name = Names.MASHA
+        vec2 = Vector2(2f, 4f)
+        vec3 = Vector3(3f, 9f, 15f)
         simple = Simple().apply {
             int = 123
             bool = true
@@ -113,4 +133,61 @@ fun testComplex(json: Json) {
     complex = json.fromJson<Complex>(complexStr)
     complexStr = json.toJson(complex)
     println(json.prettyPrint(complexStr))
+}
+
+fun testChapter(json: Json) {
+    val file = "json/chapters.json".toLocalFile()
+    val printSettings = JsonValue.PrettyPrintSettings().apply {
+        outputType = JsonWriter.OutputType.json
+        singleLineColumns = 100
+    }
+    var chapter = Chapter(
+            "First Chapter",
+            gdxArrayOf(
+                Level(
+                        Vector2(15f, 30f),
+                        gdxArrayOf(
+                                EnemyBundle(EnemyType.SNIPER, 2),
+                                EnemyBundle(EnemyType.RADIAL, 3)
+                        )
+                ),
+                Level(
+                        Vector2(15f, 20f),
+                        gdxArrayOf(
+                                EnemyBundle(EnemyType.SNIPER, 1),
+                                EnemyBundle(EnemyType.RADIAL, 1)
+                        )
+                )
+        )
+    )
+    var chapterStr = json.toJson(chapter)
+//    chapter = json.fromJson(chapterStr)
+//    chapterStr = json.toJson(chapter)
+    file.writeString(json.prettyPrint(chapterStr, printSettings), false)
+//    println(json.prettyPrint(chapterStr))
+}
+
+class Vector2AsArraySerializer: JsonSerializer<Vector2> {
+    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Vector2
+            = jsonValue.asFloatArray().let { (x, y) -> Vector2(x, y) }
+
+    override fun write(json: Json, value: Vector2, type: Class<*>?) {
+        json.writeArrayStart()
+        json.writeValue(value.x)
+        json.writeValue(value.y)
+        json.writeArrayEnd()
+    }
+}
+
+class Vector3AsArraySerializer: JsonSerializer<Vector3> {
+    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Vector3
+            = jsonValue.asFloatArray().let { (x, y, z) -> Vector3(x, y, z) }
+
+    override fun write(json: Json, value: Vector3, type: Class<*>?) {
+        json.writeArrayStart()
+        json.writeValue(value.x)
+        json.writeValue(value.y)
+        json.writeValue(value.z)
+        json.writeArrayEnd()
+    }
 }

@@ -33,7 +33,7 @@ class EntityBuilder(val engine: PooledEngine,
             with<HealthComponent> { health = Data.playerData.ship.health }
 //            with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
-                position.set(x, y, 1f)
+                position.set(x, y, 2f)
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
                 origin.set(size).scl(0.5f)
             }
@@ -83,7 +83,7 @@ class EntityBuilder(val engine: PooledEngine,
                 damage = Data.playerData.gun.damage
             }
             with<TransformComponent> {
-                position.set(initPos.x, initPos.y, 0f)
+                position.set(initPos.x, initPos.y, 1f)
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
@@ -125,7 +125,7 @@ class EntityBuilder(val engine: PooledEngine,
                 damage = 10f // TODO load enemy damage from json
             }
             with<TransformComponent> {
-                position.set(initPos.x, initPos.y, 0f)
+                position.set(initPos.x, initPos.y, 1f)
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
@@ -229,12 +229,12 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createSniper(x: Float, y: Float, playerEntity: Entity): Entity {
+    fun createSniper(x: Float, y: Float, playerEntity: Entity) {
         val entityType = TypeComponent.ENEMY
         val entitySize = 1.5f
         val sniperDamage = 10f
         val sniperHealth = 200f
-        return engine.entity {
+        engine.entity {
             with<SniperComponent>()
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()// { damage = sniperDamage }
@@ -266,11 +266,11 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createWomb(x: Float, y: Float): Entity {
+    fun createWomb(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
         val entitySize = 2f
         val wombHealth = 300f
-        return engine.entity {
+        engine.entity {
             with<WombComponent>()
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()
@@ -302,14 +302,14 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createKid(womb: Entity): Entity {
+    fun createKid(womb: Entity) {
         val entityType = TypeComponent.ENEMY
         val entitySize = 0.5f
         val initPos = cmBody.get(womb).body.position.apply {
             x += MathUtils.random(-1f, 1f)
             y += MathUtils.random(-1f, 1f)
         }
-        return engine.entity {
+        engine.entity {
             with<VisionComponent>()
             with<SteerComponent> {
                 maxSpeed = 10f
@@ -358,30 +358,32 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createRadial(x: Float, y: Float): Entity {
+    fun createRadial(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
-        val entitySize = 1.5f
-        return engine.entity {
+        val texture = assets.manager.get<Texture>(Constants.RADIAL)
+        val textureWidth = 2f
+        val ratio = texture.height.toFloat() / texture.width
+        engine.entity {
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()
             with<RadialComponent>()
             with<HealthComponent> { health = 100f }
             with<HealthBarComponent> { maxValue = 100f }
             with<TransformComponent> {
-                position.set(x, y, 0f)
-                size.set(entitySize, entitySize)
+                position.set(x, y, 2f)
+                size.set(textureWidth, textureWidth * ratio)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.RADIAL)) }
+            with<TextureComponent> { region = TextureRegion(texture) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
-                    circle(radius = entitySize / 2f) {
+                    circle(radius = textureWidth / 2f) {
                         density = 10f
                         filter.categoryBits = entityType
 //                        filter.maskBits = TypeComponent.ENEMY_MB
                     }
                     linearDamping = 1f
-                    angularDamping = 30f
+//                    angularDamping = 30f
                     position.set(x, y)
                     userData = (this@entity).entity
                 }
@@ -486,9 +488,9 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createWall(point1: Vector2, point2: Vector2): Entity {
+    fun createWall(point1: Vector2, point2: Vector2) {
         val entityType = TypeComponent.OBSTACLE
-        return engine.entity {
+        engine.entity {
             with<TypeComponent> { type = entityType }
             with<TransformComponent> {// needed to be seen by PhysicsSystem (as should go to blackList)
                 position.set(point1.x, point1.y, 1f)
@@ -508,9 +510,9 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createBg(x: Float, y: Float, width: Float, height: Float): Entity {
+    fun createBg(x: Float, y: Float, width: Float, height: Float) {
         val scale = 25
-        return engine.entity {
+        engine.entity {
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(width, height)
@@ -526,9 +528,9 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createDoor(x: Float, y: Float, width: Float = 4f, height: Float = 1f): Entity {
+    fun createDoor(x: Float, y: Float, width: Float = 4f, height: Float = 1f) {
         val entityType = TypeComponent.DOOR
-        return engine.entity {
+        engine.entity {
             with<TypeComponent> { type = entityType }
             with<TransformComponent> {
                 position.set(x, y, 0f)

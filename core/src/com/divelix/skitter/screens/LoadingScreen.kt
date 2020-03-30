@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.MathUtils
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Main
+import com.divelix.skitter.screens.experimental.JsonScreen
 import com.divelix.skitter.screens.experimental.ParticleScreen
 import com.divelix.skitter.screens.experimental.SwipeMenuScreen
 import ktx.app.KtxScreen
@@ -44,7 +45,7 @@ class LoadingScreen(private val game: Main): KtxScreen {
         if(assets.manager.update() && progress >= 0.99f) {
             assets.manager.finishLoading()
             assets.setup()
-            game.screen = MenuScreen(game)
+            game.screen = JsonScreen(game)
         }
     }
 }
