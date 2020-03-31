@@ -78,12 +78,11 @@ class PlayScreen(val game: Main): KtxScreen {
         }
         val multiplexer = InputMultiplexer(handler, hud.hudStage, hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
-        world.setContactListener(B2dContactListener(game, hud))
+        world.setContactListener(B2dContactListener(game, engine, hud))
     }
 
     override fun render(delta: Float) {
         if (!isPaused) {
-            clearDeadBodies()
             if (health <= 0f) gameOver()
         }
         levelManager.update()
@@ -117,18 +116,6 @@ class PlayScreen(val game: Main): KtxScreen {
         engine.clearPools()
     }
 
-    private fun clearDeadBodies() {
-        if (blackList.size > 0) {
-            for (body in blackList) {
-                val entity = body.userData as Entity?
-                if (entity != null)
-                    engine.removeEntity(entity)
-                world.destroyBody(body)
-            }
-            blackList.clear()
-        }
-    }
-
     private fun loadPlayerData() {
         val playerReader = JsonReader().parse(Constants.PLAYER_FILE.toLocalFile())
         val shipSpecs = playerReader.get("active_ship_specs")
@@ -147,7 +134,7 @@ class PlayScreen(val game: Main): KtxScreen {
 
     private fun createEngineSystems() {
         engine.addSystem(CameraSystem())
-        engine.addSystem(PhysicsSystem(world, blackList))
+        engine.addSystem(PhysicsSystem(world))
         engine.addSystem(PlayerSystem())
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(HealthSystem())

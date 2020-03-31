@@ -7,12 +7,10 @@ import com.divelix.skitter.Constants
 
 class BulletComponent: Component, Pool.Poolable {
     var timer = 5f
-    var isDead = false
     var damage = 0f
 
     override fun reset() {
         timer = 5f
-        isDead = false
         damage = 0f
     }
 }

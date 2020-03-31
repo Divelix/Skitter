@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
@@ -15,7 +14,7 @@ import ktx.ashley.allOf
 import ktx.ashley.mapperFor
 import kotlin.math.min
 
-class PhysicsSystem(private val world: World, private val blackList: ArrayList<Body>):
+class PhysicsSystem(private val world: World):
         IteratingSystem(allOf(B2dBodyComponent::class, TransformComponent::class).get()) {
 
     private val bodiesQueue: Array<Entity> = Array()
@@ -47,10 +46,6 @@ class PhysicsSystem(private val world: World, private val blackList: ArrayList<B
                 tfmCmp.position.x = position.x
                 tfmCmp.position.y = position.y
                 tfmCmp.rotation = bodyCmp.body.angle * MathUtils.radiansToDegrees
-                if (bodyCmp.isDead) {
-                    if (!blackList.contains(bodyCmp.body))
-                        blackList.add(bodyCmp.body)
-                }
             }
         }
         bodiesQueue.clear()

@@ -33,10 +33,11 @@ class BehaviorSystem: IteratingSystem(allOf(VisionComponent::class, SteerCompone
 //        println(steerCmp.behaviors)
         for (seen in visionCmp.visibleEntities) {
             val seenBodyCmp = cmBody.get(seen) ?: return // elvis avoids NPE on bulk removal (over 200 entities)
-            if (seenBodyCmp.isDead) {
-                visionCmp.visibleEntities.remove(seen)
-                continue
-            }
+            //TODO fix later
+//            if (seenBodyCmp.isDead) {
+//                visionCmp.visibleEntities.remove(seen)
+//                continue
+//            }
 
             when (cmType.get(seen).type) {
                 TypeComponent.PLAYER -> behaviorPlanner.player = seenBodyCmp.body

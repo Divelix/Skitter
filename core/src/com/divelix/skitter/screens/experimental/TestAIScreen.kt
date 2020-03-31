@@ -55,10 +55,10 @@ class TestAIScreen(val game: Main): KtxScreen {
                     Input.Keys.S -> println("agents.size = ${agents.size}")
                     Input.Keys.F -> println("FPS = ${Gdx.graphics.framesPerSecond}")
                     Input.Keys.Z -> entityBuilder.createAgent(0f, 10f)
-                    Input.Keys.BACKSPACE -> {
-                        for (agent in agents) cmBody.get(agent).isDead = true
-                        agents.clear()
-                    }
+//                    Input.Keys.BACKSPACE -> {
+//                        for (agent in agents) cmBody.get(agent).isDead = true
+//                        agents.clear()
+//                    }
                     Input.Keys.R -> {
                         val f = 500f
                         for (agent in agents) cmBody.get(agent).body.applyForceToCenter(MathUtils.random(-f, f), MathUtils.random(-f, f), true)
@@ -133,7 +133,7 @@ class TestAIScreen(val game: Main): KtxScreen {
 
     private fun createEngineSystems() {
         engine.addSystem(RenderingSystem(context, camera))
-        engine.addSystem(PhysicsSystem(world, blackList))
+        engine.addSystem(PhysicsSystem(world))
         engine.addSystem(HealthSystem())
         engine.addSystem(BulletSystem())
         engine.addSystem(BehaviorSystem())

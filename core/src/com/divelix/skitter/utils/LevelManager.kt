@@ -68,13 +68,7 @@ class LevelManager(
     fun destroyLevel() {
         val entities = entityBuilder.engine.entities
         entities.filter { it.hasNot(cmPlayer) && it.hasNot(cmCamera) }
-                .forEach {
-                    if (it.has(cmBody)) {
-                        cmBody.get(it).isDead = true
-                    } else {
-                        entityBuilder.engine.removeEntity(it)
-                    }
-                }
+                .forEach { entityBuilder.engine.removeEntity(it) }
     }
 
     fun makeEnemies(levelSize: Vector2) {

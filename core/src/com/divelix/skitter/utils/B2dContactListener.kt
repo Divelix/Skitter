@@ -1,6 +1,7 @@
 package com.divelix.skitter.utils
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.Assets
@@ -11,7 +12,7 @@ import com.divelix.skitter.ui.Hud
 import ktx.ashley.*
 import java.lang.NullPointerException
 
-class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
+class B2dContactListener(val game: Main, val engine: PooledEngine, val hud: Hud) : ContactListener {
     private val cmAgent = mapperFor<VisionComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
     private val cmBullet = mapperFor<BulletComponent>()
@@ -39,20 +40,21 @@ class B2dContactListener(val game: Main, val hud: Hud) : ContactListener {
             }
             TypeComponent.PLAYER_BULLET, TypeComponent.ENEMY_BULLET -> {
                 val bulletCmp = cmBullet.get(entityA)
-                if (bulletCmp.isDead) return // do not crush app when multiple collisions happens simultaneously
                 when(typeB) {
                     TypeComponent.ENEMY, TypeComponent.PLAYER -> bulletHitsTarget(bulletCmp.damage, entityB)
                     TypeComponent.OBSTACLE -> {
                         if (entityB.has(cmHealth)) bulletHitsTarget(bulletCmp.damage, entityB)
                     }
                 }
-                bulletCmp.isDead = true // always delete bullet after any collision
+//                bulletCmp.isDead = true // always delete bullet after any collision
+                engine.removeEntity(entityA)
             }
             TypeComponent.PLAYER -> {
                 when(typeB) {
                     TypeComponent.DOOR -> {
                         LevelManager.isNextLvlRequired = true
-                        cmBody.get(entityB).isDead = true
+//                        cmBody.get(entityB).isDead = true
+                        engine.removeEntity(entityB)
                     }
                 }
             }
