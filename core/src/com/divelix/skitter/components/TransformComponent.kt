@@ -10,10 +10,8 @@ class TransformComponent: Component, Pool.Poolable {
     val size = Vector2()
     val origin = Vector2()
     var rotation = 0f
-    var isHidden = false //TODO move to render component
 
     override fun reset() {
         rotation = 0f
-        isHidden = false
     }
 }

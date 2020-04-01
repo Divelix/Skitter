@@ -18,7 +18,6 @@ class BehaviorSystem: IteratingSystem(allOf(VisionComponent::class, SteerCompone
     private val behaviorPlanner = BehaviorPlanner()
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
-        if(PlayScreen.isPaused) return
         val visionCmp = cmVision.get(entity)
         val bodyCmp = cmBody.get(entity)
         val steerCmp = cmSteer.get(entity)

@@ -21,7 +21,7 @@ class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
         val cameraCmp = cmCamera.get(entity)
         val bindCmp = cmBind.get(entity)
         camPos.set(cameraCmp.camera.position.x, cameraCmp.camera.position.y)
-        bodPos.set(cmBody.get(bindCmp.entity).body.position) // TODO fix NPE
+        bodPos.set(cmBody.get(bindCmp.entity).body.position)
         if (cameraCmp.needCenter) {
             cameraCmp.camera.position.set(bodPos, 0f)
             cameraCmp.needCenter = false

@@ -19,7 +19,6 @@ import com.divelix.skitter.utils.LevelManager
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
 import ktx.log.info
-import java.util.*
 
 class PlayScreen(val game: Main): KtxScreen {
     companion object {
@@ -33,12 +32,11 @@ class PlayScreen(val game: Main): KtxScreen {
 
     private val world = World(Vector2(0f, 0f), true)
     private val debugRenderer = Box2DDebugRenderer()
-    private val engine = PooledEngine(50, 200, 50, 100)
+    private val engine = PooledEngine(20, 200, 50, 100)
     private val entityBuilder = EntityBuilder(engine, world, assets)
     private val camera: OrthographicCamera // follows player
     private val playerEntity: Entity
     private val hud: Hud
-    private val blackList = ArrayList<Body>() // list of bodies to kill
     private val levelManager: LevelManager
 
     init {
@@ -83,11 +81,11 @@ class PlayScreen(val game: Main): KtxScreen {
 
     override fun render(delta: Float) {
         if (!isPaused) {
+            levelManager.update()
+            engine.update(delta)
+            debugRenderer.render(world, camera.combined)
             if (health <= 0f) gameOver()
         }
-        levelManager.update()
-        engine.update(delta)
-        debugRenderer.render(world, camera.combined)
         hud.update()
     }
 

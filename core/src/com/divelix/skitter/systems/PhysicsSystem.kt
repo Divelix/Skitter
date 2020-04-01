@@ -17,14 +17,13 @@ import kotlin.math.min
 class PhysicsSystem(private val world: World):
         IteratingSystem(allOf(B2dBodyComponent::class, TransformComponent::class).get()) {
 
-    private val bodiesQueue: Array<Entity> = Array()
+    private val entities: Array<Entity> = Array()
     private val cmTrans = mapperFor<TransformComponent>()
     private val cmBody = mapperFor<B2dBodyComponent>()
 
     private var accumulator = 0f
 
     override fun update(deltaTime: Float) {
-        if(PlayScreen.isPaused) return
         super.update(deltaTime)
         Data.renderTime += deltaTime
         reloadAmmo(deltaTime)
@@ -36,7 +35,7 @@ class PhysicsSystem(private val world: World):
             accumulator -= stepTime
 
             //Loop through all Entities and update its components
-            for (entity in bodiesQueue) {
+            for (entity in entities) {
                 // get components
                 val tfmCmp = cmTrans.get(entity)
                 val bodyCmp = cmBody.get(entity)
@@ -48,12 +47,12 @@ class PhysicsSystem(private val world: World):
                 tfmCmp.rotation = bodyCmp.body.angle * MathUtils.radiansToDegrees
             }
         }
-        bodiesQueue.clear()
+        entities.clear()
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         // add Items to queue
-        bodiesQueue.add(entity)
+        entities.add(entity)
     }
 
     fun reloadAmmo(delta: Float) {

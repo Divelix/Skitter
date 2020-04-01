@@ -17,7 +17,6 @@ class SniperSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalI
     private val targetPos = Vector2()
 
     override fun processEntity(entity: Entity?) {
-        if (PlayScreen.isPaused) return
         val bindCmp = cmBind.get(entity)
         val targetTransCmp = cmTrans.get(bindCmp.entity)
 

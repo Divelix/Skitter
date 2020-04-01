@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Constants
 import com.divelix.skitter.components.*
+import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.allOf
 import ktx.ashley.has
 import ktx.ashley.mapperFor
@@ -48,9 +49,9 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
     }
 
     override fun update(deltaTime: Float) {
-        super.update(deltaTime)
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        super.update(deltaTime)
 
         entities.sort(comparator)
 
@@ -65,7 +66,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
                 val textureCmp = cmTexture.get(entity)
                 val transformCmp = cmTrans.get(entity)
 
-                if (textureCmp.region == null || transformCmp.isHidden) continue
+//                if (textureCmp.region == null || transformCmp.isHidden) continue
 
                 val width = transformCmp.size.x
                 val height = transformCmp.size.y

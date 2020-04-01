@@ -17,7 +17,6 @@ class RadialSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalI
     val target = Vector2()
 
     override fun processEntity(entity: Entity) {
-        if (PlayScreen.isPaused) return
         val body = cmBody.get(entity).body
         val pos = body.position
         val angle = body.angle

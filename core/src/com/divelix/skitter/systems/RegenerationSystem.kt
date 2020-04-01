@@ -14,7 +14,6 @@ class RegenerationSystem(interval: Float): IntervalIteratingSystem(allOf(Regener
     private val cmHealth = mapperFor<HealthComponent>()
 
     override fun processEntity(entity: Entity?) {
-        if (PlayScreen.isPaused) return
         val regenCmp = cmRegen.get(entity)
         val healthCmp = cmHealth.get(entity)
 

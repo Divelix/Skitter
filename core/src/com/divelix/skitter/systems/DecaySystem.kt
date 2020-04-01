@@ -13,7 +13,6 @@ class DecaySystem(interval: Float): IntervalIteratingSystem(allOf(DecayComponent
     private val cmHealth = mapperFor<HealthComponent>()
 
     override fun processEntity(entity: Entity?) {
-        if (PlayScreen.isPaused) return
         val decayCmp = cmDecay.get(entity)
         val healthCmp = cmHealth.get(entity)
 
