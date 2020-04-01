@@ -20,7 +20,10 @@ data class EnemyBundle(
 )
 
 enum class EnemyType {
+    AGENT,
+    JUMPER,
     SNIPER,
+    WOMB,
     RADIAL
 }
 

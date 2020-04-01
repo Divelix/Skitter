@@ -14,6 +14,8 @@ import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.utils.BotViewport
+import ktx.actors.onClick
+import ktx.actors.onTouchUp
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.assets.toInternalFile
@@ -49,6 +51,13 @@ class MenuScreen(game: Main): KtxScreen {
                     super.touchUp(event, x, y, pointer, button)
                 }
             })
+            row()
+            textButton("1").onTouchUp {
+                game.screen = PlayScreen(game)
+            }
+            textButton("2").onTouchUp {
+                game.screen = PlayScreen(game)
+            }
         }
     }
 

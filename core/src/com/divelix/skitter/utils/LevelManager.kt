@@ -1,7 +1,9 @@
 package com.divelix.skitter.utils
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Data
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.B2dBodyComponent
@@ -19,21 +21,22 @@ class LevelManager(
         val playerEntity: Entity,
         val cameraEntity: Entity
 ) {
-    companion object {
-        var enemiesCount = 0
-        var isNextLvlRequired = true
-    }
     var level = 0
     var isDoorAllowed = false
+    val doorPos = Vector2()
     val cmBody = mapperFor<B2dBodyComponent>()
     val cmPlayer = mapperFor<PlayerComponent>()
     val cmCamera = mapperFor<CameraComponent>()
-    val battlegroundSizes = gdxArrayOf(
-            Vector2(8f, 10f),
-            Vector2(15f, 30f),
-            Vector2(20f, 30f)
+    val chapter = Chapter("Chapter_1", gdxArrayOf(
+            Level(Vector2(8f, 10f), gdxArrayOf()),
+            Level(Vector2(15f, 30f), gdxArrayOf(
+                EnemyBundle(EnemyType.SNIPER, 1)
+            )),
+            Level(Vector2(15f, 30f), gdxArrayOf(
+                EnemyBundle(EnemyType.RADIAL, 1)
+            ))
+        )
     )
-    val doorPos = Vector2()
 
     fun update() {
         if (isNextLvlRequired) {
@@ -50,37 +53,38 @@ class LevelManager(
     fun goToNextLevel() {
         level++
         if (level > 1) destroyLevel()
-        if (level > battlegroundSizes.size) {
+        if (level > chapter.levels.size) {
             game.screen = MenuScreen(game)
             return
         }
-        buildLevel(level)
+        buildLevel(chapter.levels[level - 1])
     }
 
-    fun buildLevel(level: Int) {
-        val levelSize = battlegroundSizes[level - 1]
-        makeBattleground(0f, 0f, levelSize.x, levelSize.y)
-        resetPlayerTo(levelSize.x / 2f, 1f)
-//        if (level > 1) makeObstacles()
-        makeEnemies(levelSize)
+    fun buildLevel(level: Level) {
+        makeBattleground(0f, 0f, level.size.x, level.size.y)
+        resetPlayerTo(level.size.x / 2f, 1f)
+//        makeObstacles(level)
+        makeEnemies(level)
     }
 
     fun destroyLevel() {
-        val entities = entityBuilder.engine.entities
-        entities.filter { it.hasNot(cmPlayer) && it.hasNot(cmCamera) }
+        entityBuilder.engine.entities
+                .filter { it.hasNot(cmPlayer) && it.hasNot(cmCamera) }
                 .forEach { entityBuilder.engine.removeEntity(it) }
     }
 
-    fun makeEnemies(levelSize: Vector2) {
-        if (level <= 1) return
-//        for (i in 0..10) entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
-//        entityBuilder.createAgent(4f, 6f)
-//        entityBuilder.createAgent(8f, 6f)
-//        entityBuilder.createSniper(5f, 25f, playerEntity)
-//        entityBuilder.createJumper(MathUtils.random(levelSize.x), MathUtils.random(levelSize.y))
-//        val womb = entityBuilder.createWomb(5f, 7f)
-//        for (i in 1..100) entityBuilder.createKid(womb)
-        entityBuilder.createRadial(5f, 5f)
+    fun makeEnemies(level: Level) {
+        level.enemies.forEach {enemyBundle ->
+            repeat(enemyBundle.quantity) {
+                when(enemyBundle.enemyType) {
+                    EnemyType.AGENT -> entityBuilder.createAgent(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    EnemyType.JUMPER -> entityBuilder.createJumper(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    EnemyType.RADIAL -> entityBuilder.createRadial(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    EnemyType.WOMB -> entityBuilder.createWomb(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    EnemyType.SNIPER -> entityBuilder.createSniper(MathUtils.random(level.size.x), MathUtils.random(level.size.y), playerEntity)
+                }
+            }
+        }
     }
 
     fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {
@@ -110,5 +114,10 @@ class LevelManager(
         cmBody.get(playerEntity).body.setTransform(x, y, 0f)
         cmCamera.get(cameraEntity).needCenter = true
         Data.dirVec.set(0f, 1f)
+    }
+
+    companion object {
+        var enemiesCount = 0
+        var isNextLvlRequired = true
     }
 }
