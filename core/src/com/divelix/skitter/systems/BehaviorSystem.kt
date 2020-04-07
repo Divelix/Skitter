@@ -3,24 +3,18 @@ package com.divelix.skitter.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.physics.box2d.Shape
+import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.BehaviorPlanner
 import ktx.ashley.allOf
-import ktx.ashley.mapperFor
 
 class BehaviorSystem: IteratingSystem(allOf(VisionComponent::class, SteerComponent::class).get()) {
-    private val cmVision = mapperFor<VisionComponent>()
-    private val cmSteer = mapperFor<SteerComponent>()
-    private val cmBody = mapperFor<B2dBodyComponent>()
-    private val cmType = mapperFor<TypeComponent>()
-
     private val behaviorPlanner = BehaviorPlanner()
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
-        val visionCmp = cmVision.get(entity)
-        val bodyCmp = cmBody.get(entity)
-        val steerCmp = cmSteer.get(entity)
+        val visionCmp = GameEngine.cmVision.get(entity)
+        val bodyCmp = GameEngine.cmBody.get(entity)
+        val steerCmp = GameEngine.cmSteer.get(entity)
 
         behaviorPlanner.run {
             reset()
@@ -31,14 +25,14 @@ class BehaviorSystem: IteratingSystem(allOf(VisionComponent::class, SteerCompone
         behaviorPlanner.behaviors = steerCmp.behaviors
 //        println(steerCmp.behaviors)
         for (seen in visionCmp.visibleEntities) {
-            val seenBodyCmp = cmBody.get(seen) ?: return // elvis avoids NPE on bulk removal (over 200 entities)
+            val seenBodyCmp = GameEngine.cmBody.get(seen) ?: return // elvis avoids NPE on bulk removal (over 200 entities)
             //TODO fix later
 //            if (seenBodyCmp.isDead) {
 //                visionCmp.visibleEntities.remove(seen)
 //                continue
 //            }
 
-            when (cmType.get(seen).type) {
+            when (GameEngine.cmType.get(seen).type) {
                 TypeComponent.PLAYER -> behaviorPlanner.player = seenBodyCmp.body
                 TypeComponent.ENEMY -> behaviorPlanner.neighbors.add(seenBodyCmp.body)
                 TypeComponent.OBSTACLE -> {

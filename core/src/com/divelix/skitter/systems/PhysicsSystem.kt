@@ -7,20 +7,17 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
+import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.allOf
-import ktx.ashley.mapperFor
 import kotlin.math.min
 
 class PhysicsSystem(private val world: World):
         IteratingSystem(allOf(B2dBodyComponent::class, TransformComponent::class).get()) {
 
     private val entities: Array<Entity> = Array()
-    private val cmTrans = mapperFor<TransformComponent>()
-    private val cmBody = mapperFor<B2dBodyComponent>()
-
     private var accumulator = 0f
 
     override fun update(deltaTime: Float) {
@@ -29,7 +26,7 @@ class PhysicsSystem(private val world: World):
         reloadAmmo(deltaTime)
         accumulator += min(deltaTime, 0.25f)
         if (accumulator >= Constants.B2D_STEP_TIME) {
-            val stepTime = Constants.B2D_STEP_TIME / PlayScreen.slowRate
+            val stepTime = Constants.B2D_STEP_TIME / GameEngine.slowRate
             Data.physicsTime += stepTime
             world.step(stepTime, 6, 2)
             accumulator -= stepTime
@@ -37,8 +34,8 @@ class PhysicsSystem(private val world: World):
             //Loop through all Entities and update its components
             for (entity in entities) {
                 // get components
-                val tfmCmp = cmTrans.get(entity)
-                val bodyCmp = cmBody.get(entity)
+                val tfmCmp = GameEngine.cmTransform.get(entity)
+                val bodyCmp = GameEngine.cmBody.get(entity)
                 // get position from body
                 val position = bodyCmp.body.position
                 // update our transform to match body position

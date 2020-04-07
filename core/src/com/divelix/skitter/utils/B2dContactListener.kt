@@ -16,7 +16,6 @@ class B2dContactListener(val game: Main, val engine: PooledEngine, val hud: Hud)
     private val cmAgent = mapperFor<VisionComponent>()
     private val cmHealth = mapperFor<HealthComponent>()
     private val cmBullet = mapperFor<BulletComponent>()
-    private val cmBody = mapperFor<B2dBodyComponent>()
 
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
@@ -46,14 +45,12 @@ class B2dContactListener(val game: Main, val engine: PooledEngine, val hud: Hud)
                         if (entityB.has(cmHealth)) bulletHitsTarget(bulletCmp.damage, entityB)
                     }
                 }
-//                bulletCmp.isDead = true // always delete bullet after any collision
-                engine.removeEntity(entityA)
+                engine.removeEntity(entityA)// always delete bullet after any collision
             }
             TypeComponent.PLAYER -> {
                 when(typeB) {
                     TypeComponent.DOOR -> {
                         LevelManager.isNextLvlRequired = true
-//                        cmBody.get(entityB).isDead = true
                         engine.removeEntity(entityB)
                     }
                 }

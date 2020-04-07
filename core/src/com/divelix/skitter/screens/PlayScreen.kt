@@ -1,20 +1,8 @@
 package com.divelix.skitter.screens
 
-import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.*
-import com.badlogic.gdx.graphics.*
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
-import com.divelix.skitter.components.CameraComponent
-import com.divelix.skitter.components.DecayComponent
-import com.divelix.skitter.utils.B2dContactListener
-import com.divelix.skitter.systems.*
-import com.divelix.skitter.ui.Hud
-import com.divelix.skitter.utils.EntityBuilder
 import com.divelix.skitter.utils.LevelManager
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
@@ -22,21 +10,10 @@ import ktx.log.info
 
 class PlayScreen(val game: Main): KtxScreen {
     companion object {
-        var slowRate = Constants.DEFAULT_SLOW_RATE
-        var isPaused = false
         var ammo = 0
         var health = 0f
     }
-    private val context = game.getContext()
-    private val assets = context.inject<Assets>()
-
-    private val world = World(Vector2(0f, 0f), true)
-    private val debugRenderer = Box2DDebugRenderer()
-    private val engine = PooledEngine(20, 200, 50, 100)
-    private val entityBuilder = EntityBuilder(engine, world, assets)
-    private val camera: OrthographicCamera // follows player
-    private val playerEntity: Entity
-    private val hud: Hud
+    private val gameEngine: GameEngine
     private val levelManager: LevelManager
 
     init {
@@ -45,63 +22,45 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.score = 0
         LevelManager.enemiesCount = 0
         Data.dirVec.set(0f, 0.000001f)// little init movement fixes 90deg ship rotation on init
-        isPaused = false
+        GameEngine.isPaused = false
 
         loadPlayerData()
 
-        playerEntity = entityBuilder.createPlayer(5f, 2f)
-        val cameraEntity = entityBuilder.createCamera(playerEntity)
-        camera = cameraEntity.getComponent(CameraComponent::class.java).camera
-        hud = Hud(game, camera, entityBuilder, playerEntity)
-        levelManager = LevelManager(game, entityBuilder, playerEntity, cameraEntity)
-
-        createEngineSystems()
+        gameEngine = GameEngine(game)
+        levelManager = LevelManager(gameEngine)
 
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
                     Input.Keys.BACK, Input.Keys.ESCAPE  -> game.screen = MenuScreen(game)
-                    Input.Keys.SPACE -> isPaused = !isPaused
-                    Input.Keys.B -> println(world.bodyCount)
-                    Input.Keys.D -> playerEntity.add(DecayComponent())
-                    Input.Keys.S -> playerEntity.remove(DecayComponent::class.java)
-                    Input.Keys.A -> entityBuilder.createAgent(MathUtils.random(0f, 15f), MathUtils.random(0f, 30f))
-                    Input.Keys.J -> entityBuilder.createJumper(MathUtils.random(0f, 15f), MathUtils.random(0f, 30f))
+                    Input.Keys.SPACE -> GameEngine.isPaused = !GameEngine.isPaused
                     Input.Keys.N -> levelManager.goToNextLevel()
-                    Input.Keys.M -> entityBuilder.createWall(Vector2(1f, 1f), Vector2(2f, 3f))
-                    Input.Keys.R -> entityBuilder.createRadial(MathUtils.random(0f, 15f), MathUtils.random(0f, 30f))
                 }
                 return true
             }
         }
-        val multiplexer = InputMultiplexer(handler, hud.hudStage, hud.playerCtrl)
+        val multiplexer = InputMultiplexer(handler, gameEngine.hud.hudStage, gameEngine.hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
-        world.setContactListener(B2dContactListener(game, engine, hud))
     }
 
     override fun render(delta: Float) {
-        if (!isPaused) {
-            levelManager.update()
-            engine.update(delta)
-            debugRenderer.render(world, camera.combined)
-            if (health <= 0f) gameOver()
-        }
-        hud.update()
+        levelManager.update()
+        gameEngine.update(delta)
     }
 
     override fun pause() {
         info("PlayScreen") { "pause()" }
-        isPaused = true
+        GameEngine.isPaused = true
     }
 
     override fun resume() {
         info("PlayScreen") { "resume()" }
-        isPaused = false
+        GameEngine.isPaused = false
     }
 
     override fun resize(width: Int, height: Int) {
         info("PlayScreen") { "resize()" }
-        hud.resize(width, height)
+        gameEngine.hud.resize(width, height)
     }
 
     override fun hide() {
@@ -110,8 +69,8 @@ class PlayScreen(val game: Main): KtxScreen {
 
     override fun dispose() {
         info("PlayScreen") { "dispose()" }
-        hud.dispose()
-        engine.clearPools()
+        gameEngine.hud.dispose()
+        gameEngine.engine.clearPools()
     }
 
     private fun loadPlayerData() {
@@ -128,32 +87,5 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.playerData.gun.critMultiplier = gunSpecs[4].asFloat()
         Data.playerData.gun.critChance = gunSpecs[5].asFloat()
         ammo = Data.playerData.gun.capacity
-    }
-
-    private fun createEngineSystems() {
-        engine.addSystem(CameraSystem())
-        engine.addSystem(PhysicsSystem(world))
-        engine.addSystem(PlayerSystem())
-        engine.addSystem(RenderingSystem(context, camera))
-        engine.addSystem(HealthSystem())
-        engine.addSystem(SniperSystem(1.5f, entityBuilder))
-        engine.addSystem(BulletSystem())
-//        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
-        engine.addSystem(DecaySystem(0.1f))
-//        engine.addSystem(RegenerationSystem(0.5f))
-//        engine.addSystem(SlowSystem())
-        engine.addSystem(BehaviorSystem())
-        engine.addSystem(DamageLabelSystem(camera))
-//        engine.addSystem(ClickableSystem(camera))
-        engine.addSystem(JumperSystem())
-        engine.addSystem(WombSystem(5f, entityBuilder))
-        engine.addSystem(RadialSystem(2f, entityBuilder))
-    }
-
-    private fun gameOver() {
-        println("------------------------------------")
-        println("-------------Game Over--------------")
-        println("------------------------------------")
-        game.screen = MenuScreen(game)
     }
 }

@@ -1,9 +1,10 @@
 package com.divelix.skitter.components
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.gdx.utils.Pool
 import kotlin.experimental.or
 
-class TypeComponent: Component {
+class TypeComponent: Component, Pool.Poolable {
     companion object {
         const val VISION_SENSOR: Short = 1
         const val PLAYER_BULLET: Short = 2
@@ -22,4 +23,8 @@ class TypeComponent: Component {
         val ENEMY_MB = PLAYER or ENEMY or PLAYER_BULLET or OBSTACLE
     }
     var type: Short? = null
+
+    override fun reset() {
+        type = null
+    }
 }

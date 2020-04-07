@@ -12,8 +12,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Constants
+import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.allOf
 import ktx.ashley.has
 import ktx.ashley.mapperFor
@@ -27,11 +27,6 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
     private val entities = Array<Entity>()
     private val comparator = ZComparator()
     private val bulletShader = ShaderProgram(file(Constants.VERTEX_SHADER), file(Constants.FRAGMENT_SHADER))
-
-    private val cmTexture = mapperFor<TextureComponent>()
-    private val cmTrans = mapperFor<TransformComponent>()
-    private val cmHealthBar = mapperFor<HealthBarComponent>()
-    private val cmHealth = mapperFor<HealthComponent>()
 
     private var timer = 0f
 
@@ -63,8 +58,8 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
 //        batch.enableBlending()
         batch.use {
             for (entity in entities) {
-                val textureCmp = cmTexture.get(entity)
-                val transformCmp = cmTrans.get(entity)
+                val textureCmp = GameEngine.cmTexture.get(entity)
+                val transformCmp = GameEngine.cmTransform.get(entity)
 
 //                if (textureCmp.region == null || transformCmp.isHidden) continue
 
@@ -82,9 +77,9 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
                         width, height,
                         1f, 1f,
                         transformCmp.rotation)
-                if(entity.has(cmHealthBar)) {
-                    val healthBarCmp = cmHealthBar.get(entity)
-                    val healthCmp = cmHealth.get(entity)
+                if(entity.has(GameEngine.cmHealthBar)) {
+                    val healthBarCmp = GameEngine.cmHealthBar.get(entity)
+                    val healthCmp = GameEngine.cmHealth.get(entity)
                     batch.draw(healthBarReg,
                             transformCmp.position.x - originX, transformCmp.position.y - originY + transformCmp.size.y,
                             width * healthCmp.health / healthBarCmp.maxValue, healthBarCmp.height)

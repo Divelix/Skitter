@@ -40,7 +40,7 @@ class TestAIScreen(val game: Main): KtxScreen {
     private val agents = ObjectSet<Entity>()
 
     init {
-        PlayScreen.isPaused = false
+        GameEngine.isPaused = false
         makeEnvironment()
 //        makeEnemies()
 
@@ -50,7 +50,7 @@ class TestAIScreen(val game: Main): KtxScreen {
             override fun keyUp(keycode: Int): Boolean {
                 val cmBody = mapperFor<B2dBodyComponent>()
                 when(keycode) {
-                    Input.Keys.SPACE -> PlayScreen.isPaused = !PlayScreen.isPaused
+                    Input.Keys.SPACE -> GameEngine.isPaused = !GameEngine.isPaused
                     Input.Keys.B -> println(world.bodyCount)
                     Input.Keys.S -> println("agents.size = ${agents.size}")
                     Input.Keys.F -> println("FPS = ${Gdx.graphics.framesPerSecond}")
@@ -72,7 +72,7 @@ class TestAIScreen(val game: Main): KtxScreen {
     }
 
     override fun render(delta: Float) {
-        if (!PlayScreen.isPaused) {
+        if (!GameEngine.isPaused) {
             clearDeadBodies()
         }
         engine.update(delta)
@@ -82,12 +82,12 @@ class TestAIScreen(val game: Main): KtxScreen {
 
     override fun pause() {
         info("TestAIScreen") { "pause()" }
-        PlayScreen.isPaused = true
+        GameEngine.isPaused = true
     }
 
     override fun resume() {
         info("TestAIScreen") { "resume()" }
-        PlayScreen.isPaused = false
+        GameEngine.isPaused = false
     }
 
     override fun resize(width: Int, height: Int) {

@@ -1,26 +1,22 @@
 package com.divelix.skitter.utils
 
-import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Data
-import com.divelix.skitter.Main
+import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.CameraComponent
 import com.divelix.skitter.components.PlayerComponent
 import com.divelix.skitter.screens.MenuScreen
-import ktx.ashley.has
 import ktx.ashley.hasNot
 import ktx.ashley.mapperFor
 import ktx.collections.*
 
-class LevelManager(
-        val game: Main,
-        val entityBuilder: EntityBuilder,
-        val playerEntity: Entity,
-        val cameraEntity: Entity
-) {
+class LevelManager(val gameEngine: GameEngine) {
+    val game = gameEngine.game
+    val engine = gameEngine.engine
+    val entityBuilder = gameEngine.entityBuilder
+
     var level = 0
     var isDoorAllowed = false
     val doorPos = Vector2()
@@ -30,7 +26,8 @@ class LevelManager(
     val chapter = Chapter("Chapter_1", gdxArrayOf(
             Level(Vector2(8f, 10f), gdxArrayOf()),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                EnemyBundle(EnemyType.SNIPER, 1)
+//                EnemyBundle(EnemyType.SNIPER, 2),
+                EnemyBundle(EnemyType.JUMPER, 1)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
                 EnemyBundle(EnemyType.RADIAL, 1)
@@ -68,9 +65,9 @@ class LevelManager(
     }
 
     fun destroyLevel() {
-        entityBuilder.engine.entities
+        engine.entities
                 .filter { it.hasNot(cmPlayer) && it.hasNot(cmCamera) }
-                .forEach { entityBuilder.engine.removeEntity(it) }
+                .forEach { engine.removeEntity(it) }
     }
 
     fun makeEnemies(level: Level) {
@@ -81,7 +78,7 @@ class LevelManager(
                     EnemyType.JUMPER -> entityBuilder.createJumper(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
                     EnemyType.RADIAL -> entityBuilder.createRadial(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
                     EnemyType.WOMB -> entityBuilder.createWomb(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
-                    EnemyType.SNIPER -> entityBuilder.createSniper(MathUtils.random(level.size.x), MathUtils.random(level.size.y), playerEntity)
+                    EnemyType.SNIPER -> entityBuilder.createSniper(MathUtils.random(level.size.x), MathUtils.random(level.size.y), gameEngine.playerEntity)
                 }
             }
         }
@@ -111,8 +108,8 @@ class LevelManager(
     }
 
     fun resetPlayerTo(x: Float, y: Float) {
-        cmBody.get(playerEntity).body.setTransform(x, y, 0f)
-        cmCamera.get(cameraEntity).needCenter = true
+        cmBody.get(gameEngine.playerEntity).body.setTransform(x, y, 0f)
+        cmCamera.get(gameEngine.cameraEntity).needCenter = true
         Data.dirVec.set(0f, 1f)
     }
 

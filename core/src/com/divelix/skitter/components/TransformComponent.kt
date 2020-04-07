@@ -12,6 +12,9 @@ class TransformComponent: Component, Pool.Poolable {
     var rotation = 0f
 
     override fun reset() {
+        position.setZero()
+        size.setZero()
+        origin.setZero()
         rotation = 0f
     }
 }

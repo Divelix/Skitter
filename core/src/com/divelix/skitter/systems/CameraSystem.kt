@@ -4,24 +4,21 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import com.divelix.skitter.Constants
+import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import ktx.ashley.allOf
-import ktx.ashley.mapperFor
 
 class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
-    private val cmCamera = mapperFor<CameraComponent>()
-    private val cmBind = mapperFor<BindComponent>()
-    private val cmBody = mapperFor<B2dBodyComponent>()
     private val camPos = Vector2()
     private val bodPos = Vector2()
     private val difVec = Vector2()
     private val radVec = Vector2()
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
-        val cameraCmp = cmCamera.get(entity)
-        val bindCmp = cmBind.get(entity)
+        val cameraCmp = GameEngine.cmCamera.get(entity)
+        val bindCmp = GameEngine.cmBind.get(entity)
         camPos.set(cameraCmp.camera.position.x, cameraCmp.camera.position.y)
-        bodPos.set(cmBody.get(bindCmp.entity).body.position)
+        bodPos.set(GameEngine.cmBody.get(bindCmp.entity).body.position)
         if (cameraCmp.needCenter) {
             cameraCmp.camera.position.set(bodPos, 0f)
             cameraCmp.needCenter = false

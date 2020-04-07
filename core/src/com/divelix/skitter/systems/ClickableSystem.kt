@@ -5,18 +5,15 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector3
+import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.ClickableComponent
-import com.divelix.skitter.components.TransformComponent
 import ktx.ashley.allOf
-import ktx.ashley.mapperFor
 
 class ClickableSystem(val camera: OrthographicCamera): IteratingSystem(allOf(ClickableComponent::class).get()) {
-    private val cmClick = mapperFor <ClickableComponent>()
-    private val cmTrans = mapperFor<TransformComponent>()
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
-        val clickCmp = cmClick.get(entity)
-        val transCmp = cmTrans.get(entity)
+        val clickCmp = GameEngine.cmClick.get(entity)
+        val transCmp = GameEngine.cmTransform.get(entity)
 
         clickCmp.circle.x = transCmp.position.x
         clickCmp.circle.y = transCmp.position.y

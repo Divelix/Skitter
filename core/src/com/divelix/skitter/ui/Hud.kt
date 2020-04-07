@@ -83,7 +83,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     val floatPoint = Vector3()
     val playerCtrl = object: InputAdapter() {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (PlayScreen.isPaused) return false
+            if (GameEngine.isPaused) return false
             isShipSlowdown = false
             when (pointer) {
                 0 -> {
@@ -100,7 +100,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         }
 
         override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-            if (PlayScreen.isPaused) return false
+            if (GameEngine.isPaused) return false
             when (pointer) {
                 0 -> {
                     floatPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
@@ -118,7 +118,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         }
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            if (PlayScreen.isPaused) return false
+            if (GameEngine.isPaused) return false
             when (pointer) {
                 0 -> {
                     isShipSlowdown = true
@@ -243,7 +243,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             setPosition(hudStage.width - width - 20f, hudStage.height - height - 20f)
             addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    PlayScreen.isPaused = true
+                    GameEngine.isPaused = true
                     pauseWindow.isVisible = true
 //                    Data.renderTime = 0f
 //                    Data.physicsTime = 0f
@@ -275,7 +275,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             textButton("Resume").cell(align = Align.right).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
-                    PlayScreen.isPaused = false
+                    GameEngine.isPaused = false
                     isVisible = false
                 }
             })
