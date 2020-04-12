@@ -13,17 +13,15 @@ import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
+import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
-import ktx.ashley.mapperFor
 import ktx.box2d.body
 import ktx.collections.*
 
 class EntityBuilder(val engine: PooledEngine,
                     private val world: World,
                     private val assets: Assets) {
-
-    val cmBody = mapperFor<B2dBodyComponent>()
 
     fun createPlayer(x: Float, y: Float): Entity {
         val entityType = TypeComponent.PLAYER
@@ -69,7 +67,7 @@ class EntityBuilder(val engine: PooledEngine,
 
     fun createPlayerBullet(sourceEntity: Entity, aim: Vector2) {
         val entityType = TypeComponent.PLAYER_BULLET
-        val sourceBody = cmBody.get(sourceEntity).body
+        val sourceBody = GameEngine.cmBody.get(sourceEntity).body
         val initPos = sourceBody.position
         val initVelocity = sourceBody.linearVelocity
         val dirVec = aim.sub(initPos)
@@ -162,7 +160,8 @@ class EntityBuilder(val engine: PooledEngine,
                 maxForce = 20f
                 finalForce = 20f
                 behaviors + arrayOf(
-                        Behaviors.WANDER
+                        Behaviors.WANDER,
+                        Behaviors.SEEK
                 )
             }
             with<TypeComponent> { type = entityType }
@@ -212,7 +211,7 @@ class EntityBuilder(val engine: PooledEngine,
                 size.set(1f, 1f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SNIPER)) }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.JUMPER)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(0.5f, Vector2(0f, 0f)) {
@@ -305,7 +304,7 @@ class EntityBuilder(val engine: PooledEngine,
     fun createKid(womb: Entity) {
         val entityType = TypeComponent.ENEMY
         val entitySize = 0.5f
-        val initPos = cmBody.get(womb).body.position.apply {
+        val initPos = GameEngine.cmBody.get(womb).body.position.apply {
             x += MathUtils.random(-1f, 1f)
             y += MathUtils.random(-1f, 1f)
         }

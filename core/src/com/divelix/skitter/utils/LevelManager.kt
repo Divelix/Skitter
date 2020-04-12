@@ -27,10 +27,11 @@ class LevelManager(val gameEngine: GameEngine) {
             Level(Vector2(8f, 10f), gdxArrayOf()),
             Level(Vector2(15f, 30f), gdxArrayOf(
 //                EnemyBundle(EnemyType.SNIPER, 2),
-                EnemyBundle(EnemyType.JUMPER, 1)
+                EnemyBundle(EnemyType.AGENT, 1)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                EnemyBundle(EnemyType.RADIAL, 1)
+                EnemyBundle(EnemyType.RADIAL, 1),
+                EnemyBundle(EnemyType.JUMPER, 3)
             ))
         )
     )
@@ -82,6 +83,7 @@ class LevelManager(val gameEngine: GameEngine) {
                 }
             }
         }
+        entityBuilder.createPuddle(MathUtils.random(level.size.x), MathUtils.random(level.size.y), 1f)
     }
 
     fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {

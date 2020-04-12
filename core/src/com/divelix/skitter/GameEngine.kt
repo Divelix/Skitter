@@ -56,7 +56,7 @@ class GameEngine(val game: Main) {
 //        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
         engine.addSystem(DecaySystem(0.1f))
 //        engine.addSystem(RegenerationSystem(0.5f))
-//        engine.addSystem(SlowSystem())
+        engine.addSystem(SlowSystem())
         engine.addSystem(BehaviorSystem())
         engine.addSystem(DamageLabelSystem(camera))
 //        engine.addSystem(ClickableSystem(camera))

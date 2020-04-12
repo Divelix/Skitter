@@ -42,6 +42,7 @@ object Constants {
     const val WOMB = "womb.png"
     const val KID = "kid.png"
     const val RADIAL = "radial.png"
+    const val JUMPER = "jumper.png"
     const val BULLET_DEFAULT = "bullet-default.png"
     const val AIM = "aim-64.png"
     const val WHITE_CIRCLE = "white_circle.png"

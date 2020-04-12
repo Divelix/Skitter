@@ -5,6 +5,12 @@ import com.badlogic.gdx.utils.Pool
 import kotlin.experimental.or
 
 class TypeComponent: Component, Pool.Poolable {
+    var type: Short? = null
+
+    override fun reset() {
+        type = null
+    }
+
     companion object {
         const val VISION_SENSOR: Short = 1
         const val PLAYER_BULLET: Short = 2
@@ -21,10 +27,5 @@ class TypeComponent: Component, Pool.Poolable {
         val ENEMY_BULLET_MB = PLAYER or OBSTACLE
         val PLAYER_MB = ENEMY or ENEMY_BULLET or OBSTACLE or SPAWN or PUDDLE or VISION_SENSOR or DOOR
         val ENEMY_MB = PLAYER or ENEMY or PLAYER_BULLET or OBSTACLE
-    }
-    var type: Short? = null
-
-    override fun reset() {
-        type = null
     }
 }
