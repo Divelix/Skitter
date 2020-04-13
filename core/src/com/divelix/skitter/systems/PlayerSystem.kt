@@ -8,11 +8,13 @@ import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.allOf
+import ktx.ashley.has
 
 class PlayerSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
     private val force = Vector2()
 
-    override fun processEntity(entity: Entity?, deltaTime: Float) {
+    override fun processEntity(entity: Entity, deltaTime: Float) {
+        val playerCmp = GameEngine.cmPlayer.get(entity)
         val transCmp = GameEngine.cmTransform.get(entity)
         val healthCmp = GameEngine.cmHealth.get(entity)
         val bodyCmp = GameEngine.cmBody.get(entity)

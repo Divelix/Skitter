@@ -13,7 +13,11 @@ import com.divelix.skitter.ui.Hud
 import ktx.ashley.*
 import java.lang.NullPointerException
 
-class B2dContactListener(val game: Main, val engine: PooledEngine, val hud: Hud) : ContactListener {
+class B2dContactListener(
+        game: Main,
+        private val engine: PooledEngine,
+        private val hud: Hud
+) : ContactListener {
     private val assets = game.getContext().inject<Assets>()
     private val hitSound = assets.manager.get<Sound>(Constants.HIT_SOUND)
 
@@ -58,8 +62,7 @@ class B2dContactListener(val game: Main, val engine: PooledEngine, val hud: Hud)
             TypeComponent.PUDDLE -> {
                 when(typeA) {
                     TypeComponent.PLAYER, TypeComponent.ENEMY -> {
-                        entityB.add(SlowComponent())
-                        println("add slow")
+                        entityA.add(SlowComponent())
                     }
                 }
             }
@@ -91,8 +94,7 @@ class B2dContactListener(val game: Main, val engine: PooledEngine, val hud: Hud)
             TypeComponent.PUDDLE -> {
                 when(typeA) {
                     TypeComponent.PLAYER, TypeComponent.ENEMY -> {
-                        entityB.remove<SlowComponent>()
-                        println("remove slow")
+                        entityA.remove<SlowComponent>()
                     }
                 }
             }
