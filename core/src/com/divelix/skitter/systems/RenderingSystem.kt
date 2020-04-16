@@ -3,15 +3,14 @@ package com.divelix.skitter.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Constants
+import com.divelix.skitter.Data
 import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import ktx.ashley.allOf
@@ -21,14 +20,17 @@ import ktx.assets.file
 import ktx.graphics.use
 import ktx.inject.Context
 
-class RenderingSystem(context: Context, private val camera: OrthographicCamera) : SortedIteratingSystem(allOf(TransformComponent::class, TextureComponent::class).get(), ZComparator()) {
+class RenderingSystem(
+        context: Context,
+        private val camera: OrthographicCamera
+) : SortedIteratingSystem(allOf(TransformComponent::class, TextureComponent::class).get(), ZComparator()) {
 
     private val batch = context.inject<SpriteBatch>()
     private val entities = Array<Entity>()
     private val comparator = ZComparator()
-    private val bulletShader = ShaderProgram(file(Constants.VERTEX_SHADER), file(Constants.FRAGMENT_SHADER))
-
-    private var timer = 0f
+    private val shader = ShaderProgram(file(Constants.VERTEX_SHADER), file(Constants.FRAGMENT_SHADER))
+//    private val frameBuffer = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
+//    private val bufferTexture = TextureRegion(frameBuffer.colorBufferTexture)
 
     private val healthBarReg: TextureRegion
 
@@ -39,20 +41,20 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
         }
         healthBarReg = TextureRegion(Texture(redPixel))
         ShaderProgram.pedantic = false // SpriteBatch won'stockTable send ALL info to shader program
-        println(if(bulletShader.isCompiled) "shader successfully compiled" else bulletShader.log)
-        batch.shader = bulletShader
+        println(if(shader.isCompiled) "shader successfully compiled" else shader.log)
+//        batch.shader = shader
     }
 
     override fun update(deltaTime: Float) {
+        Data.renderTime += deltaTime
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         super.update(deltaTime)
 
-        entities.sort(comparator)
+        entities.sort(comparator)// TODO probably not needed as super.update already do the sorting (needs check)
 
-        bulletShader.use {
-            timer += deltaTime
-            bulletShader.setUniformf("u_time", timer)
+        shader.use {
+            shader.setUniformf("u_time", Data.renderTime)
         }
         batch.projectionMatrix = camera.combined
 //        batch.enableBlending()
@@ -71,7 +73,7 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
 
 //            if (typeCmp.name == TypeComponent.BULLET)
 //                batch.shader = bulletShader
-                batch.draw(textureCmp.region!!,
+                batch.draw(textureCmp.region,
                         transformCmp.position.x - originX, transformCmp.position.y - originY,
                         originX, originY,
                         width, height,
@@ -84,10 +86,16 @@ class RenderingSystem(context: Context, private val camera: OrthographicCamera) 
                             transformCmp.position.x - originX, transformCmp.position.y - originY + transformCmp.size.y,
                             width * healthCmp.health / healthBarCmp.maxValue, healthBarCmp.height)
                 }
-//            batch.shader = null
             }
-//            batch.flush()
         }
+//        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+//        batch.shader = shader
+//        batch.use {
+////            bufferTexture.flip(true, true)
+//            batch.draw(bufferTexture, 0f, -15f, 15f, 30f)
+//        }
+//        batch.shader = null
         entities.clear()
     }
 

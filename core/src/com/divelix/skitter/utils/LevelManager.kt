@@ -83,7 +83,7 @@ class LevelManager(val gameEngine: GameEngine) {
                 }
             }
         }
-        entityBuilder.createPuddle(MathUtils.random(level.size.x), MathUtils.random(level.size.y), 1f)
+//        entityBuilder.createPuddle(MathUtils.random(level.size.x), MathUtils.random(level.size.y), 1f)
     }
 
     fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {

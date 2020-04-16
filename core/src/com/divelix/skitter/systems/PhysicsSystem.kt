@@ -22,7 +22,6 @@ class PhysicsSystem(private val world: World):
 
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
-        Data.renderTime += deltaTime
         reloadAmmo(deltaTime)
         accumulator += min(deltaTime, 0.25f)
         if (accumulator >= Constants.B2D_STEP_TIME) {

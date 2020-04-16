@@ -14,7 +14,6 @@ class PlayerSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
     private val force = Vector2()
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        val playerCmp = GameEngine.cmPlayer.get(entity)
         val transCmp = GameEngine.cmTransform.get(entity)
         val healthCmp = GameEngine.cmHealth.get(entity)
         val bodyCmp = GameEngine.cmBody.get(entity)
@@ -24,7 +23,5 @@ class PlayerSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
 
         force.set(Data.dirVec).scl(Data.playerData.ship.speed).scl(50f) // TODO hardcoded scl
         bodyCmp.body.applyForceToCenter(force, true)
-//        bodyCmp.body.linearVelocity = velocity
-
     }
 }

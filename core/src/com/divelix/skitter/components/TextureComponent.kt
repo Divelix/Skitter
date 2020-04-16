@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Pool
 
 class TextureComponent : Component, Pool.Poolable {
-    var region: TextureRegion? = null
+    lateinit var region: TextureRegion
 
     override fun reset() {}
 }

@@ -40,7 +40,7 @@ class GameEngine(val game: Main) {
     fun update(delta: Float) {
         if (!isPaused) {
             engine.update(delta)
-            debugRenderer.render(world, camera.combined)
+//            debugRenderer.render(world, camera.combined)
         }
         hud.update()
     }
