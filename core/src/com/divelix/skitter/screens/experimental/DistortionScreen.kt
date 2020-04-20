@@ -16,7 +16,7 @@ import ktx.app.KtxScreen
 import ktx.assets.file
 import ktx.graphics.use
 
-class FBOScreen(game: Main): KtxScreen {
+class DistortionScreen(game: Main): KtxScreen {
     var isPause = false;
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
@@ -43,6 +43,7 @@ class FBOScreen(game: Main): KtxScreen {
                     Input.Keys.S -> camera.position.y -= 10f
                     Input.Keys.D -> camera.position.x += 10f
                     Input.Keys.SPACE -> isPause = !isPause
+                    Input.Keys.F -> println(Gdx.graphics.framesPerSecond)
                 }
                 camera.update()
                 return super.keyDown(keycode)
@@ -73,7 +74,11 @@ class FBOScreen(game: Main): KtxScreen {
         }
         batch.shader = shader
         batch.use {
-            bufferTexture = TextureRegion(frameBuffer.colorBufferTexture).apply { flip(false, true) }
+            val t = frameBuffer.colorBufferTexture
+            // make repeat texture on edges instead of stretching edge pixels
+            t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
+            // FBO flips texture for some reason, so you need to flip it back
+            bufferTexture = TextureRegion(t).apply { flip(false, true) }
             batch.draw(bufferTexture, 0f, 0f)
         }
         batch.shader = null

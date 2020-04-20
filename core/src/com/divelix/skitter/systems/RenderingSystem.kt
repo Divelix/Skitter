@@ -28,9 +28,7 @@ class RenderingSystem(
     private val batch = context.inject<SpriteBatch>()
     private val entities = Array<Entity>()
     private val comparator = ZComparator()
-    private val shader = ShaderProgram(file(Constants.VERTEX_SHADER), file(Constants.FRAGMENT_SHADER))
-//    private val frameBuffer = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
-//    private val bufferTexture = TextureRegion(frameBuffer.colorBufferTexture)
+//    private val shader = ShaderProgram(file(Constants.VERTEX_SHADER), file(Constants.FRAGMENT_SHADER))
 
     private val healthBarReg: TextureRegion
 
@@ -40,8 +38,8 @@ class RenderingSystem(
             fill()
         }
         healthBarReg = TextureRegion(Texture(redPixel))
-        ShaderProgram.pedantic = false // SpriteBatch won'stockTable send ALL info to shader program
-        println(if(shader.isCompiled) "shader successfully compiled" else shader.log)
+//        ShaderProgram.pedantic = false // SpriteBatch won'stockTable send ALL info to shader program
+//        println(if(shader.isCompiled) "shader successfully compiled" else shader.log)
 //        batch.shader = shader
     }
 
@@ -53,9 +51,9 @@ class RenderingSystem(
 
         entities.sort(comparator)// TODO probably not needed as super.update already do the sorting (needs check)
 
-        shader.use {
-            shader.setUniformf("u_time", Data.renderTime)
-        }
+//        shader.use {
+//            shader.setUniformf("u_time", Data.renderTime)
+//        }
         batch.projectionMatrix = camera.combined
 //        batch.enableBlending()
         batch.use {
@@ -88,14 +86,6 @@ class RenderingSystem(
                 }
             }
         }
-//        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-//        batch.shader = shader
-//        batch.use {
-////            bufferTexture.flip(true, true)
-//            batch.draw(bufferTexture, 0f, -15f, 15f, 30f)
-//        }
-//        batch.shader = null
         entities.clear()
     }
 
