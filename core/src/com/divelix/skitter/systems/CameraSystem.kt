@@ -7,6 +7,7 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import ktx.ashley.allOf
+import java.lang.NullPointerException
 
 class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
     private val camPos = Vector2()
@@ -18,7 +19,11 @@ class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
         val cameraCmp = GameEngine.cmCamera.get(entity)
         val bindCmp = GameEngine.cmBind.get(entity)
         camPos.set(cameraCmp.camera.position.x, cameraCmp.camera.position.y)
-        bodPos.set(GameEngine.cmBody.get(bindCmp.entity).body.position)
+        try {
+            bodPos.set(GameEngine.cmBody.get(bindCmp.entity).body.position)
+        } catch (e: NullPointerException) {
+            return
+        }
         if (cameraCmp.needCenter) {
             cameraCmp.camera.position.set(bodPos, 0f)
             cameraCmp.needCenter = false
