@@ -108,39 +108,6 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createRotatingWeapon(x: Float, y: Float) {
-        val entityType = TypeComponent.PLAYER_BULLET
-        engine.entity {
-            with<TypeComponent> { type = entityType }
-//            with<RotatingWeaponComponent>()
-            with<BulletComponent> {
-                damage = Data.playerData.gun.damage
-            }
-            with<TransformComponent> {
-                position.set(x, y, 0f)
-                size.set(1f, 1f)
-                origin.set(size).scl(0.5f)
-            }
-//            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.JUMPER)) }
-            with<B2dBodyComponent> {
-                body = world.body(type = BodyDef.BodyType.DynamicBody) {
-                    val dir = Vector2(2f, 0f)
-                    for (i in 1..10) {
-                        dir.rotate(36f)
-                        circle(0.2f, dir) {
-                            filter.categoryBits = entityType
-                            filter.maskBits = TypeComponent.PLAYER_BULLET_MB
-//                            isSensor = true
-                        }
-                    }
-                    position.set(x, y)
-//                    angularVelocity = 5f
-                    userData = (this@entity).entity
-                }//.apply { println(mass) }
-            }
-        }
-    }
-
     fun createEnemyBullet(sourceEntity: Entity, aim: Vector2) {
         val entityType = TypeComponent.ENEMY_BULLET
         val initPos = sourceEntity.getComponent(B2dBodyComponent::class.java).body.position

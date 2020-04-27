@@ -83,7 +83,6 @@ class LevelManager(val gameEngine: GameEngine) {
                 }
             }
         }
-        entityBuilder.createRotatingWeapon(3f, 3f)
 //        entityBuilder.createPuddle(MathUtils.random(level.size.x), MathUtils.random(level.size.y), 1f)
     }
 

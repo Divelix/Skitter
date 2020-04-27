@@ -36,7 +36,7 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.SPACE -> GameEngine.isPaused = !GameEngine.isPaused
                     Input.Keys.N -> levelManager.goToNextLevel()
                 }
-                return true
+                return false
             }
         }
         val multiplexer = InputMultiplexer(handler, gameEngine.hud.hudStage, gameEngine.hud.playerCtrl)

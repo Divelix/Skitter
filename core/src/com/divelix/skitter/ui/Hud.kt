@@ -25,11 +25,8 @@ import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.actors.*
-import com.divelix.skitter.components.DamageLabelComponent
-import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.utils.LevelManager
 import com.divelix.skitter.utils.ScaledLabel
-import ktx.ashley.mapperFor
 import ktx.graphics.*
 import ktx.vis.table
 import ktx.vis.window
@@ -61,7 +58,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private val reloadFGColor = Color(1f, 1f, 0f, 1f)
     private val reloadBGColor = Color(1f, 1f, 0f, 0.3f)
     private val scoreColor = Color(0.7f, 0.7f, 0.7f, 1f)
-//    private val reloadPos = Vector2(310f, 580f)
     private val reloadPos = Vector2(hudStage.width - 15f - 30f, hudStage.height - 20f - 50f - 20f - 30f)
 
     private val pauseBtn: Image
@@ -72,8 +68,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private val healthImg = Image(Texture(pixel.apply { setColor(healthColor); fill() }))
 
     val temp = Vector3()
-    private val cmDamage = mapperFor<DamageLabelComponent>()
-    private val cmTrans = mapperFor<TransformComponent>()
     val aimPos = Vector2()
     val clickPos = Vector3()
     var isDriven = false
@@ -286,7 +280,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
         damageLabelsPool.obtain().run {
             txt = "${damage.toInt()}"
             pack()
-            temp.set(cmTrans.get(damagedEntity).position)
+            temp.set(GameEngine.cmTransform.get(damagedEntity).position)
             playCam.project(temp)
             val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
             temp.scl(ratio)
@@ -294,7 +288,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             prevPos.set(temp.x, temp.y)
             setPosition(temp.x, temp.y)
             hudStage += this
-            cmDamage.get(damagedEntity).damageLabels.add(this)
+            GameEngine.cmDmgLabel.get(damagedEntity).damageLabels.add(this)
             animate()
         }
     }
