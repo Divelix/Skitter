@@ -25,12 +25,10 @@ class GameEngine(val game: Main) {
     val hud: Hud
     private val camera: OrthographicCamera
     val playerEntity: Entity
-    val cameraEntity: Entity
 
     init {
         playerEntity = entityBuilder.createPlayer(5f, 2f)
-        cameraEntity = entityBuilder.createCamera(playerEntity)
-        camera = cmCamera.get(cameraEntity).camera
+        camera = cmCamera.get(playerEntity).camera
         hud = Hud(game, camera, entityBuilder, playerEntity)
 
         createEngineSystems()

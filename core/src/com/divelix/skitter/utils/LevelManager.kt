@@ -115,7 +115,7 @@ class LevelManager(val gameEngine: GameEngine) {
 
     fun resetPlayerTo(x: Float, y: Float) {
         cmBody.get(gameEngine.playerEntity).body.setTransform(x, y, 0f)
-        cmCamera.get(gameEngine.cameraEntity).needCenter = true
+        cmCamera.get(gameEngine.playerEntity).needCenter = true
         Data.dirVec.set(0f, 1f)
     }
 
