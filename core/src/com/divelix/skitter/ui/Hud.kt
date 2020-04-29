@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
+import com.divelix.skitter.utils.DamageLabelProvider
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.actors.*
 import com.divelix.skitter.utils.LevelManager
@@ -48,7 +49,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private val enemyCountLabel = ScaledLabel()
     private val scoreLabel = ScaledLabel(styleName = "score-label")
     private val ammoLabel =  ScaledLabel(styleName = "reload-label")
-    val damageLabelsPool = DamageLabelsPool()
+    val damageLabelsProvider = DamageLabelProvider(hudStage, playCam)
 
     private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
     private val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
@@ -273,69 +274,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
                     isVisible = false
                 }
             })
-        }
-    }
-
-    fun makeDamageLabel(damage: Float, damagedEntity: Entity) {
-        damageLabelsPool.obtain().run {
-            txt = "${damage.toInt()}"
-            pack()
-            temp.set(GameEngine.cmTransform.get(damagedEntity).position)
-            playCam.project(temp)
-            val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
-            temp.scl(ratio)
-            temp.x -= width / 2f // center label
-            prevPos.set(temp.x, temp.y)
-            setPosition(temp.x, temp.y)
-            hudStage += this
-            GameEngine.cmDmgLabel.get(damagedEntity).damageLabels.add(this)
-            animate()
-        }
-    }
-
-    inner class DamageLabelsPool(initialCapacity: Int = 10, max: Int = 20): Pool<DamageLabel>(initialCapacity, max) {
-        override fun newObject(): DamageLabel {
-            return DamageLabel()
-        }
-    }
-
-    inner class DamageLabel: ScaledLabel("", "damage-label"), Pool.Poolable {
-        val duration = 1f
-        var ecsTimer = duration
-        val prevPos = Vector2()
-        val latestPos = Vector3()
-        private val shift = Vector2()
-
-        override fun reset() {
-            ecsTimer = duration
-        }
-
-        override fun act(delta: Float) {
-            moveTo(latestPos)
-            super.act(delta)
-        }
-
-        fun animate() {
-            val removeAction = Actions.run {
-                remove()
-                damageLabelsPool.free(this)
-            }
-            val alphaAnim = Actions.alpha(0f) then Actions.fadeIn(duration / 2f) then Actions.fadeOut(duration / 2f)
-            val moveAnim = Actions.moveBy(0f, 40f, duration)
-            val removeAnim = Actions.delay(duration) then removeAction
-            this += alphaAnim along moveAnim along removeAnim
-        }
-
-        private fun moveTo(point: Vector3) {
-            temp.set(point)
-            playCam.project(temp)
-            val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
-            temp.scl(ratio)
-            temp.x -= width / 2f // center label
-
-            shift.set(temp.x, temp.y).sub(prevPos)
-            moveBy(shift.x, shift.y)
-            prevPos.set(temp.x, temp.y)
         }
     }
 }

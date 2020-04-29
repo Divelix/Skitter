@@ -113,7 +113,7 @@ class B2dContactListener(
                 targetHealthCmp.health -= damage
             else
                 targetHealthCmp.health = 0f
-            hud.makeDamageLabel(damage, targetEntity)
+            hud.damageLabelsProvider.makeDamageLabel(damage, targetEntity)
         }
         hitSound.play()
     }
