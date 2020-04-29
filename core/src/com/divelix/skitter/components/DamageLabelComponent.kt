@@ -9,5 +9,7 @@ import com.divelix.skitter.utils.DamageLabelProvider
 class DamageLabelComponent: Component, Pool.Poolable {
     val damageLabels = Array<DamageLabelProvider.DamageLabel>()
 
-    override fun reset() {}
+    override fun reset() {
+        damageLabels.clear()
+    }
 }

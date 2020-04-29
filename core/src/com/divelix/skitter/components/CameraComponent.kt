@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.utils.Pool
 
 class CameraComponent: Component, Pool.Poolable {
-    val camera = OrthographicCamera()
+    lateinit var camera: OrthographicCamera
     var needCenter = true
 
     override fun reset() {

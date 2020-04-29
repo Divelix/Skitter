@@ -15,10 +15,7 @@ class SniperSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalI
 
     override fun processEntity(entity: Entity) {
         val visionCmp = GameEngine.cmVision.get(entity)
-        val playerEntity = visionCmp.visibleEntities.singleOrNull { it.has(GameEngine.cmPlayer) } ?: run {
-            info(TAG) { "Not player in vision" }
-            return
-        }
+        val playerEntity = visionCmp.visibleEntities.singleOrNull { it.has(GameEngine.cmPlayer) } ?: return
         val playerPos = GameEngine.cmTransform.get(playerEntity).position
 
         targetPos.set(playerPos.x, playerPos.y)

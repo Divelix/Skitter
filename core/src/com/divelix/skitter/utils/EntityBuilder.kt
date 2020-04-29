@@ -3,6 +3,7 @@ package com.divelix.skitter.utils
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -19,15 +20,16 @@ import ktx.ashley.entity
 import ktx.box2d.body
 import ktx.collections.*
 
-class EntityBuilder(val engine: PooledEngine,
+class EntityBuilder(private val engine: PooledEngine,
                     private val world: World,
                     private val assets: Assets) {
 
-    fun createPlayer(x: Float, y: Float): Entity {
+    fun createPlayer(x: Float, y: Float, playCam: OrthographicCamera): Entity {
         val entityType = TypeComponent.PLAYER
         return engine.entity {
             with<PlayerComponent>()
             with<CameraComponent> {
+                camera = playCam
                 camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width)
             }
             with<TypeComponent> { type = entityType }

@@ -1,6 +1,5 @@
 package com.divelix.skitter
 
-import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
@@ -22,15 +21,11 @@ class GameEngine(val game: Main) {
     val engine = PooledEngine(20, 200, 50, 100)
     val entityBuilder = EntityBuilder(engine, world, assets)
 
-    val hud: Hud
-    private val camera: OrthographicCamera
-    val playerEntity: Entity
+    private val playCam = OrthographicCamera()
+    val playerEntity by lazy { entityBuilder.createPlayer(5f, 2f, playCam) }
+    val hud by lazy { Hud(game, entityBuilder, playerEntity) }
 
     init {
-        playerEntity = entityBuilder.createPlayer(5f, 2f)
-        camera = cmCamera.get(playerEntity).camera
-        hud = Hud(game, camera, entityBuilder, playerEntity)
-
         createEngineSystems()
         world.setContactListener(B2dContactListener(game, engine, hud))
     }
@@ -38,7 +33,7 @@ class GameEngine(val game: Main) {
     fun update(delta: Float) {
         if (!isPaused) {
             engine.update(delta)
-            debugRenderer.render(world, camera.combined)
+            debugRenderer.render(world, playCam.combined)
         }
         hud.update()
     }
@@ -47,8 +42,8 @@ class GameEngine(val game: Main) {
         engine.addSystem(CameraSystem())
         engine.addSystem(PhysicsSystem(world))
         engine.addSystem(PlayerSystem())
-        engine.addSystem(RenderingSystem(context, camera))
-        engine.addSystem(DamageLabelSystem(camera)) // before HealthSystem to let label update init position on last hit
+        engine.addSystem(RenderingSystem(context, playCam))
+        engine.addSystem(DamageLabelSystem(playCam)) // before HealthSystem to let label update init position on last hit
         engine.addSystem(HealthSystem())
         engine.addSystem(SniperSystem(1.5f, entityBuilder))
         engine.addSystem(BulletSystem())

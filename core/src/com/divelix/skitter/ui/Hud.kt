@@ -11,14 +11,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Pool
 import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.MenuScreen
@@ -32,15 +30,17 @@ import ktx.graphics.*
 import ktx.vis.table
 import ktx.vis.window
 
-class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: EntityBuilder, val playerEntity: Entity) {
+class Hud(val game: Main, val entityBuilder: EntityBuilder, val playerEntity: Entity) {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val shape = context.inject<ShapeRenderer>()
     private val assets = context.inject<Assets>()
 
-    val camera = OrthographicCamera()
+    val hudCam = OrthographicCamera()
+    val playCam = GameEngine.cmCamera.get(playerEntity).camera
     val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
-    val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio, camera), batch)
+    val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio, hudCam), batch)
+    val damageLabelsProvider = DamageLabelProvider(hudStage, playCam)
 
     private val rootTable: Table
     private val fpsLabel = ScaledLabel()
@@ -49,7 +49,6 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
     private val enemyCountLabel = ScaledLabel()
     private val scoreLabel = ScaledLabel(styleName = "score-label")
     private val ammoLabel =  ScaledLabel(styleName = "reload-label")
-    val damageLabelsProvider = DamageLabelProvider(hudStage, playCam)
 
     private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
     private val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
@@ -83,7 +82,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             when (pointer) {
                 0 -> {
                     fixedPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
-                    camera.unproject(fixedPoint)
+                    hudCam.unproject(fixedPoint)
 //                    floatPoint.set(fixedPoint) // fixes small bug // TODO che za bug?
                 }
                 1 -> {
@@ -99,7 +98,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
             when (pointer) {
                 0 -> {
                     floatPoint.set(screenX.toFloat(), screenY.toFloat(), 0f)
-                    camera.unproject(floatPoint)
+                    hudCam.unproject(floatPoint)
                     distVec.set(floatPoint.x, floatPoint.y).sub(fixedPoint.x, fixedPoint.y)
                     val dist = distVec.len()
                     if (dist > Constants.DEAD_BAND) {
@@ -185,7 +184,7 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
 
     fun update() {
         Gdx.gl.glEnable(GL20.GL_BLEND)
-        shape.projectionMatrix = camera.combined
+        shape.projectionMatrix = hudCam.combined
         shape.use(ShapeRenderer.ShapeType.Filled) {
             if(isDriven) {
                 shape.color = activeColor
@@ -275,5 +274,9 @@ class Hud(val game: Main, val playCam: OrthographicCamera, val entityBuilder: En
                 }
             })
         }
+    }
+
+    companion object {
+        const val TAG = "Hud"
     }
 }

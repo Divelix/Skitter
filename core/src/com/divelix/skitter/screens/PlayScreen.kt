@@ -9,12 +9,8 @@ import ktx.assets.toLocalFile
 import ktx.log.info
 
 class PlayScreen(val game: Main): KtxScreen {
-    companion object {
-        var ammo = 0
-        var health = 0f
-    }
-    private val gameEngine: GameEngine
-    private val levelManager: LevelManager
+    private val gameEngine by lazy { GameEngine(game) }
+    private val levelManager by lazy { LevelManager(gameEngine) }
 
     init {
         Data.renderTime = 0f
@@ -25,9 +21,6 @@ class PlayScreen(val game: Main): KtxScreen {
         GameEngine.isPaused = false
 
         loadPlayerData()
-
-        gameEngine = GameEngine(game)
-        levelManager = LevelManager(gameEngine)
 
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
@@ -50,26 +43,26 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     override fun pause() {
-        info("PlayScreen") { "pause()" }
+        info(TAG) { "pause()" }
         GameEngine.isPaused = true
     }
 
     override fun resume() {
-        info("PlayScreen") { "resume()" }
+        info(TAG) { "resume()" }
         GameEngine.isPaused = false
     }
 
     override fun resize(width: Int, height: Int) {
-        info("PlayScreen") { "resize()" }
+        info(TAG) { "resize()" }
         gameEngine.hud.resize(width, height)
     }
 
     override fun hide() {
-        info("PlayScreen") { "hide()" }
+        info(TAG) { "hide()" }
     }
 
     override fun dispose() {
-        info("PlayScreen") { "dispose()" }
+        info(TAG) { "dispose()" }
         gameEngine.hud.dispose()
         gameEngine.engine.clearPools()
     }
@@ -88,5 +81,11 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.playerData.gun.critMultiplier = gunSpecs[4].asFloat()
         Data.playerData.gun.critChance = gunSpecs[5].asFloat()
         ammo = Data.playerData.gun.capacity
+    }
+
+    companion object {
+        const val TAG = "PlayScreen"
+        var ammo = 0
+        var health = 0f
     }
 }
