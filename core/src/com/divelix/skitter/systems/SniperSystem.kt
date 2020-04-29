@@ -7,15 +7,25 @@ import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.SniperComponent
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.ashley.allOf
+import ktx.ashley.has
+import ktx.log.info
 
 class SniperSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalIteratingSystem(allOf(SniperComponent::class).get(), interval) {
     private val targetPos = Vector2()
 
-    override fun processEntity(entity: Entity?) {
-        val bindCmp = GameEngine.cmBind.get(entity)
-        val targetTransCmp = GameEngine.cmTransform.get(bindCmp.entity)
+    override fun processEntity(entity: Entity) {
+        val visionCmp = GameEngine.cmVision.get(entity)
+        val playerEntity = visionCmp.visibleEntities.singleOrNull { it.has(GameEngine.cmPlayer) } ?: run {
+            info(TAG) { "Not player in vision" }
+            return
+        }
+        val playerPos = GameEngine.cmTransform.get(playerEntity).position
 
-        targetPos.set(targetTransCmp.position.x, targetTransCmp.position.y)
-        entityBuilder.createEnemyBullet(entity!!, targetPos)
+        targetPos.set(playerPos.x, playerPos.y)
+        entityBuilder.createEnemyBullet(entity, targetPos)
+    }
+
+    companion object {
+        const val TAG = "SniperSystem"
     }
 }

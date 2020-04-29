@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.ObjectSet
 import com.badlogic.gdx.utils.Pool
 
 class VisionComponent: Component, Pool.Poolable {
-    val visibleEntities = ObjectSet<Entity>(5)
+    val visibleEntities = ObjectSet<Entity>(20)
 
     override fun reset() {}
 }

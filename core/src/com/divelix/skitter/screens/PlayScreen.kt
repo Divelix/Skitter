@@ -44,7 +44,7 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     override fun render(delta: Float) {
-        if (health <= 0f) GameEngine.isPaused = true
+//        if (health <= 0f) GameEngine.isPaused = true
         levelManager.update()
         gameEngine.update(delta)
     }

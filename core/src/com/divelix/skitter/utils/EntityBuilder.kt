@@ -57,7 +57,6 @@ class EntityBuilder(val engine: PooledEngine,
 
     fun createCamera(playerEntity: Entity): Entity {
         return engine.entity {
-            val playerPos = playerEntity.getComponent(TransformComponent::class.java).position
             with<CameraComponent> {
                 camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width)
             }
@@ -228,7 +227,7 @@ class EntityBuilder(val engine: PooledEngine,
         }
     }
 
-    fun createSniper(x: Float, y: Float, playerEntity: Entity) {
+    fun createSniper(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
         val entitySize = 1.5f
         val sniperDamage = 10f
@@ -236,6 +235,7 @@ class EntityBuilder(val engine: PooledEngine,
         engine.entity {
             with<SniperComponent>()
             with<TypeComponent> { type = entityType }
+            with<VisionComponent>()
             with<EnemyComponent>()// { damage = sniperDamage }
             with<HealthComponent> { health = sniperHealth }
             with<HealthBarComponent> { maxValue = sniperHealth }
@@ -254,12 +254,17 @@ class EntityBuilder(val engine: PooledEngine,
                         filter.categoryBits = entityType
                         filter.maskBits = TypeComponent.ENEMY_MB
                     }
+                    circle(10f, Vector2(0f, 0f)) {
+                        isSensor = true
+                        filter.categoryBits = TypeComponent.VISION_SENSOR
+                        filter.maskBits = TypeComponent.VISION_SENSOR_MB
+                    }
                     linearDamping = 10f
                     position.set(x, y)
                     userData = (this@entity).entity
                 }
             }
-            with<BindComponent> { entity = playerEntity }
+//            with<BindComponent> { entity = playerEntity }
             with<DamageLabelComponent>()
             LevelManager.enemiesCount++
         }
