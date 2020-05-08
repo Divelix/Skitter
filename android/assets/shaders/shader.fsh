@@ -26,8 +26,8 @@ void main() {
 
 //    float x = fract(u_time*0.1)-.5;
     float c = 0.;
-//    c += Ring(uv, mouse, .1, .02, .01);
-    c += Circle(uv, mouse,  .15, .15);
+    c += Ring(uv, mouse, .03, .01, .005);
+//    c += Circle(uv, mouse,  .15, .15);
     vec2 mask = vec2(c*(uv-mouse));
 
     vec4 color = texture2D(u_sampler2D, v_texCoord0 + mask);

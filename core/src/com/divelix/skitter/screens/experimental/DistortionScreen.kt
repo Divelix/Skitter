@@ -17,7 +17,9 @@ import ktx.assets.file
 import ktx.graphics.use
 
 class DistortionScreen(game: Main): KtxScreen {
-    var isPause = false;
+    var isPause = false
+    val scale = 1f / 32f // pretend it is in box2d
+    val shift = 10f * scale
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
@@ -38,10 +40,10 @@ class DistortionScreen(game: Main): KtxScreen {
         val handler = object: InputAdapter() {
             override fun keyDown(keycode: Int): Boolean {
                 when (keycode) {
-                    Input.Keys.W -> camera.position.y += 10f
-                    Input.Keys.A -> camera.position.x -= 10f
-                    Input.Keys.S -> camera.position.y -= 10f
-                    Input.Keys.D -> camera.position.x += 10f
+                    Input.Keys.W -> camera.position.y += shift
+                    Input.Keys.A -> camera.position.x -= shift
+                    Input.Keys.S -> camera.position.y -= shift
+                    Input.Keys.D -> camera.position.x += shift
                     Input.Keys.SPACE -> isPause = !isPause
                     Input.Keys.F -> println(Gdx.graphics.framesPerSecond)
                 }
@@ -60,9 +62,9 @@ class DistortionScreen(game: Main): KtxScreen {
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
             batch.projectionMatrix = camera.combined
             batch.use {
-                batch.draw(assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE), 0f, 0f, Gdx.graphics.width*1f, Gdx.graphics.height.toFloat())
-                batch.draw(assets.manager.get<Texture>(Constants.PISTOL_ICON), 0f, 0f, 300f, 300f)
-                batch.draw(assets.manager.get<Texture>(Constants.BUCKET_ICON), Gdx.graphics.width - 300f, Gdx.graphics.height - 300f, 300f, 300f)
+                batch.draw(assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE), 0f, 0f, Gdx.graphics.width*scale, Gdx.graphics.height*scale)
+                batch.draw(assets.manager.get<Texture>(Constants.PISTOL_ICON), 0f, 0f, 300f*scale, 300f*scale)
+                batch.draw(assets.manager.get<Texture>(Constants.BUCKET_ICON), (Gdx.graphics.width - 300f)*scale, (Gdx.graphics.height - 300f)*scale, 300f*scale, 300f*scale)
             }
         }
 
@@ -79,13 +81,13 @@ class DistortionScreen(game: Main): KtxScreen {
             t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
             // FBO flips texture for some reason, so you need to flip it back
             bufferTexture = TextureRegion(t).apply { flip(false, true) }
-            batch.draw(bufferTexture, 0f, 0f)
+            batch.draw(bufferTexture, 0f, 0f, Gdx.graphics.width*scale, Gdx.graphics.height*scale)
         }
         batch.shader = null
     }
 
     override fun resize(width: Int, height: Int) {
-        camera.setToOrtho(false, width.toFloat(), height.toFloat())
+        camera.setToOrtho(false, width*scale, height*scale)
     }
 
 

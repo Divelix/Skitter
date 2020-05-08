@@ -1,5 +1,6 @@
 package com.divelix.skitter
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
@@ -8,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
@@ -32,6 +34,8 @@ class Assets: Disposable {
     val UI_COLOR = Color(0f, 0f, 0f, 0.3f)
     val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
     val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(UI_COLOR); fill()}))
+
+    val frameBuffer = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
 
     fun loadSplashAssets() {
         manager.load<Texture>(Constants.DIGITS_PNG)
@@ -169,5 +173,6 @@ class Assets: Disposable {
         uiSkin.dispose()
         digitsFont.dispose()
         manager.dispose()
+        frameBuffer.dispose()
     }
 }

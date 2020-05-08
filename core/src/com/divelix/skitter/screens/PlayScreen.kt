@@ -17,8 +17,6 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.physicsTime = 0f
         Data.score = 0
         LevelManager.enemiesCount = 0
-        Data.dirVec.set(0f, 0.000001f)// little init movement fixes 90deg ship rotation on init
-        GameEngine.isPaused = false
 
         loadPlayerData()
 
@@ -37,7 +35,6 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     override fun render(delta: Float) {
-//        if (health <= 0f) GameEngine.isPaused = true
         levelManager.update()
         gameEngine.update(delta)
     }
