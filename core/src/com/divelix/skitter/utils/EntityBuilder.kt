@@ -24,14 +24,10 @@ class EntityBuilder(private val engine: PooledEngine,
                     private val world: World,
                     private val assets: Assets) {
 
-    fun createPlayer(x: Float, y: Float, playCam: OrthographicCamera): Entity {
+    fun createPlayer(x: Float, y: Float): Entity {
         val entityType = TypeComponent.PLAYER
         return engine.entity {
             with<PlayerComponent>()
-            with<CameraComponent> {
-                camera = playCam
-                camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width)
-            }
             with<TypeComponent> { type = entityType }
             with<HealthComponent> { health = Data.playerData.ship.health }
 //            with<RegenerationComponent> { amount = 1f }
@@ -57,6 +53,16 @@ class EntityBuilder(private val engine: PooledEngine,
                 }
             }
             with<DamageLabelComponent>()
+        }
+    }
+
+    fun createCamera(playCam: OrthographicCamera, playerEntity: Entity?): Entity {
+        return engine.entity {
+            with<CameraComponent> {
+                camera = playCam
+                camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width)
+            }
+            if (playerEntity != null) with<BindComponent> {entity = playerEntity}
         }
     }
 

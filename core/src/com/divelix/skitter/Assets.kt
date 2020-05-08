@@ -27,7 +27,6 @@ class Assets: Disposable {
         private set
 
     lateinit var uiSkin: Skin
-    //    lateinit var font: BitmapFont
     lateinit var digitsFont: BitmapFont
 
     val BG_COLOR = Color(0x684BA6FF)

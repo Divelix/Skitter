@@ -30,14 +30,18 @@ import ktx.graphics.*
 import ktx.vis.table
 import ktx.vis.window
 
-class Hud(val game: Main, val entityBuilder: EntityBuilder, val playerEntity: Entity) {
+class Hud(
+        val game: Main,
+        val entityBuilder: EntityBuilder,
+        val playerEntity: Entity,
+        val playCam: OrthographicCamera
+) {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val shape = context.inject<ShapeRenderer>()
     private val assets = context.inject<Assets>()
 
     val hudCam = OrthographicCamera()
-    val playCam = GameEngine.cmCamera.get(playerEntity).camera
     val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
     val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio, hudCam), batch)
     val damageLabelsProvider = DamageLabelProvider(hudStage, playCam)

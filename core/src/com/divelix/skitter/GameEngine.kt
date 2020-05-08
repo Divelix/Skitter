@@ -1,5 +1,6 @@
 package com.divelix.skitter
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
@@ -30,18 +31,20 @@ class GameEngine(val game: Main) {
     val entityBuilder = EntityBuilder(engine, world, assets)
 
     private val playCam = OrthographicCamera()
-    val playerEntity by lazy { entityBuilder.createPlayer(5f, 2f, playCam) }
-    val hud by lazy { Hud(game, entityBuilder, playerEntity) }
+    val playerEntity by lazy { entityBuilder.createPlayer(5f, 2f) }
+    val cameraEntity: Entity
+    val hud by lazy { Hud(game, entityBuilder, playerEntity, playCam) }
 
     init {
         isPaused = false
+        cameraEntity = entityBuilder.createCamera(playCam, playerEntity)
         createEngineSystems()
         world.setContactListener(B2dContactListener(game, engine, hud))
     }
 
     fun update(delta: Float) {
         if (!isPaused) {
-            if (PlayScreen.health <= 0f) isPaused = true
+//            if (PlayScreen.health <= 0f) isPaused = true
             engine.update(delta)
         }
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
