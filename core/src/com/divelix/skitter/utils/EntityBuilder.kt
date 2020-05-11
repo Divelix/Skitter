@@ -19,6 +19,7 @@ import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.box2d.body
 import ktx.collections.*
+import ktx.log.info
 
 class EntityBuilder(private val engine: PooledEngine,
                     private val world: World,
@@ -68,7 +69,12 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createPlayerBullet(sourceEntity: Entity, aim: Vector2) {
         val entityType = TypeComponent.PLAYER_BULLET
-        val sourceBody = GameEngine.cmBody.get(sourceEntity).body
+        val sourceBody = try {
+            GameEngine.cmBody.get(sourceEntity).body
+        } catch(e: NullPointerException) {
+            info(TAG) { "Can't shoot - player is dead" }
+            return
+        }
         val initPos = sourceBody.position
         val initVelocity = sourceBody.linearVelocity
         val dirVec = aim.sub(initPos)
@@ -621,5 +627,9 @@ class EntityBuilder(private val engine: PooledEngine,
                 }
             }
         }
+    }
+
+    companion object {
+        const val TAG = "EntityBuilder"
     }
 }

@@ -22,7 +22,7 @@ class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
             val playerEntity = GameEngine.cmBind.get(entity).entity
             GameEngine.cmBody.get(playerEntity).body
         } catch (e: NullPointerException) {
-            info(TAG) { "Camera entity lost player bind" }
+//            info(TAG) { "Camera entity lost player bind" }
             entity.remove(BindComponent::class.java)
             return
         }
