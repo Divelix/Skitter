@@ -101,7 +101,7 @@ class Assets: Disposable {
         uiSkin = skin(manager.get(Constants.UISKIN_ATLAS)) {
             color("pinky", 0.7f, 0f, 1f)
             label {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
+                font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColor = Color.WHITE
             }
             label("score-label", extend = defaultStyle) {
@@ -129,7 +129,7 @@ class Assets: Disposable {
                 down = it["button-blue"]
             }
             list {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
+                font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColorSelected = Color.BLACK
                 fontColorUnselected = Color.WHITE
                 background = it["select-box-list-bg"]
@@ -157,7 +157,8 @@ class Assets: Disposable {
             }
             scrollPane {}
             window {
-                titleFont = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
+                titleFontColor = Color.RED
+                titleFont = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
                 background = bgDrawable
             }
 

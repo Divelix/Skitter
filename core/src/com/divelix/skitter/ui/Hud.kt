@@ -27,6 +27,7 @@ import ktx.actors.*
 import com.divelix.skitter.utils.LevelManager
 import com.divelix.skitter.utils.ScaledLabel
 import ktx.graphics.*
+import ktx.log.info
 import ktx.vis.table
 import ktx.vis.window
 
@@ -66,12 +67,12 @@ class Hud(
 
     private val pauseBtn: Image
     private val pauseWindow: Window
+    private val gameOverWindow: Window
     private val hpHeight = 10f
     private val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
     private val healthBgImg = Image(Texture(pixel.apply { setColor(healthBgColor); fill() }))
     private val healthImg = Image(Texture(pixel.apply { setColor(healthColor); fill() }))
 
-    val temp = Vector3()
     val aimPos = Vector2()
     val clickPos = Vector3()
     var isDriven = false
@@ -134,6 +135,7 @@ class Hud(
 
     init {
         pauseWindow = makePauseWindow()
+        gameOverWindow = makeGameOverWindow()
         pauseBtn = makePauseButton()
         rootTable = table {
             setFillParent(true)
@@ -166,6 +168,7 @@ class Hud(
         hudStage += healthImg
         hudStage += pauseBtn
         hudStage += pauseWindow
+        hudStage += gameOverWindow
 //        hudStage.isDebugAll = true
 
         healthBgImg.run {
@@ -278,6 +281,41 @@ class Hud(
                 }
             })
         }
+    }
+
+    private fun makeGameOverWindow(): Window {
+        return window("Game Over") {
+            isVisible = false
+            debugAll()
+            centerWindow()
+            defaults().expand()
+            padTop(25f) // title height
+            width = 300f
+            height = 500f
+            row()
+            label("table of results").cell(colspan = 2)
+            row()
+            textButton("Restart").cell(align = Align.right).addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
+                    isVisible = false
+                }
+            })
+
+            textButton("Exit").cell(align = Align.left).addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    LevelManager.isNextLvlRequired = true
+                    GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
+                    game.screen = MenuScreen(game)
+                }
+            })
+        }
+    }
+
+    fun showGameOverWindow() {
+        gameOverWindow.isVisible = true
     }
 
     companion object {
