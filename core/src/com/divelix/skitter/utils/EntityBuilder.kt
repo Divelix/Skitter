@@ -37,7 +37,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.BUCKET_ICON)) }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SHIP_DEFAULT)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = Constants.PLAYER_SIZE / 2f) {
@@ -167,8 +167,8 @@ class EntityBuilder(private val engine: PooledEngine,
                 maxForce = 20f
                 finalForce = 20f
                 behaviors + arrayOf(
-                        Behaviors.WANDER,
-                        Behaviors.SEEK
+                        Behavior.WANDER,
+                        Behavior.SEEK
                 )
             }
             with<TypeComponent> { type = entityType }
@@ -180,7 +180,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(0.9f, 1.5f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.LOVER)) }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.AGENT)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     polygon(Vector2(0f, 0.75f), Vector2(-0.45f, -0.75f), Vector2(0.45f, -0.75f)) {
@@ -245,6 +245,9 @@ class EntityBuilder(private val engine: PooledEngine,
             with<TypeComponent> { type = entityType }
             with<VisionComponent>()
             with<EnemyComponent>()// { damage = sniperDamage }
+            with<TowerComponent> {
+                region.setRegion(assets.manager.get<Texture>(Constants.SNIPER_TOWER))
+            }
             with<HealthComponent> { health = sniperHealth }
             with<HealthBarComponent> { maxValue = sniperHealth }
             with<TransformComponent> {
@@ -252,7 +255,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SNIPER)) }
+            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SNIPER_BASE)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
@@ -329,11 +332,11 @@ class EntityBuilder(private val engine: PooledEngine,
                 finalForce = 5f
                 behaviors + arrayOf(
 //                        Behaviors.WANDER,
-                        Behaviors.FLEE,
-                        Behaviors.SEPARATION,
-                        Behaviors.ALIGNMENT,
-                        Behaviors.COHESION,
-                        Behaviors.OBSTACLE_AVOIDANCE)
+                        Behavior.FLEE,
+                        Behavior.SEPARATION,
+                        Behavior.ALIGNMENT,
+                        Behavior.COHESION,
+                        Behavior.OBSTACLE_AVOIDANCE)
             }
             with<TypeComponent> { type = entityType }
             with<EnemyComponent>()

@@ -43,7 +43,7 @@ class Assets: Disposable {
     }
 
     fun loadAssets() {
-        manager.load<TextureAtlas>(Constants.UISKIN_ATLAS)
+        manager.load<TextureAtlas>(Constants.ATLAS_UI)
         manager.load<Texture>(Constants.BACKGROUND_IMAGE)
         manager.load<Texture>(Constants.SHIP_ICON)
         manager.load<Texture>(Constants.GUN_ICON)
@@ -52,11 +52,12 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.UP_BTN)
         manager.load<Texture>(Constants.SELL_BTN)
         manager.load<Texture>(Constants.PAUSE_BTN)
-        manager.load<Texture>(Constants.BUCKET_ICON)
-        manager.load<Texture>(Constants.PISTOL_ICON)
+        manager.load<Texture>(Constants.SHIP_DEFAULT)
+        manager.load<Texture>(Constants.GUN_DEFAULT)
         manager.load<Texture>(Constants.CARRIAGE)
-        manager.load<Texture>(Constants.LOVER)
-        manager.load<Texture>(Constants.SNIPER)
+        manager.load<Texture>(Constants.AGENT)
+        manager.load<Texture>(Constants.SNIPER_BASE)
+        manager.load<Texture>(Constants.SNIPER_TOWER)
         manager.load<Texture>(Constants.WOMB)
         manager.load<Texture>(Constants.KID)
         manager.load<Texture>(Constants.RADIAL)
@@ -98,7 +99,7 @@ class Assets: Disposable {
     }
 
     fun setup() {
-        uiSkin = skin(manager.get(Constants.UISKIN_ATLAS)) {
+        uiSkin = skin(manager.get(Constants.ATLAS_UI)) {
             color("pinky", 0.7f, 0f, 1f)
             label {
                 font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)

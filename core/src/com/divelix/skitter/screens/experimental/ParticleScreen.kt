@@ -28,7 +28,7 @@ class ParticleScreen(game: Main): KtxScreen {
     val myEffect = ParticleEffect()
 
     init {
-        myEffect.load(file("effects/fire.p"), file(""))
+        myEffect.load(file("effects/gas-burner.p"), file("effects"))
 //        myEffect.scaleEffect(0.1f)
         effectPool = ParticleEffectPool(myEffect, 5, 10)
 

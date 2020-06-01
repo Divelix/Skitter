@@ -13,7 +13,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
-enum class Behaviors {
+enum class Behavior {
     WANDER, // moves randomly in own direction
     SEEK, // moves to player
     FLEE, // moves from player
@@ -26,7 +26,7 @@ enum class Behaviors {
 }
 
 class BehaviorPlanner {
-    var behaviors: ObjectSet<Behaviors>? = null
+    var behaviors: ObjectSet<Behavior>? = null
     var maxSpeed = 0f
     var maxForce = 0f
     var critDstToObs = 2f
@@ -221,15 +221,15 @@ class BehaviorPlanner {
         if (behaviors == null) return steeringForce
         behaviors!!.forEach {
             steeringForce += when (it) {
-                Behaviors.WANDER -> wander(agent)
-                Behaviors.SEEK -> seek(agent)
-                Behaviors.FLEE -> flee(agent)
-                Behaviors.ARRIVE -> arrive(agent)
-                Behaviors.PURSUIT -> pursuit(agent)
-                Behaviors.SEPARATION -> separation(agent)
-                Behaviors.ALIGNMENT -> alignment(agent)
-                Behaviors.COHESION -> cohesion(agent)
-                Behaviors.OBSTACLE_AVOIDANCE -> avoidObs(agent)
+                Behavior.WANDER -> wander(agent)
+                Behavior.SEEK -> seek(agent)
+                Behavior.FLEE -> flee(agent)
+                Behavior.ARRIVE -> arrive(agent)
+                Behavior.PURSUIT -> pursuit(agent)
+                Behavior.SEPARATION -> separation(agent)
+                Behavior.ALIGNMENT -> alignment(agent)
+                Behavior.COHESION -> cohesion(agent)
+                Behavior.OBSTACLE_AVOIDANCE -> avoidObs(agent)
             }
         }
         steeringForce /= agent.mass

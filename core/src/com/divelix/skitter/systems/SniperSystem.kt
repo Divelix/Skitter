@@ -8,7 +8,7 @@ import com.divelix.skitter.components.SniperComponent
 import com.divelix.skitter.utils.EntityBuilder
 import ktx.ashley.allOf
 import ktx.ashley.has
-import ktx.log.info
+import ktx.math.minus
 
 class SniperSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalIteratingSystem(allOf(SniperComponent::class).get(), interval) {
     private val targetPos = Vector2()
@@ -17,9 +17,12 @@ class SniperSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalI
         val visionCmp = GameEngine.cmVision.get(entity)
         val playerEntity = visionCmp.visibleEntities.singleOrNull { it.has(GameEngine.cmPlayer) } ?: return
         val playerPos = GameEngine.cmTransform.get(playerEntity).position
+//        val body = GameEngine.cmBody.get(entity).body
 
         targetPos.set(playerPos.x, playerPos.y)
         entityBuilder.createEnemyBullet(entity, targetPos)
+//        val posDiff = targetPos - body.position
+//        val angleDiff = posDiff.angleRad() - body.angle
     }
 
     companion object {

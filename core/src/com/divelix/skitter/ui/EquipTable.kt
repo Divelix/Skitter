@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.utils.ScaledLabel
-import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.actors.txt
 import ktx.assets.toInternalFile
 import ktx.vis.table
@@ -251,12 +250,12 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     private fun getEquipDrawable(index: Int, isShip: Boolean): TextureRegionDrawable {
         val textureName = if (isShip) {
             when (index) {
-                1 -> Constants.BUCKET_ICON
+                1 -> Constants.SHIP_DEFAULT
                 else -> Constants.AIM
             }
         } else {
             when (index) {
-                1 -> Constants.PISTOL_ICON
+                1 -> Constants.GUN_DEFAULT
                 else -> Constants.AIM
             }
         }
