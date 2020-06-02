@@ -10,10 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.utils.Pool
 import com.divelix.skitter.Constants
 import com.divelix.skitter.GameEngine
+import com.divelix.skitter.components.DamageLabelComponent
+import com.divelix.skitter.components.TransformComponent
 import ktx.actors.along
 import ktx.actors.plusAssign
 import ktx.actors.then
 import ktx.actors.txt
+import ktx.ashley.get
 
 class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) {
 
@@ -24,7 +27,7 @@ class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) 
         damageLabelsPool.obtain().run {
             txt = "${damage.toInt()}"
             pack()
-            temp.set(GameEngine.cmTransform.get(damagedEntity).position)
+            temp.set(damagedEntity[TransformComponent.mapper]!!.position)
             playCam.project(temp)
             val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
             temp.scl(ratio)
@@ -32,7 +35,7 @@ class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) 
             prevPos.set(temp.x, temp.y)
             setPosition(temp.x, temp.y)
             hudStage += this
-            GameEngine.cmDmgLabel.get(damagedEntity).damageLabels.add(this)
+            damagedEntity[DamageLabelComponent.mapper]!!.damageLabels.add(this)
             animate()
         }
     }

@@ -7,12 +7,13 @@ import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.HealthComponent
 import com.divelix.skitter.components.RegenerationComponent
 import ktx.ashley.allOf
+import ktx.ashley.get
 
 class RegenerationSystem(interval: Float): IntervalIteratingSystem(allOf(RegenerationComponent::class, HealthComponent::class).get(), interval) {
 
-    override fun processEntity(entity: Entity?) {
-        val regenCmp = GameEngine.cmRegen.get(entity)
-        val healthCmp = GameEngine.cmHealth.get(entity)
+    override fun processEntity(entity: Entity) {
+        val regenCmp = entity[RegenerationComponent.mapper]!!
+        val healthCmp = entity[HealthComponent.mapper]!!
 
         if (healthCmp.health < Data.playerData.ship.health)
             healthCmp.health += regenCmp.amount

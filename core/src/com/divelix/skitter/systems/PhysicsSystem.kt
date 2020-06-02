@@ -12,6 +12,7 @@ import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.TransformComponent
 import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.allOf
+import ktx.ashley.get
 import kotlin.math.min
 
 class PhysicsSystem(private val world: World):
@@ -33,8 +34,8 @@ class PhysicsSystem(private val world: World):
             //Loop through all Entities and update its components
             for (entity in entities) {
                 // get components
-                val tfmCmp = GameEngine.cmTransform.get(entity)
-                val bodyCmp = GameEngine.cmBody.get(entity)
+                val tfmCmp = entity[TransformComponent.mapper]!!
+                val bodyCmp = entity[B2dBodyComponent.mapper]!!
                 // get position from body
                 val position = bodyCmp.body.position
                 // update our transform to match body position

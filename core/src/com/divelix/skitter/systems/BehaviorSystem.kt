@@ -7,14 +7,15 @@ import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import com.divelix.skitter.utils.BehaviorPlanner
 import ktx.ashley.allOf
+import ktx.ashley.get
 
 class BehaviorSystem: IteratingSystem(allOf(VisionComponent::class, SteerComponent::class).get()) {
     private val behaviorPlanner = BehaviorPlanner()
 
-    override fun processEntity(entity: Entity?, deltaTime: Float) {
-        val visionCmp = GameEngine.cmVision.get(entity)
-        val bodyCmp = GameEngine.cmBody.get(entity)
-        val steerCmp = GameEngine.cmSteer.get(entity)
+    override fun processEntity(entity: Entity, deltaTime: Float) {
+        val visionCmp = entity[VisionComponent.mapper]!!
+        val bodyCmp = entity[B2dBodyComponent.mapper]!!
+        val steerCmp = entity[SteerComponent.mapper]!!
 
         behaviorPlanner.run {
             reset()
@@ -25,14 +26,14 @@ class BehaviorSystem: IteratingSystem(allOf(VisionComponent::class, SteerCompone
         behaviorPlanner.behaviors = steerCmp.behaviors
 //        println(steerCmp.behaviors)
         for (seen in visionCmp.visibleEntities) {
-            val seenBodyCmp = GameEngine.cmBody.get(seen) ?: return // elvis avoids NPE on bulk removal (over 200 entities)
+            val seenBodyCmp = seen[B2dBodyComponent.mapper] ?: return // elvis avoids NPE on bulk removal (over 200 entities)
             //TODO fix later
 //            if (seenBodyCmp.isDead) {
 //                visionCmp.visibleEntities.remove(seen)
 //                continue
 //            }
 
-            when (GameEngine.cmType.get(seen).type) {
+            when (seen[TypeComponent.mapper]!!.type) {
                 TypeComponent.PLAYER -> behaviorPlanner.player = seenBodyCmp.body
                 TypeComponent.ENEMY -> behaviorPlanner.neighbors.add(seenBodyCmp.body)
                 TypeComponent.OBSTACLE -> {

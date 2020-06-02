@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
 import com.divelix.skitter.utils.Behavior
+import ktx.ashley.mapperFor
 import ktx.collections.*
 
 class SteerComponent: Component, Pool.Poolable {
@@ -21,5 +22,9 @@ class SteerComponent: Component, Pool.Poolable {
         maxSpeed = 0f
         maxForce = 0f
         finalForce = 0f
+    }
+
+    companion object {
+        val mapper = mapperFor<SteerComponent>()
     }
 }

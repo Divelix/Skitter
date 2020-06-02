@@ -6,11 +6,12 @@ import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.DecayComponent
 import com.divelix.skitter.components.HealthComponent
 import ktx.ashley.allOf
+import ktx.ashley.get
 
 class DecaySystem(interval: Float): IntervalIteratingSystem(allOf(DecayComponent::class, HealthComponent::class).get(), interval) {
-    override fun processEntity(entity: Entity?) {
-        val decayCmp = GameEngine.cmDecay.get(entity)
-        val healthCmp = GameEngine.cmHealth.get(entity)
+    override fun processEntity(entity: Entity) {
+        val decayCmp = entity[DecayComponent.mapper]!!
+        val healthCmp = entity[HealthComponent.mapper]!!
 
         if (healthCmp.health > decayCmp.damage)
             healthCmp.health -= decayCmp.damage

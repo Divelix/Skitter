@@ -6,7 +6,6 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
-import com.divelix.skitter.GameEngine
 import com.divelix.skitter.Main
 import com.divelix.skitter.components.*
 import com.divelix.skitter.ui.Hud
@@ -34,16 +33,16 @@ class B2dContactListener(
             TypeComponent.VISION_SENSOR -> {
                 when (typeB) {
                     TypeComponent.ENEMY, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
-                        GameEngine.cmVision.get(entityA).visibleEntities.add(entityB)
+                        entityA[VisionComponent.mapper]!!.visibleEntities.add(entityB)
                     }
                 }
             }
             TypeComponent.PLAYER_BULLET, TypeComponent.ENEMY_BULLET -> {
-                val bulletCmp = GameEngine.cmBullet.get(entityA)
+                val bulletCmp = entityA[BulletComponent.mapper]!!
                 when(typeB) {
                     TypeComponent.ENEMY, TypeComponent.PLAYER -> bulletHitsTarget(bulletCmp.damage, entityB)
                     TypeComponent.OBSTACLE -> {
-                        if (entityB.has(GameEngine.cmHealth)) bulletHitsTarget(bulletCmp.damage, entityB)
+                        if (entityB.has(HealthComponent.mapper)) bulletHitsTarget(bulletCmp.damage, entityB)
                     }
                 }
                 engine.removeEntity(entityA)// always delete bullet after any collision
@@ -82,8 +81,8 @@ class B2dContactListener(
             TypeComponent.VISION_SENSOR -> {
                 when(typeB) {
                     TypeComponent.ENEMY, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
-                        val agentCmp = GameEngine.cmVision.get(entityA)
-                        val ve = try {agentCmp.visibleEntities} catch (e: NullPointerException) {return}
+                        val visionCmp = entityA[VisionComponent.mapper]!!
+                        val ve = try {visionCmp.visibleEntities} catch (e: NullPointerException) {return}
                         ve.remove(entityB)
                     }
                 }
@@ -105,7 +104,7 @@ class B2dContactListener(
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {}
 
     private fun bulletHitsTarget(damage: Float, targetEntity: Entity) {
-        val targetHealthCmp = GameEngine.cmHealth.get(targetEntity)
+        val targetHealthCmp = targetEntity[HealthComponent.mapper]!!
         if (targetHealthCmp.isIntHp) {
             targetHealthCmp.health--
         } else {

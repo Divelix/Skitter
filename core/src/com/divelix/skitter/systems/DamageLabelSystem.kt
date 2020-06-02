@@ -5,13 +5,15 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.DamageLabelComponent
+import com.divelix.skitter.components.TransformComponent
 import ktx.ashley.allOf
+import ktx.ashley.get
 
 class DamageLabelSystem(val camera: OrthographicCamera): IteratingSystem(allOf(DamageLabelComponent::class).get()) {
 
-    override fun processEntity(entity: Entity?, deltaTime: Float) {
-        val damageCmp = GameEngine.cmDmgLabel.get(entity)
-        val transCmp = GameEngine.cmTransform.get(entity)
+    override fun processEntity(entity: Entity, deltaTime: Float) {
+        val damageCmp = entity[DamageLabelComponent.mapper]!!
+        val transCmp = entity[TransformComponent.mapper]!!
 
         for (label in damageCmp.damageLabels) {
             label.latestPos.set(transCmp.position)

@@ -17,6 +17,7 @@ import com.divelix.skitter.Data
 import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
+import ktx.ashley.get
 import ktx.box2d.body
 import ktx.collections.*
 import ktx.log.info
@@ -70,7 +71,7 @@ class EntityBuilder(private val engine: PooledEngine,
     fun createPlayerBullet(sourceEntity: Entity, aim: Vector2) {
         val entityType = TypeComponent.PLAYER_BULLET
         val sourceBody = try {
-            GameEngine.cmBody.get(sourceEntity).body
+            sourceEntity[B2dBodyComponent.mapper]!!.body
         } catch(e: NullPointerException) {
             info(TAG) { "Can't shoot - player is dead" }
             return
@@ -320,7 +321,7 @@ class EntityBuilder(private val engine: PooledEngine,
     fun createKid(womb: Entity) {
         val entityType = TypeComponent.ENEMY
         val entitySize = 0.5f
-        val initPos = GameEngine.cmBody.get(womb).body.position.apply {
+        val initPos = womb[B2dBodyComponent.mapper]!!.body.position.apply {
             x += MathUtils.random(-1f, 1f)
             y += MathUtils.random(-1f, 1f)
         }

@@ -2,6 +2,7 @@ package com.divelix.skitter.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool
+import ktx.ashley.mapperFor
 import kotlin.experimental.or
 
 class TypeComponent: Component, Pool.Poolable {
@@ -12,6 +13,8 @@ class TypeComponent: Component, Pool.Poolable {
     }
 
     companion object {
+        val mapper = mapperFor<TypeComponent>()
+
         const val VISION_SENSOR: Short = 1
         const val PLAYER_BULLET: Short = 2
         const val ENEMY_BULLET: Short = 4

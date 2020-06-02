@@ -5,10 +5,15 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Pool
+import ktx.ashley.mapperFor
 
 class HealthBarComponent: Component, Pool.Poolable {
     val height = 0.2f
     var maxValue = 100f
 
     override fun reset() {}
+
+    companion object {
+        val mapper = mapperFor<HealthBarComponent>()
+    }
 }

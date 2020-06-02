@@ -15,6 +15,7 @@ import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import com.divelix.skitter.utils.ZComparator
 import ktx.ashley.allOf
+import ktx.ashley.get
 import ktx.ashley.has
 import ktx.graphics.use
 import ktx.inject.Context
@@ -48,8 +49,8 @@ class RenderingSystem(
             batch.projectionMatrix = camera.combined
             batch.use {
                 for (entity in entities) {
-                    val textureCmp = GameEngine.cmTexture.get(entity)
-                    val transformCmp = GameEngine.cmTransform.get(entity)
+                    val textureCmp = entity[TextureComponent.mapper]!!
+                    val transformCmp = entity[TransformComponent.mapper]!!
 
                     val width = transformCmp.size.x
                     val height = transformCmp.size.y
@@ -63,9 +64,9 @@ class RenderingSystem(
                             width, height,
                             1f, 1f,
                             transformCmp.rotation)
-                    if (entity.has(GameEngine.cmHealthBar)) {
-                        val healthBarCmp = GameEngine.cmHealthBar.get(entity)
-                        val healthCmp = GameEngine.cmHealth.get(entity)
+                    if (entity.has(HealthBarComponent.mapper)) {
+                        val healthBarCmp = entity[HealthBarComponent.mapper]!!
+                        val healthCmp = entity[HealthComponent.mapper]!!
                         batch.draw(healthBarReg,
                                 transformCmp.position.x - originX, transformCmp.position.y - originY + transformCmp.size.y,
                                 width * healthCmp.health / healthBarCmp.maxValue, healthBarCmp.height)

@@ -7,6 +7,7 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import ktx.ashley.allOf
+import ktx.ashley.get
 import ktx.ashley.has
 import ktx.log.info
 import java.lang.NullPointerException
@@ -19,16 +20,16 @@ class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val playerBody = try {
-            val playerEntity = GameEngine.cmBind.get(entity).entity
-            GameEngine.cmBody.get(playerEntity).body
+            val playerEntity = entity[BindComponent.mapper]!!.entity
+            playerEntity[B2dBodyComponent.mapper]!!.body
         } catch (e: NullPointerException) {
 //            info(TAG) { "Camera entity lost player bind" }
             entity.remove(BindComponent::class.java)
             return
         }
 
-        if (entity.has(GameEngine.cmBind)) {
-            val cameraCmp = GameEngine.cmCamera.get(entity)
+        if (entity.has(BindComponent.mapper)) {
+            val cameraCmp = entity[CameraComponent.mapper]!!
             camPos.set(cameraCmp.camera.position.x, cameraCmp.camera.position.y)
             bodPos.set(playerBody.position)
             if (cameraCmp.needCenter) {

@@ -86,30 +86,5 @@ class GameEngine(val game: Main) {
     companion object {
         var slowRate = Constants.DEFAULT_SLOW_RATE
         var isPaused = false
-
-        val cmCamera = mapperFor<CameraComponent>()
-        val cmPlayer = mapperFor<PlayerComponent>()
-        val cmBody = mapperFor<B2dBodyComponent>()
-        val cmType = mapperFor<TypeComponent>()
-        val cmBind = mapperFor<BindComponent>()
-        val cmBullet = mapperFor<BulletComponent>()
-        val cmClick = mapperFor<ClickableComponent>()
-        val cmDmgLabel = mapperFor<DamageLabelComponent>()
-        val cmDecay = mapperFor<DecayComponent>()
-        val cmEnemy = mapperFor<EnemyComponent>()
-        val cmHealthBar = mapperFor<HealthBarComponent>()
-        val cmHealth = mapperFor<HealthComponent>()
-        val cmRegen = mapperFor<RegenerationComponent>()
-        val cmSlow = mapperFor<SlowComponent>()
-        val cmSpawn = mapperFor<SpawnComponent>()
-        val cmSteer = mapperFor<SteerComponent>()
-        val cmVision = mapperFor<VisionComponent>()
-        val cmTexture = mapperFor<TextureComponent>()
-        val cmTransform = mapperFor<TransformComponent>()
-
-        val cmJumper = mapperFor<JumperComponent>()
-        val cmRadial = mapperFor<RadialComponent>()
-        val cmSniper = mapperFor<SniperComponent>()
-        val cmWomb = mapperFor<WombComponent>()
     }
 }
