@@ -239,7 +239,7 @@ class EntityBuilder(private val engine: PooledEngine,
     fun createSniper(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
         val entitySize = 1.5f
-        val sniperDamage = 10f
+//        val sniperDamage = 10f
         val sniperHealth = 200f
         engine.entity {
             with<SniperComponent>()
