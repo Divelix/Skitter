@@ -5,9 +5,15 @@ import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
 
 class SniperComponent: Component, Pool.Poolable {
-    override fun reset() {}
+
+    var firingTimer = 0f
+
+    override fun reset() {
+        firingTimer = 0f
+    }
 
     companion object {
         val mapper = mapperFor<SniperComponent>()
+        const val firingPeriod = 1.5f
     }
 }

@@ -2,7 +2,18 @@ package com.divelix.skitter.components
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.utils.Pool
+import ktx.ashley.mapperFor
 
-class TowerComponent: Component {
+class TowerComponent: Component, Pool.Poolable {
     val region = TextureRegion()
+    var angle = 0f
+
+    override fun reset() {
+        angle = 0f
+    }
+
+    companion object {
+        val mapper = mapperFor<TowerComponent>()
+    }
 }

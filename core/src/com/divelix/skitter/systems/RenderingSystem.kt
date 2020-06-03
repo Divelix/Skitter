@@ -64,6 +64,14 @@ class RenderingSystem(
                             width, height,
                             1f, 1f,
                             transformCmp.rotation)
+
+                    if (entity.has(TowerComponent.mapper)) {
+                        val towerCmp = entity[TowerComponent.mapper]!!
+                        batch.draw(towerCmp.region,
+                                transformCmp.position.x - originX, transformCmp.position.y - originY,
+                                originX, originY, width/2f, height/2f, 1f, 1f, towerCmp.angle)
+                    }
+
                     if (entity.has(HealthBarComponent.mapper)) {
                         val healthBarCmp = entity[HealthBarComponent.mapper]!!
                         val healthCmp = entity[HealthComponent.mapper]!!

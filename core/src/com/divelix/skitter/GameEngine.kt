@@ -70,7 +70,7 @@ class GameEngine(val game: Main) {
         engine.addSystem(RenderingSystem(context, playCam))
         engine.addSystem(DamageLabelSystem(playCam)) // before HealthSystem to let label update init position on last hit
         engine.addSystem(HealthSystem(hud))
-        engine.addSystem(SniperSystem(1.5f, entityBuilder))
+        engine.addSystem(SniperSystem(entityBuilder))
         engine.addSystem(BulletSystem())
 //        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
         engine.addSystem(DecaySystem(0.1f))
