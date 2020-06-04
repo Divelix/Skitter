@@ -31,7 +31,7 @@ class LevelManager(val gameEngine: GameEngine) {
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
                 EnemyBundle(EnemyType.RADIAL, 1),
-                EnemyBundle(EnemyType.AGENT, 5)
+                EnemyBundle(EnemyType.AGENT, 2)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
                     EnemyBundle(EnemyType.SNIPER, 3),

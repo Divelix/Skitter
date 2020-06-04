@@ -124,14 +124,14 @@ class EntityBuilder(private val engine: PooledEngine,
         val dirAngle = dirVec.angle() - 90f
         val width = 0.5f
         val height = 0.5f
-        val speed = 10f
+        val speed = 5f
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<BulletComponent> {
                 damage = 10f // TODO load enemy damage from json
             }
             with<TransformComponent> {
-                position.set(initPos.x, initPos.y, 1f)
+                position.set(initPos.x, initPos.y, 0f)
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
@@ -252,7 +252,7 @@ class EntityBuilder(private val engine: PooledEngine,
             with<HealthComponent> { health = sniperHealth }
             with<HealthBarComponent> { maxValue = sniperHealth }
             with<TransformComponent> {
-                position.set(x, y, 0f)
+                position.set(x, y, 1f)
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
@@ -271,7 +271,8 @@ class EntityBuilder(private val engine: PooledEngine,
                         filter.categoryBits = TypeComponent.VISION_SENSOR
                         filter.maskBits = TypeComponent.VISION_SENSOR_MB
                     }
-                    linearDamping = 10f
+                    linearDamping = 5f
+                    angularDamping = 5f
                     position.set(x, y)
                     userData = (this@entity).entity
                 }

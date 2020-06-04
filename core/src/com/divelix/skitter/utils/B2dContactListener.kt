@@ -81,9 +81,10 @@ class B2dContactListener(
             TypeComponent.VISION_SENSOR -> {
                 when(typeB) {
                     TypeComponent.ENEMY, TypeComponent.OBSTACLE, TypeComponent.PLAYER -> {
-                        val visionCmp = entityA[VisionComponent.mapper]!!
-                        val ve = try {visionCmp.visibleEntities} catch (e: NullPointerException) {return}
-                        ve.remove(entityB)
+                        entityA[VisionComponent.mapper]?.visibleEntities?.remove(entityB)
+//                        val visionCmp = entityA[VisionComponent.mapper]!!
+//                        val ve = try {visionCmp.visibleEntities} catch (e: NullPointerException) {return}
+//                        ve.remove(entityB)
                     }
                 }
             }

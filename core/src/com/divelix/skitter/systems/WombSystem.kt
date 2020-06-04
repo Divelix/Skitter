@@ -9,6 +9,6 @@ import ktx.ashley.allOf
 class WombSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalIteratingSystem(allOf(WombComponent::class).get(), interval) {
 
     override fun processEntity(entity: Entity) {
-        for (i in 1..10) entityBuilder.createKid(entity)
+        for (i in 1..2) entityBuilder.createKid(entity)
     }
 }

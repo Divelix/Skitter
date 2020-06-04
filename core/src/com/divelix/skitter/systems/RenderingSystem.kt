@@ -19,6 +19,7 @@ import ktx.ashley.get
 import ktx.ashley.has
 import ktx.graphics.use
 import ktx.inject.Context
+import ktx.log.debug
 
 class RenderingSystem(
         context: Context,
@@ -67,9 +68,14 @@ class RenderingSystem(
 
                     if (entity.has(TowerComponent.mapper)) {
                         val towerCmp = entity[TowerComponent.mapper]!!
+                        val aspectRatio = towerCmp.region.regionWidth.toFloat() / towerCmp.region.regionHeight.toFloat()
+                        val towerWidth = width / 2
+                        val towerHeight = towerWidth / aspectRatio
+                        val towerOriginX = towerWidth / 2
+                        val towerOriginY = towerHeight / 3
                         batch.draw(towerCmp.region,
-                                transformCmp.position.x - originX, transformCmp.position.y - originY,
-                                originX, originY, width/2f, height/2f, 1f, 1f, towerCmp.angle)
+                                transformCmp.position.x - towerOriginX, transformCmp.position.y - towerOriginY,
+                                towerOriginX, towerOriginY, towerWidth, towerHeight, 1f, 1f, towerCmp.angle - 90f)
                     }
 
                     if (entity.has(HealthBarComponent.mapper)) {

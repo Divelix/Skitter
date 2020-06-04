@@ -43,8 +43,8 @@ class Hud(
     private val assets = context.inject<Assets>()
 
     val hudCam = OrthographicCamera()
-    val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
-    val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio, hudCam), batch)
+    val aspectRatio = Gdx.graphics.width.toFloat() / Gdx.graphics.height
+    val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH / aspectRatio, hudCam), batch)
     val damageLabelsProvider = DamageLabelProvider(hudStage, playCam)
 
     private val rootTable: Table
@@ -319,6 +319,6 @@ class Hud(
     }
 
     companion object {
-        const val TAG = "Hud"
+        private val TAG = Hud::class.simpleName
     }
 }

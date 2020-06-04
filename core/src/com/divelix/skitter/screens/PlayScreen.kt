@@ -7,8 +7,10 @@ import com.divelix.skitter.utils.LevelManager
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
 import ktx.log.info
+import ktx.log.logger
 
 class PlayScreen(val game: Main): KtxScreen {
+    private val logger = logger<PlayScreen>()
     private val gameEngine by lazy { GameEngine(game) }
     private val levelManager by lazy { LevelManager(gameEngine) }
 
@@ -81,7 +83,7 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     companion object {
-        const val TAG = "PlayScreen"
+        val TAG = PlayScreen::class.simpleName!!
         var ammo = 0
         var health = 0f
     }
