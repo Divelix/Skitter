@@ -11,13 +11,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
-import com.divelix.skitter.components.*
-import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.systems.*
 import com.divelix.skitter.ui.Hud
 import com.divelix.skitter.utils.B2dContactListener
 import com.divelix.skitter.utils.EntityBuilder
-import ktx.ashley.mapperFor
 import ktx.graphics.use
 
 class GameEngine(val game: Main) {
@@ -56,7 +53,7 @@ class GameEngine(val game: Main) {
             val bufferTexture = TextureRegion(t).apply { flip(false, true) }
             val w = Constants.WIDTH
             val h = Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width
-            batch.draw(bufferTexture, playCam.position.x - w/2f, playCam.position.y - h/2f, w, h)
+            batch.draw(bufferTexture, playCam.position.x - w / 2f, playCam.position.y - h / 2f, w, h)
         }
         debugRenderer.render(world, playCam.combined)
 
@@ -64,23 +61,25 @@ class GameEngine(val game: Main) {
     }
 
     private fun createEngineSystems() {
-        engine.addSystem(CameraSystem())
-        engine.addSystem(PhysicsSystem(world))
-        engine.addSystem(PlayerSystem())
-        engine.addSystem(RenderingSystem(context, playCam))
-        engine.addSystem(DamageLabelSystem(playCam)) // before HealthSystem to let label update init position on last hit
-        engine.addSystem(HealthSystem(hud))
-        engine.addSystem(SniperSystem(entityBuilder))
-        engine.addSystem(BulletSystem())
-//        engine.addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
-        engine.addSystem(DecaySystem(0.1f))
-//        engine.addSystem(RegenerationSystem(0.5f))
-        engine.addSystem(SlowSystem())
-        engine.addSystem(BehaviorSystem())
-//        engine.addSystem(ClickableSystem(camera))
-        engine.addSystem(JumperSystem())
-        engine.addSystem(WombSystem(5f, entityBuilder))
-        engine.addSystem(RadialSystem(2f, entityBuilder))
+        engine.run {
+            addSystem(CameraSystem())
+            addSystem(PhysicsSystem(world))
+            addSystem(PlayerSystem())
+            addSystem(RenderingSystem(context, playCam))
+            addSystem(DamageLabelSystem(playCam)) // before HealthSystem to let label update init position on last hit
+            addSystem(HealthSystem(hud))
+            addSystem(SniperSystem(entityBuilder))
+            addSystem(BulletSystem())
+//            addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
+            addSystem(DecaySystem(0.1f))
+//            addSystem(RegenerationSystem(0.5f))
+            addSystem(SlowSystem())
+            addSystem(BehaviorSystem())
+//            addSystem(ClickableSystem(camera))
+            addSystem(JumperSystem())
+            addSystem(WombSystem(5f, entityBuilder))
+            addSystem(RadialSystem(2f, entityBuilder))
+        }
     }
 
     companion object {
