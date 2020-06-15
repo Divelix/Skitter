@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Data
-import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.ashley.get
@@ -38,7 +37,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SHIP_DEFAULT)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.SHIP_DEFAULT)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = Constants.PLAYER_SIZE / 2f) {
@@ -93,7 +92,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
@@ -135,7 +134,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
@@ -181,7 +180,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(0.9f, 1.5f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.AGENT)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.AGENT)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     polygon(Vector2(0f, 0.75f), Vector2(-0.45f, -0.75f), Vector2(0.45f, -0.75f)) {
@@ -219,7 +218,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(1f, 1f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.JUMPER)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.JUMPER)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(0.5f, Vector2(0f, 0f)) {
@@ -247,7 +246,7 @@ class EntityBuilder(private val engine: PooledEngine,
             with<VisionComponent>()
             with<EnemyComponent>()// { damage = sniperDamage }
             with<TowerComponent> {
-                region.setRegion(assets.manager.get<Texture>(Constants.SNIPER_TOWER))
+                sprite.setRegion(assets.manager.get<Texture>(Constants.SNIPER_TOWER))
             }
             with<HealthComponent> { health = sniperHealth }
             with<HealthBarComponent> { maxValue = sniperHealth }
@@ -256,7 +255,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.SNIPER_BASE)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.SNIPER_BASE)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
@@ -298,7 +297,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.WOMB)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.WOMB)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
@@ -351,7 +350,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.KID)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.KID)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
@@ -391,7 +390,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(textureWidth, textureWidth * ratio)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(texture) }
+            with<TextureComponent> { sprite.setRegion(texture) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = textureWidth / 2f) {
@@ -424,7 +423,7 @@ class EntityBuilder(private val engine: PooledEngine,
                     setColor(0.5f, 0.5f, 0.5f, 1f)
                     fill()
                 }
-                region = TextureRegion(Texture(pixel))
+                sprite.setRegion(Texture(pixel))
             }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
@@ -460,7 +459,7 @@ class EntityBuilder(private val engine: PooledEngine,
                     setColor(0.7f, 0.7f, 0.1f, 1f)
                     fill()
                 }
-                region = TextureRegion(Texture(pixel))
+                sprite.setRegion(Texture(pixel))
             }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.KinematicBody) {
@@ -489,7 +488,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(radius * 2f, radius * 2f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.WHITE_CIRCLE)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.WHITE_CIRCLE)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     circle(radius = radius) {
@@ -540,7 +539,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
                 val bgReg = TextureRegion(bg)
                 bgReg.setRegion(0, 0, width.toInt() * scale, height.toInt() * scale)
-                region = bgReg
+                sprite.setRegion(bgReg)
             }
         }
     }
@@ -559,7 +558,7 @@ class EntityBuilder(private val engine: PooledEngine,
                     setColor(1f, 0.0f, 0.8f, 1f)
                     fill()
                 }
-                region = TextureRegion(Texture(pixel))
+                sprite.setRegion(Texture(pixel))
             }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
@@ -587,7 +586,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(radius * 2f, radius * 2f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.AIM)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.AIM)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     circle(radius) {
@@ -615,7 +614,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(radius * 2f, radius * 2f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { region = TextureRegion(assets.manager.get<Texture>(Constants.WHITE_CIRCLE)) }
+            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.WHITE_CIRCLE)) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     circle(radius) {
