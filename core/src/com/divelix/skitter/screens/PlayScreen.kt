@@ -3,14 +3,18 @@ package com.divelix.skitter.screens
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
+import com.divelix.skitter.components.EnemyComponent
+import com.divelix.skitter.components.HealthComponent
 import com.divelix.skitter.utils.LevelManager
 import ktx.app.KtxScreen
+import ktx.ashley.get
+import ktx.ashley.has
 import ktx.assets.toLocalFile
+import ktx.log.debug
 import ktx.log.info
 import ktx.log.logger
 
 class PlayScreen(val game: Main): KtxScreen {
-    private val logger = logger<PlayScreen>()
     private val gameEngine by lazy { GameEngine(game) }
     private val levelManager by lazy { LevelManager(gameEngine) }
 
@@ -28,6 +32,21 @@ class PlayScreen(val game: Main): KtxScreen {
                     Input.Keys.BACK, Input.Keys.ESCAPE  -> game.screen = MenuScreen(game)
                     Input.Keys.SPACE -> GameEngine.isPaused = !GameEngine.isPaused
                     Input.Keys.N -> levelManager.goToNextLevel()
+                    Input.Keys.D -> gameEngine.engine.entities
+                            .filter { it.has(EnemyComponent.mapper) }
+                            .forEach {
+                                val targetHealthCmp = it[HealthComponent.mapper]
+                                require(targetHealthCmp != null) {"Null HealthComponent"}
+                                targetHealthCmp.health = 0f
+                            }
+                    Input.Keys.I -> gameEngine.engine.entities
+                            .filter { it.has(EnemyComponent.mapper) }
+                            .forEach {
+                                val targetHealthCmp = it[HealthComponent.mapper]
+                                require(targetHealthCmp != null) {"Null HealthComponent"}
+                                debug(TAG) { targetHealthCmp.health.toString() }
+                                println(targetHealthCmp.health.toString())
+                            }
                 }
                 return false
             }

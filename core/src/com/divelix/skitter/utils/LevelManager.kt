@@ -20,22 +20,22 @@ class LevelManager(val gameEngine: GameEngine) {
     var level = 0
     var isDoorAllowed = false
     val doorPos = Vector2()
-    val cmBody = mapperFor<B2dBodyComponent>()
-    val cmPlayer = mapperFor<PlayerComponent>()
-    val cmCamera = mapperFor<CameraComponent>()
     val chapter = Chapter("Chapter_1", gdxArrayOf(
             Level(Vector2(8f, 10f), gdxArrayOf()),
             Level(Vector2(15f, 30f), gdxArrayOf(
-//                EnemyBundle(EnemyType.SNIPER, 2),
-                EnemyBundle(EnemyType.SNIPER, 3)
+                EnemyBundle(EnemyType.SNIPER, 1)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                EnemyBundle(EnemyType.RADIAL, 1),
-                EnemyBundle(EnemyType.AGENT, 2)
+                    EnemyBundle(EnemyType.JUMPER, 1)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                    EnemyBundle(EnemyType.SNIPER, 3),
+                    EnemyBundle(EnemyType.SNIPER, 1)
+            )),
+            Level(Vector2(15f, 30f), gdxArrayOf(
                     EnemyBundle(EnemyType.WOMB, 1)
+            )),
+            Level(Vector2(15f, 30f), gdxArrayOf(
+                    EnemyBundle(EnemyType.RADIAL, 1)
             ))
         )
     )
@@ -71,7 +71,7 @@ class LevelManager(val gameEngine: GameEngine) {
 
     fun destroyLevel() {
         engine.entities
-                .filter { it.hasNot(cmPlayer) && it.hasNot(cmCamera) }
+                .filter { it.hasNot(PlayerComponent.mapper) && it.hasNot(CameraComponent.mapper) }
                 .forEach { engine.removeEntity(it) }
     }
 
@@ -114,8 +114,8 @@ class LevelManager(val gameEngine: GameEngine) {
     }
 
     fun resetPlayerTo(x: Float, y: Float) {
-        cmBody.get(gameEngine.playerEntity).body.setTransform(x, y, 0f)
-        cmCamera.get(gameEngine.cameraEntity).needCenter = true
+        B2dBodyComponent.mapper.get(gameEngine.playerEntity).body.setTransform(x, y, 0f)
+        CameraComponent.mapper.get(gameEngine.cameraEntity).needCenter = true
         Data.dirVec.set(0f, 1f)
     }
 

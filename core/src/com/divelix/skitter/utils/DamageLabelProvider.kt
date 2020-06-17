@@ -35,7 +35,10 @@ class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) 
             prevPos.set(temp.x, temp.y)
             setPosition(temp.x, temp.y)
             hudStage += this
-            damagedEntity[DamageLabelComponent.mapper]!!.damageLabels.add(this)
+            toBack()
+            val dlCmp = damagedEntity[DamageLabelComponent.mapper]
+            require(dlCmp != null) {"DamageLabelComponent should not be NULL"}
+            dlCmp.damageLabels.add(this)
             animate()
         }
     }

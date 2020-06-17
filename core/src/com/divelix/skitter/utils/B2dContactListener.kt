@@ -38,7 +38,8 @@ class B2dContactListener(
                 }
             }
             TypeComponent.PLAYER_BULLET, TypeComponent.ENEMY_BULLET -> {
-                val bulletCmp = entityA[BulletComponent.mapper]!!
+                val bulletCmp = entityA[BulletComponent.mapper]
+                require(bulletCmp != null) {"Null BulletComponent"}
                 when(typeB) {
                     TypeComponent.ENEMY, TypeComponent.PLAYER -> bulletHitsTarget(bulletCmp.damage, entityB)
                     TypeComponent.OBSTACLE -> {
@@ -105,7 +106,8 @@ class B2dContactListener(
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {}
 
     private fun bulletHitsTarget(damage: Float, targetEntity: Entity) {
-        val targetHealthCmp = targetEntity[HealthComponent.mapper]!!
+        val targetHealthCmp = targetEntity[HealthComponent.mapper]
+        require(targetHealthCmp != null) {"Null HealthComponent"}
         if (targetHealthCmp.isIntHp) {
             targetHealthCmp.health--
         } else {

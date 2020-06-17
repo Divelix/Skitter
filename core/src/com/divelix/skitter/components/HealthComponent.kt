@@ -8,7 +8,10 @@ class HealthComponent: Component, Pool.Poolable {
     var isIntHp = false
     var health = 0f
 
-    override fun reset() {}
+    override fun reset() {
+        isIntHp = false
+        health = 0f
+    }
 
     companion object {
         val mapper = mapperFor<HealthComponent>()

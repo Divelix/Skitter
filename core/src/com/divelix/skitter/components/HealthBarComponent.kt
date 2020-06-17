@@ -11,7 +11,7 @@ class HealthBarComponent: Component, Pool.Poolable {
     val height = 0.2f
     var maxValue = 100f
     private val redPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
-        setColor(0f, 0f, 1f, 1f)
+        setColor(1f, 0f, 0f, 1f)
         fill()
     }
     val sprite = Sprite(Texture(redPixel))
