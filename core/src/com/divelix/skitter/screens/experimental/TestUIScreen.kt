@@ -3,21 +3,18 @@ package com.divelix.skitter.screens.experimental
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.ui.Mod
 import com.divelix.skitter.utils.TopViewport
-import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
+import ktx.log.debug
 import ktx.vis.table
 import ktx.vis.window
 
@@ -37,18 +34,48 @@ class TestUIScreen(val game: Main): KtxScreen {
             textButton("left")
             textButton("right")
         }
+        val rows = listOf(
+                Pair(assets.manager.get<Texture>(Constants.WOMB), 12),
+                Pair(assets.manager.get<Texture>(Constants.RADIAL), 6),
+                Pair(assets.manager.get<Texture>(Constants.JUMPER), 10)
+        )
         stage += root
-        stage += window("jopa") {
+        stage += window("Game Over") {
+            debugAll()
             centerWindow()
-            padTop(25f)
-            width = 300f
-            height = 400f
-//            label("WhobaW")
-//            row()
-            for (i in 1..49) {
-                textButton("    ")
-                if (i % 7 == 0) row()
-            }
+            padTop(50f) // title height
+            defaults().top()
+            width = 320f
+            height = 500f
+            row()
+            // Stats table
+            table {
+                val iconWidth = 50f
+                val cellWidth = 150f
+                debug = true
+                padTop(25f)
+                defaults().padTop(10f)
+                rows.forEach {
+                    val ratio = it.first.width.toFloat() / it.first.height
+                    image(TextureRegionDrawable(it.first)).cell(width = iconWidth, height = iconWidth / ratio)
+                    label("x${it.second}")
+                    label("${it.second * 10}").cell(width = cellWidth).setAlignment(Align.center)
+                    row()
+                }
+            }.cell(colspan = 2, expand = true)
+            row()
+            imageButton("restart").addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    debug(TAG) {"Restart match"}
+                }
+            })
+            imageButton("home").addListener(object: ClickListener() {
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    debug(TAG) {"Go to menu"}
+                }
+            })
         }
         Gdx.input.inputProcessor = stage
     }
@@ -63,5 +90,9 @@ class TestUIScreen(val game: Main): KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height, false)
+    }
+
+    companion object {
+        private val TAG = TestUIScreen::class.simpleName!!
     }
 }

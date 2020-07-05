@@ -48,6 +48,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.SHIP_ICON)
         manager.load<Texture>(Constants.GUN_ICON)
         manager.load<Texture>(Constants.APPLY_ICON)
+        manager.load<Texture>(Constants.HOME_ICON)
         manager.load<Texture>(Constants.RESTART_ICON)
         manager.load<Texture>(Constants.UP_BTN)
         manager.load<Texture>(Constants.SELL_BTN)
@@ -128,6 +129,12 @@ class Assets: Disposable {
             button {
                 up = it["button"]
                 down = it["button-blue"]
+            }
+            visImageButton("home") {
+                up = TextureRegionDrawable(manager.get<Texture>(Constants.HOME_ICON))
+            }
+            visImageButton("restart") {
+                up = TextureRegionDrawable(manager.get<Texture>(Constants.RESTART_ICON))
             }
             list {
                 font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)

@@ -44,6 +44,7 @@ object Constants {
     const val SHIP_ICON = "textures/ui/ship-icon.png"
     const val GUN_ICON = "textures/ui/gun-icon.png"
     const val APPLY_ICON = "textures/ui/apply-icon.png"
+    const val HOME_ICON = "textures/ui/home-icon.png"
     const val RESTART_ICON = "textures/ui/restart-icon.png"
     const val UP_BTN = "textures/ui/up-btn.png"
     const val SELL_BTN = "textures/ui/sell-btn.png"
