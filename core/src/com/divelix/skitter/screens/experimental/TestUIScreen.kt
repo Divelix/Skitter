@@ -6,19 +6,26 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
+import com.divelix.skitter.ui.ImgBgButton
 import com.divelix.skitter.utils.TopViewport
+import com.kotcrab.vis.ui.widget.VisImage
+import ktx.actors.onClick
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.log.debug
+import ktx.vis.VisDsl
+import ktx.vis.WidgetFactory
 import ktx.vis.table
 import ktx.vis.window
 
-class TestUIScreen(val game: Main): KtxScreen {
+class TestUIScreen(val game: Main) : KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
@@ -26,7 +33,7 @@ class TestUIScreen(val game: Main): KtxScreen {
 
     init {
         val bgPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-        val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(Color(0f, 0f, 0f, 0.5f)); fill()}))
+        val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.5f)); fill() }))
         val root = table {
             setFillParent(true)
             top()
@@ -64,17 +71,11 @@ class TestUIScreen(val game: Main): KtxScreen {
                 }
             }.cell(colspan = 2, expand = true)
             row()
-            imageButton("restart").addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    debug(TAG) {"Restart match"}
-                }
+            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.RESTART_ICON)) {
+                println("Restart")
             })
-            imageButton("home").addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    debug(TAG) {"Go to menu"}
-                }
+            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.HOME_ICON)) {
+                println("Home")
             })
         }
         Gdx.input.inputProcessor = stage
