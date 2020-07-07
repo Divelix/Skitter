@@ -47,6 +47,7 @@ class PlayScreen(val game: Main): KtxScreen {
                                 debug(TAG) { targetHealthCmp.health.toString() }
                                 println(targetHealthCmp.health.toString())
                             }
+                    Input.Keys.M -> println(Data.matchHistory)
                 }
                 return false
             }

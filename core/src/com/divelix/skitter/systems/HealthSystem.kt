@@ -10,6 +10,7 @@ import com.divelix.skitter.utils.LevelManager
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.ashley.has
+import ktx.collections.*
 
 class HealthSystem(
         private val hud: Hud
@@ -22,6 +23,12 @@ class HealthSystem(
             if (entity.has(EnemyComponent.mapper)) {
                 LevelManager.enemiesCount--
                 Data.score += 100
+                val enemyType = entity[EnemyComponent.mapper]!!.type!!
+                if (enemyType in Data.matchHistory) {
+                    Data.matchHistory[enemyType] += 1
+                } else {
+                    Data.matchHistory[enemyType] = 1
+                }
             } else if (entity.has(PlayerComponent.mapper)) {
                 GameEngine.slowRate = 10f
                 hud.showGameOverWindow()

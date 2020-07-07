@@ -9,7 +9,6 @@ import com.divelix.skitter.components.CameraComponent
 import com.divelix.skitter.components.PlayerComponent
 import com.divelix.skitter.screens.MenuScreen
 import ktx.ashley.hasNot
-import ktx.ashley.mapperFor
 import ktx.collections.*
 
 class LevelManager(val gameEngine: GameEngine) {
@@ -23,19 +22,19 @@ class LevelManager(val gameEngine: GameEngine) {
     val chapter = Chapter("Chapter_1", gdxArrayOf(
             Level(Vector2(8f, 10f), gdxArrayOf()),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                EnemyBundle(EnemyType.SNIPER, 1)
+                EnemyBundle(Enemy.SNIPER, 1)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                    EnemyBundle(EnemyType.JUMPER, 1)
+                    EnemyBundle(Enemy.JUMPER, 1)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                    EnemyBundle(EnemyType.SNIPER, 1)
+                    EnemyBundle(Enemy.SNIPER, 1)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                    EnemyBundle(EnemyType.WOMB, 1)
+                    EnemyBundle(Enemy.WOMB, 1)
             )),
             Level(Vector2(15f, 30f), gdxArrayOf(
-                    EnemyBundle(EnemyType.RADIAL, 1)
+                    EnemyBundle(Enemy.RADIAL, 1)
             ))
         )
     )
@@ -78,12 +77,12 @@ class LevelManager(val gameEngine: GameEngine) {
     fun makeEnemies(level: Level) {
         level.enemies.forEach {enemyBundle ->
             repeat(enemyBundle.quantity) {
-                when(enemyBundle.enemyType) {
-                    EnemyType.AGENT -> entityBuilder.createAgent(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
-                    EnemyType.JUMPER -> entityBuilder.createJumper(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
-                    EnemyType.RADIAL -> entityBuilder.createRadial(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
-                    EnemyType.WOMB -> entityBuilder.createWomb(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
-                    EnemyType.SNIPER -> entityBuilder.createSniper(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                when(enemyBundle.enemy) {
+                    Enemy.AGENT -> entityBuilder.createAgent(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    Enemy.JUMPER -> entityBuilder.createJumper(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    Enemy.RADIAL -> entityBuilder.createRadial(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    Enemy.WOMB -> entityBuilder.createWomb(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    Enemy.SNIPER -> entityBuilder.createSniper(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
                 }
             }
         }

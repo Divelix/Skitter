@@ -132,12 +132,6 @@ class Assets: Disposable {
                 up = it["button"]
                 down = it["button-blue"]
             }
-            visImageButton("home") {
-                up = TextureRegionDrawable(manager.get<Texture>(Constants.HOME_ICON))
-            }
-            visImageButton("restart") {
-                up = TextureRegionDrawable(manager.get<Texture>(Constants.RESTART_ICON))
-            }
             list {
                 font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColorSelected = Color.BLACK

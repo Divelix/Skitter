@@ -288,9 +288,9 @@ class Hud(
             isVisible = false
             debugAll()
             centerWindow()
-            defaults().expand()
-            padTop(25f) // title height
-            width = 300f
+            padTop(50f) // title height
+            defaults().top()
+            width = 320f
             height = 500f
             row()
             label("table of results").cell(colspan = 2)

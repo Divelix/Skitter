@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Array
@@ -16,7 +15,7 @@ import com.divelix.skitter.Main
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.utils.Chapter
 import com.divelix.skitter.utils.EnemyBundle
-import com.divelix.skitter.utils.EnemyType
+import com.divelix.skitter.utils.Enemy
 import com.divelix.skitter.utils.Level
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
@@ -147,15 +146,15 @@ fun testChapter(json: Json) {
                 Level(
                         Vector2(15f, 30f),
                         gdxArrayOf(
-                                EnemyBundle(EnemyType.SNIPER, 2),
-                                EnemyBundle(EnemyType.RADIAL, 3)
+                                EnemyBundle(Enemy.SNIPER, 2),
+                                EnemyBundle(Enemy.RADIAL, 3)
                         )
                 ),
                 Level(
                         Vector2(15f, 20f),
                         gdxArrayOf(
-                                EnemyBundle(EnemyType.SNIPER, 1),
-                                EnemyBundle(EnemyType.RADIAL, 1)
+                                EnemyBundle(Enemy.SNIPER, 1),
+                                EnemyBundle(Enemy.RADIAL, 1)
                         )
                 )
         )

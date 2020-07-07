@@ -159,6 +159,7 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createAgent(x: Float, y: Float): Entity {
         val entityType = TypeComponent.ENEMY
+        val enemyType = Enemy.AGENT
         return engine.entity {
             with<VisionComponent>()
             with<SteerComponent> {
@@ -172,7 +173,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 )
             }
             with<TypeComponent> { type = entityType }
-            with<EnemyComponent>()// { damage = 10f }
+            with<EnemyComponent> { type = enemyType }
             with<HealthComponent> { health = 100f }
             with<HealthBarComponent> { maxValue = 100f }
             with<TransformComponent> {
@@ -207,10 +208,11 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createJumper(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
+        val enemyType = Enemy.JUMPER
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<JumperComponent>()
-            with<EnemyComponent>()// { damage = 10f }
+            with<EnemyComponent> { type = enemyType }
             with<HealthComponent> { health = 100f }
             with<HealthBarComponent> { maxValue = 100f }
             with<TransformComponent> {
@@ -237,6 +239,7 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createSniper(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
+        val enemyType = Enemy.SNIPER
         val entitySize = 1.5f
 //        val sniperDamage = 10f
         val sniperHealth = 200f
@@ -244,7 +247,7 @@ class EntityBuilder(private val engine: PooledEngine,
             with<SniperComponent>()
             with<TypeComponent> { type = entityType }
             with<VisionComponent>()
-            with<EnemyComponent>()// { damage = sniperDamage }
+            with<EnemyComponent> { type = enemyType }
             with<TowerComponent> {
                 sprite.setRegion(assets.manager.get<Texture>(Constants.SNIPER_TOWER))
             }
@@ -284,12 +287,13 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createWomb(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
+        val enemyType = Enemy.WOMB
         val entitySize = 2f
         val wombHealth = 300f
         engine.entity {
             with<WombComponent>()
             with<TypeComponent> { type = entityType }
-            with<EnemyComponent>()
+            with<EnemyComponent> { type = enemyType }
             with<HealthComponent> { health = wombHealth }
             with<HealthBarComponent> { maxValue = wombHealth }
             with<TransformComponent> {
@@ -320,6 +324,7 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createKid(womb: Entity) {
         val entityType = TypeComponent.ENEMY
+        val enemyType = Enemy.KID
         val entitySize = 0.5f
         val initPos = womb[B2dBodyComponent.mapper]!!.body.position.apply {
             x += MathUtils.random(-1f, 1f)
@@ -340,7 +345,7 @@ class EntityBuilder(private val engine: PooledEngine,
                         Behavior.OBSTACLE_AVOIDANCE)
             }
             with<TypeComponent> { type = entityType }
-            with<EnemyComponent>()
+            with<EnemyComponent> { type = enemyType }
             with<HealthComponent> {
                 isIntHp = true
                 health = 1f
@@ -376,12 +381,13 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createRadial(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
+        val enemyType = Enemy.RADIAL
         val texture = assets.manager.get<Texture>(Constants.RADIAL)
         val textureWidth = 2f
         val ratio = texture.height.toFloat() / texture.width
         engine.entity {
             with<TypeComponent> { type = entityType }
-            with<EnemyComponent>()
+            with<EnemyComponent> { type = enemyType }
             with<RadialComponent>()
             with<HealthComponent> { health = 100f }
             with<HealthBarComponent> { maxValue = 100f }

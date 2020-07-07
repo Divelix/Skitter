@@ -1,16 +1,17 @@
 package com.divelix.skitter
 
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.JsonReader
-import ktx.assets.toInternalFile
+import com.divelix.skitter.utils.Enemy
+import ktx.collections.gdxMapOf
 
 object Data {
     var renderTime = 0f
     var physicsTime = 0f
     var reloadTimer = 0f
     var score = 0
+    val matchHistory = gdxMapOf<Enemy, Int>()
     val playerData: PlayerData
-    val loverData: LoverData
+//    val loverData: LoverData
     val dirVec = Vector2()
 
     init {
@@ -18,10 +19,10 @@ object Data {
         val gunData = GunData(0f, 0, 0f, 0f, 0f, 0f)
         playerData = PlayerData(shipData, gunData)
 
-        val reader = JsonReader()
-        val enemyReader = reader.parse(Constants.ENEMIES_FILE.toInternalFile())
-        val loverSpecs = enemyReader.get("enemies")[0].get("specs")
-        loverData = LoverData(loverSpecs[0].asFloat(), loverSpecs[1].asFloat(), loverSpecs[2].asFloat(), loverSpecs[3].asFloat())
+//        val reader = JsonReader()
+//        val enemyReader = reader.parse(Constants.ENEMIES_FILE.toInternalFile())
+//        val loverSpecs = enemyReader.get("enemies")[0].get("specs")
+//        loverData = LoverData(loverSpecs[0].asFloat(), loverSpecs[1].asFloat(), loverSpecs[2].asFloat(), loverSpecs[3].asFloat())
     }
 }
 

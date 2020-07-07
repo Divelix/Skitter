@@ -15,15 +15,16 @@ data class Level(
 )
 
 data class EnemyBundle(
-        var enemyType: EnemyType = EnemyType.SNIPER,
+        var enemy: Enemy = Enemy.SNIPER,
         var quantity: Int = 1
 )
 
-enum class EnemyType {
+enum class Enemy {
     AGENT,
     JUMPER,
     SNIPER,
     WOMB,
+    KID,
     RADIAL
 }
 
