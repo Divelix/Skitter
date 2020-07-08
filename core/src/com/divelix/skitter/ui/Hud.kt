@@ -21,15 +21,12 @@ import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
-import com.divelix.skitter.utils.DamageLabelProvider
-import com.divelix.skitter.utils.EntityBuilder
+import com.divelix.skitter.utils.*
 import ktx.actors.*
-import com.divelix.skitter.utils.LevelManager
-import com.divelix.skitter.utils.ScaledLabel
 import ktx.graphics.*
-import ktx.log.info
 import ktx.vis.table
 import ktx.vis.window
+import ktx.collections.*
 
 class Hud(
         val game: Main,
@@ -53,7 +50,7 @@ class Hud(
     private val physicsTimeLabel = ScaledLabel()
     private val enemyCountLabel = ScaledLabel()
     private val scoreLabel = ScaledLabel(styleName = "score-label")
-    private val ammoLabel =  ScaledLabel(styleName = "reload-label")
+    private val ammoLabel = ScaledLabel(styleName = "reload-label")
 
     private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
     private val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
@@ -67,7 +64,6 @@ class Hud(
 
     private val pauseBtn: Image
     private val pauseWindow: Window
-    private val gameOverWindow: Window
     private val hpHeight = 10f
     private val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
     private val healthBgImg = Image(Texture(pixel.apply { setColor(healthBgColor); fill() }))
@@ -80,7 +76,7 @@ class Hud(
     val distVec = Vector2()
     val fixedPoint = Vector3()
     val floatPoint = Vector3()
-    val playerCtrl = object: InputAdapter() {
+    val playerCtrl = object : InputAdapter() {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
             if (GameEngine.isPaused) return false
             isShipSlowdown = false
@@ -135,7 +131,6 @@ class Hud(
 
     init {
         pauseWindow = makePauseWindow()
-        gameOverWindow = makeGameOverWindow()
         pauseBtn = makePauseButton()
         rootTable = table {
             setFillParent(true)
@@ -168,7 +163,6 @@ class Hud(
         hudStage += healthImg
         hudStage += pauseBtn
         hudStage += pauseWindow
-        hudStage += gameOverWindow
 //        hudStage.isDebugAll = true
 
         healthBgImg.run {
@@ -193,7 +187,7 @@ class Hud(
         Gdx.gl.glEnable(GL20.GL_BLEND)
         shape.projectionMatrix = hudCam.combined
         shape.use(ShapeRenderer.ShapeType.Filled) {
-            if(isDriven) {
+            if (isDriven) {
                 shape.color = activeColor
                 shape.circle(fixedPoint.x, fixedPoint.y, 10f)
                 shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
@@ -220,7 +214,7 @@ class Hud(
         ammoLabel.run {
             setText("${PlayScreen.ammo}")
             pack()
-            setPosition(reloadPos.x - width/2f, reloadPos.y - height/2f)
+            setPosition(reloadPos.x - width / 2f, reloadPos.y - height / 2f)
         }
 
         hudStage.act()
@@ -230,7 +224,7 @@ class Hud(
     }
 
     fun resize(width: Int, height: Int) {
-        Gdx.app.log("Hud","resize: $width; $height")
+        Gdx.app.log("Hud", "resize: $width; $height")
         hudStage.viewport.update(width, height, true)
     }
 
@@ -242,7 +236,7 @@ class Hud(
         return Image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PAUSE_BTN))).apply {
             setSize(50f, 50f)
             setPosition(hudStage.width - width - 20f, hudStage.height - height - 20f)
-            addListener(object: ClickListener() {
+            addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     GameEngine.isPaused = true
                     pauseWindow.isVisible = true
@@ -266,14 +260,14 @@ class Hud(
             height = 100f
 //            val quantityLabel = label("retwert").cell(colspan = 2)
             row()
-            textButton("Exit").cell(align = Align.left).addListener(object: ClickListener() {
+            textButton("Exit").cell(align = Align.left).addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
                     LevelManager.isNextLvlRequired = true
                     game.screen = MenuScreen(game)
                 }
             })
-            textButton("Resume").cell(align = Align.right).addListener(object: ClickListener() {
+            textButton("Resume").cell(align = Align.right).addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
                     GameEngine.isPaused = false
@@ -285,7 +279,7 @@ class Hud(
 
     private fun makeGameOverWindow(): Window {
         return window("Game Over") {
-            isVisible = false
+//            isVisible = false
             debugAll()
             centerWindow()
             padTop(50f) // title height
@@ -293,29 +287,50 @@ class Hud(
             width = 320f
             height = 500f
             row()
-            label("table of results").cell(colspan = 2)
+            // Stats table
+            table {
+                val iconWidth = 50f
+                val cellWidth = 150f
+                debug = true
+                padTop(25f)
+                defaults().padTop(10f)
+                Data.matchHistory.forEach { (enemyType, quantity) ->
+                    require(quantity != null)
+                    val tex = assets.manager.get<Texture>(findEnemyTexturePath(enemyType))
+                    val ratio = tex.width.toFloat() / tex.height
+                    image(TextureRegionDrawable(tex)).cell(width = iconWidth, height = iconWidth / ratio)
+                    label("x${quantity}")
+                    label("${quantity * 10}").cell(width = cellWidth).setAlignment(Align.center)
+                    row()
+                }
+            }.cell(colspan = 2, expand = true)
             row()
-            textButton("Restart").cell(align = Align.right).addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-                    isVisible = false
-                }
+            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.RESTART_ICON)) {
+                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
+                // TODO make restart
             })
-
-            textButton("Exit").cell(align = Align.left).addListener(object: ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    LevelManager.isNextLvlRequired = true
-                    GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-                    game.screen = MenuScreen(game)
-                }
+            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.HOME_ICON)) {
+                LevelManager.isNextLvlRequired = true
+                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
+                game.screen = MenuScreen(game)
             })
         }
     }
 
+    fun findEnemyTexturePath(enemyType: Enemy): String {
+        return when (enemyType) {
+            Enemy.AGENT -> Constants.AGENT
+            Enemy.JUMPER -> Constants.JUMPER
+            Enemy.SNIPER -> Constants.SNIPER_BASE
+            Enemy.WOMB -> Constants.WOMB
+            Enemy.KID -> Constants.KID
+            Enemy.RADIAL -> Constants.RADIAL
+        }
+    }
+
     fun showGameOverWindow() {
-        gameOverWindow.isVisible = true
+        hudStage += makeGameOverWindow()
+
     }
 
     companion object {
