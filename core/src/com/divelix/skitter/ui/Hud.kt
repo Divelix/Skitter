@@ -277,9 +277,27 @@ class Hud(
         }
     }
 
-    private fun makeGameOverWindow(): Window {
-        return window("Game Over") {
-//            isVisible = false
+    private fun makeStatsTable(): Table {
+        return table {
+            val iconWidth = 50f
+            val cellWidth = 150f
+            debug = true
+            padTop(25f)
+            defaults().padTop(10f)
+            Data.matchHistory.forEach { (enemyType, quantity) ->
+                require(quantity != null)
+                val tex = assets.manager.get<Texture>(findEnemyTexturePath(enemyType))
+                val ratio = tex.width.toFloat() / tex.height
+                image(TextureRegionDrawable(tex)).cell(width = iconWidth, height = iconWidth / ratio)
+                label("x${quantity}")
+                label("${quantity * 10}").cell(width = cellWidth).setAlignment(Align.center)
+                row()
+            }
+        }
+    }
+
+    private fun makeVictoryWindow(): Window {
+        return window("Victory") {
             debugAll()
             centerWindow()
             padTop(50f) // title height
@@ -288,22 +306,27 @@ class Hud(
             height = 500f
             row()
             // Stats table
-            table {
-                val iconWidth = 50f
-                val cellWidth = 150f
-                debug = true
-                padTop(25f)
-                defaults().padTop(10f)
-                Data.matchHistory.forEach { (enemyType, quantity) ->
-                    require(quantity != null)
-                    val tex = assets.manager.get<Texture>(findEnemyTexturePath(enemyType))
-                    val ratio = tex.width.toFloat() / tex.height
-                    image(TextureRegionDrawable(tex)).cell(width = iconWidth, height = iconWidth / ratio)
-                    label("x${quantity}")
-                    label("${quantity * 10}").cell(width = cellWidth).setAlignment(Align.center)
-                    row()
-                }
-            }.cell(colspan = 2, expand = true)
+            add(makeStatsTable()).expand(true, true)
+            row()
+            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.HOME_ICON)) {
+                LevelManager.isNextLvlRequired = true
+                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
+                game.screen = MenuScreen(game)
+            })
+        }
+    }
+
+    private fun makeGameOverWindow(): Window {
+        return window("Game Over") {
+            debugAll()
+            centerWindow()
+            padTop(50f) // title height
+            defaults().top()
+            width = 320f
+            height = 500f
+            row()
+            // Stats table
+            add(makeStatsTable()).colspan(2).expand(true, true)
             row()
             add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.RESTART_ICON)) {
                 GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
@@ -317,7 +340,7 @@ class Hud(
         }
     }
 
-    fun findEnemyTexturePath(enemyType: Enemy): String {
+    private fun findEnemyTexturePath(enemyType: Enemy): String {
         return when (enemyType) {
             Enemy.AGENT -> Constants.AGENT
             Enemy.JUMPER -> Constants.JUMPER
@@ -330,7 +353,12 @@ class Hud(
 
     fun showGameOverWindow() {
         hudStage += makeGameOverWindow()
+        // TODO save match history
+    }
 
+    fun showVictoryWindow() {
+        hudStage += makeVictoryWindow()
+        // TODO save match history
     }
 
     companion object {

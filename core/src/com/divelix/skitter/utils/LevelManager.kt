@@ -8,6 +8,7 @@ import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.CameraComponent
 import com.divelix.skitter.components.PlayerComponent
 import com.divelix.skitter.screens.MenuScreen
+import com.divelix.skitter.ui.Hud
 import ktx.ashley.hasNot
 import ktx.collections.*
 
@@ -55,7 +56,7 @@ class LevelManager(val gameEngine: GameEngine) {
         level++
         if (level > 1) destroyLevel()
         if (level > chapter.levels.size) {
-            game.screen = MenuScreen(game)
+            gameEngine.hud.showVictoryWindow()
             return
         }
         buildLevel(chapter.levels[level - 1])

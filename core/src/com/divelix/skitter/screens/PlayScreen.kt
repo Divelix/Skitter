@@ -22,6 +22,7 @@ class PlayScreen(val game: Main): KtxScreen {
         Data.renderTime = 0f
         Data.physicsTime = 0f
         Data.score = 0
+        Data.matchHistory.clear()
         LevelManager.enemiesCount = 0
 
         loadPlayerData()
