@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.divelix.skitter.screens.LoadingScreen
 import ktx.inject.Context
+import ktx.inject.register
 
 class Main : Game() {
     private val context = Context()

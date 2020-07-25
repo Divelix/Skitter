@@ -8,7 +8,9 @@ import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
-import ktx.vis.table
+import ktx.scene2d.container
+import ktx.scene2d.scene2d
+import ktx.scene2d.vis.visTable
 
 class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue, modsData: JsonValue): Table() {
     val stockTable: Table
@@ -77,7 +79,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
     }
 
     private fun makeStockTable(): Table {
-        return table {
+        return scene2d.visTable {
             name = "StockTable"
             background = assets.bgDrawable
             pad(7f)
@@ -85,9 +87,9 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
 
             for (i in 0 until stockMods.size - stockMods.size % 4 + 8) {
                 if (i < stockMods.size) {
-                    container(ModIcon(stockMods[i], assets))
+                    container { ModIcon(stockMods[i], assets) }
                 } else {
-                    container(EmptyMod(assets))
+                    container { EmptyMod(assets) }
                 }
                 if ((i+1) % 4 == 0) row()
             }

@@ -17,7 +17,8 @@ import com.divelix.skitter.Data
 import com.divelix.skitter.components.*
 import ktx.ashley.entity
 import ktx.ashley.get
-import ktx.box2d.body
+import ktx.ashley.with
+import ktx.box2d.*
 import ktx.collections.*
 import ktx.log.info
 
@@ -27,6 +28,8 @@ class EntityBuilder(private val engine: PooledEngine,
 
     fun createPlayer(x: Float, y: Float): Entity {
         val entityType = TypeComponent.PLAYER
+        engine.entity {
+        }
         return engine.entity {
             with<PlayerComponent>()
             with<TypeComponent> { type = entityType }

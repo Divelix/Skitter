@@ -18,8 +18,12 @@ import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.plusAssign
 import ktx.actors.txt
 import ktx.log.info
-import ktx.vis.table
 import ktx.collections.*
+import ktx.scene2d.container
+import ktx.scene2d.scene2d
+import ktx.scene2d.scrollPane
+import ktx.scene2d.vis.visImage
+import ktx.scene2d.vis.visTable
 
 class ModScreen(game: Main): EditScreen(game) {
     private val bigMod = BigMod()
@@ -39,20 +43,20 @@ class ModScreen(game: Main): EditScreen(game) {
         tabbedBar.tabs[1].content = StockTable(tabbedBar.tabs[1].tabName, assets, playerData, modsData)
         tabbedBar.makeActive(tabbedBar.tabs[0])
 
-        rootTable = table {
+        rootTable = scene2d.visTable {
             setFillParent(true)
             top()
             defaults().expandX()
-            table {
+            visTable {
                 right().pad(12f)
                 background = assets.bgDrawable
                 add(coinsLabel)
             }.cell(fillX = true)
             row()
-            table {
+            visTable {
                 pad(12f)
-                table {
-                    image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).cell(width = 76f, height = 76f).addListener(object: ClickListener() {
+                visTable {
+                    visImage(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).cell(width = 76f, height = 76f).addListener(object: ClickListener() {
                         override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                             if (activeMod != null) sellMod(activeMod!!.mod)
                             super.touchUp(event, x, y, pointer, button)
@@ -61,27 +65,28 @@ class ModScreen(game: Main): EditScreen(game) {
                     row()
                     add(sellPriceLabel).padTop(12f)
                 }
-                table {
+                visTable {
                     pad(0f, 12f, 0f, 12f)
                     add(bigMod)
                     row()
-                    table {
+                    visTable {
                         background = assets.bgDrawable
-                        scrollPane(
-                                table {
-                                    pad(12f)
-                                    add(modName)
-                                    row()
-                                    add(modSpecs.apply {
-                                        setWrap(true)
-                                        setAlignment(Align.center)
-                                    })//.cell(width = 126f) // width may be any value
-                                }
-                        ).cell(width = 150f, height = 78f)
+                        //TODO fix this
+//                        scrollPane(
+//                                visTable {
+//                                    pad(12f)
+//                                    add(modName)
+//                                    row()
+//                                    add(modSpecs.apply {
+//                                        setWrap(true)
+//                                        setAlignment(Align.center)
+//                                    })//.cell(width = 126f) // width may be any value
+//                                }
+//                        ).cell(width = 150f, height = 78f)
                     }
                 }
-                table {
-                    image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f).addListener(object: ClickListener() {
+                visTable {
+                    visImage(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f).addListener(object: ClickListener() {
                         override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                             if (activeMod != null) {
                                 upMod(activeMod!!.mod)
@@ -95,7 +100,9 @@ class ModScreen(game: Main): EditScreen(game) {
                 }
             }
             row()
-            container(tabbedBar)
+            container {
+                tabbedBar
+            }
         }
         stage += rootTable
         stage += carriage.apply { setPosition(-height, -width) }
@@ -182,12 +189,12 @@ class ModScreen(game: Main): EditScreen(game) {
             setSize(150f, 150f)
 
             icon = Image()
-            levelBars = table {
+            levelBars = scene2d.visTable {
                 bottom().left()
                 pad(5f)
                 defaults().pad(2f)
                 for (i in 1..10) {
-                    image(assets.bgDrawable) {it.size(10f)}
+                    visImage(assets.bgDrawable) {it.size(10f)}
                 }
             }
 

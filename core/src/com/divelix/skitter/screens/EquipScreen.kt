@@ -10,7 +10,9 @@ import com.divelix.skitter.ui.EquipTable
 import com.divelix.skitter.ui.ModIcon
 import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.plusAssign
-import ktx.vis.table
+import ktx.scene2d.container
+import ktx.scene2d.scene2d
+import ktx.scene2d.vis.visTable
 
 class EquipScreen(game: Main): EditScreen(game) {
     private val rootTable: VisTable
@@ -19,11 +21,13 @@ class EquipScreen(game: Main): EditScreen(game) {
         tabbedBar.tabs[0].content = EquipTable(Constants.SHIPS_TAB, assets, reader, playerData)
         tabbedBar.tabs[1].content = EquipTable(Constants.GUNS_TAB, assets, reader, playerData)
         tabbedBar.makeActive(tabbedBar.tabs[0])
-        rootTable = table {
+        rootTable = scene2d.visTable {
             setFillParent(true)
             top()
             defaults().expandX()
-            container(tabbedBar)
+            container {
+                addActor(tabbedBar)
+            }
         }
         stage += rootTable
         stage += carriage.apply { setPosition(-height, -width) }

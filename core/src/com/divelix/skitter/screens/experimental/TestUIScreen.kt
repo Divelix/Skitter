@@ -3,27 +3,22 @@ package com.divelix.skitter.screens.experimental
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.ImgBgButton
 import com.divelix.skitter.utils.TopViewport
-import com.kotcrab.vis.ui.widget.VisImage
-import ktx.actors.onClick
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
-import ktx.log.debug
-import ktx.vis.VisDsl
-import ktx.vis.WidgetFactory
-import ktx.vis.table
-import ktx.vis.window
+import ktx.scene2d.label
+import ktx.scene2d.scene2d
+import ktx.scene2d.vis.visImage
+import ktx.scene2d.vis.visTable
+import ktx.scene2d.vis.visTextButton
+import ktx.scene2d.vis.visWindow
 
 class TestUIScreen(val game: Main) : KtxScreen {
     private val context = game.getContext()
@@ -34,12 +29,12 @@ class TestUIScreen(val game: Main) : KtxScreen {
     init {
         val bgPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
         val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.5f)); fill() }))
-        val root = table {
+        val root = scene2d.visTable {
             setFillParent(true)
             top()
             background = bgDrawable
-            textButton("left")
-            textButton("right")
+            visTextButton("left")
+            visTextButton("right")
         }
         val rows = listOf(
                 Pair(assets.manager.get<Texture>(Constants.WOMB), 12),
@@ -47,7 +42,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
                 Pair(assets.manager.get<Texture>(Constants.JUMPER), 10)
         )
         stage += root
-        stage += window("Game Over") {
+        stage += scene2d.visWindow("Game Over") {
             debugAll()
             centerWindow()
             padTop(50f) // title height
@@ -56,7 +51,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
             height = 500f
             row()
             // Stats table
-            table {
+            visTable {
                 val iconWidth = 50f
                 val cellWidth = 150f
                 debug = true
@@ -64,7 +59,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
                 defaults().padTop(10f)
                 rows.forEach {
                     val ratio = it.first.width.toFloat() / it.first.height
-                    image(TextureRegionDrawable(it.first)).cell(width = iconWidth, height = iconWidth / ratio)
+                    visImage(TextureRegionDrawable(it.first)).cell(width = iconWidth, height = iconWidth / ratio)
                     label("x${it.second}")
                     label("${it.second * 10}").cell(width = cellWidth).setAlignment(Align.center)
                     row()

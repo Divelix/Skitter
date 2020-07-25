@@ -13,7 +13,10 @@ import com.divelix.skitter.Constants
 import com.divelix.skitter.utils.ScaledLabel
 import ktx.actors.txt
 import ktx.assets.toInternalFile
-import ktx.vis.table
+import ktx.scene2d.container
+import ktx.scene2d.scene2d
+import ktx.scene2d.vis.visImage
+import ktx.scene2d.vis.visTable
 
 class EquipTable(private val tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
     private val equipSpecs = Array<Float>(6)
@@ -64,14 +67,14 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
         suitTable = makeSuitTable()
         stockTable = makeStockTable()
 
-        val topPart = table {
+        val topPart = scene2d.visTable {
             name = "TopPart"
             background = assets.bgDrawable
             add(infoTable)
             row()
             add(suitTable)
         }
-        val botPart = table {
+        val botPart = scene2d.visTable {
             name = "BotPart"
             padTop(12f)
             add(ScrollPane(stockTable))
@@ -173,7 +176,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     }
 
     private fun makeInfoTable(): Table {
-        return table {
+        return scene2d.visTable {
             // make table width equal 298 = 99 + 100 + 99
             val textWidth = 99f
             val tableHeight = 100f
@@ -183,15 +186,16 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 setWrap(true)
                 setAlignment(Align.center)
             }).size(textWidth, tableHeight)
-            container(image(getEquipDrawable(1, tabName == Constants.SHIPS_TAB))) {
+            container {
+                visImage(getEquipDrawable(1, tabName == Constants.SHIPS_TAB))
                 background = assets.bgDrawable
                 pad(10f)
                 it.size(tableHeight, tableHeight)
             }
-            table {
-                it.size(textWidth, tableHeight)
+            scene2d.visTable {
+//                it.size(textWidth, tableHeight)
                 defaults().left()
-                table {
+                visTable {
                     defaults().left()
                     specNames.forEach {
                         add(ScaledLabel("${it.toUpperCase()}:", "equip-specs", 0.25f))
@@ -199,7 +203,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                         row()
                     }
                 }
-                specsTable = table {
+                specsTable = scene2d.visTable {
 //                    padLeft(5f)
                     defaults().left()
                     equipSpecs.forEach {
@@ -213,16 +217,16 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     }
 
     private fun makeSuitTable(): Table {
-        return table {
+        return scene2d.visTable {
             name = "SuitTable"
             pad(7f)
             defaults().pad(7f)
 
             for (i in 1..8) {
                 if (i <= suitMods.size) {
-                    container(ModIcon(suitMods[i - 1], assets))
+                    container { ModIcon(suitMods[i - 1], assets) }
                 } else {
-                    container(EmptyMod(assets))
+                    container { EmptyMod(assets) }
                 }
                 if (i % 4 == 0) row()
             }
@@ -230,7 +234,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     }
 
     private fun makeStockTable(): Table {
-        return table {
+        return scene2d.visTable {
             name = "StockTable"
             background = assets.bgDrawable
             pad(7f)
@@ -238,9 +242,9 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
 
             for (i in 0 until stockMods.size + 8) {
                 if (i < stockMods.size) {
-                    container(ModIcon(stockMods[i], assets))
+                    container {ModIcon(stockMods[i], assets) }
                 } else {
-                    container(EmptyMod(assets))
+                    container { EmptyMod(assets) }
                 }
                 if ((i+1) % 4 == 0) row()
             }

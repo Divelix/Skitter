@@ -23,8 +23,9 @@ import ktx.actors.plusAssign
 import ktx.actors.txt
 import ktx.app.KtxScreen
 import ktx.style.defaultStyle
-import ktx.vis.table
 import ktx.collections.*
+import ktx.scene2d.scene2d
+import ktx.scene2d.vis.visTable
 
 class SwipeMenuScreen(game: Main): KtxScreen {
     val context = game.getContext()
@@ -38,30 +39,30 @@ class SwipeMenuScreen(game: Main): KtxScreen {
 
     init {
         val pages = Array<Table>()
-        val page1 = table {
+        val page1 = scene2d.visTable {
             add(Image(assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
         }
-        val page2 = table {
+        val page2 = scene2d.visTable {
             add(Image(assets.manager.get<Texture>(Constants.SELL_BTN))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
         }
-        val page3 = table {
+        val page3 = scene2d.visTable {
             add(Image(assets.manager.get<Texture>(Constants.UP_BTN))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
         }
         pages + arrayOf(page1, page2, page3)
         scrollP = PagedScrollPane(pages)
 
-        val bigTable = table {
-            table {
+        val bigTable = scene2d.visTable {
+            visTable {
                 add(Image(assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
             }
-            table {
+            visTable {
                 add(Image(assets.manager.get<Texture>(Constants.SELL_BTN))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
             }
-            table {
+            visTable {
                 add(Image(assets.manager.get<Texture>(Constants.UP_BTN))).width(Gdx.graphics.width.toFloat()).height(Gdx.graphics.height.toFloat())
             }
         }
-        val rootTable = table {
+        val rootTable = scene2d.visTable {
             setFillParent(true)
 //            scrollP = scrollPane(bigTable) {
 //                setScrollingDisabled(false, true)
@@ -106,7 +107,7 @@ class PagedScrollPane(val pages: Array<Table>): VisScrollPane(null, defaultStyle
         setScrollingDisabled(false, true)
         setOverscroll(false, false)
         setScrollbarsVisible(false)
-        bigTable = table {
+        bigTable = scene2d.visTable {
             pages.forEach { add(it) }
         }
         super.setActor(bigTable)

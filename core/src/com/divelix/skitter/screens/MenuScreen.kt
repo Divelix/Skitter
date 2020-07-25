@@ -8,19 +8,17 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.JsonReader
-import com.badlogic.gdx.utils.JsonWriter
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.utils.BotViewport
-import ktx.actors.onClick
 import ktx.actors.onTouchUp
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
-import ktx.assets.toInternalFile
-import ktx.assets.toLocalFile
-import ktx.vis.table
+import ktx.scene2d.scene2d
+import ktx.scene2d.vis.visImage
+import ktx.scene2d.vis.visTable
+import ktx.scene2d.vis.visTextButton
 
 class MenuScreen(game: Main): KtxScreen {
     private val context = game.getContext()
@@ -29,33 +27,33 @@ class MenuScreen(game: Main): KtxScreen {
     private val stage = Stage(BotViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
 
     init {
-        stage += table {
+        stage += scene2d.visTable {
             setFillParent(true)
             bottom()
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_EQUIP))).cell(padRight = 75f).addListener(object: ClickListener() {
+            visImage(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_EQUIP))).cell(padRight = 75f).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     game.screen = EquipScreen(game)
                     super.touchUp(event, x, y, pointer, button)
                 }
             })
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_MOD))).addListener(object: ClickListener() {
+            visImage(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_MOD))).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     game.screen = ModScreen(game)
                     super.touchUp(event, x, y, pointer, button)
                 }
             })
             row()
-            image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_PLAY))).cell(padTop = 75f, padBottom = 75f, colspan = 2).addListener(object: ClickListener() {
+            visImage(TextureRegionDrawable(assets.manager.get<Texture>(Constants.MENU_PLAY))).cell(padTop = 75f, padBottom = 75f, colspan = 2).addListener(object: ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     game.screen = PlayScreen(game)
                     super.touchUp(event, x, y, pointer, button)
                 }
             })
             row()
-            textButton("1").onTouchUp {
+            visTextButton("1").onTouchUp {
                 game.screen = PlayScreen(game)
             }
-            textButton("2").onTouchUp {
+            visTextButton("2").onTouchUp {
                 game.screen = PlayScreen(game)
             }
         }

@@ -7,15 +7,13 @@ import com.divelix.skitter.GameEngine
 import com.divelix.skitter.components.B2dBodyComponent
 import com.divelix.skitter.components.CameraComponent
 import com.divelix.skitter.components.PlayerComponent
-import com.divelix.skitter.screens.MenuScreen
-import com.divelix.skitter.ui.Hud
 import ktx.ashley.hasNot
 import ktx.collections.*
 
-class LevelManager(val gameEngine: GameEngine) {
-    val game = gameEngine.game
-    val engine = gameEngine.engine
-    val entityBuilder = gameEngine.entityBuilder
+class LevelManager(private val gameEngine: GameEngine) {
+    private val hud = gameEngine.hud
+    private val engine = gameEngine.engine
+    private val entityBuilder = gameEngine.entityBuilder
 
     var level = 0
     var isDoorAllowed = false
@@ -54,11 +52,11 @@ class LevelManager(val gameEngine: GameEngine) {
 
     fun goToNextLevel() {
         level++
-        if (level > 1) destroyLevel()
         if (level > chapter.levels.size) {
-            gameEngine.hud.showVictoryWindow()
+            hud.showVictoryWindow()
             return
         }
+        if (level > 1) destroyLevel()
         buildLevel(chapter.levels[level - 1])
     }
 

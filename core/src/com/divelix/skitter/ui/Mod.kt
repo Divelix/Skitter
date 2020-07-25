@@ -11,9 +11,10 @@ import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.Assets
 import com.divelix.skitter.Constants
 import com.divelix.skitter.utils.ScaledLabel
-import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import ktx.vis.table
+import ktx.scene2d.scene2d
+import ktx.scene2d.vis.visImage
+import ktx.scene2d.vis.visTable
 
 data class Mod(val index: Int, val name: String, var level: Int, var quantity: Int = 0, val effects: ObjectMap<String, Float>? = null)// TODO add isShip (for icon choosing)
 
@@ -68,12 +69,12 @@ class ModIcon(val mod: Mod, val assets: Assets): Group() {
             setPosition(quantityBg.x + (quantityBg.width-width)/2f, quantityBg.y + (quantityBg.height-height)/2f)
             isVisible = mod.quantity > 0
         }
-        levelBars = table {
+        levelBars = scene2d.visTable {
             bottom().left()
             pad(2f)
             defaults().pad(1f)
             for (i in 1..10) {
-                image(if (i <= mod.level) lvlDrawable else noLvlDrawable) {it.size(4f)}
+                visImage(if (i <= mod.level) lvlDrawable else noLvlDrawable) {it.size(4f)}
             }
         }
 

@@ -22,11 +22,13 @@ import com.divelix.skitter.*
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.utils.*
+import com.kotcrab.vis.ui.widget.VisWindow
 import ktx.actors.*
 import ktx.graphics.*
-import ktx.vis.table
-import ktx.vis.window
 import ktx.collections.*
+import ktx.scene2d.label
+import ktx.scene2d.scene2d
+import ktx.scene2d.vis.*
 
 class Hud(
         val game: Main,
@@ -132,7 +134,7 @@ class Hud(
     init {
         pauseWindow = makePauseWindow()
         pauseBtn = makePauseButton()
-        rootTable = table {
+        rootTable = scene2d.visTable {
             setFillParent(true)
             top().pad(10f)
             defaults().expandX()
@@ -250,7 +252,7 @@ class Hud(
     }
 
     private fun makePauseWindow(): Window {
-        return window("Pause") {
+        return scene2d.visWindow("Pause") {
             isVisible = false
             debugAll()
             centerWindow()
@@ -260,14 +262,14 @@ class Hud(
             height = 100f
 //            val quantityLabel = label("retwert").cell(colspan = 2)
             row()
-            textButton("Exit").cell(align = Align.left).addListener(object : ClickListener() {
+            visTextButton("Exit").cell(align = Align.left).addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
                     LevelManager.isNextLvlRequired = true
                     game.screen = MenuScreen(game)
                 }
             })
-            textButton("Resume").cell(align = Align.right).addListener(object : ClickListener() {
+            visTextButton("Resume").cell(align = Align.right).addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
                     GameEngine.isPaused = false
@@ -278,7 +280,7 @@ class Hud(
     }
 
     private fun makeStatsTable(): Table {
-        return table {
+        return scene2d.visTable {
             val iconWidth = 50f
             val cellWidth = 150f
             debug = true
@@ -288,7 +290,7 @@ class Hud(
                 require(quantity != null)
                 val tex = assets.manager.get<Texture>(findEnemyTexturePath(enemyType))
                 val ratio = tex.width.toFloat() / tex.height
-                image(TextureRegionDrawable(tex)).cell(width = iconWidth, height = iconWidth / ratio)
+                visImage(TextureRegionDrawable(tex)).cell(width = iconWidth, height = iconWidth / ratio)
                 label("x${quantity}")
                 label("${quantity * 10}").cell(width = cellWidth).setAlignment(Align.center)
                 row()
@@ -296,8 +298,8 @@ class Hud(
         }
     }
 
-    private fun makeVictoryWindow(): Window {
-        return window("Victory") {
+    private fun endWindow(title: String, content: KVisWindow.() -> Unit): VisWindow {
+        return scene2d.visWindow(title) {
             debugAll()
             centerWindow()
             padTop(50f) // title height
@@ -305,6 +307,12 @@ class Hud(
             width = 320f
             height = 500f
             row()
+            content()
+        }
+    }
+
+    private fun makeVictoryWindow(): VisWindow {
+        return endWindow("Victory") {
             // Stats table
             add(makeStatsTable()).expand(true, true)
             row()
@@ -316,15 +324,8 @@ class Hud(
         }
     }
 
-    private fun makeGameOverWindow(): Window {
-        return window("Game Over") {
-            debugAll()
-            centerWindow()
-            padTop(50f) // title height
-            defaults().top()
-            width = 320f
-            height = 500f
-            row()
+    private fun makeGameOverWindow(): VisWindow {
+        return endWindow("Game Over") {
             // Stats table
             add(makeStatsTable()).colspan(2).expand(true, true)
             row()
