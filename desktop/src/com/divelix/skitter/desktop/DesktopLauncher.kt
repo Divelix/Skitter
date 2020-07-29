@@ -2,7 +2,7 @@ package com.divelix.skitter.desktop
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
-import com.divelix.skitter.Constants
+import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 
 object DesktopLauncher {

@@ -2,12 +2,12 @@ package com.divelix.skitter.screens
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Container
-import com.divelix.skitter.Constants
+import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.ui.EditScreen
-import com.divelix.skitter.ui.EmptyMod
-import com.divelix.skitter.ui.EquipTable
-import com.divelix.skitter.ui.ModIcon
+import com.divelix.skitter.ui.menu.EditScreen
+import com.divelix.skitter.ui.menu.EmptyModIcon
+import com.divelix.skitter.ui.menu.EquipTable
+import com.divelix.skitter.ui.menu.ModIcon
 import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.plusAssign
 import ktx.scene2d.container
@@ -67,7 +67,7 @@ class EquipScreen(game: Main): EditScreen(game) {
         }
     }
 
-    override fun processEmptyMod(emptyMod: EmptyMod) {
+    override fun processEmptyMod(emptyMod: EmptyModIcon) {
         if (activeMod == null) return
         val container = (emptyMod.parent as Container<*>)
 
@@ -93,7 +93,7 @@ class EquipScreen(game: Main): EditScreen(game) {
 
     private fun isDup(modIcon: ModIcon): Boolean {
         val suitTable = (tabbedBar.content.actor as EquipTable).suitTable
-        suitTable.children.filter {(it as Container<*>).actor is ModIcon}.forEach {
+        suitTable.children.filter {(it as Container<*>).actor is ModIcon }.forEach {
             val suitModIcon = (it as Container<*>).actor as ModIcon
             if (suitModIcon.mod.index == modIcon.mod.index) return true
         }

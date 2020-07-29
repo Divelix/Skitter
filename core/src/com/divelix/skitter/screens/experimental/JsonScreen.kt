@@ -10,13 +10,13 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.JsonWriter
-import com.divelix.skitter.Assets
+import com.divelix.skitter.data.Assets
 import com.divelix.skitter.Main
 import com.divelix.skitter.screens.MenuScreen
-import com.divelix.skitter.utils.Chapter
-import com.divelix.skitter.utils.EnemyBundle
-import com.divelix.skitter.utils.Enemy
-import com.divelix.skitter.utils.Level
+import com.divelix.skitter.data.Chapter
+import com.divelix.skitter.data.EnemyBundle
+import com.divelix.skitter.data.Enemy
+import com.divelix.skitter.data.Level
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
 import ktx.collections.gdxArrayOf
@@ -143,21 +143,21 @@ fun testChapter(json: Json) {
     var chapter = Chapter(
             "First Chapter",
             gdxArrayOf(
-                Level(
-                        Vector2(15f, 30f),
-                        gdxArrayOf(
-                                EnemyBundle(Enemy.SNIPER, 2),
-                                EnemyBundle(Enemy.RADIAL, 3)
-                        )
-                ),
-                Level(
-                        Vector2(15f, 20f),
-                        gdxArrayOf(
-                                EnemyBundle(Enemy.SNIPER, 1),
-                                EnemyBundle(Enemy.RADIAL, 1)
-                        )
-                )
-        )
+                    Level(
+                            Vector2(15f, 30f),
+                            gdxArrayOf(
+                                    EnemyBundle(Enemy.SNIPER, 2),
+                                    EnemyBundle(Enemy.RADIAL, 3)
+                            )
+                    ),
+                    Level(
+                            Vector2(15f, 20f),
+                            gdxArrayOf(
+                                    EnemyBundle(Enemy.SNIPER, 1),
+                                    EnemyBundle(Enemy.RADIAL, 1)
+                            )
+                    )
+            )
     )
     var chapterStr = json.toJson(chapter)
 //    chapter = json.fromJson(chapterStr)

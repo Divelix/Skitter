@@ -3,6 +3,7 @@ package com.divelix.skitter
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.divelix.skitter.data.Assets
 import com.divelix.skitter.screens.LoadingScreen
 import ktx.inject.Context
 import ktx.inject.register

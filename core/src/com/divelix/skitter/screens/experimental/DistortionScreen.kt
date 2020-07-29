@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
-import com.divelix.skitter.Assets
-import com.divelix.skitter.Constants
-import com.divelix.skitter.Data
+import com.divelix.skitter.data.Assets
+import com.divelix.skitter.data.Constants
+import com.divelix.skitter.data.Data
 import com.divelix.skitter.Main
 import ktx.app.KtxScreen
 import ktx.assets.file

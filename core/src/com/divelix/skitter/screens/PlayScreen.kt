@@ -3,16 +3,18 @@ package com.divelix.skitter.screens
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
-import com.divelix.skitter.components.EnemyComponent
-import com.divelix.skitter.components.HealthComponent
-import com.divelix.skitter.utils.LevelManager
+import com.divelix.skitter.data.Constants
+import com.divelix.skitter.data.Data
+import com.divelix.skitter.gameplay.GameEngine
+import com.divelix.skitter.gameplay.components.EnemyComponent
+import com.divelix.skitter.gameplay.components.HealthComponent
+import com.divelix.skitter.gameplay.LevelManager
 import ktx.app.KtxScreen
 import ktx.ashley.get
 import ktx.ashley.has
 import ktx.assets.toLocalFile
 import ktx.log.debug
 import ktx.log.info
-import ktx.log.logger
 
 class PlayScreen(val game: Main): KtxScreen {
     private val gameEngine by lazy { GameEngine(game) }

@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.divelix.skitter.Assets
-import com.divelix.skitter.Constants
+import com.divelix.skitter.data.Assets
+import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.utils.BotViewport
 import ktx.actors.onTouchUp

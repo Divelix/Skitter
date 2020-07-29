@@ -9,11 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Align
-import com.divelix.skitter.Constants
+import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.ui.*
-import com.divelix.skitter.utils.ScaledLabel
+import com.divelix.skitter.data.Mod
+import com.divelix.skitter.ui.menu.EditScreen
+import com.divelix.skitter.ui.menu.EmptyModIcon
+import com.divelix.skitter.ui.menu.ModIcon
+import com.divelix.skitter.ui.menu.StockTable
+import com.divelix.skitter.ui.ScaledLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.plusAssign
 import ktx.actors.txt
@@ -21,7 +24,6 @@ import ktx.log.info
 import ktx.collections.*
 import ktx.scene2d.container
 import ktx.scene2d.scene2d
-import ktx.scene2d.scrollPane
 import ktx.scene2d.vis.visImage
 import ktx.scene2d.vis.visTable
 
@@ -164,7 +166,7 @@ class ModScreen(game: Main): EditScreen(game) {
         }
     }
 
-    override fun processEmptyMod(emptyMod: EmptyMod) {
+    override fun processEmptyMod(emptyMod: EmptyModIcon) {
         info { "EmptyMod was clicked" }
     }
 

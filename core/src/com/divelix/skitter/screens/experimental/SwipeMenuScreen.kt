@@ -13,8 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
-import com.divelix.skitter.Assets
-import com.divelix.skitter.Constants
+import com.divelix.skitter.data.Assets
+import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.utils.TopViewport
 import com.kotcrab.vis.ui.VisUI

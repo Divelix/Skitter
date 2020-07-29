@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Array
-import com.divelix.skitter.Assets
+import com.divelix.skitter.data.Assets
 import com.divelix.skitter.Main
 import ktx.app.KtxScreen
 import ktx.assets.file

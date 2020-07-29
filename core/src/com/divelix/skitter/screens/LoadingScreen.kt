@@ -6,10 +6,8 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.MathUtils
-import com.divelix.skitter.Assets
+import com.divelix.skitter.data.Assets
 import com.divelix.skitter.Main
-import com.divelix.skitter.screens.experimental.DistortionScreen
-import com.divelix.skitter.screens.experimental.TestUIScreen
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -44,7 +42,7 @@ class LoadingScreen(private val game: Main): KtxScreen {
         if(assets.manager.update() && progress >= 0.99f) {
             assets.manager.finishLoading()
             assets.setup()
-            game.screen = PlayScreen(game)
+            game.screen = MenuScreen(game)
         }
     }
 }
