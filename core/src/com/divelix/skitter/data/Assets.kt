@@ -33,8 +33,8 @@ class Assets: Disposable {
     val UI_COLOR = Color(0f, 0f, 0f, 0.3f)
     val DOWN_COLOR = Color(0f, 0f, 0f, 0.5f)
     val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
-    val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(UI_COLOR); fill()}))
-    val downDrawable = TextureRegionDrawable(Texture(bgPixel.apply {setColor(DOWN_COLOR); fill()}))
+    val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(UI_COLOR); fill() }))
+    val downDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(DOWN_COLOR); fill() }))
 
     val frameBuffer = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
 

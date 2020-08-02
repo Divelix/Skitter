@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
+import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Mod
@@ -15,9 +16,11 @@ import com.divelix.skitter.ui.ScaledLabel
 import ktx.actors.txt
 import ktx.assets.toInternalFile
 import ktx.scene2d.container
+import ktx.scene2d.label
 import ktx.scene2d.scene2d
 import ktx.scene2d.vis.visImage
 import ktx.scene2d.vis.visTable
+import ktx.style.defaultStyle
 
 class EquipTable(private val tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
     private val equipSpecs = Array<Float>(6)
@@ -184,7 +187,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
             pad(14f, 14f, 0f, 14f)
             add(infoLabel.apply {
                 txt = "Description for this specific equipment"
-                setWrap(true)
+                wrap = true
                 setAlignment(Align.center)
             }).size(textWidth, tableHeight)
             container {
@@ -193,7 +196,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 pad(10f)
                 it.size(tableHeight, tableHeight)
             }
-            scene2d.visTable {
+            visTable {
 //                it.size(textWidth, tableHeight)
                 defaults().left()
                 visTable {
@@ -204,7 +207,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                         row()
                     }
                 }
-                specsTable = scene2d.visTable {
+                specsTable = visTable {
 //                    padLeft(5f)
                     defaults().left()
                     equipSpecs.forEach {
@@ -225,9 +228,9 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
 
             for (i in 1..8) {
                 if (i <= suitMods.size) {
-                    container { ModIcon(suitMods[i - 1], assets) }
+                    container(ModIcon(suitMods[i - 1], assets))
                 } else {
-                    container { EmptyModIcon(assets) }
+                    container(EmptyModIcon(assets))
                 }
                 if (i % 4 == 0) row()
             }
@@ -243,9 +246,11 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
 
             for (i in 0 until stockMods.size + 8) {
                 if (i < stockMods.size) {
-                    container { ModIcon(stockMods[i], assets) }
+                    container(ModIcon(stockMods[i], assets))
+//                    container { modIcon(stockMods[i], assets) }
+//                    modWidget(stockMods[i], assets)
                 } else {
-                    container { EmptyModIcon(assets) }
+                    container(EmptyModIcon(assets))
                 }
                 if ((i+1) % 4 == 0) row()
             }
