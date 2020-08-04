@@ -4,13 +4,15 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Mod
 import com.divelix.skitter.ui.menu.ModIcon
-import ktx.scene2d.KGroup
-import ktx.scene2d.KWidget
-import ktx.scene2d.Scene2dDsl
-import ktx.scene2d.actor
+import ktx.scene2d.*
+import ktx.style.*
+import ktx.style.defaultStyle
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -25,6 +27,17 @@ inline fun <S> KWidget<S>.image(
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
     return actor(Image(texture), init)
 }
+
+@Scene2dDsl
+@OptIn(ExperimentalContracts::class)
+inline fun <S> KWidget<S>.image(
+        drawable: Drawable,
+        init: (@Scene2dDsl Image).(S) -> Unit = {}
+): Image {
+    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+    return actor(Image(drawable), init)
+}
+
 
 // delete when new version of libktx comes out
 @Scene2dDsl
@@ -47,13 +60,35 @@ inline fun <S, A : Actor> KWidget<S>.container(
     return actor(KContainer(actor), init)
 }
 
-//@Scene2dDsl
+@SkinDsl
+@OptIn(ExperimentalContracts::class)
+inline fun Skin.image(
+        name: String = defaultStyle,
+        init: (@SkinDsl Image).(Image) -> Unit = {}
+) {
+    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+    val img = Image()
+    img.init(img)
+    return add(img, name)
+}
+
+//@SkinDsl
 //@OptIn(ExperimentalContracts::class)
-//inline fun <S> KGroup.modIcon(
-//        mod: Mod,
-//        assets: Assets,
-//        init: (@Scene2dDsl ModIcon).(S) -> Unit = {}
-//) : ModIcon {
-//    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
-//    return actor(ModIcon(mod, assets))
+//fun Skin.image(
+//        name: String = defaultStyle,
+//        drawable: Drawable
+//) {
+//    val img = Image(drawable)
+//    return add(img, name)
 //}
+
+@Scene2dDsl
+@OptIn(ExperimentalContracts::class)
+inline fun <S> KWidget<S>.image(
+        name: String,
+        skin: Skin = Scene2DSkin.defaultSkin,
+        init: (@Scene2dDsl Image).(S) -> Unit = {}
+): Image {
+    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+    return actor(skin[name], init)
+}

@@ -12,15 +12,14 @@ import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Mod
+import com.divelix.skitter.image
 import com.divelix.skitter.ui.ScaledLabel
 import ktx.actors.txt
 import ktx.assets.toInternalFile
 import ktx.scene2d.container
-import ktx.scene2d.label
+import ktx.scene2d.image
 import ktx.scene2d.scene2d
-import ktx.scene2d.vis.visImage
-import ktx.scene2d.vis.visTable
-import ktx.style.defaultStyle
+import ktx.scene2d.table
 
 class EquipTable(private val tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
     private val equipSpecs = Array<Float>(6)
@@ -71,14 +70,14 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
         suitTable = makeSuitTable()
         stockTable = makeStockTable()
 
-        val topPart = scene2d.visTable {
+        val topPart = scene2d.table {
             name = "TopPart"
             background = assets.bgDrawable
             add(infoTable)
             row()
             add(suitTable)
         }
-        val botPart = scene2d.visTable {
+        val botPart = scene2d.table {
             name = "BotPart"
             padTop(12f)
             add(ScrollPane(stockTable))
@@ -180,7 +179,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     }
 
     private fun makeInfoTable(): Table {
-        return scene2d.visTable {
+        return scene2d.table {
             // make table width equal 298 = 99 + 100 + 99
             val textWidth = 99f
             val tableHeight = 100f
@@ -191,15 +190,20 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                 setAlignment(Align.center)
             }).size(textWidth, tableHeight)
             container {
-                visImage(getEquipDrawable(1, tabName == Constants.SHIPS_TAB))
+                image(getEquipDrawable(1, tabName == Constants.SHIPS_TAB))
                 background = assets.bgDrawable
                 pad(10f)
                 it.size(tableHeight, tableHeight)
             }
-            visTable {
+            table {
 //                it.size(textWidth, tableHeight)
                 defaults().left()
-                visTable {
+                table {
+//                    image(name = "aim")
+//                    image(assets.manager.get<Texture>(Constants.AIM))
+//                    image(name = "aim-drawable")
+//                    image("button")
+//                    add(Image().apply { drawable = TextureRegionDrawable(assets.manager.get<Texture>(Constants.AIM)) })
                     defaults().left()
                     specNames.forEach {
                         add(ScaledLabel("${it.toUpperCase()}:", "equip-specs", 0.25f))
@@ -207,7 +211,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
                         row()
                     }
                 }
-                specsTable = visTable {
+                specsTable = table {
 //                    padLeft(5f)
                     defaults().left()
                     equipSpecs.forEach {
@@ -221,7 +225,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     }
 
     private fun makeSuitTable(): Table {
-        return scene2d.visTable {
+        return scene2d.table {
             name = "SuitTable"
             pad(7f)
             defaults().pad(7f)
@@ -238,7 +242,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     }
 
     private fun makeStockTable(): Table {
-        return scene2d.visTable {
+        return scene2d.table {
             name = "StockTable"
             background = assets.bgDrawable
             pad(7f)

@@ -14,10 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Disposable
+import com.divelix.skitter.image
 import com.kotcrab.vis.ui.VisUI
 import ktx.assets.*
 import ktx.freetype.freeTypeFontParameters
 import ktx.freetype.registerFreeTypeFontLoaders
+import ktx.scene2d.Scene2DSkin
 import ktx.style.*
 
 //creation of a singleton
@@ -104,6 +106,11 @@ class Assets: Disposable {
     fun setup() {
         uiSkin = skin(manager.get(Constants.ATLAS_UI)) {
             color("pinky", 0.7f, 0f, 1f)
+//            image("button")
+            image("aim") {
+                drawable = TextureRegionDrawable(manager.get<Texture>(Constants.AIM))
+            }
+//            image("aim-drawable", TextureRegionDrawable(manager.get<Texture>(Constants.AIM)))
             label {
                 font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColor = Color.WHITE
@@ -139,8 +146,8 @@ class Assets: Disposable {
                 background = it["select-box-list-bg"]
                 selection = it["list-selection"]
             }
-            visTextButton {
-                focusBorder = it["border"]
+            textButton {
+//                focusBorder = it["border"]
                 down = it["button-down"]
                 up = it["button"]
                 over = it["button-over"]
@@ -167,6 +174,7 @@ class Assets: Disposable {
             }
 
         }
+        Scene2DSkin.defaultSkin = uiSkin
         VisUI.load(uiSkin)
 //        VisUI.load() // loads default vis skin
         VisUI.setDefaultTitleAlign(Align.center)

@@ -11,7 +11,7 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Mod
 import ktx.scene2d.container
 import ktx.scene2d.scene2d
-import ktx.scene2d.vis.visTable
+import ktx.scene2d.table
 
 class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue, modsData: JsonValue): Table() {
     val stockTable: Table
@@ -80,7 +80,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
     }
 
     private fun makeStockTable(): Table {
-        return scene2d.visTable {
+        return scene2d.table {
             name = "StockTable"
             background = assets.bgDrawable
             pad(7f)

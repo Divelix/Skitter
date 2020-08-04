@@ -36,6 +36,8 @@ import ktx.graphics.*
 import ktx.collections.*
 import ktx.scene2d.label
 import ktx.scene2d.scene2d
+import ktx.scene2d.table
+import ktx.scene2d.textButton
 import ktx.scene2d.vis.*
 
 class Hud(
@@ -142,7 +144,7 @@ class Hud(
     init {
         pauseWindow = makePauseWindow()
         pauseBtn = makePauseButton()
-        rootTable = scene2d.visTable {
+        rootTable = scene2d.table {
             setFillParent(true)
             top().pad(10f)
             defaults().expandX()
@@ -270,14 +272,14 @@ class Hud(
             height = 100f
 //            val quantityLabel = label("retwert").cell(colspan = 2)
             row()
-            visTextButton("Exit").cell(align = Align.left).addListener(object : ClickListener() {
+            textButton("Exit").cell(align = Align.left).addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
                     LevelManager.isNextLvlRequired = true
                     game.screen = MenuScreen(game)
                 }
             })
-            visTextButton("Resume").cell(align = Align.right).addListener(object : ClickListener() {
+            textButton("Resume").cell(align = Align.right).addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
                     GameEngine.isPaused = false
@@ -288,7 +290,7 @@ class Hud(
     }
 
     private fun makeStatsTable(): Table {
-        return scene2d.visTable {
+        return scene2d.table {
             val iconWidth = 50f
             val cellWidth = 150f
             debug = true
@@ -298,7 +300,7 @@ class Hud(
                 require(quantity != null)
                 val tex = assets.manager.get<Texture>(findEnemyTexturePath(enemyType))
                 val ratio = tex.width.toFloat() / tex.height
-                visImage(TextureRegionDrawable(tex)).cell(width = iconWidth, height = iconWidth / ratio)
+                image(TextureRegionDrawable(tex)).cell(width = iconWidth, height = iconWidth / ratio)
                 label("x${quantity}")
                 label("${quantity * 10}").cell(width = cellWidth).setAlignment(Align.center)
                 row()

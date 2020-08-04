@@ -6,15 +6,13 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Mod
 import com.divelix.skitter.ui.ScaledLabel
-import com.kotcrab.vis.ui.widget.VisTable
 import ktx.scene2d.*
-import ktx.scene2d.image
-import ktx.scene2d.vis.visTable
 
 @Scene2dDsl
 class ModIcon(val mod: Mod, val assets: Assets): Group(), KGroup {
@@ -30,7 +28,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group(), KGroup {
     val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(noLvlColor); fill()}))
 
     val quantityLabel: ScaledLabel
-    val levelBars: VisTable
+    val levelBars: Table
 
     init {
         name = "ModIcon"
@@ -68,7 +66,7 @@ class ModIcon(val mod: Mod, val assets: Assets): Group(), KGroup {
             setPosition(quantityBg.x + (quantityBg.width-width)/2f, quantityBg.y + (quantityBg.height-height)/2f)
             isVisible = mod.quantity > 0
         }
-        levelBars = scene2d.visTable {
+        levelBars = scene2d.table {
             bottom().left()
             pad(2f)
             defaults().pad(1f)
