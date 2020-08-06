@@ -199,11 +199,6 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
 //                it.size(textWidth, tableHeight)
                 defaults().left()
                 table {
-//                    image(name = "aim")
-//                    image(assets.manager.get<Texture>(Constants.AIM))
-//                    image(name = "aim-drawable")
-//                    image("button")
-//                    add(Image().apply { drawable = TextureRegionDrawable(assets.manager.get<Texture>(Constants.AIM)) })
                     defaults().left()
                     specNames.forEach {
                         add(ScaledLabel("${it.toUpperCase()}:", "equip-specs", 0.25f))

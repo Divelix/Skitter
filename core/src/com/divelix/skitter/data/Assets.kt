@@ -106,11 +106,7 @@ class Assets: Disposable {
     fun setup() {
         uiSkin = skin(manager.get(Constants.ATLAS_UI)) {
             color("pinky", 0.7f, 0f, 1f)
-//            image("button")
-            image("aim") {
-                drawable = TextureRegionDrawable(manager.get<Texture>(Constants.AIM))
-            }
-//            image("aim-drawable", TextureRegionDrawable(manager.get<Texture>(Constants.AIM)))
+//            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
             label {
                 font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColor = Color.WHITE

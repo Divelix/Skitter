@@ -2,33 +2,33 @@ package com.divelix.skitter.screens
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
+import com.divelix.skitter.container
 import com.divelix.skitter.ui.menu.EditScreen
 import com.divelix.skitter.ui.menu.EmptyModIcon
 import com.divelix.skitter.ui.menu.EquipTable
 import com.divelix.skitter.ui.menu.ModIcon
-import com.kotcrab.vis.ui.widget.VisTable
 import ktx.actors.plusAssign
 import ktx.scene2d.container
 import ktx.scene2d.scene2d
-import ktx.scene2d.vis.visTable
+import ktx.scene2d.table
 
 class EquipScreen(game: Main): EditScreen(game) {
-    private val rootTable: VisTable
+    private val rootTable: Table
 
     init {
         tabbedBar.tabs[0].content = EquipTable(Constants.SHIPS_TAB, assets, reader, playerData)
         tabbedBar.tabs[1].content = EquipTable(Constants.GUNS_TAB, assets, reader, playerData)
         tabbedBar.makeActive(tabbedBar.tabs[0])
-        rootTable = scene2d.visTable {
+
+        rootTable = scene2d.table {
             setFillParent(true)
             top()
-            defaults().expandX()
-            container {
-                addActor(tabbedBar)
-            }
+            add(tabbedBar)
         }
+
         stage += rootTable
         stage += carriage.apply { setPosition(-height, -width) }
         stage += applyBtn

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.ObjectMap
+import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Mod
@@ -88,9 +89,9 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
 
             for (i in 0 until stockMods.size - stockMods.size % 4 + 8) {
                 if (i < stockMods.size) {
-                    container { ModIcon(stockMods[i], assets) }
+                    container(ModIcon(stockMods[i], assets))
                 } else {
-                    container { EmptyModIcon(assets) }
+                    container(EmptyModIcon(assets))
                 }
                 if ((i+1) % 4 == 0) row()
             }

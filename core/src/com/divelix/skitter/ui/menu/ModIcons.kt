@@ -13,9 +13,9 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Mod
 import com.divelix.skitter.ui.ScaledLabel
 import ktx.scene2d.*
+import com.divelix.skitter.image
 
-@Scene2dDsl
-class ModIcon(val mod: Mod, val assets: Assets): Group(), KGroup {
+class ModIcon(val mod: Mod, val assets: Assets): Group() {
     private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
     val bgColor = Color(1f, 1f, 0f, 1f)
     val lvlColor = Color(0f, 0f, 0f, 1f)
@@ -70,9 +70,9 @@ class ModIcon(val mod: Mod, val assets: Assets): Group(), KGroup {
             bottom().left()
             pad(2f)
             defaults().pad(1f)
-//            for (i in 1..10) {
-//                image(if (i <= mod.level) lvlDrawable else noLvlDrawable) {it.size(4f)}
-//            }
+            for (i in 1..10) {
+                image(if (i <= mod.level) lvlDrawable else noLvlDrawable) {it.size(4f)}
+            }
         }
 
         addActor(bg.apply { touchable = Touchable.disabled })
