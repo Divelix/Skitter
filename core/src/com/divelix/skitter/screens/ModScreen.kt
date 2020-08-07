@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.container
@@ -76,18 +77,17 @@ class ModScreen(game: Main): EditScreen(game) {
                     row()
                     table {
                         background = assets.bgDrawable
-                        // TODO fix this
-//                        scrollPane(
-//                                visTable {
-//                                    pad(12f)
-//                                    add(modName)
-//                                    row()
-//                                    add(modSpecs.apply {
-//                                        setWrap(true)
-//                                        setAlignment(Align.center)
-//                                    })//.cell(width = 126f) // width may be any value
-//                                }
-//                        ).cell(width = 150f, height = 78f)
+                        scrollPane (init = {
+                            table {
+                                pad(12f)
+                                add(modName)
+                                row()
+                                add(modSpecs.apply {
+                                    wrap = true
+                                    setAlignment(Align.center)
+                                })//.cell(width = 126f) // width may be any value
+                            }
+                        }).cell(width = 150f, height = 78f)
                     }
                 }
                 table {
