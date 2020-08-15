@@ -49,6 +49,9 @@ class Assets: Disposable {
     fun loadAssets() {
         manager.load<TextureAtlas>(Constants.ATLAS_UI)
         manager.load<Texture>(Constants.BACKGROUND_IMAGE)
+        manager.load<Texture>(Constants.EQUIP_ICON)
+        manager.load<Texture>(Constants.BATTLE_ICON)
+        manager.load<Texture>(Constants.MOD_ICON)
         manager.load<Texture>(Constants.SHIP_ICON)
         manager.load<Texture>(Constants.GUN_ICON)
         manager.load<Texture>(Constants.APPLY_ICON)
@@ -107,6 +110,11 @@ class Assets: Disposable {
         uiSkin = skin(manager.get(Constants.ATLAS_UI)) {
             color("pinky", 0.7f, 0f, 1f)
 //            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
+//            this["aim"] = manager.get<Texture>(Constants.AIM) // same with different syntax
+            set("bg", Texture(bgPixel.apply { setColor(UI_COLOR); fill() }))
+            set(Constants.EQUIP_ICON, manager.get<Texture>(Constants.EQUIP_ICON))
+            set(Constants.BATTLE_ICON, manager.get<Texture>(Constants.BATTLE_ICON))
+            set(Constants.MOD_ICON, manager.get<Texture>(Constants.MOD_ICON))
             label {
                 font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
                 fontColor = Color.WHITE

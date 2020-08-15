@@ -40,6 +40,9 @@ object Constants {
     // UI
     const val CARRIAGE = "textures/ui/carriage.png"
     const val AIM = "textures/ui/aim-64.png"
+    const val EQUIP_ICON = "textures/ui/equip-icon.png"
+    const val BATTLE_ICON = "textures/ui/battle-icon.png"
+    const val MOD_ICON = "textures/ui/mod-icon.png"
     const val WHITE_CIRCLE = "textures/ui/white_circle.png"
     const val SHIP_ICON = "textures/ui/ship-icon.png"
     const val GUN_ICON = "textures/ui/gun-icon.png"
