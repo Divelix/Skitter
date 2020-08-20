@@ -92,17 +92,17 @@ class PlayScreen(val game: Main): KtxScreen {
     private fun loadPlayerData() {
         val playerReader = JsonReader().parse(Constants.PLAYER_FILE.toLocalFile())
         val shipSpecs = playerReader.get("active_ship_specs")
-        Data.playerData.ship.health = shipSpecs[0].asFloat()
-        health = Data.playerData.ship.health
-        Data.playerData.ship.speed = shipSpecs[1].asFloat()
+        Data.PLAYER_DATA_OLD.ship.health = shipSpecs[0].asFloat()
+        health = Data.PLAYER_DATA_OLD.ship.health
+        Data.PLAYER_DATA_OLD.ship.speed = shipSpecs[1].asFloat()
         val gunSpecs = playerReader.get("active_gun_specs")
-        Data.playerData.gun.damage = gunSpecs[0].asFloat()
-        Data.playerData.gun.capacity = gunSpecs[1].asInt()
-        Data.playerData.gun.reloadTime = gunSpecs[2].asFloat()
-        Data.playerData.gun.bulletSpeed = gunSpecs[3].asFloat()
-        Data.playerData.gun.critMultiplier = gunSpecs[4].asFloat()
-        Data.playerData.gun.critChance = gunSpecs[5].asFloat()
-        ammo = Data.playerData.gun.capacity
+        Data.PLAYER_DATA_OLD.gun.damage = gunSpecs[0].asFloat()
+        Data.PLAYER_DATA_OLD.gun.capacity = gunSpecs[1].asInt()
+        Data.PLAYER_DATA_OLD.gun.reloadTime = gunSpecs[2].asFloat()
+        Data.PLAYER_DATA_OLD.gun.bulletSpeed = gunSpecs[3].asFloat()
+        Data.PLAYER_DATA_OLD.gun.critMultiplier = gunSpecs[4].asFloat()
+        Data.PLAYER_DATA_OLD.gun.critChance = gunSpecs[5].asFloat()
+        ammo = Data.PLAYER_DATA_OLD.gun.capacity
     }
 
     companion object {

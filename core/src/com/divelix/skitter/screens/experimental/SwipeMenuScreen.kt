@@ -18,8 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
@@ -32,8 +32,11 @@ import ktx.actors.onClickEvent
 import ktx.actors.plusAssign
 import ktx.actors.txt
 import ktx.app.KtxScreen
+import ktx.assets.toLocalFile
 import ktx.style.defaultStyle
 import ktx.collections.*
+import ktx.inject.Context
+import ktx.json.fromJson
 import ktx.scene2d.*
 import ktx.scene2d.vis.visTable
 import ktx.style.get
@@ -42,21 +45,28 @@ class SwipeMenuScreen(game: Main) : KtxScreen {
     val context = game.getContext()
     val batch = context.inject<SpriteBatch>()
     val assets = context.inject<Assets>()
+    val json = context.inject<Json>()
     private val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
     private val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio), batch)
-
-    val bgPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-    val redBg = TextureRegionDrawable(Texture(bgPixel.apply { setColor(Color(1f, 0f, 0f, 0.3f)); fill() }))
-    val greenBg = TextureRegionDrawable(Texture(bgPixel.apply { setColor(Color(0f, 1f, 0f, 0.3f)); fill() }))
-    val blueBg = TextureRegionDrawable(Texture(bgPixel.apply { setColor(Color(0f, 0f, 1f, 0.3f)); fill() }))
 
     val swipeMenu: SwipeMenu
 
     init {
+        val file = "json/swipe.json".toLocalFile()
+        val printSettings = JsonValue.PrettyPrintSettings().apply {
+            outputType = JsonWriter.OutputType.json
+            singleLineColumns = 100
+        }
+        val icon1 = IconData("first", Constants.SHIP_ICON)
+        val icon2 = IconData("second", Constants.GUN_ICON)
+        val icon3 = IconData("third", Constants.BATTLE_ICON)
+        val iconContainer = IconsContainer("container", gdxArrayOf(icon1, icon2, icon3))
+        file.writeString(json.prettyPrint(iconContainer, printSettings), false)
+
         swipeMenu = SwipeMenu(gdxArrayOf(
-                Constants.EQUIP_ICON to Page(redBg),
-                Constants.BATTLE_ICON to Page(greenBg),
-                Constants.MOD_ICON to Page(blueBg)))
+                Constants.EQUIP_ICON to PageOne(context),
+                Constants.BATTLE_ICON to PageTwo(context),
+                Constants.MOD_ICON to PageThree(context)))
         stage += swipeMenu
         stage.isDebugAll = true
         val handler = object : InputAdapter() {
@@ -83,7 +93,6 @@ class SwipeMenuScreen(game: Main) : KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height)
-        swipeMenu.bottomNav.y = 0f
     }
 
     override fun dispose() {
@@ -108,40 +117,80 @@ class SwipeMenu(items: Array<Pair<String, Page>>) : Group() {
                 pages.forEach { container(it) }
             }
         }
-        bottomNav = BottomNav(names.toGdxArray(), scrollPane)
+        bottomNav = BottomNav(names.toGdxArray())
 
         addActor(scrollPane)
         addActor(bottomNav)
     }
+
+    inner class BottomNav(iconDrawableNames: Array<String>) : Group() {
+        init {
+            width = Constants.D_WIDTH.toFloat()
+            height = 50f
+            val content = scene2d.table {
+                setFillParent(true)
+                defaults().expand()
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                iconDrawableNames.forEachIndexed { index, name ->
+                    image(name).cell(width = 40f, height = 40f)
+                            .onClickEvent { event, actor ->
+                                println("[EVENT = $event; ACTOR = $actor]")
+                                scrollPane.scrollX = index * Constants.D_WIDTH.toFloat()
+                            }
+                }
+            }
+            addActor(content)
+        }
+    }
 }
 
-class Page(val bg: Drawable) : Group() {
+private data class IconsContainer(var name: String = "defaultContainer", var icons: Array<IconData> = Array())
+private data class IconData(var name: String = "noname", var path: String = "no path")
+
+abstract class Page(val context: Context) : Group() {
+    val assets = context.inject<Assets>()
+    val json = context.inject<Json>()
+
     init {
         width = Constants.D_WIDTH.toFloat()
         height = Constants.D_HEIGHT.toFloat()
+    }
+}
+
+class PageOne(context: Context) : Page(context) {
+    init {
+        val file = "json/swipe.json".toLocalFile()
+        val iconsContainer = json.fromJson<IconsContainer>(file)
         val content = scene2d.table {
             setFillParent(true)
-            background = bg
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("redBg"))
+            image(assets.manager.get<Texture>(iconsContainer.icons[0].path)).cell(width = 100f, height = 100f)
         }
         addActor(content)
     }
 }
 
-class BottomNav(iconDrawableNames: Array<String>, scrollPane: ScrollPane) : Group() {
+class PageTwo(context: Context) : Page(context) {
     init {
-        width = Constants.D_WIDTH.toFloat()
-        height = 50f
+        val file = "json/swipe.json".toLocalFile()
+        val iconsContainer = json.fromJson<IconsContainer>(file)
         val content = scene2d.table {
             setFillParent(true)
-            defaults().expand()
-            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-            iconDrawableNames.forEachIndexed { index, name ->
-                image(name).cell(width = 40f, height = 40f)
-                        .onClickEvent { event, actor ->
-                            println("[EVENT = $event; ACTOR = $actor]")
-                            scrollPane.scrollX = index * Constants.D_WIDTH.toFloat()
-                        }
-            }
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("greenBg"))
+            image(assets.manager.get<Texture>(iconsContainer.icons[1].path)).cell(width = 100f, height = 100f)
+        }
+        addActor(content)
+    }
+}
+
+class PageThree(context: Context) : Page(context) {
+    init {
+        val file = "json/swipe.json".toLocalFile()
+        val iconsContainer = json.fromJson<IconsContainer>(file)
+        val content = scene2d.table {
+            setFillParent(true)
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("blueBg"))
+            image(assets.manager.get<Texture>(iconsContainer.icons[2].path)).cell(width = 100f, height = 100f)
         }
         addActor(content)
     }

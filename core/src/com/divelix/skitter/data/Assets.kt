@@ -34,7 +34,7 @@ class Assets: Disposable {
     val BG_COLOR = Color(0x684BA6FF)
     val UI_COLOR = Color(0f, 0f, 0f, 0.3f)
     val DOWN_COLOR = Color(0f, 0f, 0f, 0.5f)
-    val bgPixel = Pixmap(1, 1, Pixmap.Format.Alpha)
+    val bgPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
     val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(UI_COLOR); fill() }))
     val downDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(DOWN_COLOR); fill() }))
 
@@ -112,6 +112,9 @@ class Assets: Disposable {
 //            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
 //            this["aim"] = manager.get<Texture>(Constants.AIM) // same with different syntax
             set("bg", Texture(bgPixel.apply { setColor(UI_COLOR); fill() }))
+            set("redBg", Texture(bgPixel.apply { setColor(Color(1f, 0f, 0f, 0.3f)); fill() }))
+            set("greenBg", Texture(bgPixel.apply { setColor(Color(0f, 1f, 0f, 0.3f)); fill() }))
+            set("blueBg", Texture(bgPixel.apply { setColor(Color(0f, 0f, 1f, 0.3f)); fill() }))
             set(Constants.EQUIP_ICON, manager.get<Texture>(Constants.EQUIP_ICON))
             set(Constants.BATTLE_ICON, manager.get<Texture>(Constants.BATTLE_ICON))
             set(Constants.MOD_ICON, manager.get<Texture>(Constants.MOD_ICON))

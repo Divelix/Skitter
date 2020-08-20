@@ -3,6 +3,7 @@ package com.divelix.skitter
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.utils.Json
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.screens.LoadingScreen
 import ktx.inject.Context
@@ -16,6 +17,7 @@ class Main : Game() {
             bindSingleton(SpriteBatch())
             bindSingleton(ShapeRenderer())
             bindSingleton(Assets())
+            bindSingleton(Json())
         }
         setScreen(LoadingScreen(this))
     }

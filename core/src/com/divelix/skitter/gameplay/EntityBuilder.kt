@@ -53,7 +53,7 @@ class EntityBuilder(private val engine: PooledEngine,
         return engine.entity {
             with<PlayerComponent>()
             with<TypeComponent> { type = entityType }
-            with<HealthComponent> { health = Data.playerData.ship.health }
+            with<HealthComponent> { health = Data.PLAYER_DATA_OLD.ship.health }
 //            with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
                 position.set(x, y, 2f)
@@ -104,11 +104,11 @@ class EntityBuilder(private val engine: PooledEngine,
         val dirAngle = dirVec.angle() - 90f
         val width = 0.2f
         val height = 1f
-        val speed = Data.playerData.gun.bulletSpeed
+        val speed = Data.PLAYER_DATA_OLD.gun.bulletSpeed
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<BulletComponent> {
-                damage = Data.playerData.gun.damage
+                damage = Data.PLAYER_DATA_OLD.gun.damage
             }
             with<TransformComponent> {
                 position.set(initPos.x, initPos.y, 1f)
