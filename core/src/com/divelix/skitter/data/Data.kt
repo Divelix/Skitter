@@ -51,9 +51,9 @@ data class PlayerData(
         var name: String = "",
         var coins: Int = 0,
         var activeShip: Int = 0,
-        var activeShipSpecs: Array<Int> = Array(),
+        var activeShipSpecs: Array<Float> = Array(),
         var activeGun: Int = 0,
-        var activeGunSpecs: Array<Int> = Array(),
+        var activeGunSpecs: Array<Float> = Array(),
         var ships: Array<EquipData> = Array(),
         var guns: Array<EquipData> = Array(),
         var mods: PlayerModsData = PlayerModsData()

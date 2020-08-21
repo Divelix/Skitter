@@ -1,8 +1,0 @@
-{
-"name": "container",
-"icons": [
-	{ "name": "first", "path": "textures/ui/ship-icon.png" },
-	{ "name": "second", "path": "textures/ui/gun-icon.png" },
-	{ "name": "third", "path": "textures/ui/battle-icon.png" }
-]
-}
