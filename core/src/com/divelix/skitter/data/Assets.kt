@@ -153,6 +153,10 @@ class Assets: Disposable {
                 background = it["select-box-list-bg"]
                 selection = it["list-selection"]
             }
+            textField {
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
+                fontColor = Color.WHITE
+            }
             textButton {
 //                focusBorder = it["border"]
                 down = it["button-down"]
