@@ -35,7 +35,6 @@ class ScrollMenu(context: Context) : Group() {
             Constants.EQUIP_ICON to EquipPage(playerData))
 
     val scrollPane: ScrollPane
-    val bottomNav: BottomNav
 
     init {
         setSize(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat())
@@ -50,10 +49,8 @@ class ScrollMenu(context: Context) : Group() {
                 pageContent.forEach { container(it) }
             }
         }
-        bottomNav = BottomNav(pageNames.toGdxArray())
-
         addActor(scrollPane)
-        addActor(bottomNav)
+        addActor(BottomNav(pageNames.toGdxArray()))
     }
 
     fun updateUI() {
@@ -68,7 +65,6 @@ class ScrollMenu(context: Context) : Group() {
             singleLineColumns = 100
         }
         playerDataFile.writeString(json.prettyPrint(playerData, printSettings), false)
-//        debug(TAG) { "Player data was saved to json" }
         log.debug { "Player data was saved to json" }
     }
 
@@ -97,7 +93,6 @@ class ScrollMenu(context: Context) : Group() {
     }
 
     companion object {
-        //        val TAG = ScrollMenu::class.simpleName!!
         val log = logger<ScrollMenu>()
     }
 }
