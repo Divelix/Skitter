@@ -15,16 +15,15 @@ import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.container
 import com.divelix.skitter.image
+import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.onClickEvent
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
-import ktx.collections.gdxArrayOf
-import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
+import com.divelix.skitter.container
 
 class TestUIScreen(val game: Main) : KtxScreen {
     private val context = game.getContext()
@@ -34,7 +33,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
     val content = Container<Table>()
 
     init {
-        val contentTable1 = scene2d.table { label("first") }
+        val contentTable1 = TrialContent(assets)
         val contentTable2 = scene2d.table { label("second") }
         val contentTable3 = scene2d.table { label("third") }
 //        val tabbedMenu = TabbedMenu(context, gdxArrayOf(
@@ -46,46 +45,49 @@ class TestUIScreen(val game: Main) : KtxScreen {
         stage += scene2d.table {
             setFillParent(true)
             top()
-            val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), contentTable1),
-                    Tab(assets.manager.get<Texture>(Constants.GUN_ICON), contentTable2),
-                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), contentTable3)
-            ))
-            add(tabbedMenu)
-//            table {
-//                touchable = Touchable.enabled
-//                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-//                image(assets.manager.get<Texture>(Constants.SHIP_ICON))
-//                        .apply { setScaling(Scaling.fit) }
-//                        .cell(width = 50f, height = 50f, pad = 8f)
-//            }.onClickEvent { event, actor ->
-//                actor.background = null
-//                content.actor = contentTable1
-//            }
-//
-//            table {
-//                touchable = Touchable.enabled
-//                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-//                image(assets.manager.get<Texture>(Constants.GUN_ICON))
-//                        .apply { setScaling(Scaling.fit) }
-//                        .cell(width = 50f, height = 50f, pad = 8f)
-//            }.onClickEvent { event, actor ->
-//                actor.background = null
-//                content.actor = contentTable2
-//            }
-//
-//            table {
-//                touchable = Touchable.enabled
-//                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-//                image(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY))
-//                        .apply { setScaling(Scaling.fit) }
-//                        .cell(width = 50f, height = 50f, pad = 8f)
-//            }.onClickEvent { event, actor ->
-//                actor.background = null
-//                content.actor = contentTable3
-//            }
-//            row()
-//            add(content).colspan(3)
+
+//            val tabbedMenu = TabbedMenu(gdxArrayOf(
+//                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), contentTable1),
+//                    Tab(assets.manager.get<Texture>(Constants.GUN_ICON), contentTable2),
+//                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), contentTable3)
+//            ))
+//            add(tabbedMenu)
+
+            defaults().growX()
+            table {
+                touchable = Touchable.enabled
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                image(assets.manager.get<Texture>(Constants.SHIP_ICON))
+                        .apply { setScaling(Scaling.fit) }
+                        .cell(width = 50f, height = 50f, pad = 8f)
+            }.onClickEvent { event, actor ->
+                actor.background = null
+                content.actor = contentTable1
+            }
+
+            table {
+                touchable = Touchable.enabled
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                image(assets.manager.get<Texture>(Constants.GUN_ICON))
+                        .apply { setScaling(Scaling.fit) }
+                        .cell(width = 50f, height = 50f, pad = 8f)
+            }.onClickEvent { event, actor ->
+                actor.background = null
+                content.actor = contentTable2
+            }
+
+            table {
+                touchable = Touchable.enabled
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                image(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY))
+                        .apply { setScaling(Scaling.fit) }
+                        .cell(width = 50f, height = 50f, pad = 8f)
+            }.onClickEvent { event, actor ->
+                actor.background = null
+                content.actor = contentTable3
+            }
+            row()
+            add(content).colspan(3)
         }
         Gdx.input.inputProcessor = stage
     }
@@ -137,33 +139,18 @@ class TabbedMenu(tabs: Array<Tab>): Table() {
     }
 }
 
-//class TabbedMenu(context: Context, tabs: Array<Pair<String, Table>>): Table() {
-//    val assets = context.inject<Assets>()
-//    val content = Container<Table>()
-//    val tabWidth = Constants.D_WIDTH.toFloat() / tabs.size
-//
-//    init {
-//        tabs.forEach { add(Tab(assets.manager.get<Texture>(it.first), tabWidth, it.second)) }
-//        row()
-//        add(content).colspan(tabs.size)
-//    }
-//
-//    inner class Tab(iconTexture: Texture, tabWidth: Float, val contentTable: Table): Group() {
-//        val bg: Image
-//
-//        init {
-//            val tabHeight = 66f
-//            val iconHeight = 50f
-//            touchable = Touchable.enabled
-//            setSize(tabWidth, tabHeight)
-//            bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))).apply {setFillParent(true)}
-//            val icon = Image(iconTexture).apply {
-//                val aspectRatio = iconTexture.width.toFloat() / iconTexture.height.toFloat()
-//                setSize(iconHeight * aspectRatio, iconHeight)
-//                setPosition((this@Tab.width - width) / 2f, (this@Tab.height - height) / 2f)
-//            }
-//            addActor(bg.apply { touchable = Touchable.disabled })
-//            addActor(icon.apply { touchable = Touchable.disabled })
-//        }
-//    }
-//}
+
+class TrialContent(assets: Assets): Table() {
+    init {
+        val topPart = scene2d.table {
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+            label("A")
+//            container(scaledLabel("Description", 0.3f))
+            image(assets.manager.get<Texture>(Constants.GUN_DEFAULT))
+//            container(scaledLabel("DAMAGE: 100", 0.3f))
+            label("B")
+        }
+        val c = scene2d.container(topPart) { pad(12f) }
+        add(c)
+    }
+}

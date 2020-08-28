@@ -16,6 +16,18 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
+@Scene2dDsl
+@OptIn(ExperimentalContracts::class)
+inline fun <S> KWidget<S>.scaledLabel(
+        text: String,
+        scale: Float,
+        init: (@Scene2dDsl Group).(S) -> Unit = {}
+): Group {
+    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+    val scaledImage = Group().apply { addActor(label(text)); setScale(scale, scale) }
+    return actor(scaledImage, init)
+}
+
 // delete when new version of libktx comes out
 @Scene2dDsl
 @OptIn(ExperimentalContracts::class)
