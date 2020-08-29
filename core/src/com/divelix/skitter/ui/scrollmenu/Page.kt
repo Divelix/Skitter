@@ -5,8 +5,8 @@ import com.divelix.skitter.data.Constants
 
 abstract class Page : Group() {
     init {
-        width = Constants.D_WIDTH.toFloat()
-        height = Constants.D_HEIGHT.toFloat()
+        width = Constants.STAGE_WIDTH.toFloat()
+        height = Constants.STAGE_HEIGHT.toFloat()
     }
 
     abstract fun update()

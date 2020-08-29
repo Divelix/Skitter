@@ -29,7 +29,7 @@ class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) 
             pack()
             temp.set(damagedEntity[TransformComponent.mapper]!!.position)
             playCam.project(temp)
-            val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
+            val ratio = Constants.STAGE_WIDTH / Gdx.graphics.width.toFloat()
             temp.scl(ratio)
             temp.x -= width / 2f // center label
             prevPos.set(temp.x, temp.y)
@@ -79,7 +79,7 @@ class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) 
         private fun moveTo(point: Vector3) {
             temp.set(point)
             playCam.project(temp)
-            val ratio = Constants.D_WIDTH / Gdx.graphics.width.toFloat()
+            val ratio = Constants.STAGE_WIDTH / Gdx.graphics.width.toFloat()
             temp.scl(ratio)
             temp.x -= width / 2f // center label
 

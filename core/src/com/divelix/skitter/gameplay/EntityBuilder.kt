@@ -84,7 +84,7 @@ class EntityBuilder(private val engine: PooledEngine,
         return engine.entity {
             with<CameraComponent> {
                 camera = playCam
-                camera.setToOrtho(false, Constants.WIDTH, Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width)
+                camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_WIDTH * Gdx.graphics.height / Gdx.graphics.width)
             }
             if (playerEntity != null) with<BindComponent> {entity = playerEntity}
         }

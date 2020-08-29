@@ -12,8 +12,8 @@ object DesktopLauncher {
             title = Constants.TITLE
 //            width = TestAIScreen.D_WIDTH // for TestAIScreen
 //            height = TestAIScreen.D_HEIGHT
-            width = Constants.D_WIDTH
-            height = Constants.D_HEIGHT
+            width = Constants.STAGE_WIDTH
+            height = Constants.STAGE_HEIGHT
 //            resizable = false
         })
     }

@@ -36,7 +36,7 @@ class TabbedBar(val assets: Assets): Table() {
 
         init {
             touchable = Touchable.enabled
-            setSize(Constants.D_WIDTH.toFloat() / 2, tabHeight)
+            setSize(Constants.STAGE_WIDTH.toFloat() / 2, tabHeight)
             bg = Image(assets.bgDrawable).apply { setFillParent(true) }
             texture = when (tabName) {
                 Constants.SHIPS_TAB -> assets.manager.get<Texture>(Constants.SHIP_ICON)

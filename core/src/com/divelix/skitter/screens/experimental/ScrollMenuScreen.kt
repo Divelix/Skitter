@@ -22,7 +22,7 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
     val batch = context.inject<SpriteBatch>()
     val assets = context.inject<Assets>()
     private val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
-    private val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH * aspectRatio), batch)
+    private val stage = Stage(TopViewport(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_WIDTH * aspectRatio), batch)
 
     val scrollMenu: ScrollMenu
 

@@ -37,7 +37,7 @@ class ScrollMenu(context: Context) : Group() {
     val scrollPane: ScrollPane
 
     init {
-        setSize(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat())
+        setSize(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_HEIGHT.toFloat())
         val (pageNames, pageContent) = pages.unzip()
         scrollPane = scene2d.scrollPane {
             setFillParent(true)
@@ -70,7 +70,7 @@ class ScrollMenu(context: Context) : Group() {
 
     inner class BottomNav(pageNames: Array<String>) : Group() {
         init {
-            width = Constants.D_WIDTH.toFloat()
+            width = Constants.STAGE_WIDTH.toFloat()
             height = 50f
             val content = scene2d.table {
                 setFillParent(true)
@@ -84,7 +84,7 @@ class ScrollMenu(context: Context) : Group() {
 //                                println("[EVENT = $event; ACTOR = $actor]")
                                 updateUI()
                                 saveToJson()
-                                scrollPane.scrollX = index * Constants.D_WIDTH.toFloat()
+                                scrollPane.scrollX = index * Constants.STAGE_WIDTH.toFloat()
                             }
                 }
             }

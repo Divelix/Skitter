@@ -53,7 +53,7 @@ class Hud(
 
     val hudCam = OrthographicCamera()
     val aspectRatio = Gdx.graphics.width.toFloat() / Gdx.graphics.height
-    val hudStage = Stage(FillViewport(Constants.D_WIDTH.toFloat(), Constants.D_WIDTH / aspectRatio, hudCam), batch)
+    val hudStage = Stage(FillViewport(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_WIDTH / aspectRatio, hudCam), batch)
     val damageLabelsProvider = DamageLabelProvider(hudStage, playCam)
 
     private val rootTable: Table

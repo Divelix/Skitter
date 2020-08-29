@@ -19,15 +19,12 @@ import ktx.app.KtxScreen
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
 import ktx.scene2d.textButton
-import ktx.scene2d.vis.visImage
-import ktx.scene2d.vis.visTable
-import ktx.scene2d.vis.visTextButton
 
 class MenuScreen(game: Main): KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
-    private val stage = Stage(BotViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
+    private val stage = Stage(BotViewport(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_HEIGHT.toFloat()), batch)
 
     init {
         stage += scene2d.table {

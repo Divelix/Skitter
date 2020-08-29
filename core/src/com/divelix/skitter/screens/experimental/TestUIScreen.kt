@@ -3,91 +3,46 @@ package com.divelix.skitter.screens.experimental
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.image
-import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.onClickEvent
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.scene2d.*
 import ktx.style.get
-import com.divelix.skitter.container
+import ktx.collections.gdxArrayOf
 
 class TestUIScreen(val game: Main) : KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
-    private val stage = Stage(TopViewport(Constants.D_WIDTH.toFloat(), Constants.D_HEIGHT.toFloat()), batch)
+    private val stage = Stage(TopViewport(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_HEIGHT.toFloat()), batch)
     val content = Container<Table>()
 
     init {
-        val contentTable1 = TrialContent(assets)
-        val contentTable2 = scene2d.table { label("second") }
-        val contentTable3 = scene2d.table { label("third") }
-//        val tabbedMenu = TabbedMenu(context, gdxArrayOf(
-//                Constants.SHIP_ICON to scene2d.table { label("Ship tab") },
-//                Constants.GUN_ICON to scene2d.table { label("Gun tab") }
-//        ))
-//        stage += tabbedMenu
         stage.isDebugAll = true
         stage += scene2d.table {
             setFillParent(true)
             top()
 
-//            val tabbedMenu = TabbedMenu(gdxArrayOf(
-//                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), contentTable1),
-//                    Tab(assets.manager.get<Texture>(Constants.GUN_ICON), contentTable2),
-//                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), contentTable3)
-//            ))
-//            add(tabbedMenu)
-
-            defaults().growX()
-            table {
-                touchable = Touchable.enabled
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-                image(assets.manager.get<Texture>(Constants.SHIP_ICON))
-                        .apply { setScaling(Scaling.fit) }
-                        .cell(width = 50f, height = 50f, pad = 8f)
-            }.onClickEvent { event, actor ->
-                actor.background = null
-                content.actor = contentTable1
-            }
-
-            table {
-                touchable = Touchable.enabled
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-                image(assets.manager.get<Texture>(Constants.GUN_ICON))
-                        .apply { setScaling(Scaling.fit) }
-                        .cell(width = 50f, height = 50f, pad = 8f)
-            }.onClickEvent { event, actor ->
-                actor.background = null
-                content.actor = contentTable2
-            }
-
-            table {
-                touchable = Touchable.enabled
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-                image(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY))
-                        .apply { setScaling(Scaling.fit) }
-                        .cell(width = 50f, height = 50f, pad = 8f)
-            }.onClickEvent { event, actor ->
-                actor.background = null
-                content.actor = contentTable3
-            }
-            row()
-            add(content).colspan(3)
+            val tabbedMenu = TabbedMenu(gdxArrayOf(
+                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON),        TrialContent(assets)),
+                    Tab(assets.manager.get<Texture>(Constants.GUN_ICON),         scene2d.table { label("second") }),
+                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { label("third") })
+            ))
+            add(tabbedMenu)
         }
         Gdx.input.inputProcessor = stage
     }
@@ -124,9 +79,14 @@ class TabbedMenu(tabs: Array<Tab>): Table() {
 
     init {
         defaults().growX()
-        tabs.forEach { add(it.apply { background = bgDrawable }) }
+        tabs.forEach {
+            add(it.apply {
+                background = bgDrawable
+                onClickEvent { event, actor -> switchTo(it) }
+            })
+        }
         row()
-        add(content).colspan(tabs.size)
+        add(content).colspan(tabs.size).width(Constants.STAGE_WIDTH.toFloat())
         // define initial active tab
         switchTo(tabs[0])
     }
@@ -142,15 +102,23 @@ class TabbedMenu(tabs: Array<Tab>): Table() {
 
 class TrialContent(assets: Assets): Table() {
     init {
+        padTop(12f)
         val topPart = scene2d.table {
+            pad(7f)
             background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-            label("A")
+            table {// info table
+                pad(7f)
+                label("A").cell(width = 92f, height = 100f, padRight = 7f).setAlignment(Align.top)
 //            container(scaledLabel("Description", 0.3f))
-            image(assets.manager.get<Texture>(Constants.GUN_DEFAULT))
-//            container(scaledLabel("DAMAGE: 100", 0.3f))
-            label("B")
+                table {
+                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                    image(assets.manager.get<Texture>(Constants.GUN_DEFAULT)).apply { setScaling(Scaling.fit) }.cell(pad = 7f)
+                }.cell(width = 100f, height = 100f)
+//            container(scaledLabel("DAMAGE: 100", 0.3f)) {pad(5f)}
+                label("B").cell(width = 92f, height = 100f, padLeft = 7f).setAlignment(Align.topLeft)
+            }
         }
-        val c = scene2d.container(topPart) { pad(12f) }
-        add(c)
+//        val c = scene2d.container(topPart) { pad(12f) }
+        add(topPart)
     }
 }

@@ -65,8 +65,8 @@ class GameEngine(val game: Main) {
             val t = assets.frameBuffer.colorBufferTexture
             t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
             val bufferTexture = TextureRegion(t).apply { flip(false, true) }
-            val w = Constants.WIDTH
-            val h = Constants.WIDTH * Gdx.graphics.height / Gdx.graphics.width
+            val w = Constants.WORLD_WIDTH
+            val h = Constants.WORLD_WIDTH * Gdx.graphics.height / Gdx.graphics.width
             batch.draw(bufferTexture, playCam.position.x - w / 2f, playCam.position.y - h / 2f, w, h)
         }
         debugRenderer.render(world, playCam.combined)

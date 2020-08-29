@@ -2,11 +2,10 @@ package com.divelix.skitter.data
 
 object Constants {
     const val TITLE = "Skitter"
-    const val D_WIDTH = 350
-    const val D_HEIGHT = 700
-    const val WIDTH = 15f
-    const val HEIGHT = WIDTH * 2f
-//    const val HEIGHT = 1920
+    const val STAGE_WIDTH = 350
+    const val STAGE_HEIGHT = 700
+    const val WORLD_WIDTH = 15f
+//    const val WORLD_HEIGHT = WORLD_WIDTH * 2f
     const val PPM = 32f
     const val PTM = 1 / PPM
     const val B2D_FPS = 120f
