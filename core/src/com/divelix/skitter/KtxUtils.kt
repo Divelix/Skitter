@@ -2,16 +2,10 @@ package com.divelix.skitter
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.divelix.skitter.data.Assets
-import com.divelix.skitter.data.Mod
-import com.divelix.skitter.ui.menu.ModIcon
-import com.divelix.skitter.ui.menu.TabbedBar
+import com.divelix.skitter.data.Constants
 import ktx.scene2d.*
-import ktx.style.*
-import ktx.style.defaultStyle
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -19,13 +13,14 @@ import kotlin.contracts.contract
 @Scene2dDsl
 @OptIn(ExperimentalContracts::class)
 inline fun <S> KWidget<S>.scaledLabel(
-        text: String,
-        scale: Float,
-        init: (@Scene2dDsl Group).(S) -> Unit = {}
-): Group {
+        text: CharSequence,
+        style: String = defaultStyle,
+        skin: Skin = Scene2DSkin.defaultSkin,
+        scale: Float = Constants.DEFAULT_LABEL_SCALE,
+        init: (@Scene2dDsl Label).(S) -> Unit = {}
+): Label {
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
-    val scaledImage = Group().apply { addActor(label(text)); setScale(scale, scale) }
-    return actor(scaledImage, init)
+    return actor(Label(text, skin, style).apply { setFontScale(scale) }, init)
 }
 
 // delete when new version of libktx comes out

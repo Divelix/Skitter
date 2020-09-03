@@ -13,6 +13,7 @@ object Constants {
     const val BULLET_CRITICAL_DISTANCE_2 = 400f
     const val DEFAULT_SLOW_RATE = 1f
     const val PLAYER_SIZE = 2f
+    const val DEFAULT_LABEL_SCALE = 0.5f
 
     // Control params
     const val CAMERA_RADIUS = 2f

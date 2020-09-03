@@ -16,6 +16,7 @@ import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.image
+import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.onClickEvent
 import ktx.actors.plusAssign
@@ -119,6 +120,14 @@ class TrialContent(assets: Assets): Table() {
             }
         }
 //        val c = scene2d.container(topPart) { pad(12f) }
-        add(topPart)
+//        add(topPart)
+        val midPart = scene2d.table {
+            label("Queer")
+            row()
+            label("Queer") {setFontScale(0.5f)}
+            row()
+            scaledLabel("Queer")
+        }
+        add(midPart)
     }
 }
