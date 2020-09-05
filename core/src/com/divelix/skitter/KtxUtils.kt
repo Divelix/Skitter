@@ -14,9 +14,9 @@ import kotlin.contracts.contract
 @OptIn(ExperimentalContracts::class)
 inline fun <S> KWidget<S>.scaledLabel(
         text: CharSequence,
+        scale: Float = Constants.DEFAULT_LABEL_SCALE,
         style: String = defaultStyle,
         skin: Skin = Scene2DSkin.defaultSkin,
-        scale: Float = Constants.DEFAULT_LABEL_SCALE,
         init: (@Scene2dDsl Label).(S) -> Unit = {}
 ): Label {
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }

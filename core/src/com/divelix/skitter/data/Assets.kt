@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Disposable
-import com.divelix.skitter.image
 import com.kotcrab.vis.ui.VisUI
 import ktx.assets.*
 import ktx.freetype.freeTypeFontParameters
@@ -92,8 +91,10 @@ class Assets: Disposable {
         val fontParams48 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
             size = 48
         }
-        val fontParams32 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
-            size = 32
+        val defaultFontParams = freeTypeFontParameters(Constants.ROBOTO_FONT) {
+            size = 128
+            magFilter = Texture.TextureFilter.Linear
+            minFilter = Texture.TextureFilter.Linear
         }
         val fontParams64 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
             size = 64
@@ -102,7 +103,7 @@ class Assets: Disposable {
             minFilter = Texture.TextureFilter.Linear
         }
         manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_QUANTITY, fontParams48)
-        manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT, fontParams32)
+        manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT, defaultFontParams)
         manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD, fontParams64)
     }
 
@@ -120,7 +121,16 @@ class Assets: Disposable {
             set(Constants.MOD_ICON, manager.get<Texture>(Constants.MOD_ICON))
             label {
                 font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
+                font.setUseIntegerPositions(false)
                 fontColor = Color.WHITE
+            }
+            label("equip-specs") {
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_QUANTITY)
+                fontColor = Color.WHITE
+            }
+            label("reload-label") {
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD)
+                fontColor = Color.BLACK
             }
             label("score-label", extend = defaultStyle) {
                 fontColor = Color.BLACK
@@ -130,14 +140,6 @@ class Assets: Disposable {
             }
             label("mod-level", extend = defaultStyle) {
                 fontColor = Color.GREEN
-            }
-            label("equip-specs") {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_QUANTITY)
-                fontColor = Color.WHITE
-            }
-            label("reload-label") {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD)
-                fontColor = Color.BLACK
             }
             label("damage-label", extend = "reload-label") {
                 fontColor = Color.WHITE

@@ -33,7 +33,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
     val content = Container<Table>()
 
     init {
-        stage.isDebugAll = true
+//        stage.isDebugAll = true
         stage += scene2d.table {
             setFillParent(true)
             top()
@@ -109,25 +109,41 @@ class TrialContent(assets: Assets): Table() {
             background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
             table {// info table
                 pad(7f)
-                label("A").cell(width = 92f, height = 100f, padRight = 7f).setAlignment(Align.top)
-//            container(scaledLabel("Description", 0.3f))
+                scrollPane {
+                    scaledLabel(Constants.LOREM_IPSUM, 0.1f).apply {
+                        wrap = true
+                        setAlignment(Align.top)
+                    }
+                }.cell(width = 92f, height = 100f, padRight = 7f)
                 table {
+                    touchable = Touchable.enabled
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
                     image(assets.manager.get<Texture>(Constants.GUN_DEFAULT)).apply { setScaling(Scaling.fit) }.cell(pad = 7f)
+                    onClickEvent { event, actor -> println("Equip icon clicked") }
                 }.cell(width = 100f, height = 100f)
-//            container(scaledLabel("DAMAGE: 100", 0.3f)) {pad(5f)}
-                label("B").cell(width = 92f, height = 100f, padLeft = 7f).setAlignment(Align.topLeft)
+                table {
+                    padLeft(7f)
+                    table {
+                        defaults().left()
+                        scaledLabel("DAMAGE: ", Constants.SPECS_SCALE); row()
+                        scaledLabel("CAPACITY: ", Constants.SPECS_SCALE); row()
+                        scaledLabel("RELOAD: ", Constants.SPECS_SCALE); row()
+                        scaledLabel("SPEED: ", Constants.SPECS_SCALE); row()
+                        scaledLabel("CRITICAL: ", Constants.SPECS_SCALE); row()
+                        scaledLabel("CHANCE: ", Constants.SPECS_SCALE); row()
+                    }
+                    table {
+                        defaults().left()
+                        scaledLabel("100", Constants.SPECS_SCALE); row()
+                        scaledLabel("13", Constants.SPECS_SCALE); row()
+                        scaledLabel("0.5", Constants.SPECS_SCALE); row()
+                        scaledLabel("10", Constants.SPECS_SCALE); row()
+                        scaledLabel("x2.0", Constants.SPECS_SCALE); row()
+                        scaledLabel("20%", Constants.SPECS_SCALE); row()
+                    }
+                }
             }
         }
-//        val c = scene2d.container(topPart) { pad(12f) }
-//        add(topPart)
-        val midPart = scene2d.table {
-            label("Queer")
-            row()
-            label("Queer") {setFontScale(0.5f)}
-            row()
-            scaledLabel("Queer")
-        }
-        add(midPart)
+        add(topPart)
     }
 }

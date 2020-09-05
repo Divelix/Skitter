@@ -15,6 +15,9 @@ object Constants {
     const val PLAYER_SIZE = 2f
     const val DEFAULT_LABEL_SCALE = 0.5f
 
+    // UI values
+    const val SPECS_SCALE = 0.1f
+
     // Control params
     const val CAMERA_RADIUS = 2f
     const val CAMERA_RADIUS_2 = CAMERA_RADIUS * CAMERA_RADIUS
@@ -99,4 +102,11 @@ object Constants {
     const val SHIPS_FILE = "json/ships.json"
     const val GUNS_FILE = "json/guns.json"
     const val ENEMIES_FILE = "json/enemies.json"
+
+    // MISC
+    const val LOREM_IPSUM = """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."""
 }
