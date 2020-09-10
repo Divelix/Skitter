@@ -92,7 +92,7 @@ class Assets: Disposable {
             size = 48
         }
         val defaultFontParams = freeTypeFontParameters(Constants.ROBOTO_FONT) {
-            size = 128
+            size = 32
             magFilter = Texture.TextureFilter.Linear
             minFilter = Texture.TextureFilter.Linear
         }

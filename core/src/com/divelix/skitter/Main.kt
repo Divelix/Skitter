@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Json
 import com.divelix.skitter.data.Assets
+import com.divelix.skitter.data.PlayerData
 import com.divelix.skitter.screens.LoadingScreen
 import ktx.inject.Context
 import ktx.inject.register
@@ -17,10 +18,11 @@ class Main : Game() {
     override fun create() {
         Gdx.app.logLevel = Application.LOG_DEBUG
         context.register {
+            bindSingleton(Json())
+            bindSingleton(Assets())
+            bindSingleton(PlayerData())
             bindSingleton(SpriteBatch())
             bindSingleton(ShapeRenderer())
-            bindSingleton(Assets())
-            bindSingleton(Json())
         }
         setScreen(LoadingScreen(this))
     }

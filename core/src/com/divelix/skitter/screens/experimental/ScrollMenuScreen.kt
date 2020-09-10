@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.*
 import com.divelix.skitter.Main
@@ -16,6 +18,7 @@ import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
 import ktx.collections.*
+import ktx.graphics.use
 
 class ScrollMenuScreen(game: Main) : KtxScreen {
     val context = game.getContext()
@@ -36,6 +39,7 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
                     Input.Keys.NUM_1 -> scrollMenu.scrollPane.scrollX = 0f
                     Input.Keys.NUM_2 -> scrollMenu.scrollPane.scrollX = 350f
                     Input.Keys.NUM_3 -> scrollMenu.scrollPane.scrollX = 700f
+                    Input.Keys.S -> scrollMenu.saveToJson()
                 }
                 return true
             }

@@ -1,5 +1,6 @@
 package com.divelix.skitter.ui.scrollmenu
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
@@ -31,13 +32,14 @@ class ScrollMenu(context: Context) : Group() {
     val playerDataFile = "json/playerData.json".toLocalFile()
     val playerData = json.fromJson<PlayerData>(playerDataFile)
     val pages = gdxArrayOf(
-            Constants.MOD_ICON to ModPage(playerData),
-            Constants.EQUIP_ICON to EquipPage(playerData))
+            Constants.EQUIP_ICON to EquipPage(playerData, assets),
+            Constants.MOD_ICON to ModPage(playerData))
 
     val scrollPane: ScrollPane
 
     init {
-        setSize(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_HEIGHT.toFloat())
+        val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width.toFloat()
+        setSize(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_WIDTH.toFloat() * aspectRatio)
         val (pageNames, pageContent) = pages.unzip()
         scrollPane = scene2d.scrollPane {
             setFillParent(true)
@@ -46,6 +48,7 @@ class ScrollMenu(context: Context) : Group() {
             setScrollbarsVisible(false)
             setFlickScroll(false)
             table {
+                top()
                 pageContent.forEach { container(it) }
             }
         }
@@ -83,7 +86,7 @@ class ScrollMenu(context: Context) : Group() {
                             .onClickEvent { event, actor ->
 //                                println("[EVENT = $event; ACTOR = $actor]")
                                 updateUI()
-                                saveToJson()
+//                                saveToJson()
                                 scrollPane.scrollX = index * Constants.STAGE_WIDTH.toFloat()
                             }
                 }

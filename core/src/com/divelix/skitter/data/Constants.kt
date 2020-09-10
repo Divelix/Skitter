@@ -17,6 +17,9 @@ object Constants {
 
     // UI values
     const val SPECS_SCALE = 0.1f
+    const val UI_MARGIN = 12f
+    const val UI_PADDING = 7f
+    const val MOD_SIZE = 64f
 
     // Control params
     const val CAMERA_RADIUS = 2f
