@@ -14,14 +14,11 @@ import ktx.scene2d.scene2d
 import ktx.scene2d.table
 
 class EquipPage(val playerData: PlayerData, assets: Assets) : Page() {
-//    val nameLabel: Label
 
     init {
-        val rootTable = scene2d.table {
+        table {
             setFillParent(true)
             top()
-//            label("Player name = ")
-//            nameLabel = label(playerData.name)
             val tabbedMenu = TabbedMenu(gdxArrayOf(
                     Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTab(assets)),
                     Tab(assets.manager.get<Texture>(Constants.GUN_ICON), GunTab(assets)),
@@ -29,7 +26,6 @@ class EquipPage(val playerData: PlayerData, assets: Assets) : Page() {
             ))
             add(tabbedMenu)
         }
-        addActor(rootTable)
     }
 
     override fun update() {

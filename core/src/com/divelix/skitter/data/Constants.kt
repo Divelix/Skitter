@@ -13,9 +13,9 @@ object Constants {
     const val BULLET_CRITICAL_DISTANCE_2 = 400f
     const val DEFAULT_SLOW_RATE = 1f
     const val PLAYER_SIZE = 2f
-    const val DEFAULT_LABEL_SCALE = 0.5f
 
     // UI values
+    const val DEFAULT_LABEL_SCALE = 0.5f
     const val SPECS_SCALE = 0.1f
     const val UI_MARGIN = 12f
     const val UI_PADDING = 7f
