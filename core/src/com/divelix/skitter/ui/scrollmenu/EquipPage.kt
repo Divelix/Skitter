@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.PlayerData
+import com.divelix.skitter.ui.tabbedmenu.GunTab
 import com.divelix.skitter.ui.tabbedmenu.Tab
 import com.divelix.skitter.ui.tabbedmenu.ShipTab
 import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
@@ -23,7 +24,7 @@ class EquipPage(val playerData: PlayerData, assets: Assets) : Page() {
 //            nameLabel = label(playerData.name)
             val tabbedMenu = TabbedMenu(gdxArrayOf(
                     Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTab(assets)),
-                    Tab(assets.manager.get<Texture>(Constants.GUN_ICON), scene2d.table { label("second") }),
+                    Tab(assets.manager.get<Texture>(Constants.GUN_ICON), GunTab(assets)),
                     Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { label("third") })
             ))
             add(tabbedMenu)

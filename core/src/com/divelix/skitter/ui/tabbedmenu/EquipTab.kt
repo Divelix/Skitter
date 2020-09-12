@@ -21,6 +21,8 @@ import ktx.style.get
 abstract class EquipTab(val assets: Assets): Table(), KTable {
     val description: Label
     val equipIcon: Image
+    val specsNames: Label
+    val specsValues: Label
 
     init {
         padTop(Constants.UI_MARGIN)
@@ -39,7 +41,7 @@ abstract class EquipTab(val assets: Assets): Table(), KTable {
                 table {
                     touchable = Touchable.enabled
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-                    this@EquipTab.equipIcon = image(this@EquipTab.assets.manager.get<Texture>(Constants.SHIP_DEFAULT))
+                    this@EquipTab.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>("blueBg"))
                             .apply { setScaling(Scaling.fit) }.cell(pad = 7f)
                     onClickEvent { event, actor ->
                         println("Equip icon clicked")
@@ -48,24 +50,8 @@ abstract class EquipTab(val assets: Assets): Table(), KTable {
                 }.cell(width = 100f, height = 100f)
                 table {
                     left()
-                    table {
-                        defaults().left()
-                        scaledLabel("DAMAGE: ", Constants.SPECS_SCALE); row()
-                        scaledLabel("CAPACITY: ", Constants.SPECS_SCALE); row()
-                        scaledLabel("RELOAD: ", Constants.SPECS_SCALE); row()
-                        scaledLabel("SPEED: ", Constants.SPECS_SCALE); row()
-                        scaledLabel("CRITICAL: ", Constants.SPECS_SCALE); row()
-                        scaledLabel("CHANCE: ", Constants.SPECS_SCALE); row()
-                    }
-                    table {
-                        defaults().left()
-                        scaledLabel("100", Constants.SPECS_SCALE); row()
-                        scaledLabel("13", Constants.SPECS_SCALE); row()
-                        scaledLabel("0.5", Constants.SPECS_SCALE); row()
-                        scaledLabel("10", Constants.SPECS_SCALE); row()
-                        scaledLabel("x2.0", Constants.SPECS_SCALE); row()
-                        scaledLabel("20%", Constants.SPECS_SCALE); row()
-                    }
+                    this@EquipTab.specsNames = scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ", Constants.SPECS_SCALE)
+                    this@EquipTab.specsValues = scaledLabel("100\n13\n0.5\n10\nx2.0\n20%", Constants.SPECS_SCALE)
                 }.cell(width = 92f, height = 100f, padLeft = Constants.UI_PADDING)
             }
 
