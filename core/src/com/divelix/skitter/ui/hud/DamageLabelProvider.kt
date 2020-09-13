@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Pool
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.gameplay.components.DamageLabelComponent
@@ -17,6 +18,7 @@ import ktx.actors.plusAssign
 import ktx.actors.then
 import ktx.actors.txt
 import ktx.ashley.get
+import ktx.scene2d.Scene2DSkin
 
 class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) {
 
@@ -49,7 +51,7 @@ class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) 
         }
     }
 
-    inner class DamageLabel: ScaledLabel("", "damage-label"), Pool.Poolable {
+    inner class DamageLabel: Label("", Scene2DSkin.defaultSkin, "damage-label"), Pool.Poolable {
         val duration = 1f
         var ecsTimer = duration
         val prevPos = Vector2()

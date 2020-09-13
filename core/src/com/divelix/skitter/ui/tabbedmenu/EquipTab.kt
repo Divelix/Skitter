@@ -33,7 +33,7 @@ abstract class EquipTab(val assets: Assets): Table(), KTable {
             table {
                 pad(Constants.UI_PADDING)
                 scrollPane {
-                    this@EquipTab.description = label(Constants.LOREM_IPSUM).apply {
+                    this@EquipTab.description = scaledLabel(Constants.LOREM_IPSUM).apply {
                         wrap = true
                         setAlignment(Align.top)
                     }
@@ -50,8 +50,8 @@ abstract class EquipTab(val assets: Assets): Table(), KTable {
                 }.cell(width = 100f, height = 100f)
                 table {
                     left()
-                    this@EquipTab.specsNames = label("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
-                    this@EquipTab.specsValues = label("100\n13\n0.5\n10\nx2.0\n20%")
+                    this@EquipTab.specsNames = scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
+                    this@EquipTab.specsValues = scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
                 }.cell(width = 92f, height = 100f, padLeft = Constants.UI_PADDING)
             }
 

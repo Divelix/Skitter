@@ -31,6 +31,7 @@ import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.ui.ScaledLabel
 import com.divelix.skitter.ui.menu.ImgBgButton
+import com.divelix.skitter.utils.TopViewport
 import com.kotcrab.vis.ui.widget.VisWindow
 import ktx.actors.*
 import ktx.graphics.*
@@ -53,8 +54,8 @@ class Hud(
     private val assets = context.inject<Assets>()
 
     val hudCam = OrthographicCamera()
-    val aspectRatio = Gdx.graphics.width.toFloat() / Gdx.graphics.height
-    val hudStage = Stage(FillViewport(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_WIDTH / aspectRatio, hudCam), batch)
+    val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
+    val hudStage = Stage(TopViewport(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_WIDTH * aspectRatio, hudCam), batch)
     val damageLabelsProvider = DamageLabelProvider(hudStage, playCam)
 
     private val rootTable: Table
@@ -145,21 +146,22 @@ class Hud(
     }
 
     init {
+//        hudStage.isDebugAll = true
         pauseWindow = makePauseWindow()
         pauseBtn = makePauseButton()
         rootTable = scene2d.table {
             setFillParent(true)
             top().pad(10f)
             defaults().expandX().left()
-            scoreLabel = label("", style = "black").cell(colspan = 2, align = Align.center)
+            scoreLabel = scaledLabel("", 0.2f, style = "black").cell(colspan = 2, align = Align.center)
             row()
-            enemyCountLabel = label("").cell(height = 50f)
+            enemyCountLabel = scaledLabel("").cell(height = 50f)
             row()
-            fpsLabel = label("")
+            fpsLabel = scaledLabel("")
             row()
-            renderTimeLabel = label("")
+            renderTimeLabel = scaledLabel("")
             row()
-            physicsTimeLabel = label("")
+            physicsTimeLabel = scaledLabel("")
 //            row()
 //            textButton("makeAgent") {
 //                addListener(object : ClickListener() {
@@ -170,7 +172,7 @@ class Hud(
 //                })
 //            }.cell(align = Align.left)
         }
-        ammoLabel = scene2d.label("", style = "black")
+        ammoLabel = scene2d.scaledLabel("", 0.3f, style = "black")
 
         hudStage += rootTable
         hudStage += ammoLabel
@@ -178,7 +180,6 @@ class Hud(
         hudStage += healthImg
         hudStage += pauseBtn
         hudStage += pauseWindow
-        hudStage.isDebugAll = true
 
         healthBgImg.run {
             setSize(stage.width * 0.9f, hpHeight)
@@ -239,8 +240,7 @@ class Hud(
     }
 
     fun resize(width: Int, height: Int) {
-        Gdx.app.log("Hud", "resize: $width; $height")
-        hudStage.viewport.update(width, height, true)
+        hudStage.viewport.update(width, height)
     }
 
     fun dispose() {

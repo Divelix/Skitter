@@ -33,7 +33,7 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
             table {
                 right().pad(12f)
                 background = assets.bgDrawable
-                label("2500", "mod-name")
+                scaledLabel("2500", style = "mod-name")
             }.cell(fillX = true)
             row()
             table {
@@ -41,7 +41,7 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
                 table {
                     image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).cell(width = 76f, height = 76f)
                     row()
-                    label("1000").cell(padTop = Constants.UI_MARGIN)
+                    scaledLabel("1000").cell(padTop = Constants.UI_MARGIN)
                 }
                 table {
                     pad(Constants.UI_MARGIN)
@@ -58,9 +58,9 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
                         scrollPane {
                             table {
                                 pad(12f)
-                                label("Mod name")
+                                scaledLabel("Mod name")
                                 row()
-                                label("spec1: 100\nspec2: 50\nspec3: 20\nspec4: 120") {
+                                scaledLabel("spec1: 100\nspec2: 50\nspec3: 20\nspec4: 120") {
                                     wrap = true
                                     setAlignment(Align.center)
                                 }
@@ -71,13 +71,13 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
                 table {
                     image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f)
                     row()
-                    label("800").cell(padTop = Constants.UI_MARGIN)
+                    scaledLabel("800").cell(padTop = Constants.UI_MARGIN)
                 }
             }
             row()
             val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CRIT), scene2d.table { label("one") }),
-                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { label("two") })
+                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CRIT), scene2d.table { scaledLabel("one") }),
+                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { scaledLabel("two") })
             ))
             add(tabbedMenu)
         }

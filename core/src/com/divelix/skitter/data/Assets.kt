@@ -109,9 +109,9 @@ class Assets: Disposable {
             set(Constants.BATTLE_ICON, manager.get<Texture>(Constants.BATTLE_ICON))
             set(Constants.MOD_ICON, manager.get<Texture>(Constants.MOD_ICON))
             label {
-                font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
-                font.setUseIntegerPositions(false)
-                font.data.setScale(Constants.DEFAULT_LABEL_SCALE)
+                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT).apply {
+                    setUseIntegerPositions(false)
+                }
                 fontColor = Color.WHITE
             }
             label("equip-specs", extend = defaultStyle) {
@@ -132,16 +132,6 @@ class Assets: Disposable {
             textButton {
                 font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
                 font.data.setScale(Constants.DEFAULT_LABEL_SCALE)
-            }
-            slider("default-horizontal") {
-                background = it["slider"]
-                knob = it["slider-knob"]
-                knobOver = it["slider-knob-over"]
-                knobDown = it["slider-knob-down"]
-                disabledKnob = it["slider-knob-disabled"]
-            }
-            slider("default-vertical", extend = "default-horizontal") {
-                background = it["slider-vertical"]
             }
             scrollPane {}
             window {

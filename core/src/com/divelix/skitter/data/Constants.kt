@@ -16,7 +16,6 @@ object Constants {
 
     // UI values
     const val DEFAULT_LABEL_SCALE = 0.1f
-    const val SPECS_SCALE = 0.1f
     const val UI_MARGIN = 12f
     const val UI_PADDING = 7f
     const val MOD_SIZE = 64f
@@ -33,7 +32,7 @@ object Constants {
     const val MOD_HEIGHT = 64f
     const val SHIPS_TAB = "ShipsTab"
     const val GUNS_TAB = "GunsTab"
-    const val ROBOTO_ALIAS_DEFAULT = "small"
+    const val ROBOTO_ALIAS_DEFAULT = "defaultFont"
 
     // Gameplay
     const val SHIP_DEFAULT = "textures/gameplay/ship-default.png"
