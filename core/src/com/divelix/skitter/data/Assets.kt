@@ -88,23 +88,12 @@ class Assets: Disposable {
         manager.load<Sound>(Constants.HIT_SOUND)
         manager.load<Sound>(Constants.SHOT_SOUND)
         manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)
-        val fontParams48 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
-            size = 48
-        }
         val defaultFontParams = freeTypeFontParameters(Constants.ROBOTO_FONT) {
             size = 128
             magFilter = Texture.TextureFilter.Linear
             minFilter = Texture.TextureFilter.Linear
         }
-        val fontParams64 = freeTypeFontParameters(Constants.ROBOTO_FONT) {
-            size = 64
-            characters = "0123456789"
-            magFilter = Texture.TextureFilter.Linear
-            minFilter = Texture.TextureFilter.Linear
-        }
-        manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_QUANTITY, fontParams48)
         manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT, defaultFontParams)
-        manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD, fontParams64)
     }
 
     fun setup() {
@@ -122,17 +111,13 @@ class Assets: Disposable {
             label {
                 font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
                 font.setUseIntegerPositions(false)
+                font.data.setScale(Constants.DEFAULT_LABEL_SCALE)
                 fontColor = Color.WHITE
             }
-            label("equip-specs") {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_QUANTITY)
+            label("equip-specs", extend = defaultStyle) {
                 fontColor = Color.WHITE
             }
-            label("reload-label") {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_RELOAD)
-                fontColor = Color.BLACK
-            }
-            label("score-label", extend = defaultStyle) {
+            label("black", extend = defaultStyle) {
                 fontColor = Color.BLACK
             }
             label("mod-name", extend = defaultStyle) {
@@ -141,33 +126,12 @@ class Assets: Disposable {
             label("mod-level", extend = defaultStyle) {
                 fontColor = Color.GREEN
             }
-            label("damage-label", extend = "reload-label") {
-                fontColor = Color.WHITE
-            }
-            button {
-                up = it["button"]
-                down = it["button-blue"]
-            }
-            list {
-                font = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
-                fontColorSelected = Color.BLACK
-                fontColorUnselected = Color.WHITE
-                background = it["select-box-list-bg"]
-                selection = it["list-selection"]
-            }
-            textField {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
-                fontColor = Color.WHITE
+            label("damage-label", extend = defaultStyle) {
+                fontColor = Color.RED
             }
             textButton {
-//                focusBorder = it["border"]
-                down = it["button-down"]
-                up = it["button"]
-                over = it["button-over"]
-                disabled = it["button"]
                 font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
-                fontColor = Color.WHITE
-                disabledFontColor = Color.GRAY
+                font.data.setScale(Constants.DEFAULT_LABEL_SCALE)
             }
             slider("default-horizontal") {
                 background = it["slider"]

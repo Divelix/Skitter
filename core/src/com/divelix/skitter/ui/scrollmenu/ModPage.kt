@@ -33,7 +33,7 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
             table {
                 right().pad(12f)
                 background = assets.bgDrawable
-                scaledLabel("2500", Constants.SPECS_SCALE, "mod-name")
+                label("2500", "mod-name")
             }.cell(fillX = true)
             row()
             table {
@@ -41,7 +41,7 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
                 table {
                     image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).cell(width = 76f, height = 76f)
                     row()
-                    scaledLabel("1000", Constants.SPECS_SCALE).cell(padTop = Constants.UI_MARGIN)
+                    label("1000").cell(padTop = Constants.UI_MARGIN)
                 }
                 table {
                     pad(Constants.UI_MARGIN)
@@ -58,9 +58,9 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
                         scrollPane {
                             table {
                                 pad(12f)
-                                scaledLabel("Mod name", Constants.SPECS_SCALE)
+                                label("Mod name")
                                 row()
-                                scaledLabel("spec1: 100\nspec2: 50\nspec3: 20\nspec4: 120", Constants.SPECS_SCALE) {
+                                label("spec1: 100\nspec2: 50\nspec3: 20\nspec4: 120") {
                                     wrap = true
                                     setAlignment(Align.center)
                                 }
@@ -71,7 +71,7 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
                 table {
                     image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f)
                     row()
-                    scaledLabel("800", Constants.SPECS_SCALE).cell(padTop = Constants.UI_MARGIN)
+                    label("800").cell(padTop = Constants.UI_MARGIN)
                 }
             }
             row()

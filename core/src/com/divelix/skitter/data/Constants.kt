@@ -15,7 +15,7 @@ object Constants {
     const val PLAYER_SIZE = 2f
 
     // UI values
-    const val DEFAULT_LABEL_SCALE = 0.5f
+    const val DEFAULT_LABEL_SCALE = 0.1f
     const val SPECS_SCALE = 0.1f
     const val UI_MARGIN = 12f
     const val UI_PADDING = 7f
@@ -33,9 +33,7 @@ object Constants {
     const val MOD_HEIGHT = 64f
     const val SHIPS_TAB = "ShipsTab"
     const val GUNS_TAB = "GunsTab"
-    const val ROBOTO_ALIAS_QUANTITY = "quantity"
     const val ROBOTO_ALIAS_DEFAULT = "small"
-    const val ROBOTO_ALIAS_RELOAD = "big"
 
     // Gameplay
     const val SHIP_DEFAULT = "textures/gameplay/ship-default.png"
@@ -43,7 +41,7 @@ object Constants {
     const val BULLET_DEFAULT = "textures/gameplay/bullet-default.png"
     const val BACKGROUND_IMAGE = "textures/gameplay/dark-honeycomb.png"
 
-    // UI
+    // UI textures
     const val CARRIAGE = "textures/ui/carriage.png"
     const val AIM = "textures/ui/aim-64.png"
     const val EQUIP_ICON = "textures/ui/equip-icon.png"

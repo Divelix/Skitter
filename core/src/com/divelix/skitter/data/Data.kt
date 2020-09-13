@@ -76,5 +76,23 @@ data class PlayerModsData(
         var gun: Array<ModAvatarData> = Array()
 )
 
-//--------------------------------------------Equip Data -------------------------------------------
+//-------------------------------------------- Ships Data -------------------------------------------
+//-------------------------------------------- Guns Data --------------------------------------------
 //-------------------------------------------- Mods Data -------------------------------------------
+enum class ModEffect(val initValue: Float) {
+    // Ship specs
+    HEALTH(50f),
+    SPEED(10f),
+
+    // Gun specs
+    DAMAGE(10f),
+    CAPACITY(1f),
+    RELOAD(1f),
+
+}
+
+data class ModData(
+        var index: Int = -1,
+        var name: String = "",
+        var effects: Array<ModEffect>
+)

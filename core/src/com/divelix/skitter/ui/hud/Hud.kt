@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -57,12 +58,14 @@ class Hud(
     val damageLabelsProvider = DamageLabelProvider(hudStage, playCam)
 
     private val rootTable: Table
-    private val fpsLabel = ScaledLabel()
-    private val renderTimeLabel = ScaledLabel()
-    private val physicsTimeLabel = ScaledLabel()
-    private val enemyCountLabel = ScaledLabel()
-    private val scoreLabel = ScaledLabel(styleName = "score-label")
-    private val ammoLabel = ScaledLabel(styleName = "reload-label")
+    private val fpsLabel: Label
+    private val renderTimeLabel: Label
+    private val physicsTimeLabel: Label
+    private val enemyCountLabel: Label
+    private val scoreLabel: Label
+    private val ammoLabel: Label
+//    private val scoreLabel = ScaledLabel(styleName = "score-label")
+//    private val ammoLabel = ScaledLabel(styleName = "reload-label")
 
     private val touchpadColor = Color(0.2f, 1f, 0.2f, 0.5f)
     private val touchpadLimitColor = Color(1f, 0.2f, 0.2f, 0.5f)
@@ -147,17 +150,16 @@ class Hud(
         rootTable = scene2d.table {
             setFillParent(true)
             top().pad(10f)
-            defaults().expandX()
-//            pad(20f)
-            add(scoreLabel).colspan(2)
+            defaults().expandX().left()
+            scoreLabel = label("", style = "black").cell(colspan = 2, align = Align.center)
             row()
-            add(enemyCountLabel).height(50f).left()
+            enemyCountLabel = label("").cell(height = 50f)
             row()
-            add(fpsLabel).left()
+            fpsLabel = label("")
             row()
-            add(renderTimeLabel).left()
+            renderTimeLabel = label("")
             row()
-            add(physicsTimeLabel).left()
+            physicsTimeLabel = label("")
 //            row()
 //            textButton("makeAgent") {
 //                addListener(object : ClickListener() {
@@ -168,6 +170,7 @@ class Hud(
 //                })
 //            }.cell(align = Align.left)
         }
+        ammoLabel = scene2d.label("", style = "black")
 
         hudStage += rootTable
         hudStage += ammoLabel
@@ -175,7 +178,7 @@ class Hud(
         hudStage += healthImg
         hudStage += pauseBtn
         hudStage += pauseWindow
-//        hudStage.isDebugAll = true
+        hudStage.isDebugAll = true
 
         healthBgImg.run {
             setSize(stage.width * 0.9f, hpHeight)
@@ -263,6 +266,7 @@ class Hud(
 
     private fun makePauseWindow(): Window {
         return scene2d.visWindow("Pause") {
+            titleLabel.setFontScale(Constants.DEFAULT_LABEL_SCALE)
             isVisible = false
             debugAll()
             centerWindow()

@@ -13,7 +13,7 @@ import kotlin.contracts.contract
 @Scene2dDsl
 @OptIn(ExperimentalContracts::class)
 inline fun <S> KWidget<S>.scaledLabel(
-        text: CharSequence,
+        text: CharSequence = "",
         scale: Float = Constants.DEFAULT_LABEL_SCALE,
         style: String = defaultStyle,
         skin: Skin = Scene2DSkin.defaultSkin,
