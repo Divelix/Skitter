@@ -9,20 +9,20 @@ import com.divelix.skitter.ui.tabbedmenu.Tab
 import com.divelix.skitter.ui.tabbedmenu.ShipTab
 import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
 import ktx.collections.gdxArrayOf
+import ktx.inject.Context
 import ktx.scene2d.label
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
 
-class EquipPage(val playerData: PlayerData, assets: Assets) : Page() {
+class EquipPage(val playerData: PlayerData, context: Context) : Page(context) {
 
     init {
         table {
             setFillParent(true)
             top()
             val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTab(assets)),
-                    Tab(assets.manager.get<Texture>(Constants.GUN_ICON), GunTab(assets)),
-                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { label("third") })
+                    Tab(this@EquipPage.assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTab(this@EquipPage.assets)),
+                    Tab(this@EquipPage.assets.manager.get<Texture>(Constants.GUN_ICON), GunTab(this@EquipPage.assets))
             ))
             add(tabbedMenu)
         }

@@ -18,6 +18,7 @@ class Main : Game() {
     override fun create() {
         Gdx.app.logLevel = Application.LOG_DEBUG
         context.register {
+            bindSingleton(this@Main)
             bindSingleton(Json())
             bindSingleton(Assets())
             bindSingleton(PlayerData())

@@ -20,10 +20,11 @@ import com.divelix.skitter.ui.tabbedmenu.Tab
 import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
 import ktx.actors.onClickEvent
 import ktx.collections.gdxArrayOf
+import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
+class ModPage(val playerData: PlayerData, context: Context) : Page(context) {
 
     init {
         table {
@@ -32,14 +33,14 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
             defaults().expandX()
             table {
                 right().pad(12f)
-                background = assets.bgDrawable
+                background = this@ModPage.assets.bgDrawable
                 scaledLabel("2500", style = "mod-name")
             }.cell(fillX = true)
             row()
             table {
 //                pad(Constants.UI_MARGIN)
                 table {
-                    image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.SELL_BTN))).cell(width = 76f, height = 76f)
+                    image(TextureRegionDrawable(this@ModPage.assets.manager.get<Texture>(Constants.SELL_BTN))).cell(width = 76f, height = 76f)
                     row()
                     scaledLabel("1000").cell(padTop = Constants.UI_MARGIN)
                 }
@@ -54,7 +55,7 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
 
                     // Scroll pane with description
                     table {
-                        background = assets.bgDrawable
+                        background = this@ModPage.assets.bgDrawable
                         scrollPane {
                             table {
                                 pad(12f)
@@ -69,15 +70,15 @@ class ModPage(val playerData: PlayerData, assets: Assets) : Page() {
                     }
                 }
                 table {
-                    image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f)
+                    image(TextureRegionDrawable(this@ModPage.assets.manager.get<Texture>(Constants.UP_BTN))).cell(width = 76f, height = 76f)
                     row()
                     scaledLabel("800").cell(padTop = Constants.UI_MARGIN)
                 }
             }
             row()
             val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CRIT), scene2d.table { scaledLabel("one") }),
-                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { scaledLabel("two") })
+                    Tab(this@ModPage.assets.manager.get<Texture>(Constants.SHIP_ICON), scene2d.table { scaledLabel("one") }),
+                    Tab(this@ModPage.assets.manager.get<Texture>(Constants.GUN_ICON), scene2d.table { scaledLabel("two") })
             ))
             add(tabbedMenu)
         }
