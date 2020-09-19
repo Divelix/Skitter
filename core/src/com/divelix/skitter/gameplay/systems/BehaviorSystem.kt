@@ -15,9 +15,10 @@ class BehaviorSystem: IteratingSystem(allOf(VisionComponent::class, SteerCompone
     private val behaviorPlanner = BehaviorPlanner()
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        val visionCmp = entity[VisionComponent.mapper]!!
-        val bodyCmp = entity[B2dBodyComponent.mapper]!!
-        val steerCmp = entity[SteerComponent.mapper]!!
+        val visionCmp = entity[VisionComponent.mapper]
+        val bodyCmp = entity[B2dBodyComponent.mapper]
+        val steerCmp = entity[SteerComponent.mapper]
+        require(visionCmp != null && bodyCmp != null && steerCmp != null) { "Entity $entity don't have necessary components for BehaviorSystem" }
 
         behaviorPlanner.run {
             reset()
@@ -25,7 +26,7 @@ class BehaviorSystem: IteratingSystem(allOf(VisionComponent::class, SteerCompone
             maxSpeed = steerCmp.maxSpeed
             maxForce = steerCmp.maxForce
         }
-        behaviorPlanner.behaviors = steerCmp.behaviors
+//        behaviorPlanner.behaviors = steerCmp.behaviors
 //        println(steerCmp.behaviors)
         for (seen in visionCmp.visibleEntities) {
             val seenBodyCmp = seen[B2dBodyComponent.mapper] ?: return // elvis avoids NPE on bulk removal (over 200 entities)

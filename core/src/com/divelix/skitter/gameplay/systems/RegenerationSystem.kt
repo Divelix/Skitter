@@ -14,7 +14,7 @@ class RegenerationSystem(interval: Float): IntervalIteratingSystem(allOf(Regener
         val regenCmp = entity[RegenerationComponent.mapper]!!
         val healthCmp = entity[HealthComponent.mapper]!!
 
-        if (healthCmp.health < Data.PLAYER_DATA_OLD.ship.health)
+        if (healthCmp.health < Data.playerDataOld.shipOld.health)
             healthCmp.health += regenCmp.amount
     }
 }

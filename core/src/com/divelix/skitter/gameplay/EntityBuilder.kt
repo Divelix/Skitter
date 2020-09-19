@@ -53,7 +53,7 @@ class EntityBuilder(private val engine: PooledEngine,
         return engine.entity {
             with<PlayerComponent>()
             with<TypeComponent> { type = entityType }
-            with<HealthComponent> { health = Data.PLAYER_DATA_OLD.ship.health }
+            with<HealthComponent> { health = Data.playerDataOld.shipOld.health }
 //            with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
                 position.set(x, y, 2f)
@@ -86,7 +86,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 camera = playCam
                 camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_WIDTH * Gdx.graphics.height / Gdx.graphics.width)
             }
-            if (playerEntity != null) with<BindComponent> {entity = playerEntity}
+            if (playerEntity != null) with<BindComponent> { entity = playerEntity }
         }
     }
 
@@ -94,7 +94,7 @@ class EntityBuilder(private val engine: PooledEngine,
         val entityType = TypeComponent.PLAYER_BULLET
         val sourceBody = try {
             sourceEntity[B2dBodyComponent.mapper]!!.body
-        } catch(e: NullPointerException) {
+        } catch (e: NullPointerException) {
             info(TAG) { "Can't shoot - player is dead" }
             return
         }
@@ -104,11 +104,11 @@ class EntityBuilder(private val engine: PooledEngine,
         val dirAngle = dirVec.angle() - 90f
         val width = 0.2f
         val height = 1f
-        val speed = Data.PLAYER_DATA_OLD.gun.bulletSpeed
+        val speed = Data.playerDataOld.gunOld.bulletSpeed
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<BulletComponent> {
-                damage = Data.PLAYER_DATA_OLD.gun.damage
+                damage = Data.playerDataOld.gunOld.damage
             }
             with<TransformComponent> {
                 position.set(initPos.x, initPos.y, 1f)
@@ -132,7 +132,7 @@ class EntityBuilder(private val engine: PooledEngine,
                     val velocity = Vector2(0f, 1f).scl(speed).rotate(dirAngle)
                     velocity.add(initVelocity)
                     linearVelocity.set(velocity)
-                    angle = velocity.angleRad() - MathUtils.PI/2
+                    angle = velocity.angleRad() - MathUtils.PI / 2
                 }
             }
         }
@@ -359,13 +359,13 @@ class EntityBuilder(private val engine: PooledEngine,
                 maxSpeed = 10f
                 maxForce = 10f
                 finalForce = 5f
-                behaviors + arrayOf(
-//                        Behaviors.WANDER,
-                        Behavior.FLEE,
-                        Behavior.SEPARATION,
-                        Behavior.ALIGNMENT,
-                        Behavior.COHESION,
-                        Behavior.OBSTACLE_AVOIDANCE)
+//                behaviors + arrayOf(
+//                        Behavior.WANDER,
+//                        Behavior.FLEE,
+//                        Behavior.SEPARATION,
+//                        Behavior.ALIGNMENT,
+//                        Behavior.COHESION,
+//                        Behavior.OBSTACLE_AVOIDANCE)
             }
             with<TypeComponent> { type = entityType }
             with<EnemyComponent> { type = enemyType }

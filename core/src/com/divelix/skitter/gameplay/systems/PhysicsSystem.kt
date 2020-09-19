@@ -53,14 +53,14 @@ class PhysicsSystem(private val world: World):
     }
 
     fun reloadAmmo(delta: Float) {
-        if (PlayScreen.ammo < Data.PLAYER_DATA_OLD.gun.capacity) {
+        if (PlayScreen.ammo < Data.playerDataOld.gunOld.capacity) {
             Data.reloadTimer += delta
-            if (Data.reloadTimer >= Data.PLAYER_DATA_OLD.gun.reloadTime) {
+            if (Data.reloadTimer >= Data.playerDataOld.gunOld.reloadTime) {
                 PlayScreen.ammo++
                 Data.reloadTimer = 0f
             }
         } else {
-            Data.reloadTimer = Data.PLAYER_DATA_OLD.gun.reloadTime
+            Data.reloadTimer = Data.playerDataOld.gunOld.reloadTime
         }
     }
 }

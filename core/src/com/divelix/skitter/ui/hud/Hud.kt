@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.viewport.FillViewport
 import com.divelix.skitter.*
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
@@ -29,7 +28,6 @@ import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.LevelManager
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
-import com.divelix.skitter.ui.ScaledLabel
 import com.divelix.skitter.ui.menu.ImgBgButton
 import com.divelix.skitter.utils.TopViewport
 import com.kotcrab.vis.ui.widget.VisWindow
@@ -195,7 +193,7 @@ class Hud(
         if (PlayScreen.ammo <= 0) return
         entityBuilder.createPlayerBullet(playerEntity, aim)
         assets.manager.get<Sound>(Constants.SHOT_SOUND).play()
-        if (PlayScreen.ammo == Data.PLAYER_DATA_OLD.gun.capacity) Data.reloadTimer = 0f // fix for reload on first shot
+        if (PlayScreen.ammo == Data.playerDataOld.gunOld.capacity) Data.reloadTimer = 0f // fix for reload on first shot
         PlayScreen.ammo--
     }
 
@@ -213,10 +211,10 @@ class Hud(
             shape.color = reloadBGColor
             shape.circle(reloadPos, 30f)
             shape.color = reloadFGColor
-            shape.arc(reloadPos, 30f, 90f, Data.reloadTimer / Data.PLAYER_DATA_OLD.gun.reloadTime * 360)
+            shape.arc(reloadPos, 30f, 90f, Data.reloadTimer / Data.playerDataOld.gunOld.reloadTime * 360)
         }
         healthImg.run {
-            val hpWidth = stage.width * PlayScreen.health / Data.PLAYER_DATA_OLD.ship.health
+            val hpWidth = stage.width * PlayScreen.health / Data.playerDataOld.shipOld.health
             width = hpWidth * 0.9f
             x = hpWidth * 0.05f + (stage.width - hpWidth) / 2f
         }

@@ -10,15 +10,15 @@ object Data {
     var reloadTimer = 0f
     var score = 0
     val matchHistory = gdxMapOf<Enemy, Int>()
-    val PLAYER_DATA_OLD: PlayerDataOld
+    val playerDataOld: PlayerDataOld
 
     //    val loverData: LoverData
     val dirVec = Vector2()
 
     init {
-        val shipData = ShipData(0f, 0f)
-        val gunData = GunData(0f, 0, 0f, 0f, 0f, 0f)
-        PLAYER_DATA_OLD = PlayerDataOld(shipData, gunData)
+        val shipData = ShipDataOld(0f, 0f)
+        val gunData = GunDataOld(0f, 0, 0f, 0f, 0f, 0f)
+        playerDataOld = PlayerDataOld(shipData, gunData)
 
 //        val reader = JsonReader()
 //        val enemyReader = reader.parse(Constants.ENEMIES_FILE.toInternalFile())
@@ -27,18 +27,18 @@ object Data {
     }
 }
 
-data class PlayerDataOld(val ship: ShipData,
-                         val gun: GunData)
+data class PlayerDataOld(val shipOld: ShipDataOld,
+                         val gunOld: GunDataOld)
 
-data class ShipData(var health: Float,
-                    var speed: Float)
+data class ShipDataOld(var health: Float,
+                       var speed: Float)
 
-data class GunData(var damage: Float,
-                   var capacity: Int,
-                   var reloadTime: Float,
-                   var bulletSpeed: Float,
-                   var critMultiplier: Float,
-                   var critChance: Float)
+data class GunDataOld(var damage: Float,
+                      var capacity: Int,
+                      var reloadTime: Float,
+                      var bulletSpeed: Float,
+                      var critMultiplier: Float,
+                      var critChance: Float)
 
 data class LoverData(var health: Float,
                      var maxSpeed: Float,
@@ -78,6 +78,16 @@ data class PlayerModsData(
 
 //-------------------------------------------- Ships Data -------------------------------------------
 //-------------------------------------------- Guns Data --------------------------------------------
+enum class GunType {
+    PISTOL,
+    SHOTGUN
+}
+
+data class GunData(
+        var gunType: GunType = GunType.PISTOL,
+        var level: Int = 1
+)
+
 //-------------------------------------------- Mods Data -------------------------------------------
 enum class ModEffect(val initValue: Float) {
     // Ship specs
