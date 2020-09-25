@@ -9,7 +9,7 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.tabbedmenu.Tab
 import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
-import com.divelix.skitter.ui.tabbedmenu.ShipTab
+import com.divelix.skitter.ui.tabbedmenu.ShipTable
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
@@ -29,7 +29,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
             top()
 
             val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTab(assets)),
+                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTable(assets)),
                     Tab(assets.manager.get<Texture>(Constants.GUN_ICON), scene2d.table { label("second") }),
                     Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { label("third") })
             ))

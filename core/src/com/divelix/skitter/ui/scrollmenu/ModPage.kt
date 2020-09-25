@@ -1,24 +1,14 @@
 package com.divelix.skitter.ui.scrollmenu
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.TextField
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Scaling
-import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.PlayerData
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
-import com.divelix.skitter.ui.tabbedmenu.GunTab
-import com.divelix.skitter.ui.tabbedmenu.ShipTab
 import com.divelix.skitter.ui.tabbedmenu.Tab
 import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
-import ktx.actors.onClickEvent
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.*

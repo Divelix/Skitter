@@ -6,7 +6,7 @@ import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import ktx.actors.txt
 
-class GunTab(assets: Assets) : EquipTab(assets) {
+class GunTable(assets: Assets) : EquipTable(assets) {
     init {
         description.txt = "Gun description"
         equipIcon.drawable = TextureRegionDrawable(assets.manager.get<Texture>(Constants.GUN_DEFAULT))
