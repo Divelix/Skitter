@@ -29,7 +29,7 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
     init {
         scrollMenu = ScrollMenu(context)
         stage += scrollMenu
-        stage.isDebugAll = true
+//        stage.isDebugAll = true
         val handler = object : InputAdapter() {
             override fun keyDown(keycode: Int): Boolean {
                 when (keycode) {

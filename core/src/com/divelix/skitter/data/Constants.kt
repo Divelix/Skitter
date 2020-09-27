@@ -43,6 +43,7 @@ object Constants {
     // Gameplay
     const val SHIP_DEFAULT = "textures/gameplay/ship-default.png"
     const val GUN_DEFAULT = "textures/gameplay/gun-default.png"
+    const val GUN_SNIPER = "textures/gameplay/gun-sniper.png"
     const val BULLET_DEFAULT = "textures/gameplay/bullet-default.png"
     const val BACKGROUND_IMAGE = "textures/gameplay/dark-honeycomb.png"
 

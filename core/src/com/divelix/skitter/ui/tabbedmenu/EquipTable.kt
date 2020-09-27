@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
@@ -25,6 +26,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
     val equipIcon: Image
     val specsNames: Label
     val specsValues: Label
+    val equipList by lazy { makeEquipList() }
     val equipWindow by lazy { makeEquipWindow() }
 
     init {
@@ -100,6 +102,8 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
         }
     }
 
+    abstract fun makeEquipList(): Array<Pair<Texture, String>>
+
     private fun makeEquipWindow(): Window {
         val window = scene2d.visWindow("Choose equip", "equip-choose") {
             isVisible = false
@@ -108,8 +112,9 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
             scrollPane {
                 setScrollingDisabled(true, false)
                 table {
-                    for (i in 1..10) {
-                        label("Label #$i")
+                    for (equip in this@EquipTable.equipList) {
+                        image(equip.first)
+                        label(equip.second)
                         row()
                     }
                 }

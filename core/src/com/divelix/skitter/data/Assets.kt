@@ -57,6 +57,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.PAUSE_BTN)
         manager.load<Texture>(Constants.SHIP_DEFAULT)
         manager.load<Texture>(Constants.GUN_DEFAULT)
+        manager.load<Texture>(Constants.GUN_SNIPER)
         manager.load<Texture>(Constants.CARRIAGE)
         manager.load<Texture>(Constants.AGENT)
         manager.load<Texture>(Constants.SNIPER_BASE)
