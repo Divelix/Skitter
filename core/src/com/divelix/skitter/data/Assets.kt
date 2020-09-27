@@ -30,12 +30,8 @@ class Assets: Disposable {
     lateinit var uiSkin: Skin
     lateinit var digitsFont: BitmapFont
 
-    val BG_COLOR = Color(0x684BA6FF)
-    val UI_COLOR = Color(0f, 0f, 0f, 0.3f)
-    val DOWN_COLOR = Color(0f, 0f, 0f, 0.5f)
+    val bgColor = Color(0x684BA6FF)
     val bgPixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-    val bgDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(UI_COLOR); fill() }))
-    val downDrawable = TextureRegionDrawable(Texture(bgPixel.apply { setColor(DOWN_COLOR); fill() }))
 
     val frameBuffer = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
 
@@ -98,16 +94,21 @@ class Assets: Disposable {
 
     fun setup() {
         uiSkin = skin(manager.get(Constants.ATLAS_UI)) {
-            color("pinky", 0.7f, 0f, 1f)
+//            color("pinky", 0.7f, 0f, 1f)
 //            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
 //            this["aim"] = manager.get<Texture>(Constants.AIM) // same with different syntax
-            set("bg", Texture(bgPixel.apply { setColor(UI_COLOR); fill() }))
-            set("redBg", Texture(bgPixel.apply { setColor(Color(1f, 0f, 0f, 0.3f)); fill() }))
-            set("greenBg", Texture(bgPixel.apply { setColor(Color(0f, 1f, 0f, 0.3f)); fill() }))
-            set("blueBg", Texture(bgPixel.apply { setColor(Color(0f, 0f, 1f, 0.3f)); fill() }))
+
+            this[Constants.BLACK_COLOR_30] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.3f)); fill() })
+            this[Constants.BLACK_COLOR_50] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.5f)); fill() })
+            this[Constants.BLACK_COLOR_70] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.7f)); fill() })
+            this[Constants.RED_COLOR_30] = Texture(bgPixel.apply { setColor(Color(1f, 0f, 0f, 0.3f)); fill() })
+            this[Constants.GREEN_COLOR_30] = Texture(bgPixel.apply { setColor(Color(0f, 1f, 0f, 0.3f)); fill() })
+            this[Constants.BLUE_COLOR_30] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 1f, 0.3f)); fill() })
+
             set(Constants.EQUIP_ICON, manager.get<Texture>(Constants.EQUIP_ICON))
             set(Constants.BATTLE_ICON, manager.get<Texture>(Constants.BATTLE_ICON))
             set(Constants.MOD_ICON, manager.get<Texture>(Constants.MOD_ICON))
+
             label {
                 font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT).apply {
                     setUseIntegerPositions(false)
@@ -137,7 +138,10 @@ class Assets: Disposable {
             window {
                 titleFontColor = Color.RED
                 titleFont = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
-                background = bgDrawable
+                background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_COLOR_30))
+            }
+            window("equip-choose", extend = defaultStyle) {
+                background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_COLOR_70))
             }
 
         }

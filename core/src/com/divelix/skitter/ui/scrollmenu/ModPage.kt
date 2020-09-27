@@ -23,7 +23,7 @@ class ModPage(val playerData: PlayerData, context: Context) : Page(context) {
             defaults().expandX()
             table {
                 right().pad(12f)
-                background = this@ModPage.assets.bgDrawable
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                 scaledLabel("2500", style = "mod-name")
             }.cell(fillX = true)
             row()
@@ -39,13 +39,13 @@ class ModPage(val playerData: PlayerData, context: Context) : Page(context) {
 
                     // Big mod
                     table {
-                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                     }.cell(width = 150f, height = 150f)
                     row()
 
                     // Scroll pane with description
                     table {
-                        background = this@ModPage.assets.bgDrawable
+                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                         scrollPane {
                             table {
                                 pad(12f)

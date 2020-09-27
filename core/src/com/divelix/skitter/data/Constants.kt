@@ -19,6 +19,17 @@ object Constants {
     const val UI_MARGIN = 12f
     const val UI_PADDING = 7f
     const val MOD_SIZE = 64f
+    const val MOD_WIDTH = 64f // TODO remove
+    const val MOD_HEIGHT = 64f // TODO remove
+    const val SHIPS_TAB = "ShipsTab"
+    const val GUNS_TAB = "GunsTab"
+    const val ROBOTO_ALIAS_DEFAULT = "defaultFont"
+    const val BLACK_COLOR_30 = "blackColor30"
+    const val BLACK_COLOR_50 = "blackColor50"
+    const val BLACK_COLOR_70 = "blackColor70"
+    const val RED_COLOR_30 = "redColor30"
+    const val GREEN_COLOR_30 = "greenColor30"
+    const val BLUE_COLOR_30 = "blueColor30"
 
     // Control params
     const val CAMERA_RADIUS = 2f
@@ -28,11 +39,6 @@ object Constants {
     const val MAX_TOUCHPAD_RADIUS = 100f
     const val MAX_TOUCHPAD_RADIUS_2 = MAX_TOUCHPAD_RADIUS * MAX_TOUCHPAD_RADIUS
 
-    const val MOD_WIDTH = 64f
-    const val MOD_HEIGHT = 64f
-    const val SHIPS_TAB = "ShipsTab"
-    const val GUNS_TAB = "GunsTab"
-    const val ROBOTO_ALIAS_DEFAULT = "defaultFont"
 
     // Gameplay
     const val SHIP_DEFAULT = "textures/gameplay/ship-default.png"

@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.MathUtils
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.Main
 import com.divelix.skitter.screens.experimental.ScrollMenuScreen
-import com.divelix.skitter.screens.experimental.TestUIScreen
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
@@ -34,7 +33,7 @@ class LoadingScreen(private val game: Main): KtxScreen {
         progress = MathUtils.lerp(progress, assets.manager.progress, 0.1f)
 
         shape.use(ShapeRenderer.ShapeType.Filled) {
-            shape.color = assets.BG_COLOR
+            shape.color = assets.bgColor
             shape.rect(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height*progress)
         }
         batch.use {

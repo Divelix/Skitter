@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.*
 import com.divelix.skitter.Main
@@ -18,7 +16,6 @@ import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
 import ktx.collections.*
-import ktx.graphics.use
 
 class ScrollMenuScreen(game: Main) : KtxScreen {
     val context = game.getContext()
@@ -97,7 +94,7 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(assets.BG_COLOR.r, assets.BG_COLOR.g, assets.BG_COLOR.b, assets.BG_COLOR.a)
+        Gdx.gl.glClearColor(assets.bgColor.r, assets.bgColor.g, assets.bgColor.b, assets.bgColor.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         stage.act()

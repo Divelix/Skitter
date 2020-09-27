@@ -14,6 +14,7 @@ import com.divelix.skitter.data.Mod
 import com.divelix.skitter.ui.ScaledLabel
 import ktx.scene2d.*
 import com.divelix.skitter.image
+import ktx.style.get
 
 class ModIcon(val mod: Mod, val assets: Assets): Group() {
     private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
@@ -94,7 +95,7 @@ class EmptyModIcon(val assets: Assets): Group() {
         name = "EmptyMod"
         touchable = Touchable.enabled
         setSize(64f, 64f)
-        val img = Image(assets.bgDrawable).apply { setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT) }
+        val img = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))).apply { setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT) }
         addActor(img.apply { touchable = Touchable.disabled })
     }
 }

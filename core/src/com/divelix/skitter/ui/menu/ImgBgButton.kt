@@ -6,7 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Assets
+import com.divelix.skitter.data.Constants
+import ktx.scene2d.Scene2DSkin
+import ktx.style.get
 
 class ImgBgButton(
         assets: Assets,
@@ -20,7 +24,7 @@ class ImgBgButton(
     init {
         touchable = Touchable.enabled
         setSize(w, h)
-        val bg = Image(assets.bgDrawable).apply { setFillParent(true) }
+        val bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))).apply { setFillParent(true) }
         val aspectRatio = iconTexture.width.toFloat() / iconTexture.height.toFloat()
         val icon = Image(iconTexture).apply {
             setSize(iconHeight * aspectRatio, iconHeight)
@@ -31,13 +35,13 @@ class ImgBgButton(
 
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                (children[0] as Image).drawable = assets.downDrawable
+                (children[0] as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_50))
                 onClick()
                 return super.touchDown(event, x, y, pointer, button)
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                (children[0] as Image).drawable = assets.bgDrawable
+                (children[0] as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                 super.touchUp(event, x, y, pointer, button)
             }
         })

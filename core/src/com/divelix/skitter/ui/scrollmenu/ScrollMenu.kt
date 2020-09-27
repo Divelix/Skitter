@@ -79,7 +79,7 @@ class ScrollMenu(context: Context) : Group() {
             val content = scene2d.table {
                 setFillParent(true)
                 defaults().expand()
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_70))
                 pageNames.forEachIndexed { index, name ->
                     image(assets.manager.get<Texture>(name))
                             .apply { setScaling(Scaling.fit) }

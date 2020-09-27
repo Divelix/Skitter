@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.container
 import com.divelix.skitter.data.Mod
 import com.divelix.skitter.image
 import com.divelix.skitter.ui.menu.EditScreen
@@ -24,12 +23,13 @@ import ktx.actors.plusAssign
 import ktx.actors.txt
 import ktx.log.info
 import ktx.collections.*
-import ktx.scene2d.container
+import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.scene2d
 import ktx.scene2d.scrollPane
 import ktx.scene2d.table
 import ktx.scene2d.vis.visImage
 import ktx.scene2d.vis.visTable
+import ktx.style.get
 
 class ModScreen(game: Main): EditScreen(game) {
     private val bigMod = BigMod()
@@ -55,7 +55,7 @@ class ModScreen(game: Main): EditScreen(game) {
             defaults().expandX()
             table {
                 right().pad(12f)
-                background = assets.bgDrawable
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                 add(coinsLabel)
             }.cell(fillX = true)
             row()
@@ -76,7 +76,7 @@ class ModScreen(game: Main): EditScreen(game) {
                     add(bigMod)
                     row()
                     table {
-                        background = assets.bgDrawable
+                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                         scrollPane (init = {
                             table {
                                 pad(12f)
@@ -185,7 +185,7 @@ class ModScreen(game: Main): EditScreen(game) {
 
     inner class BigMod: Group() {
         private val iconHeight = 75f
-        private val bg = Image(assets.bgDrawable).apply { setFillParent(true) }
+        private val bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))).apply { setFillParent(true) }
         private val icon: Image
         private val levelBars: Table
 
@@ -198,7 +198,7 @@ class ModScreen(game: Main): EditScreen(game) {
                 pad(5f)
                 defaults().pad(2f)
                 for (i in 1..10) {
-                    visImage(assets.bgDrawable) {it.size(10f)}
+                    visImage(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))) {it.size(10f)}
                 }
             }
 
@@ -233,7 +233,7 @@ class ModScreen(game: Main): EditScreen(game) {
                 sellPriceLabel.txt = "${sellPrices[modIcon.mod.level-1]}"
                 upgradePriceLabel.txt = "${upgradePrices[modIcon.mod.level-1]}"
             } else {
-                bg.drawable = assets.bgDrawable
+                bg.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                 icon.drawable = null
                 levelBars.isVisible = false
                 modName.txt = ""

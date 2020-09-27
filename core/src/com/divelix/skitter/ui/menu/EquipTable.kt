@@ -16,10 +16,11 @@ import com.divelix.skitter.image
 import com.divelix.skitter.ui.ScaledLabel
 import ktx.actors.txt
 import ktx.assets.toInternalFile
+import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
-import ktx.scene2d.image
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
+import ktx.style.get
 
 class EquipTable(private val tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
     private val equipSpecs = Array<Float>(6)
@@ -72,7 +73,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
 
         val topPart = scene2d.table {
             name = "TopPart"
-            background = assets.bgDrawable
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
             add(infoTable)
             row()
             add(suitTable)
@@ -191,7 +192,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
             }).size(textWidth, tableHeight)
             container {
                 image(getEquipDrawable(1, tabName == Constants.SHIPS_TAB))
-                background = assets.bgDrawable
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                 pad(10f)
                 it.size(tableHeight, tableHeight)
             }
@@ -239,7 +240,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     private fun makeStockTable(): Table {
         return scene2d.table {
             name = "StockTable"
-            background = assets.bgDrawable
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
             pad(7f)
             defaults().pad(7f)
 

@@ -1,8 +1,10 @@
 package com.divelix.skitter.ui.menu
 
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.ObjectMap
@@ -10,9 +12,10 @@ import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Mod
-import ktx.scene2d.container
+import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
+import ktx.style.get
 
 class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue, modsData: JsonValue): Table() {
     val stockTable: Table
@@ -83,7 +86,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
     private fun makeStockTable(): Table {
         return scene2d.table {
             name = "StockTable"
-            background = assets.bgDrawable
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
             pad(7f)
             defaults().pad(7f)
 

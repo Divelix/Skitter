@@ -32,7 +32,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
 
         // Top table
         table {
-            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
 
             // InfoTable
             table {
@@ -45,8 +45,8 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                 }.cell(width = 92f, height = 100f, padRight = Constants.UI_PADDING)
                 table {
                     touchable = Touchable.enabled
-                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
-                    this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>("blueBg"))
+                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                    this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLUE_COLOR_30))
                             .apply { setScaling(Scaling.fit) }.cell(pad = 7f)
                     onClickEvent { event, actor ->
                         println("Equip icon clicked")
@@ -68,7 +68,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                 defaults().pad(Constants.UI_PADDING)
                 for (i in 1..8) {
                     container(Actor().apply { setSize(64f, 64f) }) {
-                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                     }
                     if (i % 4 == 0) row()
                 }
@@ -88,20 +88,20 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                             defaults().pad(Constants.UI_PADDING)
                             for (i in 1..20) {
                                 container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
-                                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                                 }
                                 if (i % 4 == 0) row()
                             }
                         }
                 ) {
-                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>("bg"))
+                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                 }
             }
         }
     }
 
     private fun makeEquipWindow(): Window {
-        val window = scene2d.visWindow("Choose equip") {
+        val window = scene2d.visWindow("Choose equip", "equip-choose") {
             isVisible = false
             padTop(50f)
             centerWindow()
