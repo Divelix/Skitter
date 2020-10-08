@@ -39,8 +39,7 @@ class ScrollMenu(context: Context) : Group() {
     val scrollPane: ScrollPane
 
     init {
-        val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width.toFloat()
-        setSize(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_WIDTH.toFloat() * aspectRatio)
+        setSize(Constants.STAGE_WIDTH.toFloat(), Constants.stageHeight)
         val (pageNames, pageContent) = pages.unzip()
         scrollPane = scene2d.scrollPane {
             setFillParent(true)

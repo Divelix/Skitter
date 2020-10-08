@@ -20,7 +20,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
     private val context = game.getContext()
     private val batch = context.inject<SpriteBatch>()
     private val assets = context.inject<Assets>()
-    private val stage = Stage(TopViewport(Constants.STAGE_WIDTH.toFloat(), Constants.STAGE_HEIGHT.toFloat()), batch)
+    private val stage = Stage(TopViewport(Constants.STAGE_WIDTH.toFloat(), Constants.stageHeight), batch)
 
     init {
         stage.isDebugAll = true

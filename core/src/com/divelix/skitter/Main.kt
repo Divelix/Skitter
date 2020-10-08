@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Json
 import com.divelix.skitter.data.Assets
+import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.PlayerData
 import com.divelix.skitter.screens.LoadingScreen
 import ktx.inject.Context
@@ -25,6 +26,7 @@ class Main : Game() {
             bindSingleton(SpriteBatch())
             bindSingleton(ShapeRenderer())
         }
+        println("Aspect ratio azaza = ${Constants.aspectRatio}")
         setScreen(LoadingScreen(this))
     }
 
@@ -33,5 +35,9 @@ class Main : Game() {
     }
 
     fun getContext(): Context { return context }
+
+//    fun initAspectRatio(): Float {
+//        return Gdx.graphics.width / Gdx.graphics.height.toFloat()
+//    }
 }
 

@@ -142,7 +142,7 @@ class Assets: Disposable {
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_COLOR_30))
             }
             window("equip-choose", extend = defaultStyle) {
-                background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_COLOR_70))
+                background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_COLOR_50))
             }
 
         }

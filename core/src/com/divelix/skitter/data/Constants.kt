@@ -1,11 +1,15 @@
 package com.divelix.skitter.data
 
+import com.badlogic.gdx.Gdx
+
 object Constants {
     const val TITLE = "Skitter"
-    const val STAGE_WIDTH = 350
-    const val STAGE_HEIGHT = 700
+    const val DESKTOP_WIDTH = 350
+    const val DESKTOP_HEIGHT = 700
+    const val STAGE_WIDTH = DESKTOP_WIDTH
+    val aspectRatio = Gdx.graphics.width / Gdx.graphics.height.toFloat()
+    val stageHeight = STAGE_WIDTH / aspectRatio
     const val WORLD_WIDTH = 15f
-//    const val WORLD_HEIGHT = WORLD_WIDTH * 2f
     const val PPM = 32f
     const val PTM = 1 / PPM
     const val B2D_FPS = 120f

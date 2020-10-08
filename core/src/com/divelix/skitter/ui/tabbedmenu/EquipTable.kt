@@ -1,5 +1,6 @@
 package com.divelix.skitter.ui.tabbedmenu
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -49,7 +50,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                     touchable = Touchable.enabled
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
                     this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLUE_COLOR_30))
-                            .apply { setScaling(Scaling.fit) }.cell(pad = 7f)
+                            .apply { setScaling(Scaling.fit) }.cell(pad = Constants.UI_PADDING)
                     onClickEvent { event, actor ->
                         println("Equip icon clicked")
                         this@EquipTable.switchEquipWindow()
@@ -60,13 +61,13 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                     this@EquipTable.specsNames = scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
                     this@EquipTable.specsValues = scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
                 }.cell(width = 92f, height = 100f, padLeft = Constants.UI_PADDING)
-            }
+            }.cell(padTop = Constants.UI_PADDING, padLeft = Constants.UI_PADDING, padBottom = 0f, padRight = Constants.UI_PADDING)
 
             row()
 
             // SuitTable
             table {
-                pad(Constants.UI_PADDING)
+                pad(0f, Constants.UI_PADDING, Constants.UI_PADDING, Constants.UI_PADDING)
                 defaults().pad(Constants.UI_PADDING)
                 for (i in 1..8) {
                     container(Actor().apply { setSize(64f, 64f) }) {
@@ -105,16 +106,28 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
     abstract fun makeEquipList(): Array<Pair<Texture, String>>
 
     private fun makeEquipWindow(): Window {
-        val window = scene2d.visWindow("Choose equip", "equip-choose") {
+        val window = scene2d.window("", "equip-choose") {
             isVisible = false
-            padTop(50f)
-            centerWindow()
+            val windowHeight = Constants.stageHeight - 192f - 50f - 12f
+            setSize(325f, windowHeight)
+            setPosition((Constants.STAGE_WIDTH - width) / 2f, Constants.stageHeight - height - 192f)
+            top()
             scrollPane {
                 setScrollingDisabled(true, false)
                 table {
+                    top()
                     for (equip in this@EquipTable.equipList) {
-                        image(equip.first)
-                        label(equip.second)
+                        table {
+                            debug = true
+                            defaults().left()
+                            touchable = Touchable.enabled
+                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                            image(equip.first).apply { setScaling(Scaling.fit) }.cell(pad = 7f)
+                            onClickEvent { event, actor ->
+                                println("Equip item clicked")
+                            }
+                            label(equip.second)
+                        }.cell(width = 300f, height = 100f)
                         row()
                     }
                 }
