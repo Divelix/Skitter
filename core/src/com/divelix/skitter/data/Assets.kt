@@ -43,7 +43,7 @@ class Assets: Disposable {
 
     fun loadAssets() {
         manager.load<TextureAtlas>(Constants.ATLAS_UI)
-        manager.load<Texture>(Constants.BACKGROUND_IMAGE)
+        manager.load<Texture>(Constants.GAMEPLAY_BG)
         manager.load<Texture>(Constants.EQUIP_ICON)
         manager.load<Texture>(Constants.BATTLE_ICON)
         manager.load<Texture>(Constants.MOD_ICON)
@@ -85,36 +85,54 @@ class Assets: Disposable {
         manager.load<Sound>(Constants.HIT_SOUND)
         manager.load<Sound>(Constants.SHOT_SOUND)
         manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)
-        val defaultFontParams = freeTypeFontParameters(Constants.ROBOTO_FONT) {
+        val robotoLightFontParams = freeTypeFontParameters(Constants.ROBOTO_LIGHT_TTF) {
             size = 128
             magFilter = Texture.TextureFilter.Linear
             minFilter = Texture.TextureFilter.Linear
         }
-        manager.load<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT, defaultFontParams)
+        val robotoBoldFontParams = freeTypeFontParameters(Constants.ROBOTO_BOLD_TTF) {
+            size = 128
+            magFilter = Texture.TextureFilter.Linear
+            minFilter = Texture.TextureFilter.Linear
+        }
+        manager.load<BitmapFont>(Constants.ROBOTO_LIGHT_FONT, robotoLightFontParams)
+        manager.load<BitmapFont>(Constants.ROBOTO_BOLD_FONT, robotoBoldFontParams)
     }
 
     fun setup() {
         uiSkin = skin(manager.get(Constants.ATLAS_UI)) {
-//            color("pinky", 0.7f, 0f, 1f)
+            color(Constants.ORANGE_COLOR, 1f, 0.6f, 0f)
 //            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
 //            this["aim"] = manager.get<Texture>(Constants.AIM) // same with different syntax
 
-            this[Constants.BLACK_COLOR_30] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.3f)); fill() })
-            this[Constants.BLACK_COLOR_50] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.5f)); fill() })
-            this[Constants.BLACK_COLOR_70] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.7f)); fill() })
-            this[Constants.RED_COLOR_30] = Texture(bgPixel.apply { setColor(Color(1f, 0f, 0f, 0.3f)); fill() })
-            this[Constants.GREEN_COLOR_30] = Texture(bgPixel.apply { setColor(Color(0f, 1f, 0f, 0.3f)); fill() })
-            this[Constants.BLUE_COLOR_30] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 1f, 0.3f)); fill() })
+            this[Constants.BLACK_PIXEL_30] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.3f)); fill() })
+            this[Constants.BLACK_PIXEL_50] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.5f)); fill() })
+            this[Constants.BLACK_PIXEL_70] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.7f)); fill() })
+            this[Constants.RED_PIXEL_30] = Texture(bgPixel.apply { setColor(Color(1f, 0f, 0f, 0.3f)); fill() })
+            this[Constants.GREEN_PIXEL_30] = Texture(bgPixel.apply { setColor(Color(0f, 1f, 0f, 0.3f)); fill() })
+            this[Constants.BLUE_PIXEL_30] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 1f, 0.3f)); fill() })
+            this[Constants.LIGHT_GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.7f, .7f, .7f, 1f)); fill() })
+            this[Constants.GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.3f, .3f, .3f, 1f)); fill() })
+            this[Constants.DARK_GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.17f, .17f, .17f, 1f)); fill() })
 
             set(Constants.EQUIP_ICON, manager.get<Texture>(Constants.EQUIP_ICON))
             set(Constants.BATTLE_ICON, manager.get<Texture>(Constants.BATTLE_ICON))
             set(Constants.MOD_ICON, manager.get<Texture>(Constants.MOD_ICON))
 
             label {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT).apply {
+                font = manager.get<BitmapFont>(Constants.ROBOTO_LIGHT_FONT).apply {
                     setUseIntegerPositions(false)
                 }
-                fontColor = Color.WHITE
+                font.data.setScale(Constants.DEFAULT_LABEL_SCALE)
+            }
+            label(Constants.STYLE_BOLD) {
+                font = manager.get<BitmapFont>(Constants.ROBOTO_BOLD_FONT).apply {
+                    setUseIntegerPositions(false)
+                }
+                font.data.setScale(Constants.DEFAULT_LABEL_SCALE)
+            }
+            label(Constants.STYLE_BOLD_ORANGE, extend = Constants.STYLE_BOLD) {
+                fontColor = this@skin[Constants.ORANGE_COLOR]
             }
             label("equip-specs", extend = defaultStyle) {
                 fontColor = Color.WHITE
@@ -132,17 +150,16 @@ class Assets: Disposable {
                 fontColor = Color.RED
             }
             textButton {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_ALIAS_DEFAULT)
-                font.data.setScale(Constants.DEFAULT_LABEL_SCALE)
+                font = manager.get<BitmapFont>(Constants.ROBOTO_LIGHT_FONT)
             }
             scrollPane {}
             window {
                 titleFontColor = Color.RED
-                titleFont = manager.get(Constants.ROBOTO_ALIAS_DEFAULT)
-                background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_COLOR_30))
+                titleFont = manager.get(Constants.ROBOTO_LIGHT_FONT)
+                background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
             window("equip-choose", extend = defaultStyle) {
-                background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_COLOR_50))
+                background = TextureRegionDrawable(this@skin.get<Texture>(Constants.DARK_GRAY_PIXEL))
             }
 
         }

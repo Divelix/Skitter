@@ -1,6 +1,5 @@
 package com.divelix.skitter.ui.scrollmenu
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
@@ -78,7 +77,7 @@ class ScrollMenu(context: Context) : Group() {
             val content = scene2d.table {
                 setFillParent(true)
                 defaults().expand()
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_70))
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_70))
                 pageNames.forEachIndexed { index, name ->
                     image(assets.manager.get<Texture>(name))
                             .apply { setScaling(Scaling.fit) }

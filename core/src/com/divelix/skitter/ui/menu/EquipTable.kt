@@ -73,7 +73,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
 
         val topPart = scene2d.table {
             name = "TopPart"
-            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             add(infoTable)
             row()
             add(suitTable)
@@ -192,7 +192,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
             }).size(textWidth, tableHeight)
             container {
                 image(getEquipDrawable(1, tabName == Constants.SHIPS_TAB))
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                 pad(10f)
                 it.size(tableHeight, tableHeight)
             }
@@ -240,7 +240,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     private fun makeStockTable(): Table {
         return scene2d.table {
             name = "StockTable"
-            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             pad(7f)
             defaults().pad(7f)
 

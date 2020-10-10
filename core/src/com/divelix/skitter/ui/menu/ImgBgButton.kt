@@ -24,7 +24,7 @@ class ImgBgButton(
     init {
         touchable = Touchable.enabled
         setSize(w, h)
-        val bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))).apply { setFillParent(true) }
+        val bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))).apply { setFillParent(true) }
         val aspectRatio = iconTexture.width.toFloat() / iconTexture.height.toFloat()
         val icon = Image(iconTexture).apply {
             setSize(iconHeight * aspectRatio, iconHeight)
@@ -35,13 +35,13 @@ class ImgBgButton(
 
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                (children[0] as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_50))
+                (children[0] as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_50))
                 onClick()
                 return super.touchDown(event, x, y, pointer, button)
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                (children[0] as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                (children[0] as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                 super.touchUp(event, x, y, pointer, button)
             }
         })

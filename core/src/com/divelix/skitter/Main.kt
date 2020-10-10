@@ -26,7 +26,6 @@ class Main : Game() {
             bindSingleton(SpriteBatch())
             bindSingleton(ShapeRenderer())
         }
-        println("Aspect ratio azaza = ${Constants.aspectRatio}")
         setScreen(LoadingScreen(this))
     }
 

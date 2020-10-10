@@ -11,7 +11,7 @@ import ktx.scene2d.Scene2DSkin
 import ktx.style.get
 
 class TabbedMenu(tabs: Array<Tab>) : Table() {
-    private val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+    private val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
     private var activeTab = tabs[0]
     private val content = Container<Table>(activeTab.contentTable)
 

@@ -27,13 +27,24 @@ object Constants {
     const val MOD_HEIGHT = 64f // TODO remove
     const val SHIPS_TAB = "ShipsTab"
     const val GUNS_TAB = "GunsTab"
-    const val ROBOTO_ALIAS_DEFAULT = "defaultFont"
-    const val BLACK_COLOR_30 = "blackColor30"
-    const val BLACK_COLOR_50 = "blackColor50"
-    const val BLACK_COLOR_70 = "blackColor70"
-    const val RED_COLOR_30 = "redColor30"
-    const val GREEN_COLOR_30 = "greenColor30"
-    const val BLUE_COLOR_30 = "blueColor30"
+
+    // Colors
+    const val ORANGE_COLOR = "orange"
+
+    // Background textures
+    const val BLACK_PIXEL_30 = "blackPixel30"
+    const val BLACK_PIXEL_50 = "blackPixel50"
+    const val BLACK_PIXEL_70 = "blackPixel70"
+    const val RED_PIXEL_30 = "redPixel30"
+    const val GREEN_PIXEL_30 = "greenPixel30"
+    const val BLUE_PIXEL_30 = "bluePixel30"
+    const val LIGHT_GRAY_PIXEL = "lightGray"
+    const val GRAY_PIXEL = "gray"
+    const val DARK_GRAY_PIXEL = "darkGray"
+
+    // Styles
+    const val STYLE_BOLD = "boldLabel"
+    const val STYLE_BOLD_ORANGE = "boldOrangeLabel"
 
     // Control params
     const val CAMERA_RADIUS = 2f
@@ -49,7 +60,7 @@ object Constants {
     const val GUN_DEFAULT = "textures/gameplay/gun-default.png"
     const val GUN_SNIPER = "textures/gameplay/gun-sniper.png"
     const val BULLET_DEFAULT = "textures/gameplay/bullet-default.png"
-    const val BACKGROUND_IMAGE = "textures/gameplay/dark-honeycomb.png"
+    const val GAMEPLAY_BG = "textures/gameplay/dark-honeycomb.png"
 
     // UI textures
     const val CARRIAGE = "textures/ui/carriage.png"
@@ -74,7 +85,10 @@ object Constants {
     // Fonts
     const val DIGITS_FNT = "fonts/digits.fnt"
     const val DIGITS_PNG = "fonts/digits.png"
-    const val ROBOTO_FONT = "fonts/Roboto-Light.ttf"
+    const val ROBOTO_LIGHT_TTF = "fonts/Roboto-Light.ttf"
+    const val ROBOTO_BOLD_TTF = "fonts/Roboto-Bold.ttf"
+    const val ROBOTO_LIGHT_FONT = "robotoLightFont"
+    const val ROBOTO_BOLD_FONT = "robotoBoldFont"
 
     // Skins
     const val ATLAS_UI = "skins/uiskin.atlas"

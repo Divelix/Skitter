@@ -95,7 +95,7 @@ class EmptyModIcon(val assets: Assets): Group() {
         name = "EmptyMod"
         touchable = Touchable.enabled
         setSize(64f, 64f)
-        val img = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))).apply { setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT) }
+        val img = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))).apply { setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT) }
         addActor(img.apply { touchable = Touchable.disabled })
     }
 }

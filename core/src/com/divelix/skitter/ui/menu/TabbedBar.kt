@@ -24,7 +24,7 @@ class TabbedBar(val assets: Assets): Table() {
     }
 
     fun makeActive(tab: Tab) {
-        tabs.forEach { it.bg.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30)) }
+        tabs.forEach { it.bg.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30)) }
         tab.bg.drawable = null
         content.actor = tab.content
         activeTab = tab
@@ -40,7 +40,7 @@ class TabbedBar(val assets: Assets): Table() {
         init {
             touchable = Touchable.enabled
             setSize(Constants.STAGE_WIDTH.toFloat() / 2, tabHeight)
-            bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))).apply { setFillParent(true) }
+            bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))).apply { setFillParent(true) }
             texture = when (tabName) {
                 Constants.SHIPS_TAB -> assets.manager.get<Texture>(Constants.SHIP_ICON)
                 Constants.GUNS_TAB -> assets.manager.get<Texture>(Constants.GUN_ICON)

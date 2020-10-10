@@ -564,7 +564,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 origin.set(size).scl(0.5f)
             }
             with<TextureComponent> {
-                val bg = assets.manager.get<Texture>(Constants.BACKGROUND_IMAGE)
+                val bg = assets.manager.get<Texture>(Constants.GAMEPLAY_BG)
                 bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
                 val bgReg = TextureRegion(bg)
                 bgReg.setRegion(0, 0, width.toInt() * scale, height.toInt() * scale)

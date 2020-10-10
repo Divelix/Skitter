@@ -1,6 +1,5 @@
 package com.divelix.skitter.ui.tabbedmenu
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -19,7 +18,6 @@ import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import ktx.actors.onClickEvent
 import ktx.scene2d.*
-import ktx.scene2d.vis.visWindow
 import ktx.style.get
 
 abstract class EquipTable(val assets: Assets): Table(), KTable {
@@ -35,27 +33,33 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
 
         // Top table
         table {
-            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
 
             // InfoTable
             table {
                 pad(Constants.UI_PADDING)
+
+                // Description
                 scrollPane {
                     this@EquipTable.description = scaledLabel(Constants.LOREM_IPSUM).apply {
                         wrap = true
                         setAlignment(Align.top)
                     }
                 }.cell(width = 92f, height = 100f, padRight = Constants.UI_PADDING)
+
+                // Icon
                 table {
                     touchable = Touchable.enabled
-                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
-                    this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLUE_COLOR_30))
+                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
+                    this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLUE_PIXEL_30))
                             .apply { setScaling(Scaling.fit) }.cell(pad = Constants.UI_PADDING)
                     onClickEvent { event, actor ->
                         println("Equip icon clicked")
                         this@EquipTable.switchEquipWindow()
                     }
                 }.cell(width = 100f, height = 100f)
+
+                // Stats
                 table {
                     left()
                     this@EquipTable.specsNames = scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
@@ -71,7 +75,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                 defaults().pad(Constants.UI_PADDING)
                 for (i in 1..8) {
                     container(Actor().apply { setSize(64f, 64f) }) {
-                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                     }
                     if (i % 4 == 0) row()
                 }
@@ -91,13 +95,13 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                             defaults().pad(Constants.UI_PADDING)
                             for (i in 1..20) {
                                 container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
-                                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                                 }
                                 if (i % 4 == 0) row()
                             }
                         }
                 ) {
-                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                 }
             }
         }
@@ -109,25 +113,46 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
         val window = scene2d.window("", "equip-choose") {
             isVisible = false
             val windowHeight = Constants.stageHeight - 192f - 50f - 12f
-            setSize(325f, windowHeight)
+            setSize(326f, windowHeight)
             setPosition((Constants.STAGE_WIDTH - width) / 2f, Constants.stageHeight - height - 192f)
             top()
             scrollPane {
                 setScrollingDisabled(true, false)
                 table {
                     top()
+                    defaults().padTop(12f)
                     for (equip in this@EquipTable.equipList) {
                         table {
-                            debug = true
-                            defaults().left()
+                            left()
+//                            debug = true
                             touchable = Touchable.enabled
-                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
-                            image(equip.first).apply { setScaling(Scaling.fit) }.cell(pad = 7f)
-                            onClickEvent { event, actor ->
-                                println("Equip item clicked")
-                            }
-                            label(equip.second)
-                        }.cell(width = 300f, height = 100f)
+                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.GRAY_PIXEL))
+
+                            // Icon
+                            table {
+//                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.LIGHT_GRAY_PIXEL))
+                                image(equip.first).apply { setScaling(Scaling.fit) }
+                                onClickEvent { event, actor ->
+                                    println("Equip item clicked")
+                                }
+                            }.cell(width = 88f, height = 88f, pad = 6f)
+
+                            // Description
+                            table {
+                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
+                                label("DEFAULT GUN", Constants.STYLE_BOLD_ORANGE).cell(align = Align.left)
+                                row()
+                                label("Equip description")
+                            }.cell(growX = true, align = Align.top, padTop = 6f)
+
+                            // Stats
+                            table {
+//                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
+                                left()
+                                scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
+                                scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
+                            }.cell(pad = 6f)
+                        }.cell(width = 302f, height = 100f)
                         row()
                     }
                 }

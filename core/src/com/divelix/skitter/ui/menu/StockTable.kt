@@ -86,7 +86,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
     private fun makeStockTable(): Table {
         return scene2d.table {
             name = "StockTable"
-            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             pad(7f)
             defaults().pad(7f)
 

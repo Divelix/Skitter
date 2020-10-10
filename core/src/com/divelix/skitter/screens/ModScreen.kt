@@ -55,7 +55,7 @@ class ModScreen(game: Main): EditScreen(game) {
             defaults().expandX()
             table {
                 right().pad(12f)
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                 add(coinsLabel)
             }.cell(fillX = true)
             row()
@@ -76,7 +76,7 @@ class ModScreen(game: Main): EditScreen(game) {
                     add(bigMod)
                     row()
                     table {
-                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                         scrollPane (init = {
                             table {
                                 pad(12f)
@@ -185,7 +185,7 @@ class ModScreen(game: Main): EditScreen(game) {
 
     inner class BigMod: Group() {
         private val iconHeight = 75f
-        private val bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))).apply { setFillParent(true) }
+        private val bg = Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))).apply { setFillParent(true) }
         private val icon: Image
         private val levelBars: Table
 
@@ -198,7 +198,7 @@ class ModScreen(game: Main): EditScreen(game) {
                 pad(5f)
                 defaults().pad(2f)
                 for (i in 1..10) {
-                    visImage(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))) {it.size(10f)}
+                    visImage(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))) {it.size(10f)}
                 }
             }
 
@@ -233,7 +233,7 @@ class ModScreen(game: Main): EditScreen(game) {
                 sellPriceLabel.txt = "${sellPrices[modIcon.mod.level-1]}"
                 upgradePriceLabel.txt = "${upgradePrices[modIcon.mod.level-1]}"
             } else {
-                bg.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_COLOR_30))
+                bg.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                 icon.drawable = null
                 levelBars.isVisible = false
                 modName.txt = ""
