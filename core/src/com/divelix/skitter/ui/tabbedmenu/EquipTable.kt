@@ -114,7 +114,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
             isVisible = false
             val windowHeight = Constants.stageHeight - 192f - 50f - 12f
             setSize(326f, windowHeight)
-            setPosition((Constants.STAGE_WIDTH - width) / 2f, Constants.stageHeight - height - 192f)
+            setPosition((Constants.STAGE_WIDTH - width) / 2f, Constants.stageHeight - height - 192f - 14f)
             top()
             scrollPane {
                 setScrollingDisabled(true, false)
@@ -124,7 +124,6 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                     for (equip in this@EquipTable.equipList) {
                         table {
                             left()
-//                            debug = true
                             touchable = Touchable.enabled
                             background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.GRAY_PIXEL))
 
@@ -139,11 +138,15 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
 
                             // Description
                             table {
+                                debug = true
                                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                                label("DEFAULT GUN", Constants.STYLE_BOLD_ORANGE).cell(align = Align.left)
+                                label("DEFAULT EQUIP", Constants.STYLE_BOLD_ORANGE)
                                 row()
-                                label("Equip description")
-                            }.cell(growX = true, align = Align.top, padTop = 6f)
+                                label("A bunch of text that describes the equip shortly") {
+                                    wrap = true
+                                    setAlignment(Align.top)
+                                }.cell(grow = true)
+                            }.cell(grow = true, padTop = 6f, padBottom = 6f)
 
                             // Stats
                             table {
