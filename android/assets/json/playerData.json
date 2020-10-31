@@ -2,10 +2,24 @@
 "id": 1234,
 "name": "Alc",
 "coins": 525,
-"activeShip": 1,
-"activeShipSpecs": [ 100, 20 ],
-"activeGun": 2,
-"activeGunSpecs": [ 30, 10, 1, 25, 2, 0.1 ],
+"activeEquips": {
+	"ship": {
+		"index": 1,
+		"level": 1,
+		"mods": [
+			{"index": 1, "level": 1},
+			{"index": 1, "level": 1}
+		]
+	},
+	"gun": {
+		"index": 1,
+		"level": 1,
+		"mods": [
+			{"index": 1, "level": 1},
+			{"index": 1, "level": 1}
+		]
+	}
+},
 "ships": [
 	{
 		"index": 1,

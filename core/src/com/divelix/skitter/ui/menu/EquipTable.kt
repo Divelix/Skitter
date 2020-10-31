@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Mod
+import com.divelix.skitter.data.ModOld
 import com.divelix.skitter.image
 import com.divelix.skitter.ui.ScaledLabel
 import ktx.actors.txt
@@ -27,8 +27,8 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
     private val modEffects = Array<Float>(6)
     private val finalEquipSpecs = Array<Float>(6)
 
-    private val suitMods = Array<Mod>(8)
-    private val stockMods = Array<Mod>(20)
+    private val suitMods = Array<ModOld>(8)
+    private val stockMods = Array<ModOld>(20)
     private val specNames = Array<String>()
     private val equipMods: JsonValue
     private val equipData: JsonValue
@@ -108,7 +108,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
 //        // fill suitMods
         activeEquipDescription.get("mods").forEach { modDescription ->
             equipMods.filter { it.get("index").asInt() == modDescription.get("index").asInt() }
-                    .forEach { suitMods.add(Mod(it.get("index").asInt(), it.get("name").asString(), modDescription.get("level").asInt())) }
+                    .forEach { suitMods.add(ModOld(it.get("index").asInt(), it.get("name").asString(), modDescription.get("level").asInt())) }
         }
 
         // fill stockMods
@@ -119,7 +119,7 @@ class EquipTable(private val tabName: String, val assets: Assets, val reader: Js
             equipMods.filter { mod ->
 //                val effects = mod.get("effects")
                 mod.get("index").asInt() == index
-            }.forEach { stockMods.add(Mod(index, it.get("name").asString(), level)) }
+            }.forEach { stockMods.add(ModOld(index, it.get("name").asString(), level)) }
         }
         suitMods.forEach { suitMod -> // consider repetition
             stockMods.filter { it.index == suitMod.index && it.level == suitMod.level }.forEach {it.quantity--}

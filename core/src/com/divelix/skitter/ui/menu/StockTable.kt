@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.ObjectMap
 import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Mod
+import com.divelix.skitter.data.ModOld
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
@@ -19,7 +19,7 @@ import ktx.style.get
 
 class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue, modsData: JsonValue): Table() {
     val stockTable: Table
-    private val stockMods = Array<Mod>(20)
+    private val stockMods = Array<ModOld>(20)
     private val equipMods: JsonValue
 
     var modsType = ""
@@ -55,7 +55,7 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
             val equipMod = equipMods.single { it.get("index").asInt() == index }
             val effects = ObjectMap<String, Float>()
             equipMod.get("effects").forEach { effects.put(it.name, it[level-1].asFloat()) }
-            stockMods.add(Mod(index, equipMod.get("name").asString(), level, quantity, effects))
+            stockMods.add(ModOld(index, equipMod.get("name").asString(), level, quantity, effects))
         }
     }
 
@@ -101,12 +101,12 @@ class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue,
         }
     }
 
-    fun subtractMod(mod: Mod) {
+    fun subtractMod(mod: ModOld) {
         mod.quantity--
         updateLabels()
     }
 
-    fun addMod(mod: Mod) {
+    fun addMod(mod: ModOld) {
         stockMods.add(mod)
         val emptyContainer = stockTable.children.first { (it as Container<*>).actor is EmptyModIcon } as Container<*>
         emptyContainer.actor = ModIcon(mod, assets)

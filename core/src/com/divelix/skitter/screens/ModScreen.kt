@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.data.Mod
+import com.divelix.skitter.data.ModOld
 import com.divelix.skitter.image
 import com.divelix.skitter.ui.menu.EditScreen
 import com.divelix.skitter.ui.menu.EmptyModIcon
@@ -116,7 +116,7 @@ class ModScreen(game: Main): EditScreen(game) {
         bigMod.setMod(null)
     }
 
-    fun sellMod(mod: Mod) {
+    fun sellMod(mod: ModOld) {
         val stockTable = tabbedBar.content.actor as StockTable
         stockTable.subtractMod(mod)
         if (mod.quantity == 0) deselect()
@@ -127,7 +127,7 @@ class ModScreen(game: Main): EditScreen(game) {
         updateUI()
     }
 
-    fun upMod(mod: Mod) {
+    fun upMod(mod: ModOld) {
         if (coins < upgradePrices[mod.level - 1]) {
             info { "not enough coins (need ${upgradePrices[mod.level - 1] - coins} more)" }
             return
@@ -141,7 +141,7 @@ class ModScreen(game: Main): EditScreen(game) {
         if (mod.quantity == 1) {
             mod.level++
         } else {
-            stockTable.addMod(Mod(mod.index, mod.name, mod.level + 1, 1, mod.effects))
+            stockTable.addMod(ModOld(mod.index, mod.name, mod.level + 1, 1, mod.effects))
             mod.quantity--
             deselect()
         }

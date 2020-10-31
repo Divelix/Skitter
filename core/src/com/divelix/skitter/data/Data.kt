@@ -89,7 +89,7 @@ data class GunData(
 )
 
 //-------------------------------------------- Mods Data -------------------------------------------
-enum class ModEffect(val initValue: Float) {
+enum class ModEffectOld(val initValue: Float) {
     // Ship specs
     HEALTH(50f),
     SPEED(10f),
@@ -104,5 +104,61 @@ enum class ModEffect(val initValue: Float) {
 data class ModData(
         var index: Int = -1,
         var name: String = "",
-        var effects: Array<ModEffect>
+        var effects: Array<ModEffectOld>
 )
+
+//----------------------------------------- NEW DATA STRUCTURE --------------------------
+//---------------- LOCAL ----------------
+//----------- EQUIP -----------
+sealed class EquipSpec
+sealed class ShipSpec: EquipSpec() {
+    data class Health(val values: Array<Float>): ShipSpec()
+    data class Speed(val values: Array<Float>): ShipSpec()
+}
+sealed class GunSpec: EquipSpec() {
+    data class Damage(val values: Array<Float>) : GunSpec()
+    data class Capacity(val values: Array<Float>) : GunSpec()
+    data class Reload(val values: Array<Float>) : GunSpec()
+    data class Speed(val values: Array<Float>) : GunSpec()
+    data class Crit(val values: Array<Float>) : GunSpec()
+    data class Chance(val values: Array<Float>) : GunSpec()
+}
+
+sealed class Equip
+data class Ship(val index: Int, val name: String, val specs: Array<ShipSpec>): Equip()
+data class Gun(val index: Int, val name: String, val specs: Array<GunSpec>): Equip()
+
+//----------- MOD -----------
+sealed class Mod
+data class ShipMod(val index: Int, val name: String, val effects: Array<ShipModEffect>): Mod()
+data class GunMod(val index: Int, val name: String, val effects: Array<GunModEffect>): Mod()
+
+sealed class ModEffect
+sealed class ShipModEffect: ModEffect() {
+    data class HealthBoost(val values: Array<Float>): ShipModEffect()
+}
+sealed class GunModEffect: ModEffect() {
+    data class DamageBoost(val values: Array<Float>): GunModEffect()
+}
+
+//----------- PLAYER -----------
+data class Player(
+        val id: Int,
+        val name: String,
+        val coins: Int,
+        val activeEquips: ActiveEquips,
+        val equips: Equips,
+        val mods: Mods
+)
+
+data class ActiveEquips(val ship: ActiveEquip, val gun: ActiveEquip)
+
+data class ActiveEquip(val index: Int, val level: Int, val mods: Array<ModAlias>)
+
+data class ModAlias(val index: Int, val level: Int, val quantity: Int)
+
+data class Equips(val ships: Array<EquipAlias>, val guns: Array<EquipAlias>)
+
+data class EquipAlias(val index: Int, val level: Int, val mods: Array<ModAlias>)
+
+data class Mods(val ship: Array<ModAlias>, val gun: Array<ModAlias>)

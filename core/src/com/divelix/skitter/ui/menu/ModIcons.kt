@@ -10,13 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Mod
+import com.divelix.skitter.data.ModOld
 import com.divelix.skitter.ui.ScaledLabel
 import ktx.scene2d.*
 import com.divelix.skitter.image
 import ktx.style.get
 
-class ModIcon(val mod: Mod, val assets: Assets): Group() {
+class ModIcon(val mod: ModOld, val assets: Assets): Group() {
     private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
     val bgColor = Color(1f, 1f, 0f, 1f)
     val lvlColor = Color(0f, 0f, 0f, 1f)
