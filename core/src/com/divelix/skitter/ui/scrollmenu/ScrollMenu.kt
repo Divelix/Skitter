@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
-import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.PlayerData
@@ -19,6 +18,7 @@ import ktx.inject.Context
 import ktx.json.fromJson
 import ktx.log.debug
 import ktx.log.logger
+import ktx.scene2d.container
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.scene2d
 import ktx.scene2d.scrollPane
@@ -82,7 +82,7 @@ class ScrollMenu(context: Context) : Group() {
                     image(assets.manager.get<Texture>(name))
                             .apply { setScaling(Scaling.fit) }
                             .cell(fill = true, padTop = 5f, padBottom = 5f)
-                            .onClickEvent { event, actor ->
+                            .onClickEvent { event ->
 //                                println("[EVENT = $event; ACTOR = $actor]")
                                 updateUI()
 //                                saveToJson()

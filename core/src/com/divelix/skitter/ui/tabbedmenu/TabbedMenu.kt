@@ -20,7 +20,7 @@ class TabbedMenu(tabs: Array<Tab>) : Table() {
         tabs.forEach {
             add(it.apply {
                 background = bgDrawable
-                onClickEvent { event, actor -> switchTo(it) }
+                onClickEvent { event -> switchTo(it) }
             })
         }
         row()

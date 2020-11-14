@@ -10,13 +10,9 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.JsonWriter
-import com.divelix.skitter.data.Assets
 import com.divelix.skitter.Main
+import com.divelix.skitter.data.*
 import com.divelix.skitter.screens.MenuScreen
-import com.divelix.skitter.data.Chapter
-import com.divelix.skitter.data.EnemyBundle
-import com.divelix.skitter.data.Enemy
-import com.divelix.skitter.data.Level
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
 import ktx.collections.gdxArrayOf
@@ -33,7 +29,8 @@ class JsonScreen(game: Main): KtxScreen {
             setSerializer(Vector3AsArraySerializer())
         }
 //        testComplex(json)
-        testChapter(json)
+//        testChapter(json)
+        testNewData(json)
 
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
@@ -164,6 +161,16 @@ fun testChapter(json: Json) {
 //    chapterStr = json.toJson(chapter)
     file.writeString(json.prettyPrint(chapterStr, printSettings), false)
 //    println(json.prettyPrint(chapterStr))
+}
+
+fun testNewData(json: Json) {
+//    json.setElementType<ShipSpec.Health, Float>("health")
+    val ship = Ship(1, "DefaultShip", ShipSpecs(
+            gdxArrayOf(1f, 2f, 3f, 4f, 5f),
+            gdxArrayOf(1.1f, 2.2f, 3.3f, 4.4f, 5.5f)
+    ))
+    val shipStr = json.toJson(ship)
+    println(json.prettyPrint(shipStr))
 }
 
 class Vector2AsArraySerializer: JsonSerializer<Vector2> {

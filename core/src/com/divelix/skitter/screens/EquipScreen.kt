@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.container
 import com.divelix.skitter.ui.menu.EditScreen
 import com.divelix.skitter.ui.menu.EmptyModIcon
 import com.divelix.skitter.ui.menu.EquipTable

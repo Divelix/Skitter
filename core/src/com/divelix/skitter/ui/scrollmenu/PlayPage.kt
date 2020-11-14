@@ -16,7 +16,7 @@ class PlayPage(val playerData: PlayerData, context: Context) : Page(context) {
     init {
         table {
             setFillParent(true)
-            image(this@PlayPage.assets.manager.get<Texture>(Constants.MENU_PLAY)).onClickEvent { event, actor ->
+            image(this@PlayPage.assets.manager.get<Texture>(Constants.MENU_PLAY)).onClickEvent { event ->
                 this@PlayPage.game.screen = PlayScreen(this@PlayPage.game)
             }
         }

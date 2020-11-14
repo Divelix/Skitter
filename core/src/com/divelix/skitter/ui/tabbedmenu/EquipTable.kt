@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
-import com.divelix.skitter.container
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.image
@@ -53,7 +52,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                     this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLUE_PIXEL_30))
                             .apply { setScaling(Scaling.fit) }.cell(pad = Constants.UI_PADDING)
-                    onClickEvent { event, actor ->
+                    onClickEvent { event ->
                         println("Equip icon clicked")
                         this@EquipTable.switchEquipWindow()
                     }
@@ -131,7 +130,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
                             table {
 //                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.LIGHT_GRAY_PIXEL))
                                 image(equip.first).apply { setScaling(Scaling.fit) }
-                                onClickEvent { event, actor ->
+                                onClickEvent { event ->
                                     println("Equip item clicked")
                                 }
                             }.cell(width = 88f, height = 88f, pad = 6f)

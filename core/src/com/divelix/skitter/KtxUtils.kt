@@ -44,23 +44,23 @@ inline fun <S> KWidget<S>.image(
     return actor(Image(drawable), init)
 }
 
-// delete when new version of libktx comes out
-@Scene2dDsl
-class KContainer<T : Actor>(actor: T? = null) : Container<T>(actor), KGroup {
-    @Suppress("UNCHECKED_CAST")
-    override fun addActor(actor: Actor?) {
-        this.actor == null || throw IllegalStateException("Container may store only a single child.")
-        this.actor = actor as T
-    }
-}
-
-// delete when new version of libktx comes out
-@Scene2dDsl
-@OptIn(ExperimentalContracts::class)
-inline fun <S, A : Actor> KWidget<S>.container(
-        actor: A,
-        init: KContainer<A>.(S) -> Unit = {}
-): KContainer<A> {
-    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
-    return actor(KContainer(actor), init)
-}
+//// delete when new version of libktx comes out
+//@Scene2dDsl
+//class KContainer<T : Actor>(actor: T? = null) : Container<T>(actor), KGroup {
+//    @Suppress("UNCHECKED_CAST")
+//    override fun addActor(actor: Actor?) {
+//        this.actor == null || throw IllegalStateException("Container may store only a single child.")
+//        this.actor = actor as T
+//    }
+//}
+//
+//// delete when new version of libktx comes out
+//@Scene2dDsl
+//@OptIn(ExperimentalContracts::class)
+//inline fun <S, A : Actor> KWidget<S>.container(
+//        actor: A,
+//        init: KContainer<A>.(S) -> Unit = {}
+//): KContainer<A> {
+//    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+//    return actor(KContainer(actor), init)
+//}
