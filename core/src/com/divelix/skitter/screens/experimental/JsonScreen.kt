@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.FloatArray
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.JsonWriter
@@ -15,7 +16,7 @@ import com.divelix.skitter.data.*
 import com.divelix.skitter.screens.MenuScreen
 import ktx.app.KtxScreen
 import ktx.assets.toLocalFile
-import ktx.collections.gdxArrayOf
+import ktx.collections.*
 import ktx.json.*
 
 class JsonScreen(game: Main): KtxScreen {
@@ -25,8 +26,9 @@ class JsonScreen(game: Main): KtxScreen {
     init {
         val json = Json().apply {
             setUsePrototypes(false) // to not erase default values (false, 0)
-            setSerializer(Vector2AsArraySerializer())
-            setSerializer(Vector3AsArraySerializer())
+//            setSerializer(Vector2AsArraySerializer())
+//            setSerializer(Vector3AsArraySerializer())
+            setSerializer(ShipModSerializer())
         }
 //        testComplex(json)
 //        testChapter(json)
@@ -164,36 +166,49 @@ fun testChapter(json: Json) {
 }
 
 fun testNewData(json: Json) {
-//    json.setElementType<ShipSpec.Health, Float>("health")
     val ship = Ship(1, "DefaultShip", ShipSpecs(
             gdxArrayOf(1f, 2f, 3f, 4f, 5f),
             gdxArrayOf(1.1f, 2.2f, 3.3f, 4.4f, 5.5f)
     ))
     val shipStr = json.toJson(ship)
     println(json.prettyPrint(shipStr))
+
+//    json.setElementType<ShipMod, FloatArray>("effects")
+    val fa = FloatArray(2)
+    fa.add(1f)
+    fa.add(2f)
+    val modHpBooster = ShipMod(13, "MODNAME", gdxMapOf(
+            "http" to fa
+    ))
+    val modStr = json.toJson(modHpBooster)
+    println(json.prettyPrint(modStr))
+//    val modStr2 = "{ index: 1, name: modName, effects: { hp: [1.0, 2.0], speed: [3, 4]}}"
+    val newMod = json.fromJson<ShipMod>(modStr)
+    println(newMod)
 }
 
-class Vector2AsArraySerializer: JsonSerializer<Vector2> {
-    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Vector2
-            = jsonValue.asFloatArray().let { (x, y) -> Vector2(x, y) }
-
-    override fun write(json: Json, value: Vector2, type: Class<*>?) {
-        json.writeArrayStart()
-        json.writeValue(value.x)
-        json.writeValue(value.y)
-        json.writeArrayEnd()
+class ShipModSerializer: JsonSerializer<ShipMod> {
+    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): ShipMod {
+        val index = jsonValue[0].asInt()
+        val name = jsonValue[1].asString()
+        val effects = gdxMapOf<String, FloatArray>()
+        jsonValue[2].forEach {
+            effects.put(it.name, it.asFloatArray().toGdxArray())
+        }
+        return ShipMod(index, name, effects).also { println(it) }
     }
-}
 
-class Vector3AsArraySerializer: JsonSerializer<Vector3> {
-    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Vector3
-            = jsonValue.asFloatArray().let { (x, y, z) -> Vector3(x, y, z) }
-
-    override fun write(json: Json, value: Vector3, type: Class<*>?) {
-        json.writeArrayStart()
-        json.writeValue(value.x)
-        json.writeValue(value.y)
-        json.writeValue(value.z)
-        json.writeArrayEnd()
+    override fun write(json: Json, value: ShipMod, type: Class<*>?) {
+        json.run {
+            writeObjectStart()
+            writeValue(ShipMod::index.name, value.index)
+            writeValue(ShipMod::name.name, value.name)
+            writeObjectStart("effects")
+            value.effects.forEach {
+                json.writeValue(it.key, it.value.toArray())
+            }
+            writeObjectEnd()
+            writeObjectEnd()
+        }
     }
 }

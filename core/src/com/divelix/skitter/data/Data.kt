@@ -2,6 +2,10 @@ package com.divelix.skitter.data
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.utils.FloatArray
+import ktx.collections.GdxFloatArray
+import ktx.collections.GdxMap
+import ktx.collections.gdxIdentityMapOf
 import ktx.collections.gdxMapOf
 
 object Data {
@@ -130,16 +134,22 @@ data class Gun(val index: Int, val name: String, val specs: GunSpecs) : Equip()
 
 //----------- MOD -----------
 sealed class Mod
-data class ShipMod(val index: Int, val name: String, val effects: Array<ShipModEffect>) : Mod()
-data class GunMod(val index: Int, val name: String, val effects: Array<GunModEffect>) : Mod()
+data class ShipMod(val index: Int = 0, val name: String = "None", val effects: GdxMap<String, GdxFloatArray> = gdxMapOf()) : Mod()
+data class GunMod(val index: Int, val name: String, val effects: GdxMap<GunModEffects, Array<Float>>) : Mod()
 
-sealed class ModEffect
-sealed class ShipModEffect : ModEffect() {
-    data class HealthBoost(val values: Array<Float>) : ShipModEffect()
+//sealed class ModEffect
+//sealed class ShipModEffect : ModEffect()
+//data class HealthBoost(val values: Array<Float>) : ShipModEffect()
+//sealed class GunModEffect : ModEffect()
+//data class DamageBoost(val values: Array<Float>) : GunModEffect()
+
+enum class ShipModEffects {
+    HealthBooster,
+    SpeedBooster
 }
 
-sealed class GunModEffect : ModEffect() {
-    data class DamageBoost(val values: Array<Float>) : GunModEffect()
+enum class GunModEffects {
+    DamageBooster
 }
 
 //----------- PLAYER -----------
