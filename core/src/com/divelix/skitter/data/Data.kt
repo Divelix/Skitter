@@ -134,14 +134,8 @@ data class Gun(val index: Int, val name: String, val specs: GunSpecs) : Equip()
 
 //----------- MOD -----------
 sealed class Mod
-data class ShipMod(val index: Int = 0, val name: String = "None", val effects: GdxMap<String, GdxFloatArray> = gdxMapOf()) : Mod()
-data class GunMod(val index: Int, val name: String, val effects: GdxMap<GunModEffects, Array<Float>>) : Mod()
-
-//sealed class ModEffect
-//sealed class ShipModEffect : ModEffect()
-//data class HealthBoost(val values: Array<Float>) : ShipModEffect()
-//sealed class GunModEffect : ModEffect()
-//data class DamageBoost(val values: Array<Float>) : GunModEffect()
+data class ShipMod(val index: Int = 0, val name: String = "None", val effects: GdxMap<ShipModEffects, GdxFloatArray> = gdxMapOf()) : Mod()
+data class GunMod(val index: Int = 0, val name: String = "None", val effects: GdxMap<GunModEffects, GdxFloatArray> = gdxMapOf()) : Mod()
 
 enum class ShipModEffects {
     HealthBooster,

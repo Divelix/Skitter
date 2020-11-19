@@ -11,7 +11,9 @@ import com.badlogic.gdx.utils.FloatArray
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.JsonWriter
+import com.divelix.skitter.GunModSerializer
 import com.divelix.skitter.Main
+import com.divelix.skitter.ShipModSerializer
 import com.divelix.skitter.data.*
 import com.divelix.skitter.screens.MenuScreen
 import ktx.app.KtxScreen
@@ -29,6 +31,7 @@ class JsonScreen(game: Main): KtxScreen {
 //            setSerializer(Vector2AsArraySerializer())
 //            setSerializer(Vector3AsArraySerializer())
             setSerializer(ShipModSerializer())
+            setSerializer(GunModSerializer())
         }
 //        testComplex(json)
 //        testChapter(json)
@@ -166,49 +169,33 @@ fun testChapter(json: Json) {
 }
 
 fun testNewData(json: Json) {
-    val ship = Ship(1, "DefaultShip", ShipSpecs(
-            gdxArrayOf(1f, 2f, 3f, 4f, 5f),
-            gdxArrayOf(1.1f, 2.2f, 3.3f, 4.4f, 5.5f)
-    ))
-    val shipStr = json.toJson(ship)
-    println(json.prettyPrint(shipStr))
+//    val ship = Ship(1, "DefaultShip", ShipSpecs(
+//            gdxArrayOf(1f, 2f, 3f, 4f, 5f),
+//            gdxArrayOf(1.1f, 2.2f, 3.3f, 4.4f, 5.5f)
+//    ))
+//    val shipStr = json.toJson(ship)
+//    println(json.prettyPrint(shipStr))
 
-//    json.setElementType<ShipMod, FloatArray>("effects")
     val fa = FloatArray(2)
     fa.add(1f)
     fa.add(2f)
-    val modHpBooster = ShipMod(13, "MODNAME", gdxMapOf(
-            "http" to fa
+    val modHpBooster = ShipMod(13, "SHIP_MOD_NAME", gdxMapOf(
+            ShipModEffects.HealthBooster to fa
     ))
     val modStr = json.toJson(modHpBooster)
     println(json.prettyPrint(modStr))
-//    val modStr2 = "{ index: 1, name: modName, effects: { hp: [1.0, 2.0], speed: [3, 4]}}"
     val newMod = json.fromJson<ShipMod>(modStr)
     println(newMod)
+
+    val fa2 = FloatArray(2)
+    fa2.add(1f)
+    fa2.add(2f)
+    val gunMod = GunMod(15, "GUN_MOD_NAME", gdxMapOf(
+            GunModEffects.DamageBooster to fa2
+    ))
+    val gunModStr = json.toJson(gunMod)
+    println(json.prettyPrint(gunModStr))
+    val newGunMod = json.fromJson<GunMod>(gunModStr)
+    println(newGunMod)
 }
 
-class ShipModSerializer: JsonSerializer<ShipMod> {
-    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): ShipMod {
-        val index = jsonValue[0].asInt()
-        val name = jsonValue[1].asString()
-        val effects = gdxMapOf<String, FloatArray>()
-        jsonValue[2].forEach {
-            effects.put(it.name, it.asFloatArray().toGdxArray())
-        }
-        return ShipMod(index, name, effects).also { println(it) }
-    }
-
-    override fun write(json: Json, value: ShipMod, type: Class<*>?) {
-        json.run {
-            writeObjectStart()
-            writeValue(ShipMod::index.name, value.index)
-            writeValue(ShipMod::name.name, value.name)
-            writeObjectStart("effects")
-            value.effects.forEach {
-                json.writeValue(it.key, it.value.toArray())
-            }
-            writeObjectEnd()
-            writeObjectEnd()
-        }
-    }
-}
