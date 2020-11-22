@@ -49,7 +49,7 @@ data class LoverData(var health: Float,
                      var maxForce: Float,
                      var damage: Float)
 
-//-------------------------------------------- Player Data -----------------------------------------
+//---------------------- Player Data ---------------------
 data class PlayerData(
         var id: Int = -1,
         var name: String = "",
@@ -80,8 +80,8 @@ data class PlayerModsData(
         var gun: Array<ModAvatarData> = Array()
 )
 
-//-------------------------------------------- Ships Data -------------------------------------------
-//-------------------------------------------- Guns Data --------------------------------------------
+//----------------------- Ships Data ------------------------
+//-------------------- Guns Data ---------------------
 enum class GunType {
     PISTOL,
     SHOTGUN
@@ -92,7 +92,7 @@ data class GunData(
         var level: Int = 1
 )
 
-//-------------------------------------------- Mods Data -------------------------------------------
+//----------------- Mods Data ----------------------
 enum class ModEffectOld(val initValue: Float) {
     // Ship specs
     HEALTH(50f),
@@ -111,31 +111,47 @@ data class ModData(
         var effects: Array<ModEffectOld>
 )
 
-//----------------------------------------- NEW DATA STRUCTURE --------------------------
-//---------------- LOCAL ----------------
+//----------------------------------------- NEW DATA STRUCTURE -------------------------------------
+//---------------- Local ----------------
 //----------- EQUIP -----------
 sealed class EquipSpec
 data class ShipSpecs(
-        val health: Array<Float>,
-        val speed: Array<Float>
+        val health: GdxFloatArray = GdxFloatArray(),
+        val speed: GdxFloatArray = GdxFloatArray()
 ) : EquipSpec()
 data class GunSpecs(
-        val damage: Array<Float>,
-        val capacity: Array<Float>,
-        val reload: Array<Float>,
-        val speed: Array<Float>,
-        val crit: Array<Float>,
-        val chance: Array<Float>
+        val damage: GdxFloatArray = GdxFloatArray(),
+        val capacity: GdxFloatArray = GdxFloatArray(),
+        val reload: GdxFloatArray = GdxFloatArray(),
+        val speed: GdxFloatArray = GdxFloatArray(),
+        val crit: GdxFloatArray = GdxFloatArray(),
+        val chance: GdxFloatArray = GdxFloatArray()
 ) : EquipSpec()
 
 sealed class Equip
-data class Ship(val index: Int, val name: String, val specs: ShipSpecs) : Equip()
-data class Gun(val index: Int, val name: String, val specs: GunSpecs) : Equip()
+data class Ship(
+        val index: Int = 0,
+        val name: String = "None",
+        val specs: ShipSpecs = ShipSpecs()
+) : Equip()
+data class Gun(
+        val index: Int = 0,
+        val name: String = "None",
+        val specs: GunSpecs = GunSpecs()
+) : Equip()
 
 //----------- MOD -----------
 sealed class Mod
-data class ShipMod(val index: Int = 0, val name: String = "None", val effects: GdxMap<ShipModEffects, GdxFloatArray> = gdxMapOf()) : Mod()
-data class GunMod(val index: Int = 0, val name: String = "None", val effects: GdxMap<GunModEffects, GdxFloatArray> = gdxMapOf()) : Mod()
+data class ShipMod(
+        val index: Int = 0,
+        val name: String = "None",
+        val effects: GdxMap<ShipModEffects, GdxFloatArray> = gdxMapOf()
+) : Mod()
+data class GunMod(
+        val index: Int = 0,
+        val name: String = "None",
+        val effects: GdxMap<GunModEffects, GdxFloatArray> = gdxMapOf()
+) : Mod()
 
 enum class ShipModEffects {
     HealthBooster,
@@ -146,6 +162,7 @@ enum class GunModEffects {
     DamageBooster
 }
 
+//----------------- Remote -----------------
 //----------- PLAYER -----------
 data class Player(
         val id: Int,

@@ -11,9 +11,7 @@ import com.badlogic.gdx.utils.FloatArray
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.JsonWriter
-import com.divelix.skitter.GunModSerializer
-import com.divelix.skitter.Main
-import com.divelix.skitter.ShipModSerializer
+import com.divelix.skitter.*
 import com.divelix.skitter.data.*
 import com.divelix.skitter.screens.MenuScreen
 import ktx.app.KtxScreen
@@ -30,6 +28,8 @@ class JsonScreen(game: Main): KtxScreen {
             setUsePrototypes(false) // to not erase default values (false, 0)
 //            setSerializer(Vector2AsArraySerializer())
 //            setSerializer(Vector3AsArraySerializer())
+            setSerializer(ShipSerializer())
+            setSerializer(GunSerializer())
             setSerializer(ShipModSerializer())
             setSerializer(GunModSerializer())
         }
@@ -54,131 +54,33 @@ class JsonScreen(game: Main): KtxScreen {
     }
 }
 
-private enum class Names { SEREGA, SVETA, MASHA }
-
-private data class Simple(
-        var int: Int = 0,
-        var bool: Boolean = false,
-        var str: String = ""
-)
-
-private data class Complex(
-        var bool: Boolean = false,
-        var name: Names = Names.SEREGA,
-        var vec2: Vector2 = Vector2(),
-        var vec3: Vector3 = Vector3(),
-        var simple: Simple = Simple(),
-        var list: Array<Int> = Array(),
-        var sList: List<Simple> = emptyList()
-)
-
-private data class Custom(
-        var float: Float = 0f,
-        var simple: Simple = Simple(),
-        var list: List<Simple> = emptyList()) : Json.Serializable {
-
-    override fun read(json: Json, jsonData: JsonValue) {
-        float = json.readValue(jsonData, "float")
-        simple = json.readValue(jsonData, "simple")
-        list = json.readArrayValue(jsonData, "list")
-    }
-
-    override fun write(json: Json) {
-        json.writeValue("float", float)
-        json.writeValue("simple", simple)
-        json.writeValue("list", list)
-    }
-}
-
-fun testComplex(json: Json) {
-    var complexStr = """{
-      "bool": true,
-      "simple": {
-        "int": 31,
-        "bool": true,
-        "str": "abracadabra"
-      },
-      "list": [1, 1, 2, 3, 5, 8, 13],
-      "sList": [
-      {
-      "int": 1,
-      "bool": true,
-      "str": "lalala"
-      },
-      {
-      "int": 2,
-      "bool": true,
-      "str": "azaza"
-      }
-      ]
-    }"""
-    var complex = json.fromJson<Complex>(complexStr)
-    complex = Complex().apply {
-        bool = false
-        name = Names.MASHA
-        vec2 = Vector2(2f, 4f)
-        vec3 = Vector3(3f, 9f, 15f)
-        simple = Simple().apply {
-            int = 123
-            bool = true
-            str = "simpl"
-        }
-        list = Array()
-        list.add(11)
-        list.add(99)
-        sList = mutableListOf(Simple(1, true, "s1"), Simple(2, true, "s2"), Simple(3, true, "s3"))
-    }
-    complexStr = json.toJson(complex)
-    complex = json.fromJson<Complex>(complexStr)
-    complexStr = json.toJson(complex)
-    complex = json.fromJson<Complex>(complexStr)
-    complexStr = json.toJson(complex)
-    println(json.prettyPrint(complexStr))
-}
-
-fun testChapter(json: Json) {
-    val file = "json/chapters.json".toLocalFile()
-    val printSettings = JsonValue.PrettyPrintSettings().apply {
-        outputType = JsonWriter.OutputType.json
-        singleLineColumns = 100
-    }
-    var chapter = Chapter(
-            "First Chapter",
-            gdxArrayOf(
-                    Level(
-                            Vector2(15f, 30f),
-                            gdxArrayOf(
-                                    EnemyBundle(Enemy.SNIPER, 2),
-                                    EnemyBundle(Enemy.RADIAL, 3)
-                            )
-                    ),
-                    Level(
-                            Vector2(15f, 20f),
-                            gdxArrayOf(
-                                    EnemyBundle(Enemy.SNIPER, 1),
-                                    EnemyBundle(Enemy.RADIAL, 1)
-                            )
-                    )
-            )
-    )
-    var chapterStr = json.toJson(chapter)
-//    chapter = json.fromJson(chapterStr)
-//    chapterStr = json.toJson(chapter)
-    file.writeString(json.prettyPrint(chapterStr, printSettings), false)
-//    println(json.prettyPrint(chapterStr))
-}
-
 fun testNewData(json: Json) {
-//    val ship = Ship(1, "DefaultShip", ShipSpecs(
-//            gdxArrayOf(1f, 2f, 3f, 4f, 5f),
-//            gdxArrayOf(1.1f, 2.2f, 3.3f, 4.4f, 5.5f)
-//    ))
-//    val shipStr = json.toJson(ship)
-//    println(json.prettyPrint(shipStr))
+    println("---- test Ship ----")
+    val ship = Ship(1, "DefaultShip", ShipSpecs(
+            GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
+            GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
+    ))
+    val shipStr = json.toJson(ship)
+    println(json.prettyPrint(shipStr))
+    val newShip = json.fromJson<Ship>(shipStr)
+    println(newShip)
 
-    val fa = FloatArray(2)
-    fa.add(1f)
-    fa.add(2f)
+    println("---- test Gun ----")
+    val gun = Gun(1, "DefaultGun", GunSpecs(
+            GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
+            GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f)),
+            GdxFloatArray(floatArrayOf(3.1f, 3.2f, 3.3f, 3.4f, 3.5f, 3.6f, 3.7f, 3.8f, 3.9f, 3.10f)),
+            GdxFloatArray(floatArrayOf(4.1f, 4.2f, 4.3f, 4.4f, 4.5f, 4.6f, 4.7f, 4.8f, 4.9f, 4.10f)),
+            GdxFloatArray(floatArrayOf(5.1f, 5.2f, 5.3f, 5.4f, 5.5f, 5.6f, 5.7f, 5.8f, 5.9f, 5.10f)),
+            GdxFloatArray(floatArrayOf(6.1f, 6.2f, 6.3f, 6.4f, 6.5f, 6.6f, 6.7f, 6.8f, 6.9f, 6.10f))
+    ))
+    val gunStr = json.toJson(gun)
+    println(json.prettyPrint(gunStr))
+    val newGun = json.fromJson<Gun>(gunStr)
+    println(newGun)
+
+    println("---- test ShipMod ----")
+    val fa = FloatArray(floatArrayOf(1f, 2f))
     val modHpBooster = ShipMod(13, "SHIP_MOD_NAME", gdxMapOf(
             ShipModEffects.HealthBooster to fa
     ))
@@ -187,9 +89,8 @@ fun testNewData(json: Json) {
     val newMod = json.fromJson<ShipMod>(modStr)
     println(newMod)
 
-    val fa2 = FloatArray(2)
-    fa2.add(1f)
-    fa2.add(2f)
+    println("---- test GunMod ----")
+    val fa2 = FloatArray(floatArrayOf(1f, 2f))
     val gunMod = GunMod(15, "GUN_MOD_NAME", gdxMapOf(
             GunModEffects.DamageBooster to fa2
     ))
