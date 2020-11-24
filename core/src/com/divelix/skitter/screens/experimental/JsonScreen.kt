@@ -26,15 +26,11 @@ class JsonScreen(game: Main): KtxScreen {
     init {
         val json = Json().apply {
             setUsePrototypes(false) // to not erase default values (false, 0)
-//            setSerializer(Vector2AsArraySerializer())
-//            setSerializer(Vector3AsArraySerializer())
             setSerializer(ShipSerializer())
             setSerializer(GunSerializer())
             setSerializer(ShipModSerializer())
             setSerializer(GunModSerializer())
         }
-//        testComplex(json)
-//        testChapter(json)
         testNewData(json)
 
         val handler = object: InputAdapter() {
@@ -98,5 +94,12 @@ fun testNewData(json: Json) {
     println(json.prettyPrint(gunModStr))
     val newGunMod = json.fromJson<GunMod>(gunModStr)
     println(newGunMod)
+
+    println("---- test ModAlias ----")
+    val modAlias = ModAlias(1, 2, 3)
+    val modAliasStr = json.toJson(modAlias)
+    println(json.prettyPrint(modAliasStr))
+    val newModAlias = json.fromJson<ModAlias>(modAliasStr)
+    println(newModAlias)
 }
 

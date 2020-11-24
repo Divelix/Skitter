@@ -7,19 +7,18 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
     }
 }
 
 allprojects {
-    apply plugin: "eclipse"
     apply plugin: "idea"
 
     version = '1.0'
     ext {
         appName = "Skitter"
-        gdxVersion = '1.9.12'
         roboVMVersion = '2.3.3'
         box2DLightsVersion = '1.5'
         ashleyVersion = '1.7.3'
@@ -110,8 +109,4 @@ project(":core") {
         implementation "io.github.libktx:ktx-freetype:$ktxVersion"
         implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
     }
-}
-
-tasks.eclipse.doLast {
-    delete ".project"
 }

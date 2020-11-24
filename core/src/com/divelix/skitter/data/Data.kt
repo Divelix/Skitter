@@ -177,10 +177,10 @@ data class ActiveEquips(val ship: ActiveEquip, val gun: ActiveEquip)
 
 data class ActiveEquip(val index: Int, val level: Int, val mods: Array<ModAlias>)
 
-data class ModAlias(val index: Int, val level: Int, val quantity: Int)
+data class ModAlias(val index: Int = 0, val level: Int = 0, val quantity: Int = 0)
 
-data class Equips(val ships: Array<EquipAlias>, val guns: Array<EquipAlias>)
+data class Mods(val ship: Array<ModAlias>, val gun: Array<ModAlias>)
 
 data class EquipAlias(val index: Int, val level: Int, val mods: Array<ModAlias>)
 
-data class Mods(val ship: Array<ModAlias>, val gun: Array<ModAlias>)
+data class Equips(val ships: Array<EquipAlias>, val guns: Array<EquipAlias>)
