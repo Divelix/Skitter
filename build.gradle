@@ -25,6 +25,8 @@ allprojects {
         aiVersion = '1.8.2'
         visuiVersion = '1.4.4'
         ktxVersion = '1.9.11-b2'
+        junitVersion = '4.+'
+        mockitoVersion = '1.9.+'
     }
 
     repositories {
@@ -108,5 +110,22 @@ project(":core") {
         implementation "io.github.libktx:ktx-vis:$ktxVersion"
         implementation "io.github.libktx:ktx-freetype:$ktxVersion"
         implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
+    }
+}
+
+project(":tests") {
+    apply plugin: "java"
+
+    sourceSets.test.java.srcDirs = ["src/"]
+
+    dependencies {
+        implementation project(":core")
+
+        implementation "junit:junit:$junitVersion"
+        implementation "org.mockito:mockito-all:$mockitoVersion"
+
+        implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
