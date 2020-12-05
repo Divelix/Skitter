@@ -114,7 +114,7 @@ project(":core") {
 }
 
 project(":tests") {
-    apply plugin: "java"
+    apply plugin: "kotlin"
 
     sourceSets.test.java.srcDirs = ["src/"]
 
@@ -127,5 +127,7 @@ project(":tests") {
         implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "io.github.libktx:ktx-collections:$ktxVersion"
+        implementation "io.github.libktx:ktx-json:$ktxVersion"
     }
 }

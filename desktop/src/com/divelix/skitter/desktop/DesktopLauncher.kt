@@ -15,7 +15,7 @@ object DesktopLauncher {
             width = Constants.DESKTOP_WIDTH
             height = Constants.DESKTOP_HEIGHT
 //            resizable = false
-            forceExit = false
+            forceExit = false // for LWJGL3
         })
     }
 }
