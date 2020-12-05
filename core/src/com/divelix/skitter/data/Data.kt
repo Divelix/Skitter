@@ -3,10 +3,7 @@ package com.divelix.skitter.data
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.FloatArray
-import ktx.collections.GdxFloatArray
-import ktx.collections.GdxMap
-import ktx.collections.gdxIdentityMapOf
-import ktx.collections.gdxMapOf
+import ktx.collections.*
 
 object Data {
     var renderTime = 0f
@@ -173,14 +170,14 @@ data class Player(
         val mods: Mods
 )
 
-data class ActiveEquips(val ship: ActiveEquip, val gun: ActiveEquip)
+data class ActiveEquips(val ship: ActiveEquip = ActiveEquip(), val gun: ActiveEquip = ActiveEquip())
 
-data class ActiveEquip(val index: Int, val level: Int, val mods: Array<ModAlias>)
+data class ActiveEquip(val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
 
 data class ModAlias(val index: Int = 0, val level: Int = 0, val quantity: Int = 0)
 
-data class Mods(val ship: Array<ModAlias>, val gun: Array<ModAlias>)
+data class Mods(val ship: Array<ModAlias> = gdxArrayOf(), val gun: Array<ModAlias> = gdxArrayOf())
 
-data class EquipAlias(val index: Int, val level: Int, val mods: Array<ModAlias>)
+data class EquipAlias(val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
 
 data class Equips(val ships: Array<EquipAlias>, val guns: Array<EquipAlias>)
