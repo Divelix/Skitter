@@ -1,4 +1,4 @@
-package com.divelix.skitter.data
+    package com.divelix.skitter.data
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
@@ -162,12 +162,12 @@ enum class GunModEffects {
 //----------------- Remote -----------------
 //----------- PLAYER -----------
 data class Player(
-        val id: Int,
-        val name: String,
-        val coins: Int,
-        val activeEquips: ActiveEquips,
-        val equips: Equips,
-        val mods: Mods
+        val id: Int = -1,
+        val name: String = "None",
+        val coins: Int = 0,
+        val activeEquips: ActiveEquips = ActiveEquips(),
+        val equips: Equips = Equips(),
+        val mods: Mods = Mods()
 )
 
 data class ActiveEquips(val ship: ActiveEquip = ActiveEquip(), val gun: ActiveEquip = ActiveEquip())
@@ -180,4 +180,4 @@ data class Mods(val ship: Array<ModAlias> = gdxArrayOf(), val gun: Array<ModAlia
 
 data class EquipAlias(val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
 
-data class Equips(val ships: Array<EquipAlias>, val guns: Array<EquipAlias>)
+data class Equips(val ships: Array<EquipAlias> = gdxArrayOf(), val guns: Array<EquipAlias> = gdxArrayOf())
