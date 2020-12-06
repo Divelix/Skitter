@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.PlayerData
+import com.divelix.skitter.data.Player
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.tabbedmenu.Tab
@@ -14,7 +14,7 @@ import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(val playerData: PlayerData, context: Context) : Page(context) {
+class ModPage(val playerData: Player, context: Context) : Page(context) {
 
     init {
         table {

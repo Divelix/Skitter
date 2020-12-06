@@ -2,7 +2,7 @@ package com.divelix.skitter.ui.scrollmenu
 
 import com.badlogic.gdx.graphics.Texture
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.PlayerData
+import com.divelix.skitter.data.Player
 import com.divelix.skitter.ui.tabbedmenu.GunTable
 import com.divelix.skitter.ui.tabbedmenu.Tab
 import com.divelix.skitter.ui.tabbedmenu.ShipTable
@@ -11,7 +11,7 @@ import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.table
 
-class EquipPage(val playerData: PlayerData, context: Context) : Page(context) {
+class EquipPage(val playerData: Player, context: Context) : Page(context) {
 
     init {
         table {

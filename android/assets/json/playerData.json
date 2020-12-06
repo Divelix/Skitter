@@ -1,50 +1,71 @@
 {
-"id": 1234,
-"name": "Alc",
-"coins": 525,
+"id": 123,
+"name": "DefaultName",
+"coins": 100,
 "activeEquips": {
 	"ship": {
 		"index": 1,
-		"level": 1,
+		"level": 2,
 		"mods": [
-			{"index": 1, "level": 1},
-			{"index": 1, "level": 1}
+			{ "index": 1, "level": 2, "quantity": 3 },
+			{ "index": 4, "level": 5, "quantity": 6 }
 		]
 	},
 	"gun": {
-		"index": 1,
-		"level": 1,
+		"index": 2,
+		"level": 3,
 		"mods": [
-			{"index": 1, "level": 1},
-			{"index": 1, "level": 1}
+			{ "index": 7, "level": 8, "quantity": 9 },
+			{ "index": 10, "level": 11, "quantity": 12 }
 		]
 	}
 },
-"ships": [
-	{
-		"index": 1,
-		"level": 1,
-		"mods": [
-			{ "index": 1001, "level": 1 }
-		]
-	}
-],
-"guns": [
-	{ "index": 1, "level": 1 }
-],
+"equips": {
+	"ships": [
+		{
+			"index": 1,
+			"level": 2,
+			"mods": [
+				{ "index": 1, "level": 2, "quantity": 3 },
+				{ "index": 4, "level": 5, "quantity": 6 }
+			]
+		},
+		{
+			"index": 1,
+			"level": 2,
+			"mods": [
+				{ "index": 7, "level": 8, "quantity": 9 },
+				{ "index": 10, "level": 11, "quantity": 12 }
+			]
+		}
+	],
+	"guns": [
+		{
+			"index": 3,
+			"level": 4,
+			"mods": [
+				{ "index": 13, "level": 14, "quantity": 15 },
+				{ "index": 16, "level": 17, "quantity": 18 }
+			]
+		},
+		{
+			"index": 1,
+			"level": 2,
+			"mods": [
+				{ "index": 19, "level": 20, "quantity": 21 },
+				{ "index": 22, "level": 23, "quantity": 24 }
+			]
+		}
+	]
+},
 "mods": {
 	"ship": [
-		{ "index": 1001, "level": 1 },
-		{ "index": 1002, "level": 2, "quantity": 2 },
-		{ "index": 1003, "level": 1, "quantity": 3 }
+		{ "index": 1, "level": 2, "quantity": 3 },
+		{ "index": 4, "level": 5, "quantity": 6 }
 	],
 	"gun": [
-		{ "index": 2001, "level": 1 },
-		{ "index": 2002, "level": 1, "quantity": 2 },
-		{ "index": 2002, "level": 1, "quantity": 3 },
-		{ "index": 2002, "level": 1, "quantity": 4 },
-		{ "index": 2002, "level": 1, "quantity": 5 },
-		{ "index": 2002, "level": 1, "quantity": 6 }
+		{ "index": 7, "level": 8, "quantity": 9 },
+		{ "index": 10, "level": 11, "quantity": 12 }
 	]
 }
 }

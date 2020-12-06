@@ -26,6 +26,7 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
     val scrollMenu: ScrollMenu
 
     init {
+//        fillJsonFile()
         scrollMenu = ScrollMenu(context)
         stage += scrollMenu
 //        stage.isDebugAll = true
@@ -52,39 +53,47 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
             singleLineColumns = 100
         }
 
-        val playerData = PlayerData(
-                id = 1234,
-                name = "Lex",
-                coins = 525,
-                activeShip = 1,
-                activeShipSpecs = gdxArrayOf(100f, 20f),
-                activeGun = 2,
-                activeGunSpecs = gdxArrayOf(30f, 10f, 1f, 25f, 2f, 0.1f),
-                ships = gdxArrayOf(EquipData(
-                        index = 1,
-                        level = 1,
-                        mods = gdxArrayOf(
-                                ModAvatarData(index = 1001, level = 1)
-                        )
-                )),
-                guns = gdxArrayOf(EquipData(
-                        index = 1,
-                        level = 1,
-                        mods = gdxArrayOf()
-                )),
-                mods = PlayerModsData(
-                        ship = gdxArrayOf(
-                                ModAvatarData(index = 1001, level = 1, quantity = 1),
-                                ModAvatarData(index = 1002, level = 2, quantity = 2),
-                                ModAvatarData(index = 1003, level = 1, quantity = 3)
+        val playerData = Player(123, "DefaultName", 100,
+                ActiveEquips(
+                        ActiveEquip(1, 2, gdxArrayOf(
+                                ModAlias(1, 2, 3),
+                                ModAlias(4, 5, 6)
+                        )),
+                        ActiveEquip(2, 3, gdxArrayOf(
+                                ModAlias(7, 8, 9),
+                                ModAlias(10, 11, 12)
+                        ))
+                ),
+                Equips(
+                        gdxArrayOf(
+                                EquipAlias(1, 2, gdxArrayOf(
+                                        ModAlias(1, 2, 3),
+                                        ModAlias(4, 5, 6)
+                                )),
+                                EquipAlias(1, 2, gdxArrayOf(
+                                        ModAlias(7, 8, 9),
+                                        ModAlias(10, 11, 12)
+                                ))
                         ),
-                        gun = gdxArrayOf(
-                                ModAvatarData(index = 2001, level = 1, quantity = 1),
-                                ModAvatarData(index = 2002, level = 1, quantity = 2),
-                                ModAvatarData(index = 2002, level = 1, quantity = 3),
-                                ModAvatarData(index = 2002, level = 1, quantity = 4),
-                                ModAvatarData(index = 2002, level = 1, quantity = 5),
-                                ModAvatarData(index = 2002, level = 1, quantity = 6)
+                        gdxArrayOf(
+                                EquipAlias(3, 4, gdxArrayOf(
+                                        ModAlias(13, 14, 15),
+                                        ModAlias(16, 17, 18)
+                                )),
+                                EquipAlias(1, 2, gdxArrayOf(
+                                        ModAlias(19, 20, 21),
+                                        ModAlias(22, 23, 24)
+                                ))
+                        )
+                ),
+                Mods(
+                        gdxArrayOf(
+                                ModAlias(1, 2, 3),
+                                ModAlias(4, 5, 6)
+                        ),
+                        gdxArrayOf(
+                                ModAlias(7, 8, 9),
+                                ModAlias(10, 11, 12)
                         )
                 )
         )

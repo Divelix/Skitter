@@ -46,68 +46,6 @@ data class LoverData(var health: Float,
                      var maxForce: Float,
                      var damage: Float)
 
-//---------------------- Player Data ---------------------
-data class PlayerData(
-        var id: Int = -1,
-        var name: String = "",
-        var coins: Int = 0,
-        var activeShip: Int = 0,
-        var activeShipSpecs: Array<Float> = Array(),
-        var activeGun: Int = 0,
-        var activeGunSpecs: Array<Float> = Array(),
-        var ships: Array<EquipData> = Array(),
-        var guns: Array<EquipData> = Array(),
-        var mods: PlayerModsData = PlayerModsData()
-)
-
-data class EquipData(
-        var index: Int = -1,
-        var level: Int = 0,
-        var mods: Array<ModAvatarData> = Array()
-)
-
-data class ModAvatarData(
-        var index: Int = -1,
-        var level: Int = 0,
-        var quantity: Int = 1
-)
-
-data class PlayerModsData(
-        var ship: Array<ModAvatarData> = Array(),
-        var gun: Array<ModAvatarData> = Array()
-)
-
-//----------------------- Ships Data ------------------------
-//-------------------- Guns Data ---------------------
-enum class GunType {
-    PISTOL,
-    SHOTGUN
-}
-
-data class GunData(
-        var gunType: GunType = GunType.PISTOL,
-        var level: Int = 1
-)
-
-//----------------- Mods Data ----------------------
-enum class ModEffectOld(val initValue: Float) {
-    // Ship specs
-    HEALTH(50f),
-    SPEED(10f),
-
-    // Gun specs
-    DAMAGE(10f),
-    CAPACITY(1f),
-    RELOAD(1f),
-
-}
-
-data class ModData(
-        var index: Int = -1,
-        var name: String = "",
-        var effects: Array<ModEffectOld>
-)
-
 //----------------------------------------- NEW DATA STRUCTURE -------------------------------------
 //---------------- Local ----------------
 //----------- EQUIP -----------

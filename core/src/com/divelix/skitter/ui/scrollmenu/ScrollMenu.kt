@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.PlayerData
+import com.divelix.skitter.data.Player
 import com.divelix.skitter.image
 import ktx.actors.onClickEvent
 import ktx.assets.toLocalFile
@@ -29,7 +29,7 @@ class ScrollMenu(context: Context) : Group() {
     val assets = context.inject<Assets>()
     val json = context.inject<Json>()
     val playerDataFile = "json/playerData.json".toLocalFile()
-    val playerData = json.fromJson<PlayerData>(playerDataFile)
+    val playerData = json.fromJson<Player>(playerDataFile)
     val pages = gdxArrayOf(
             Constants.EQUIP_ICON to EquipPage(playerData, context),
             Constants.BATTLE_ICON to PlayPage(playerData, context),
