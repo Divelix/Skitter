@@ -29,7 +29,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
             top()
 
             val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTable(assets)),
+//                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTable(assets)),
                     Tab(assets.manager.get<Texture>(Constants.GUN_ICON), scene2d.table { label("second") }),
                     Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { label("third") })
             ))

@@ -28,7 +28,6 @@ class Main : Game() {
                 setSerializer(GunModSerializer())
             })
             bindSingleton(Assets())
-            bindSingleton(Player())
             bindSingleton(SpriteBatch())
             bindSingleton(ShapeRenderer())
         }

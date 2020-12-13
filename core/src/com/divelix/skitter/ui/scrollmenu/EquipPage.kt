@@ -1,6 +1,5 @@
 package com.divelix.skitter.ui.scrollmenu
 
-import com.badlogic.gdx.graphics.Texture
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Player
 import com.divelix.skitter.ui.tabbedmenu.GunTable
@@ -18,8 +17,14 @@ class EquipPage(val playerData: Player, context: Context) : Page(context) {
             setFillParent(true)
             top()
             val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(this@EquipPage.assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTable(this@EquipPage.assets)),
-                    Tab(this@EquipPage.assets.manager.get<Texture>(Constants.GUN_ICON), GunTable(this@EquipPage.assets))
+                    Tab(
+                            this@EquipPage.assets.manager.get(Constants.SHIP_ICON),
+                            ShipTable(this@EquipPage.playerData, this@EquipPage.assets)
+                    ),
+                    Tab(
+                            this@EquipPage.assets.manager.get(Constants.GUN_ICON),
+                            GunTable(this@EquipPage.playerData, this@EquipPage.assets)
+                    )
             ))
             add(tabbedMenu)
         }

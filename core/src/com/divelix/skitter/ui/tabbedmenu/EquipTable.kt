@@ -13,19 +13,22 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
+import com.divelix.skitter.data.Player
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import ktx.actors.onClickEvent
 import ktx.scene2d.*
 import ktx.style.get
 
-abstract class EquipTable(val assets: Assets): Table(), KTable {
+abstract class EquipTable(val playerData: Player, val assets: Assets) : Table(), KTable {
     val description: Label
     val equipIcon: Image
     val specsNames: Label
     val specsValues: Label
     val equipList by lazy { makeEquipList() }
     val equipWindow by lazy { makeEquipWindow() }
+    val suitTable: Table
+    val stockTable: Table
 
     init {
         padTop(Constants.UI_MARGIN)
@@ -69,7 +72,7 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
             row()
 
             // SuitTable
-            table {
+            this@EquipTable.suitTable = table {
                 pad(0f, Constants.UI_PADDING, Constants.UI_PADDING, Constants.UI_PADDING)
                 defaults().pad(Constants.UI_PADDING)
                 for (i in 1..8) {
@@ -88,25 +91,28 @@ abstract class EquipTable(val assets: Assets): Table(), KTable {
 
             // StockTable
             scrollPane {
-                container(
-                        table {
-                            pad(Constants.UI_PADDING)
-                            defaults().pad(Constants.UI_PADDING)
-                            for (i in 1..20) {
-                                container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
-                                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                                }
-                                if (i % 4 == 0) row()
+                container {
+                    this@EquipTable.stockTable = table {
+                        pad(Constants.UI_PADDING)
+                        defaults().pad(Constants.UI_PADDING)
+                        for (i in 1..20) {
+                            container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
+                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             }
+                            if (i % 4 == 0) row()
                         }
-                ) {
+                    }
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                 }
             }
         }
+        addSuitMods()
+        addStockMods()
     }
 
     abstract fun makeEquipList(): Array<Pair<Texture, String>>
+    abstract fun addSuitMods()
+    abstract fun addStockMods()
 
     private fun makeEquipWindow(): Window {
         val window = scene2d.window("", "equip-choose") {
