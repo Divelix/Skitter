@@ -308,7 +308,6 @@ class ModDataTests {
                 """.trimIndent()
         val outputStr = json.toJson(inputObj)
         val prettyOutputStr = json.prettyPrint(outputStr, printSettings)
-        println(prettyOutputStr)
         Assert.assertEquals(prettyOutputStr, refStr)
     }
 
