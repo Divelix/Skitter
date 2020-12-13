@@ -10,7 +10,7 @@ import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.table
 
-class EquipPage(val playerData: Player, context: Context) : Page(context) {
+class EquipPage(context: Context, val playerData: Player) : Page(context) {
 
     init {
         table {

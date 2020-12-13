@@ -1,4 +1,4 @@
-    package com.divelix.skitter.data
+package com.divelix.skitter.data
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
@@ -54,6 +54,7 @@ data class ShipSpecs(
         val health: GdxFloatArray = GdxFloatArray(),
         val speed: GdxFloatArray = GdxFloatArray()
 ) : EquipSpec()
+
 data class GunSpecs(
         val damage: GdxFloatArray = GdxFloatArray(),
         val capacity: GdxFloatArray = GdxFloatArray(),
@@ -69,11 +70,22 @@ data class Ship(
         val name: String = "None",
         val specs: ShipSpecs = ShipSpecs()
 ) : Equip()
+
 data class Gun(
         val index: Int = 0,
         val name: String = "None",
         val specs: GunSpecs = GunSpecs()
 ) : Equip()
+
+data class GunsData(
+        val specs: Array<String> = gdxArrayOf(),
+        val guns: Array<Gun> = gdxArrayOf()
+)
+
+data class ShipsData(
+        val specs: Array<String> = gdxArrayOf(),
+        val ships: Array<Ship> = gdxArrayOf()
+)
 
 //----------- MOD -----------
 sealed class Mod
@@ -82,6 +94,7 @@ data class ShipMod(
         val name: String = "None",
         val effects: GdxMap<ShipModEffects, GdxFloatArray> = gdxMapOf()
 ) : Mod()
+
 data class GunMod(
         val index: Int = 0,
         val name: String = "None",

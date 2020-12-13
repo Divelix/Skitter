@@ -14,7 +14,7 @@ import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(val playerData: Player, context: Context) : Page(context) {
+class ModPage(context: Context, val playerData: Player) : Page(context) {
 
     init {
         table {

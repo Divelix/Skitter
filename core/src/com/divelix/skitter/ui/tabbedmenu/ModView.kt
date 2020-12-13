@@ -1,35 +1,31 @@
 package com.divelix.skitter.ui.tabbedmenu
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.ModAlias
 import com.divelix.skitter.image
+import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.ScaledLabel
+import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
+import ktx.style.get
 
 class ModView(val modData: ModAlias, val assets: Assets): Group() {
     private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
-    val bgColor = Color(1f, 1f, 0f, 1f)
-    val lvlColor = Color(0f, 0f, 0f, 1f)
-    val noLvlColor = Color(1f, 1f, 1f, 1f)
-    val textureName: String
-
-    val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-    val bgDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(bgColor); fill()}))
-    val lvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(lvlColor); fill()}))
-    val noLvlDrawable = TextureRegionDrawable(Texture(pixel.apply {setColor(noLvlColor); fill()}))
-
-    val quantityLabel: ScaledLabel
-    val levelBars: Table
+    private val textureName: String
+    private val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
+    private val lvlDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL))
+    private val noLvlDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.WHITE_PIXEL))
+    private val quantityLabel: Label
+    private val levelBars: Table
 
     init {
         name = "ModIcon"
@@ -63,7 +59,7 @@ class ModView(val modData: ModAlias, val assets: Assets): Group() {
             setPosition(this@ModView.width - width, this@ModView.height - height)
             isVisible = modData.quantity > 0
         }
-        quantityLabel = ScaledLabel("${modData.quantity}").apply {
+        quantityLabel = scene2d.scaledLabel("${modData.quantity}").apply {
             setPosition(quantityBg.x + (quantityBg.width-width)/2f, quantityBg.y + (quantityBg.height-height)/2f)
             isVisible = modData.quantity > 0
         }

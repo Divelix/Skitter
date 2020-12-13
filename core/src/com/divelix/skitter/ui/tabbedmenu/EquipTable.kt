@@ -53,7 +53,7 @@ abstract class EquipTable(val playerData: Player, val assets: Assets) : Table(),
                 table {
                     touchable = Touchable.enabled
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                    this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLUE_PIXEL_30))
+                    this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             .apply { setScaling(Scaling.fit) }.cell(pad = Constants.UI_PADDING)
                     onClickEvent { event ->
                         println("Equip icon clicked")
@@ -106,13 +106,14 @@ abstract class EquipTable(val playerData: Player, val assets: Assets) : Table(),
                 }
             }
         }
-        addSuitMods()
-        addStockMods()
+        showSuitMods()
+        showStockMods()
     }
 
     abstract fun makeEquipList(): Array<Pair<Texture, String>>
-    abstract fun addSuitMods()
-    abstract fun addStockMods()
+    abstract fun showSpecs()
+    abstract fun showSuitMods()
+    abstract fun showStockMods()
 
     private fun makeEquipWindow(): Window {
         val window = scene2d.window("", "equip-choose") {

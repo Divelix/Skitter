@@ -15,7 +15,7 @@ class GunTable(playerData: Player, assets: Assets) : EquipTable(playerData, asse
         description.txt = "Gun description"
         equipIcon.drawable = TextureRegionDrawable(assets.manager.get<Texture>(Constants.GUN_DEFAULT))
         specsNames.txt = "DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: "
-        specsValues.txt = "100\n13\n0.5\n10\nx2.0\n20%"
+        specsValues.txt = "0\n0\n0\n0\nx1\n0%"
     }
 
     override fun makeEquipList(): Array<Pair<Texture, String>> {
@@ -25,13 +25,17 @@ class GunTable(playerData: Player, assets: Assets) : EquipTable(playerData, asse
         )
     }
 
-    override fun addSuitMods() {
+    override fun showSpecs() {
+        TODO("Not yet implemented")
+    }
+
+    override fun showSuitMods() {
         playerData.activeEquips.gun.mods.forEachIndexed { index, modAlias ->
             (suitTable.children[index] as Container<*>).actor = ModView(modAlias, assets)
         }
     }
 
-    override fun addStockMods() {
+    override fun showStockMods() {
         playerData.mods.gun.forEachIndexed { index, modAlias ->
             (stockTable.children[index] as Container<*>).actor = ModView(modAlias, assets)
         }

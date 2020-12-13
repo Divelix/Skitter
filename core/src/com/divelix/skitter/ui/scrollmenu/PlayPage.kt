@@ -10,7 +10,7 @@ import ktx.actors.onClickEvent
 import ktx.inject.Context
 import ktx.scene2d.table
 
-class PlayPage(val playerData: Player, context: Context) : Page(context) {
+class PlayPage(context: Context, val playerData: Player) : Page(context) {
     val game = context.inject<Main>()
 
     init {
