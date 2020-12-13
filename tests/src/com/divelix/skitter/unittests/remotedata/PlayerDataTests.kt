@@ -3,14 +3,9 @@ package com.divelix.skitter.unittests.remotedata
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.badlogic.gdx.utils.JsonWriter
-import com.divelix.skitter.GunModSerializer
-import com.divelix.skitter.GunSerializer
-import com.divelix.skitter.ShipModSerializer
-import com.divelix.skitter.ShipSerializer
 import com.divelix.skitter.data.*
 import ktx.collections.gdxArrayOf
 import ktx.json.fromJson
-import ktx.json.setSerializer
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -164,8 +159,8 @@ class PlayerDataTests {
     }
 
     @Test
-    fun `check Mods serialization`() {
-        val inputObj = Mods(
+    fun `check ModAliases serialization`() {
+        val inputObj = ModAliases(
                 gdxArrayOf(
                         ModAlias(1, 2, 3),
                         ModAlias(4, 5, 6)
@@ -194,7 +189,7 @@ class PlayerDataTests {
     }
 
     @Test
-    fun `check Mods deserialization`() {
+    fun `check ModAliases deserialization`() {
         val inputStr =
                 """
                     {
@@ -208,8 +203,8 @@ class PlayerDataTests {
                     ]
                     }
                 """.trimIndent()
-        val outputObj = json.fromJson<Mods>(inputStr)
-        val refObj = Mods(
+        val outputObj = json.fromJson<ModAliases>(inputStr)
+        val refObj = ModAliases(
                 gdxArrayOf(
                         ModAlias(1, 2, 3),
                         ModAlias(4, 5, 6)
@@ -439,7 +434,7 @@ class PlayerDataTests {
                                 ))
                         )
                 ),
-                Mods(
+                ModAliases(
                         gdxArrayOf(
                                 ModAlias(1, 2, 3),
                                 ModAlias(4, 5, 6)
@@ -512,7 +507,7 @@ class PlayerDataTests {
                     		}
                     	]
                     },
-                    "mods": {
+                    "modAliases": {
                     	"ship": [
                     		{ "index": 1, "level": 2, "quantity": 3 },
                     		{ "index": 4, "level": 5, "quantity": 6 }
@@ -593,7 +588,7 @@ class PlayerDataTests {
                     		}
                     	]
                     },
-                    "mods": {
+                    "modAliases": {
                     	"ship": [
                     		{ "index": 1, "level": 2, "quantity": 3 },
                     		{ "index": 4, "level": 5, "quantity": 6 }
@@ -639,7 +634,7 @@ class PlayerDataTests {
                                 ))
                         )
                 ),
-                Mods(
+                ModAliases(
                         gdxArrayOf(
                                 ModAlias(1, 2, 3),
                                 ModAlias(4, 5, 6)

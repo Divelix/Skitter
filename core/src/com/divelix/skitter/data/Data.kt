@@ -2,7 +2,7 @@ package com.divelix.skitter.data
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.FloatArray
+import com.badlogic.gdx.utils.IntArray
 import ktx.collections.*
 
 object Data {
@@ -110,6 +110,17 @@ enum class GunModEffects {
     DamageBooster
 }
 
+data class Mods(
+        val ship: Array<ShipMod> = gdxArrayOf(),
+        val gun: Array<GunMod> = gdxArrayOf()
+)
+
+data class ModsData(
+        val sellPrices: GdxIntArray = IntArray(),
+        val upgradePrices: GdxIntArray = IntArray(),
+        val mods: Mods = Mods()
+)
+
 //----------------- Remote -----------------
 //----------- PLAYER -----------
 data class Player(
@@ -118,7 +129,7 @@ data class Player(
         val coins: Int = 0,
         val activeEquips: ActiveEquips = ActiveEquips(),
         val equips: Equips = Equips(),
-        val mods: Mods = Mods()
+        val modAliases: ModAliases = ModAliases()
 )
 
 data class ActiveEquips(val ship: ActiveEquip = ActiveEquip(), val gun: ActiveEquip = ActiveEquip())
@@ -127,7 +138,7 @@ data class ActiveEquip(val index: Int = 0, val level: Int = 0, val mods: Array<M
 
 data class ModAlias(val index: Int = 0, val level: Int = 0, val quantity: Int = 0)
 
-data class Mods(val ship: Array<ModAlias> = gdxArrayOf(), val gun: Array<ModAlias> = gdxArrayOf())
+data class ModAliases(val ship: Array<ModAlias> = gdxArrayOf(), val gun: Array<ModAlias> = gdxArrayOf())
 
 data class EquipAlias(val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
 

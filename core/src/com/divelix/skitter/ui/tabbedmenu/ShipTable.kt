@@ -35,7 +35,7 @@ class ShipTable(playerData: Player, assets: Assets) : EquipTable(playerData, ass
     }
 
     override fun showStockMods() {
-        playerData.mods.ship.forEachIndexed { index, modAlias ->
+        playerData.modAliases.ship.forEachIndexed { index, modAlias ->
             (stockTable.children[index] as Container<*>).actor = ModView(modAlias, assets)
         }
     }

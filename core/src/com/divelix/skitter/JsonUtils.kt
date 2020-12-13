@@ -4,11 +4,10 @@ import com.badlogic.gdx.utils.FloatArray
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.divelix.skitter.data.*
-import ktx.collections.gdxMapOf
-import ktx.collections.toGdxArray
+import ktx.collections.*
 import ktx.json.JsonSerializer
 
-class ShipSerializer: JsonSerializer<Ship> {
+class ShipSerializer : JsonSerializer<Ship> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Ship {
         val index = jsonValue[0].asInt()
         val name = jsonValue[1].asString()
@@ -33,7 +32,7 @@ class ShipSerializer: JsonSerializer<Ship> {
     }
 }
 
-class GunSerializer: JsonSerializer<Gun> {
+class GunSerializer : JsonSerializer<Gun> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Gun {
         val index = jsonValue[0].asInt()
         val name = jsonValue[1].asString()
@@ -66,7 +65,7 @@ class GunSerializer: JsonSerializer<Gun> {
     }
 }
 
-class ShipModSerializer: JsonSerializer<ShipMod> {
+class ShipModSerializer : JsonSerializer<ShipMod> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): ShipMod {
         val index = jsonValue[0].asInt()
         val name = jsonValue[1].asString()
@@ -92,7 +91,7 @@ class ShipModSerializer: JsonSerializer<ShipMod> {
     }
 }
 
-class GunModSerializer: JsonSerializer<GunMod> {
+class GunModSerializer : JsonSerializer<GunMod> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): GunMod {
         val index = jsonValue[0].asInt()
         val name = jsonValue[1].asString()
@@ -114,6 +113,34 @@ class GunModSerializer: JsonSerializer<GunMod> {
             }
             writeObjectEnd()
             writeObjectEnd()
+        }
+    }
+}
+
+class GdxIntArraySerializer : JsonSerializer<GdxIntArray> {
+    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): GdxIntArray {
+        return GdxIntArray(jsonValue.asIntArray())
+    }
+
+    override fun write(json: Json, value: GdxIntArray, type: Class<*>?) {
+        json.run {
+            writeArrayStart()
+            value.toArray().forEach { writeValue(it) }
+            writeArrayEnd()
+        }
+    }
+}
+
+class GdxFloatArraySerializer : JsonSerializer<GdxFloatArray> {
+    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): GdxFloatArray {
+        return GdxFloatArray(jsonValue.asFloatArray())
+    }
+
+    override fun write(json: Json, value: GdxFloatArray, type: Class<*>?) {
+        json.run {
+            writeArrayStart()
+            value.toArray().forEach { writeValue(it) }
+            writeArrayEnd()
         }
     }
 }

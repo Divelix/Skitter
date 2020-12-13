@@ -86,7 +86,7 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
                                 ))
                         )
                 ),
-                Mods(
+                ModAliases(
                         gdxArrayOf(
                                 ModAlias(1, 2, 3),
                                 ModAlias(4, 5, 6)
