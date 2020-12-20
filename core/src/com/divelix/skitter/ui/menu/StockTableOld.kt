@@ -17,7 +17,7 @@ import ktx.scene2d.scene2d
 import ktx.scene2d.table
 import ktx.style.get
 
-class StockTable(tabName: String, val assets: Assets, val playerData: JsonValue, modsData: JsonValue): Table() {
+class StockTableOld(tabName: String, val assets: Assets, val playerData: JsonValue, modsData: JsonValue): Table() {
     val stockTable: Table
     private val stockMods = Array<ModOld>(20)
     private val equipMods: JsonValue

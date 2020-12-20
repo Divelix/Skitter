@@ -5,68 +5,18 @@
   "ship": [
    {
     "index": 1001,
-    "name": "Health",
+    "name": "SHIP_MOD_NAME 1",
     "effects": {
-     "health": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-    }
-   },
-   {
-    "index": 1002,
-    "name": "Speed",
-    "effects": {
-     "speed": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-    }
-   },
-   {
-    "index": 1003,
-    "name": "Chubber",
-    "effects": {
-     "health": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-     "speed": [-0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7, -0.8, -0.9, -1]
+     "HealthBooster": [ 1, 2 ]
     }
    }
   ],
   "gun": [
    {
     "index": 2001,
-    "name": "Damage",
+    "name": "GUN_MOD_NAME 2",
     "effects": {
-      "damage": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-    }
-   },
-   {
-    "index": 2002,
-    "name": "Capacity",
-    "effects": {
-     "capacity": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-    }
-   },
-   {
-    "index": 2003,
-    "name": "Reload time",
-    "effects": {
-      "reload": [-0.1, -0.15, -0.2, -0.25, -0.3, -0.35, -0.4, -0.45, -0.5, -0.6]
-    }
-   },
-   {
-    "index": 2004,
-    "name": "Bullet speed",
-    "effects": {
-      "speed": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-    }
-   },
-   {
-    "index": 2005,
-    "name": "Crit multiplier",
-    "effects": {
-      "crit": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-    }
-   },
-   {
-    "index": 2006,
-    "name": "Crit chance",
-    "effects": {
-      "chance": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+     "DamageBooster": [ 3, 4 ]
     }
    }
   ]

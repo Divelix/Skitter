@@ -239,8 +239,6 @@ class ModDataTests {
         Assert.assertEquals(outputObj, refObj)
     }
 
-
-
     @Test
     fun `check ModsData serialization`() {
         val inputObj = ModsData(

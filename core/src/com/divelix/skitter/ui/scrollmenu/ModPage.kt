@@ -1,20 +1,23 @@
 package com.divelix.skitter.ui.scrollmenu
 
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.data.Constants
+import com.divelix.skitter.data.ModsData
 import com.divelix.skitter.data.Player
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.tabbedmenu.Tab
 import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
+import com.divelix.skitter.ui.tabbedmenu.stockTable
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(context: Context, val playerData: Player) : Page(context) {
+class ModPage(context: Context, val playerData: Player, val modsData: ModsData) : Page(context) {
 
     init {
         table {
@@ -67,8 +70,8 @@ class ModPage(context: Context, val playerData: Player) : Page(context) {
             }
             row()
             val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(this@ModPage.assets.manager.get<Texture>(Constants.SHIP_ICON), scene2d.table { scaledLabel("one") }),
-                    Tab(this@ModPage.assets.manager.get<Texture>(Constants.GUN_ICON), scene2d.table { scaledLabel("two") })
+                    Tab(this@ModPage.assets.manager.get(Constants.SHIP_ICON), stockTable(this@ModPage.playerData.mods.ship, this@ModPage.assets)),
+                    Tab(this@ModPage.assets.manager.get(Constants.GUN_ICON), stockTable(this@ModPage.playerData.mods.gun, this@ModPage.assets))
             ))
             add(tabbedMenu)
         }

@@ -17,7 +17,7 @@ import com.divelix.skitter.image
 import com.divelix.skitter.ui.menu.EditScreen
 import com.divelix.skitter.ui.menu.EmptyModIcon
 import com.divelix.skitter.ui.menu.ModIcon
-import com.divelix.skitter.ui.menu.StockTable
+import com.divelix.skitter.ui.menu.StockTableOld
 import com.divelix.skitter.ui.ScaledLabel
 import ktx.actors.plusAssign
 import ktx.actors.txt
@@ -45,8 +45,8 @@ class ModScreen(game: Main): EditScreen(game) {
     private val upgradePriceLabel = ScaledLabel("0", "mod-name")
 
     init {
-        tabbedBar.tabs[0].content = StockTable(tabbedBar.tabs[0].tabName, assets, playerData, modsData)
-        tabbedBar.tabs[1].content = StockTable(tabbedBar.tabs[1].tabName, assets, playerData, modsData)
+        tabbedBar.tabs[0].content = StockTableOld(tabbedBar.tabs[0].tabName, assets, playerData, modsData)
+        tabbedBar.tabs[1].content = StockTableOld(tabbedBar.tabs[1].tabName, assets, playerData, modsData)
         tabbedBar.makeActive(tabbedBar.tabs[0])
 
         rootTable = scene2d.table {
@@ -117,7 +117,7 @@ class ModScreen(game: Main): EditScreen(game) {
     }
 
     fun sellMod(mod: ModOld) {
-        val stockTable = tabbedBar.content.actor as StockTable
+        val stockTable = tabbedBar.content.actor as StockTableOld
         stockTable.subtractMod(mod)
         if (mod.quantity == 0) deselect()
 
@@ -137,7 +137,7 @@ class ModScreen(game: Main): EditScreen(game) {
         }
 
         coins -= upgradePrices[mod.level - 1]
-        val stockTable = tabbedBar.activeTab.content as StockTable
+        val stockTable = tabbedBar.activeTab.content as StockTableOld
         if (mod.quantity == 1) {
             mod.level++
         } else {
@@ -173,8 +173,8 @@ class ModScreen(game: Main): EditScreen(game) {
     }
 
     override fun updatePlayerJson() {
-        (tabbedBar.tabs[0].content as StockTable).updatePlayerData() // update ships
-        (tabbedBar.tabs[1].content as StockTable).updatePlayerData() // update guns
+        (tabbedBar.tabs[0].content as StockTableOld).updatePlayerData() // update ships
+        (tabbedBar.tabs[1].content as StockTableOld).updatePlayerData() // update guns
         super.updatePlayerJson()
     }
 
