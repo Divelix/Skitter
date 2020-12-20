@@ -31,7 +31,7 @@ class ScrollMenu(context: Context) : Group() {
     val gunsDataFile = "json/guns.json".toLocalFile()
     val playerData = json.fromJson<Player>(playerDataFile)
     val shipsData = json.fromJson<ShipsData>(shipsDataFile)
-    val gunsData = json.fromJson<GunsData>(gunsDataFile)
+//    val gunsData = json.fromJson<GunsData>(gunsDataFile)
     val pages = gdxArrayOf(
             Constants.EQUIP_ICON to EquipPage(context, playerData),
             Constants.BATTLE_ICON to PlayPage(context, playerData),

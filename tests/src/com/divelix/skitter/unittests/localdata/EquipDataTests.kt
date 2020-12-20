@@ -134,6 +134,93 @@ class EquipDataTests {
     }
 
     @Test
+    fun `check ShipsData serialization`() {
+        val inputObj = ShipsData(
+                gdxArrayOf("a", "b", "c", "d"),
+                gdxArrayOf(
+                        Ship(987, "Ship 1", ShipSpecs(
+                                GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
+                                GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
+                        )),
+                        Ship(654, "Ship 2", ShipSpecs(
+                                GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
+                                GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
+                        ))
+                )
+        )
+        val refStr =
+                """
+                    {
+                    "specs": [ "a", "b", "c", "d" ],
+                    "ships": [
+                    	{
+                    		"index": 987,
+                    		"name": "Ship 1",
+                    		"specs": {
+                    			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
+                    			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
+                    		}
+                    	},
+                    	{
+                    		"index": 654,
+                    		"name": "Ship 2",
+                    		"specs": {
+                    			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
+                    			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
+                    		}
+                    	}
+                    ]
+                    }
+                """.trimIndent()
+        val outputStr = json.toJson(inputObj)
+        val prettyOutputStr = json.prettyPrint(outputStr, printSettings)
+        Assert.assertEquals(prettyOutputStr, refStr)
+    }
+
+    @Test
+    fun `check ShipsData deserialization`() {
+        val inputStr =
+                """
+                    {
+                    "specs": [ "a", "b", "c", "d" ],
+                    "ships": [
+                    	{
+                    		"index": 987,
+                    		"name": "Ship 1",
+                    		"specs": {
+                    			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
+                    			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
+                    		}
+                    	},
+                    	{
+                    		"index": 654,
+                    		"name": "Ship 2",
+                    		"specs": {
+                    			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
+                    			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
+                    		}
+                    	}
+                    ]
+                    }
+                """.trimIndent()
+        val outputObj = json.fromJson<ShipsData>(inputStr)
+        val refObj = ShipsData(
+                gdxArrayOf("a", "b", "c", "d"),
+                gdxArrayOf(
+                        Ship(987, "Ship 1", ShipSpecs(
+                                GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
+                                GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
+                        )),
+                        Ship(654, "Ship 2", ShipSpecs(
+                                GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
+                                GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
+                        ))
+                )
+        )
+        Assert.assertEquals(outputObj, refObj)
+    }
+
+    @Test
     fun `check GunsData serialization`() {
         val inputObj = GunsData(
                 gdxArrayOf("a", "b", "c", "d"),
@@ -246,93 +333,6 @@ class EquipDataTests {
                                 GdxFloatArray(floatArrayOf(4.1f, 4.2f, 4.3f, 4.4f, 4.5f, 4.6f, 4.7f, 4.8f, 4.9f, 4.10f)),
                                 GdxFloatArray(floatArrayOf(5.1f, 5.2f, 5.3f, 5.4f, 5.5f, 5.6f, 5.7f, 5.8f, 5.9f, 5.10f)),
                                 GdxFloatArray(floatArrayOf(6.1f, 6.2f, 6.3f, 6.4f, 6.5f, 6.6f, 6.7f, 6.8f, 6.9f, 6.10f))
-                        ))
-                )
-        )
-        Assert.assertEquals(outputObj, refObj)
-    }
-
-    @Test
-    fun `check ShipsData serialization`() {
-        val inputObj = ShipsData(
-                gdxArrayOf("a", "b", "c", "d"),
-                gdxArrayOf(
-                        Ship(987, "Ship 1", ShipSpecs(
-                                GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
-                                GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
-                        )),
-                        Ship(654, "Ship 2", ShipSpecs(
-                                GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
-                                GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
-                        ))
-                )
-        )
-        val refStr =
-                """
-                    {
-                    "specs": [ "a", "b", "c", "d" ],
-                    "ships": [
-                    	{
-                    		"index": 987,
-                    		"name": "Ship 1",
-                    		"specs": {
-                    			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
-                    			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
-                    		}
-                    	},
-                    	{
-                    		"index": 654,
-                    		"name": "Ship 2",
-                    		"specs": {
-                    			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
-                    			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
-                    		}
-                    	}
-                    ]
-                    }
-                """.trimIndent()
-        val outputStr = json.toJson(inputObj)
-        val prettyOutputStr = json.prettyPrint(outputStr, printSettings)
-        Assert.assertEquals(prettyOutputStr, refStr)
-    }
-
-    @Test
-    fun `check ShipsData deserialization`() {
-        val inputStr =
-                """
-                    {
-                    "specs": [ "a", "b", "c", "d" ],
-                    "ships": [
-                    	{
-                    		"index": 987,
-                    		"name": "Ship 1",
-                    		"specs": {
-                    			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
-                    			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
-                    		}
-                    	},
-                    	{
-                    		"index": 654,
-                    		"name": "Ship 2",
-                    		"specs": {
-                    			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
-                    			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
-                    		}
-                    	}
-                    ]
-                    }
-                """.trimIndent()
-        val outputObj = json.fromJson<ShipsData>(inputStr)
-        val refObj = ShipsData(
-                gdxArrayOf("a", "b", "c", "d"),
-                gdxArrayOf(
-                        Ship(987, "Ship 1", ShipSpecs(
-                                GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
-                                GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
-                        )),
-                        Ship(654, "Ship 2", ShipSpecs(
-                                GdxFloatArray(floatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f)),
-                                GdxFloatArray(floatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f))
                         ))
                 )
         )

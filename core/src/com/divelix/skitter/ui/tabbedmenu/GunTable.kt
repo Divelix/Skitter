@@ -36,7 +36,7 @@ class GunTable(playerData: Player, assets: Assets) : EquipTable(playerData, asse
     }
 
     override fun showStockMods() {
-        playerData.modAliases.gun.forEachIndexed { index, modAlias ->
+        playerData.mods.gun.forEachIndexed { index, modAlias ->
             (stockTable.children[index] as Container<*>).actor = ModView(modAlias, assets)
         }
     }

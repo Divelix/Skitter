@@ -507,7 +507,7 @@ class PlayerDataTests {
                     		}
                     	]
                     },
-                    "modAliases": {
+                    "mods": {
                     	"ship": [
                     		{ "index": 1, "level": 2, "quantity": 3 },
                     		{ "index": 4, "level": 5, "quantity": 6 }
@@ -588,7 +588,7 @@ class PlayerDataTests {
                     		}
                     	]
                     },
-                    "modAliases": {
+                    "mods": {
                     	"ship": [
                     		{ "index": 1, "level": 2, "quantity": 3 },
                     		{ "index": 4, "level": 5, "quantity": 6 }

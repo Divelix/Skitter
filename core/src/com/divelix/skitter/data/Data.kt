@@ -129,7 +129,7 @@ data class Player(
         val coins: Int = 0,
         val activeEquips: ActiveEquips = ActiveEquips(),
         val equips: Equips = Equips(),
-        val modAliases: ModAliases = ModAliases()
+        val mods: ModAliases = ModAliases()
 )
 
 data class ActiveEquips(val ship: ActiveEquip = ActiveEquip(), val gun: ActiveEquip = ActiveEquip())
