@@ -1,7 +1,6 @@
 package com.divelix.skitter.ui.scrollmenu
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.data.Constants
@@ -11,6 +10,7 @@ import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.tabbedmenu.Tab
 import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
+import com.divelix.skitter.ui.tabbedmenu.bigMod
 import com.divelix.skitter.ui.tabbedmenu.stockTable
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
@@ -41,9 +41,12 @@ class ModPage(context: Context, val playerData: Player, val modsData: ModsData) 
                     pad(Constants.UI_MARGIN)
 
                     // Big mod
-                    table {
-                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                    }.cell(width = 150f, height = 150f)
+//                    table {
+//                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
+//                    }.cell(width = 150f, height = 150f)
+                    container(bigMod()) {
+                        size(150f, 150f)
+                    }
                     row()
 
                     // Scroll pane with description

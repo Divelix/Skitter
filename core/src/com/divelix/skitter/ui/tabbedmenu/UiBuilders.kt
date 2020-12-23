@@ -10,7 +10,24 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.ModAlias
 import ktx.actors.onClick
 import ktx.scene2d.*
+import ktx.scene2d.vis.visImage
 import ktx.style.get
+
+fun bigMod(): Table {
+    return scene2d.table {
+        setFillParent(true)
+        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
+
+        table {
+            bottom().left()
+            pad(5f)
+            defaults().pad(2f)
+            for (i in 1..10) {
+                image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))) {it.size(10f)}
+            }
+        }
+    }
+}
 
 fun stockTable(mods: Array<ModAlias>, assets: Assets): Table {
     return scene2d.table {
