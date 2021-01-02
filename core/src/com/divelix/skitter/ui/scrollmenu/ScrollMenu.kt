@@ -57,6 +57,11 @@ class ScrollMenu(context: Context) : Group() {
         }
         addActor(scrollPane)
         addActor(BottomNav(pageNames.toGdxArray()))
+
+        // set initial scroll to middle page
+        scrollPane.layout()
+        scrollPane.scrollX = Constants.STAGE_WIDTH.toFloat()
+        scrollPane.updateVisualScroll() // disables animation
     }
 
     fun updateUI() {

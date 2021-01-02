@@ -42,7 +42,13 @@ class Assets: Disposable {
     }
 
     fun loadAssets() {
-        manager.load<TextureAtlas>(Constants.ATLAS_UI)
+        manager.load<TextureAtlas>(Constants.ATLAS_SKIN)
+        manager.load<TextureAtlas>("textures/atlases/" + Atlases.UI + ".atlas")
+        manager.load<TextureAtlas>("textures/atlases/" + Atlases.EQUIPS + ".atlas")
+        manager.load<TextureAtlas>("textures/atlases/" + Atlases.MODS + ".atlas")
+        manager.load<TextureAtlas>("textures/atlases/" + Atlases.GAMEPLAY + ".atlas")
+        manager.load<TextureAtlas>("textures/atlases/" + Atlases.ENEMIES + ".atlas")
+
         manager.load<Texture>(Constants.GAMEPLAY_BG)
         manager.load<Texture>(Constants.EQUIP_ICON)
         manager.load<Texture>(Constants.BATTLE_ICON)
@@ -100,7 +106,7 @@ class Assets: Disposable {
     }
 
     fun setup() {
-        uiSkin = skin(manager.get(Constants.ATLAS_UI)) {
+        uiSkin = skin(manager.get(Constants.ATLAS_SKIN)) {
             color(Constants.ORANGE_COLOR, 1f, 0.6f, 0f)
 //            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
 //            this["aim"] = manager.get<Texture>(Constants.AIM) // same with different syntax

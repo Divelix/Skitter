@@ -13,46 +13,42 @@ import ktx.scene2d.*
 import ktx.scene2d.vis.visImage
 import ktx.style.get
 
-fun bigMod(): Table {
-    return scene2d.table {
-        setFillParent(true)
-        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
+fun bigMod(): Table = scene2d.table {
+    setFillParent(true)
+    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
 
-        table {
-            bottom().left()
-            pad(5f)
-            defaults().pad(2f)
-            for (i in 1..10) {
-                image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))) {it.size(10f)}
-            }
+    table {
+        bottom().left()
+        pad(5f)
+        defaults().pad(2f)
+        for (i in 1..10) {
+            image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))) { it.size(10f) }
         }
     }
 }
 
-fun stockTable(mods: Array<ModAlias>, assets: Assets): Table {
-    return scene2d.table {
-        pad(Constants.UI_MARGIN)
+fun stockTable(mods: Array<ModAlias>, assets: Assets): Table = scene2d.table {
+    pad(Constants.UI_MARGIN)
 
-        // StockTable
-        scrollPane {
-            container {
-                table {
-                    pad(Constants.UI_PADDING)
-                    defaults().pad(Constants.UI_PADDING)
-                    // fill with mods
-                    mods.forEachIndexed { i, modData ->
-                        container(ModView(modData, assets))
-                        if ((i+1) % 4 == 0) row()
-                    }
-                    // fill empty space
-                    for (i in 1..(4 - mods.size % 4)) {
-                        container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
-                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                        }
+    // StockTable
+    scrollPane {
+        container {
+            table {
+                pad(Constants.UI_PADDING)
+                defaults().pad(Constants.UI_PADDING)
+                // fill with mods
+                mods.forEachIndexed { i, modData ->
+                    container(ModView(modData, assets))
+                    if ((i + 1) % 4 == 0) row()
+                }
+                // fill empty space
+                for (i in 1..(4 - mods.size % 4)) {
+                    container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
+                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                     }
                 }
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
+            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
         }
     }
 }
