@@ -29,14 +29,16 @@ class ShipTable(playerData: Player, assets: Assets) : EquipTable(playerData, ass
     }
 
     override fun showSuitMods() {
-        playerData.activeEquips.ship.mods.forEachIndexed { index, modAlias ->
-            (suitTable.children[index] as Container<*>).actor = ModView(modAlias, assets)
-        }
+        // TODO add ::selectMod to ModView
+//        playerData.activeEquips.ship.mods.forEachIndexed { index, modAlias ->
+//            (suitTable.children[index] as Container<*>).actor = ModView(modAlias, assets)
+//        }
     }
 
     override fun showStockMods() {
-        playerData.mods.ship.forEachIndexed { index, modAlias ->
-            (stockTable.children[index] as Container<*>).actor = ModView(modAlias, assets)
-        }
+        // TODO add ::selectMod to ModView
+//        playerData.mods.ship.forEachIndexed { index, modAlias ->
+//            (stockTable.children[index] as Container<*>).actor = ModView(modAlias, assets)
+//        }
     }
 }

@@ -3,23 +3,24 @@ package com.divelix.skitter.ui.scrollmenu
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.ModsData
-import com.divelix.skitter.data.Player
+import com.divelix.skitter.data.*
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
-import com.divelix.skitter.ui.tabbedmenu.Tab
-import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
-import com.divelix.skitter.ui.tabbedmenu.bigMod
+import com.divelix.skitter.ui.tabbedmenu.*
 import com.divelix.skitter.ui.tabbedmenu.stockTable
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(context: Context, val playerData: Player, val modsData: ModsData) : Page(context) {
+class ModPage(context: Context, val playerData: Player, val modsData: ModsData) : Page(context), ModSelector {
+    override var activeModView: ModView? = null
 
     init {
+        val tabbedMenu = TabbedMenu(gdxArrayOf(
+                Tab(assets.manager.get(Constants.SHIP_ICON), stockTable(playerData.mods.ship, assets, ::selectMod)),
+                Tab(assets.manager.get(Constants.GUN_ICON), stockTable(playerData.mods.gun, assets, ::selectMod))
+        ))
         table {
             setFillParent(true)
             top()
@@ -72,10 +73,6 @@ class ModPage(context: Context, val playerData: Player, val modsData: ModsData) 
                 }
             }
             row()
-            val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(this@ModPage.assets.manager.get(Constants.SHIP_ICON), stockTable(this@ModPage.playerData.mods.ship, this@ModPage.assets)),
-                    Tab(this@ModPage.assets.manager.get(Constants.GUN_ICON), stockTable(this@ModPage.playerData.mods.gun, this@ModPage.assets))
-            ))
             add(tabbedMenu)
         }
     }

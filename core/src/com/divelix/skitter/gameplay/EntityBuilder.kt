@@ -11,9 +11,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
-import com.divelix.skitter.data.Assets
-import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Data
+import com.divelix.skitter.data.*
 import com.divelix.skitter.gameplay.components.B2dBodyComponent
 import com.divelix.skitter.gameplay.components.BindComponent
 import com.divelix.skitter.gameplay.components.BulletComponent
@@ -34,13 +32,14 @@ import com.divelix.skitter.gameplay.components.TransformComponent
 import com.divelix.skitter.gameplay.components.TypeComponent
 import com.divelix.skitter.gameplay.components.VisionComponent
 import com.divelix.skitter.gameplay.components.WombComponent
-import com.divelix.skitter.data.Enemy
 import ktx.ashley.entity
 import ktx.ashley.get
 import ktx.ashley.with
 import ktx.box2d.*
 import ktx.collections.*
 import ktx.log.info
+import ktx.scene2d.Scene2DSkin
+import ktx.style.get
 
 class EntityBuilder(private val engine: PooledEngine,
                     private val world: World,
@@ -115,7 +114,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.BULLET_DEFAULT()).texture) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
@@ -157,7 +156,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.BULLET_DEFAULT)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.BULLET_DEFAULT()).texture) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
@@ -564,7 +563,8 @@ class EntityBuilder(private val engine: PooledEngine,
                 origin.set(size).scl(0.5f)
             }
             with<TextureComponent> {
-                val bg = assets.manager.get<Texture>(Constants.GAMEPLAY_BG)
+//                val bg = assets.manager.get<Texture>(Constants.GAMEPLAY_BG)
+                val bg = Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.DARK_HONEYCOMB()).texture
                 bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
                 val bgReg = TextureRegion(bg)
                 bgReg.setRegion(0, 0, width.toInt() * scale, height.toInt() * scale)

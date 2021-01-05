@@ -9,6 +9,7 @@ enum class Drawables {
     APPLY_ICON,
     BATTLE_ICON,
     CARRIAGE,
+    CARRIAGE_SHADOW,
     EQUIP_ICON,
     GUN_ICON,
     HOME_ICON,

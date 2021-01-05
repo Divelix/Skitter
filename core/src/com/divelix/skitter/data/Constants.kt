@@ -61,8 +61,8 @@ object Constants {
     const val GUN_SNIPER = "textures/equips/gun_sniper.png"
 
     // Gameplay
-    const val BULLET_DEFAULT = "textures/gameplay/bullet_default.png"
-    const val GAMEPLAY_BG = "textures/gameplay/dark_honeycomb.png"
+//    const val BULLET_DEFAULT = "textures/gameplay/bullet_default.png"
+//    const val GAMEPLAY_BG = "textures/gameplay/dark_honeycomb.png"
 
     // UI textures
     const val CARRIAGE = "textures/ui/carriage.png"

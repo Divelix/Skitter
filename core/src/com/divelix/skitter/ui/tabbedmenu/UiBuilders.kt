@@ -27,7 +27,7 @@ fun bigMod(): Table = scene2d.table {
     }
 }
 
-fun stockTable(mods: Array<ModAlias>, assets: Assets): Table = scene2d.table {
+fun stockTable(mods: Array<ModAlias>, assets: Assets, selectMod: (ModView) -> Unit): Table = scene2d.table {
     pad(Constants.UI_MARGIN)
 
     // StockTable
@@ -38,7 +38,7 @@ fun stockTable(mods: Array<ModAlias>, assets: Assets): Table = scene2d.table {
                 defaults().pad(Constants.UI_PADDING)
                 // fill with mods
                 mods.forEachIndexed { i, modData ->
-                    container(ModView(modData, assets))
+                    container(ModView(modData, assets, selectMod))
                     if ((i + 1) % 4 == 0) row()
                 }
                 // fill empty space

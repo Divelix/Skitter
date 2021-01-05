@@ -27,7 +27,7 @@ class Assets: Disposable {
     var manager: AssetManager = AssetManager()
         private set
 
-    lateinit var uiSkin: Skin
+    lateinit var skin: Skin
     lateinit var digitsFont: BitmapFont
 
     val bgColor = Color(0x684BA6FF)
@@ -43,13 +43,11 @@ class Assets: Disposable {
 
     fun loadAssets() {
         manager.load<TextureAtlas>(Constants.ATLAS_SKIN)
-        manager.load<TextureAtlas>("textures/atlases/" + Atlases.UI + ".atlas")
-        manager.load<TextureAtlas>("textures/atlases/" + Atlases.EQUIPS + ".atlas")
-        manager.load<TextureAtlas>("textures/atlases/" + Atlases.MODS + ".atlas")
-        manager.load<TextureAtlas>("textures/atlases/" + Atlases.GAMEPLAY + ".atlas")
-        manager.load<TextureAtlas>("textures/atlases/" + Atlases.ENEMIES + ".atlas")
+        Atlases.values().forEach {
+            manager.load<TextureAtlas>("textures/atlases/" + it() + ".atlas")
+        }
 
-        manager.load<Texture>(Constants.GAMEPLAY_BG)
+//        manager.load<Texture>(Constants.GAMEPLAY_BG)
         manager.load<Texture>(Constants.EQUIP_ICON)
         manager.load<Texture>(Constants.BATTLE_ICON)
         manager.load<Texture>(Constants.MOD_ICON)
@@ -72,7 +70,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.KID)
         manager.load<Texture>(Constants.RADIAL)
         manager.load<Texture>(Constants.JUMPER)
-        manager.load<Texture>(Constants.BULLET_DEFAULT)
+//        manager.load<Texture>(Constants.BULLET_DEFAULT)
         manager.load<Texture>(Constants.AIM)
         manager.load<Texture>(Constants.WHITE_CIRCLE)
         manager.load<Texture>(Constants.MENU_PLAY)
@@ -106,7 +104,7 @@ class Assets: Disposable {
     }
 
     fun setup() {
-        uiSkin = skin(manager.get(Constants.ATLAS_SKIN)) {
+        skin = skin(manager.get(Constants.ATLAS_SKIN)) {
             color(Constants.ORANGE_COLOR, 1f, 0.6f, 0f)
 //            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
 //            this["aim"] = manager.get<Texture>(Constants.AIM) // same with different syntax
@@ -168,16 +166,21 @@ class Assets: Disposable {
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.DARK_GRAY_PIXEL))
             }
 
+        }.apply {
+            Atlases.values().forEach {
+                addRegions(manager.get("textures/atlases/" + it() + ".atlas"))
+            }
+
         }
-        Scene2DSkin.defaultSkin = uiSkin
-        VisUI.load(uiSkin)
+        Scene2DSkin.defaultSkin = skin
+        VisUI.load(skin)
 //        VisUI.load() // loads default vis skin
         VisUI.setDefaultTitleAlign(Align.center)
     }
 
     override fun dispose() {
         VisUI.dispose()
-        uiSkin.dispose()
+        skin.dispose()
         digitsFont.dispose()
         manager.dispose()
         frameBuffer.dispose()
