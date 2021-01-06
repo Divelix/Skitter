@@ -13,7 +13,7 @@ import ktx.scene2d.*
 import ktx.scene2d.vis.visImage
 import ktx.style.get
 
-fun bigMod(): Table = scene2d.table {
+fun bigMod(selectedMod: ModView?): Table = scene2d.table {
     setFillParent(true)
     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
 

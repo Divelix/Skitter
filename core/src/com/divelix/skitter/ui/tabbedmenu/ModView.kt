@@ -31,7 +31,6 @@ class ModView(val modAlias: ModAlias, val assets: Assets, selectMod: (ModView) -
     private val carriage: Image
 
     init {
-        name = "ModIcon"
         touchable = Touchable.enabled
         setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
 
@@ -87,8 +86,11 @@ class ModView(val modAlias: ModAlias, val assets: Assets, selectMod: (ModView) -
         addActor(levelBars.apply { touchable = Touchable.disabled })
         onClick {
             selectMod(this)
-            carriage.isVisible = true
         }
+    }
+
+    fun activate() {
+        carriage.isVisible = true
     }
 
     fun deactivate() {

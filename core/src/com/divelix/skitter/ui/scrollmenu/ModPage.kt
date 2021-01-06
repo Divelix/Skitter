@@ -14,9 +14,10 @@ import ktx.scene2d.*
 import ktx.style.get
 
 class ModPage(context: Context, val playerData: Player, val modsData: ModsData) : Page(context), ModSelector {
-    override var activeModView: ModView? = null
+    override var selectedModView: ModView? = null
 
     init {
+        val bigMod = bigMod(selectedModView)
         val tabbedMenu = TabbedMenu(gdxArrayOf(
                 Tab(assets.manager.get(Constants.SHIP_ICON), stockTable(playerData.mods.ship, assets, ::selectMod)),
                 Tab(assets.manager.get(Constants.GUN_ICON), stockTable(playerData.mods.gun, assets, ::selectMod))
@@ -45,7 +46,7 @@ class ModPage(context: Context, val playerData: Player, val modsData: ModsData) 
 //                    table {
 //                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
 //                    }.cell(width = 150f, height = 150f)
-                    container(bigMod()) {
+                    container(bigMod) {
                         size(150f, 150f)
                     }
                     row()

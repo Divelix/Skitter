@@ -3,10 +3,18 @@ package com.divelix.skitter.ui.scrollmenu
 import com.divelix.skitter.ui.tabbedmenu.ModView
 
 interface ModSelector {
-    var activeModView: ModView?
+    var selectedModView: ModView?
 
     fun selectMod(modView: ModView) {
-        if (activeModView != null) activeModView!!.deactivate()
-        activeModView = modView
+        selectedModView = if (selectedModView == null) {
+            modView.apply { activate() }
+        } else {
+            selectedModView!!.deactivate()
+            if (selectedModView == modView) {
+                null
+            } else {
+                modView.apply { activate() }
+            }
+        }
     }
 }
