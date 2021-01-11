@@ -54,9 +54,9 @@ class ModView(val modAlias: ModAlias, val assets: Assets, selectMod: (ModView) -
             setFillParent(true)
             isVisible = false
         }
-        val texture: Texture = assets.manager.get(textureName)
-        val aspectRatio = texture.width.toFloat() / texture.height.toFloat()
-        val icon = Image(texture).apply {
+        val textureRegion = Scene2DSkin.defaultSkin.get<TextureRegion>(textureName)
+        val aspectRatio = textureRegion.regionWidth.toFloat() / textureRegion.regionHeight.toFloat()
+        val icon = Image(textureRegion).apply {
             setSize(iconHeight * aspectRatio, iconHeight)
             setPosition((this@ModView.width - width) / 2f, (this@ModView.height - height) / 2f)
         }

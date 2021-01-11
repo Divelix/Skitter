@@ -22,7 +22,10 @@ class Main : Game() {
             bindSingleton(this@Main)
             bindSingleton(Json().apply {
                 setUsePrototypes(false) // to not erase default values (false, 0)
-//                setSerializer(GdxIntArraySerializer())
+                setSerializer(GdxFloatArraySerializer())
+                setSerializer(GdxIntArraySerializer())
+                setSerializer(ModAliasSerializer())
+                setSerializer(ModSerializer())
 //                setSerializer(ShipSerializer())
 //                setSerializer(GunSerializer())
 //                setSerializer(ShipModSerializer())

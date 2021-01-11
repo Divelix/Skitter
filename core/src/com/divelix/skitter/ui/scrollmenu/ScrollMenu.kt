@@ -27,12 +27,12 @@ class ScrollMenu(context: Context) : Group() {
     val assets = context.inject<Assets>()
     val json = context.inject<Json>()
     val playerDataFile = "json/playerData.json".toLocalFile()
-    val shipsDataFile = "json/ships.json".toLocalFile()
-    val gunsDataFile = "json/guns.json".toLocalFile()
+//    val shipsDataFile = "json/ships.json".toLocalFile()
+//    val gunsDataFile = "json/guns.json".toLocalFile()
     val modsDataFile = "json/mods.json".toLocalFile()
     val playerData = json.fromJson<Player>(playerDataFile)
-    val shipsData = json.fromJson<ShipsData>(shipsDataFile)
-    val gunsData = json.fromJson<GunsData>(gunsDataFile)
+//    val shipsData = json.fromJson<ShipsData>(shipsDataFile)
+//    val gunsData = json.fromJson<GunsData>(gunsDataFile)
     val modsData = json.fromJson<ModsData>(modsDataFile)
     val pages = gdxArrayOf(
             Constants.EQUIP_ICON to EquipPage(context, playerData), // TODO add shipsData and gunsData

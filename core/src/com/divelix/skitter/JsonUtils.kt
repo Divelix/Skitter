@@ -7,7 +7,26 @@ import ktx.collections.*
 import ktx.json.JsonSerializer
 import java.util.*
 
-fun gdxFloatArrayOf(vararg elements: Float): GdxFloatArray = GdxFloatArray(elements)
+class ModAliasSerializer: JsonSerializer<ModAlias> {
+    override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): ModAlias {
+        val modType = ModType.valueOf(jsonValue[0].asString().toUpperCase(Locale.ROOT))
+        val index = jsonValue[1].asInt()
+        val level = jsonValue[2].asInt()
+        val quantity = jsonValue[3].asInt()
+        return ModAlias(modType, index, level, quantity)
+    }
+
+    override fun write(json: Json, value: ModAlias, type: Class<*>?) {
+        json.run {
+            writeObjectStart()
+            writeValue("type", value.type())
+            writeValue("index", value.index)
+            writeValue("level", value.level)
+            writeValue("quantity", value.quantity)
+            writeObjectEnd()
+        }
+    }
+}
 
 class ModSerializer: JsonSerializer<Mod> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Mod {

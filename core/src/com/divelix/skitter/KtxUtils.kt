@@ -5,10 +5,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.divelix.skitter.data.Constants
+import ktx.collections.GdxFloatArray
+import ktx.collections.GdxIntArray
 import ktx.scene2d.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+
+fun gdxFloatArrayOf(vararg elements: Float): GdxFloatArray = GdxFloatArray(elements)
+fun gdxIntArrayOf(vararg elements: Int): GdxIntArray = GdxIntArray(elements)
 
 @Scene2dDsl
 @OptIn(ExperimentalContracts::class)

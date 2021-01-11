@@ -22,8 +22,8 @@ class ModPage(context: Context, val playerData: Player, val modsData: ModsData) 
 
     init {
         val tabbedMenu = TabbedMenu(gdxArrayOf(
-                Tab(assets.manager.get(Constants.SHIP_ICON), stockTable(playerData.mods, assets, ::selectMod)),
-                Tab(assets.manager.get(Constants.GUN_ICON), stockTable(playerData.mods, assets, ::selectMod))
+                Tab(assets.manager.get(Constants.SHIP_ICON), stockTable(ModType.SHIP_MOD, playerData.mods, assets, ::selectMod)),
+                Tab(assets.manager.get(Constants.GUN_ICON), stockTable(ModType.GUN_MOD, playerData.mods, assets, ::selectMod))
         ))
         table {
             setFillParent(true)

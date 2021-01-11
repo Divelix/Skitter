@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.IntArray
 import com.divelix.skitter.gdxFloatArrayOf
+import com.divelix.skitter.gdxIntArrayOf
 import ktx.collections.*
 import java.util.*
 
@@ -103,11 +104,6 @@ data class Mod(
         val effects: GdxMap<ModEffect, GdxFloatArray> = gdxMapOf()
 )
 
-data class A(
-        val floats1: GdxFloatArray = gdxFloatArrayOf(),
-        val floats2: GdxFloatArray = gdxFloatArrayOf(),
-)
-
 sealed class ModEffect {
     sealed class ShipModEffect: ModEffect() {
         object HealthBooster : ShipModEffect()
@@ -120,8 +116,8 @@ sealed class ModEffect {
 }
 
 data class ModsData(
-        val sellPrices: GdxIntArray = IntArray(),
-        val upgradePrices: GdxIntArray = IntArray(),
+        val sellPrices: GdxIntArray = gdxIntArrayOf(),
+        val upgradePrices: GdxIntArray = gdxIntArrayOf(),
         val mods: Array<Mod> = gdxArrayOf()
 )
 

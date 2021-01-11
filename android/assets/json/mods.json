@@ -4,7 +4,7 @@
  "mods": [
   {
    "type": "ship_mod",
-   "index": 1001,
+   "index": 1,
    "name": "Chubby",
    "effects": {
     "HealthBooster": [ 1, 2 ]
@@ -12,7 +12,7 @@
   },
   {
    "type": "gun_mod",
-   "index": 2001,
+   "index": 2,
    "name": "Killer",
    "effects": {
     "DamageBooster": [ 3, 4 ]

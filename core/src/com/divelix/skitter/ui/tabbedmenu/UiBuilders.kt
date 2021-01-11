@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.ModAlias
+import com.divelix.skitter.data.ModType
 import ktx.actors.onClick
 import ktx.scene2d.*
 import ktx.scene2d.vis.visImage
@@ -27,7 +28,7 @@ fun bigMod(selectedMod: ModView?): Table = scene2d.table {
     }
 }
 
-fun stockTable(mods: Array<ModAlias>, assets: Assets, selectMod: (ModView) -> Unit): Table = scene2d.table {
+fun stockTable(modType: ModType, mods: Array<ModAlias>, assets: Assets, selectMod: (ModView) -> Unit): Table = scene2d.table {
     pad(Constants.UI_MARGIN)
 
     // StockTable
@@ -37,7 +38,8 @@ fun stockTable(mods: Array<ModAlias>, assets: Assets, selectMod: (ModView) -> Un
                 pad(Constants.UI_PADDING)
                 defaults().pad(Constants.UI_PADDING)
                 // fill with mods
-                mods.forEachIndexed { i, modData ->
+                val filteredMods = mods.filter { it.type == modType }
+                filteredMods.forEachIndexed { i, modData ->
                     container(ModView(modData, assets, selectMod))
                     if ((i + 1) % 4 == 0) row()
                 }
