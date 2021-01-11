@@ -35,16 +35,15 @@ class ModSerializer: JsonSerializer<Mod> {
         val name = jsonValue[2].asString()
         val effects = gdxMapOf<ModEffect, GdxFloatArray>()
         jsonValue[3].forEach {
-            val effectName = if (modType == ModType.SHIP_MOD) {
-                when (it.name) {
+            val effectName = when (modType) {
+                ModType.SHIP_MOD -> when (it.name) {
                     ModEffect.ShipModEffect.HealthBooster::class.simpleName -> ModEffect.ShipModEffect.HealthBooster
                     ModEffect.ShipModEffect.SpeedBooster::class.simpleName -> ModEffect.ShipModEffect.SpeedBooster
-                    else -> throw Exception("No such ship mod")
+                    else -> throw Exception("No such ship mod effect")
                 }
-            } else {
-                when (it.name) {
+                ModType.GUN_MOD -> when (it.name) {
                     ModEffect.GunModEffect.DamageBooster::class.simpleName -> ModEffect.GunModEffect.DamageBooster
-                    else -> throw Exception("No such gun mod")
+                    else -> throw Exception("No such gun mod effect")
                 }
             }
             effects[effectName] = GdxFloatArray(it.asFloatArray())
