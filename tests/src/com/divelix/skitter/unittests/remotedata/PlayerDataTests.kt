@@ -25,7 +25,7 @@ class PlayerDataTests {
 
     @Test
     fun `check ModAlias serialization`() {
-        val inputObj = ModAlias(1, 2, 3)
+        val inputObj = ModAlias(ModType.SHIP_MOD, 1, 2, 3)
         val refStr = """{ "index": 1, "level": 2, "quantity": 3 }"""
         val outputStr = json.toJson(inputObj)
         val prettyOutputStr = json.prettyPrint(outputStr, printSettings)
@@ -36,15 +36,15 @@ class PlayerDataTests {
     fun `check ModAlias deserialization`() {
         val inputStr = """{ "index": 1, "level": 2, "quantity": 3 }"""
         val outputObj = json.fromJson<ModAlias>(inputStr)
-        val refObj = ModAlias(1, 2, 3)
+        val refObj = ModAlias(ModType.SHIP_MOD, 1, 2, 3)
         Assert.assertEquals(outputObj, refObj)
     }
 
     @Test
     fun `check ActiveEquip serialization`() {
         val inputObj = ActiveEquip(1, 2, gdxArrayOf(
-                ModAlias(1, 2, 3),
-                ModAlias(4, 5, 6)
+                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
         ))
         val refStr =
                 """
@@ -77,8 +77,8 @@ class PlayerDataTests {
                 """.trimIndent()
         val outputObj = json.fromJson<ActiveEquip>(inputStr)
         val refObj = ActiveEquip(1, 2, gdxArrayOf(
-                ModAlias(1, 2, 3),
-                ModAlias(4, 5, 6)
+                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
         ))
         Assert.assertEquals(outputObj, refObj)
     }
@@ -87,12 +87,12 @@ class PlayerDataTests {
     fun `check ActiveEquips serialization`() {
         val inputObj = ActiveEquips(
                 ActiveEquip(1, 2, gdxArrayOf(
-                        ModAlias(1, 2, 3),
-                        ModAlias(4, 5, 6)
+                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                 )),
                 ActiveEquip(2, 3, gdxArrayOf(
-                        ModAlias(7, 8, 9),
-                        ModAlias(10, 11, 12)
+                        ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                        ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                 ))
         )
         val refStr =
@@ -147,81 +147,23 @@ class PlayerDataTests {
         val outputObj = json.fromJson<ActiveEquips>(inputStr)
         val refObj = ActiveEquips(
                 ActiveEquip(1, 2, gdxArrayOf(
-                        ModAlias(1, 2, 3),
-                        ModAlias(4, 5, 6)
+                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                 )),
                 ActiveEquip(2, 3, gdxArrayOf(
-                        ModAlias(7, 8, 9),
-                        ModAlias(10, 11, 12)
+                        ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                        ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                 ))
         )
         Assert.assertEquals(outputObj, refObj)
     }
 
-    @Test
-    fun `check ModAliases serialization`() {
-        val inputObj = ModAliases(
-                gdxArrayOf(
-                        ModAlias(1, 2, 3),
-                        ModAlias(4, 5, 6)
-                ),
-                gdxArrayOf(
-                        ModAlias(7, 8, 9),
-                        ModAlias(10, 11, 12)
-                )
-        )
-        val refStr =
-                """
-                    {
-                    "ship": [
-                    	{ "index": 1, "level": 2, "quantity": 3 },
-                    	{ "index": 4, "level": 5, "quantity": 6 }
-                    ],
-                    "gun": [
-                    	{ "index": 7, "level": 8, "quantity": 9 },
-                    	{ "index": 10, "level": 11, "quantity": 12 }
-                    ]
-                    }
-                """.trimIndent()
-        val outputStr = json.toJson(inputObj)
-        val prettyOutputStr = json.prettyPrint(outputStr, printSettings)
-        Assert.assertEquals(prettyOutputStr, refStr)
-    }
-
-    @Test
-    fun `check ModAliases deserialization`() {
-        val inputStr =
-                """
-                    {
-                    "ship": [
-                    	{ "index": 1, "level": 2, "quantity": 3 },
-                    	{ "index": 4, "level": 5, "quantity": 6 }
-                    ],
-                    "gun": [
-                    	{ "index": 7, "level": 8, "quantity": 9 },
-                    	{ "index": 10, "level": 11, "quantity": 12 }
-                    ]
-                    }
-                """.trimIndent()
-        val outputObj = json.fromJson<ModAliases>(inputStr)
-        val refObj = ModAliases(
-                gdxArrayOf(
-                        ModAlias(1, 2, 3),
-                        ModAlias(4, 5, 6)
-                ),
-                gdxArrayOf(
-                        ModAlias(7, 8, 9),
-                        ModAlias(10, 11, 12)
-                )
-        )
-        Assert.assertEquals(outputObj, refObj)
-    }
 
     @Test
     fun `check EquipAlias serialization`() {
         val inputObj = EquipAlias(1, 2, gdxArrayOf(
-                ModAlias(1, 2, 3),
-                ModAlias(4, 5, 6)
+                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
         ))
         val refStr =
                 """
@@ -254,8 +196,8 @@ class PlayerDataTests {
                 """.trimIndent()
         val outputObj = json.fromJson<EquipAlias>(inputStr)
         val refObj = EquipAlias(1, 2, gdxArrayOf(
-                ModAlias(1, 2, 3),
-                ModAlias(4, 5, 6)
+                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
         ))
         Assert.assertEquals(outputObj, refObj)
     }
@@ -265,22 +207,22 @@ class PlayerDataTests {
         val inputObj = Equips(
                 gdxArrayOf(
                         EquipAlias(1, 2, gdxArrayOf(
-                                ModAlias(1, 2, 3),
-                                ModAlias(4, 5, 6)
+                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                         )),
                         EquipAlias(1, 2, gdxArrayOf(
-                                ModAlias(7, 8, 9),
-                                ModAlias(10, 11, 12)
+                                ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                                ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                         ))
                 ),
                 gdxArrayOf(
                         EquipAlias(3, 4, gdxArrayOf(
-                                ModAlias(13, 14, 15),
-                                ModAlias(16, 17, 18)
+                                ModAlias(ModType.SHIP_MOD, 13, 14, 15),
+                                ModAlias(ModType.SHIP_MOD, 16, 17, 18)
                         )),
                         EquipAlias(1, 2, gdxArrayOf(
-                                ModAlias(19, 20, 21),
-                                ModAlias(22, 23, 24)
+                                ModAlias(ModType.SHIP_MOD, 19, 20, 21),
+                                ModAlias(ModType.SHIP_MOD, 22, 23, 24)
                         ))
                 )
         )
@@ -377,22 +319,22 @@ class PlayerDataTests {
         val refObj = Equips(
                 gdxArrayOf(
                         EquipAlias(1, 2, gdxArrayOf(
-                                ModAlias(1, 2, 3),
-                                ModAlias(4, 5, 6)
+                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                         )),
                         EquipAlias(1, 2, gdxArrayOf(
-                                ModAlias(7, 8, 9),
-                                ModAlias(10, 11, 12)
+                                ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                                ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                         ))
                 ),
                 gdxArrayOf(
                         EquipAlias(3, 4, gdxArrayOf(
-                                ModAlias(13, 14, 15),
-                                ModAlias(16, 17, 18)
+                                ModAlias(ModType.SHIP_MOD, 13, 14, 15),
+                                ModAlias(ModType.SHIP_MOD, 16, 17, 18)
                         )),
                         EquipAlias(1, 2, gdxArrayOf(
-                                ModAlias(19, 20, 21),
-                                ModAlias(22, 23, 24)
+                                ModAlias(ModType.SHIP_MOD, 19, 20, 21),
+                                ModAlias(ModType.SHIP_MOD, 22, 23, 24)
                         ))
                 )
         )
@@ -404,45 +346,39 @@ class PlayerDataTests {
         val inputObj = Player(123, "DefaultName", 100,
                 ActiveEquips(
                         ActiveEquip(1, 2, gdxArrayOf(
-                                ModAlias(1, 2, 3),
-                                ModAlias(4, 5, 6)
+                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                         )),
                         ActiveEquip(2, 3, gdxArrayOf(
-                                ModAlias(7, 8, 9),
-                                ModAlias(10, 11, 12)
+                                ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                                ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                         ))
                 ),
                 Equips(
                         gdxArrayOf(
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(1, 2, 3),
-                                        ModAlias(4, 5, 6)
+                                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                                 )),
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(7, 8, 9),
-                                        ModAlias(10, 11, 12)
+                                        ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                                        ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                                 ))
                         ),
                         gdxArrayOf(
                                 EquipAlias(3, 4, gdxArrayOf(
-                                        ModAlias(13, 14, 15),
-                                        ModAlias(16, 17, 18)
+                                        ModAlias(ModType.SHIP_MOD, 13, 14, 15),
+                                        ModAlias(ModType.SHIP_MOD, 16, 17, 18)
                                 )),
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(19, 20, 21),
-                                        ModAlias(22, 23, 24)
+                                        ModAlias(ModType.SHIP_MOD, 19, 20, 21),
+                                        ModAlias(ModType.SHIP_MOD, 22, 23, 24)
                                 ))
                         )
                 ),
-                ModAliases(
-                        gdxArrayOf(
-                                ModAlias(1, 2, 3),
-                                ModAlias(4, 5, 6)
-                        ),
-                        gdxArrayOf(
-                                ModAlias(7, 8, 9),
-                                ModAlias(10, 11, 12)
-                        )
+                gdxArrayOf(
+                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                 )
         )
         val refStr =
@@ -604,45 +540,39 @@ class PlayerDataTests {
         val refObj = Player(123, "DefaultName", 100,
                 ActiveEquips(
                         ActiveEquip(1, 2, gdxArrayOf(
-                                ModAlias(1, 2, 3),
-                                ModAlias(4, 5, 6)
+                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                         )),
                         ActiveEquip(2, 3, gdxArrayOf(
-                                ModAlias(7, 8, 9),
-                                ModAlias(10, 11, 12)
+                                ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                                ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                         ))
                 ),
                 Equips(
                         gdxArrayOf(
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(1, 2, 3),
-                                        ModAlias(4, 5, 6)
+                                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                                 )),
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(7, 8, 9),
-                                        ModAlias(10, 11, 12)
+                                        ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                                        ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                                 ))
                         ),
                         gdxArrayOf(
                                 EquipAlias(3, 4, gdxArrayOf(
-                                        ModAlias(13, 14, 15),
-                                        ModAlias(16, 17, 18)
+                                        ModAlias(ModType.SHIP_MOD, 13, 14, 15),
+                                        ModAlias(ModType.SHIP_MOD, 16, 17, 18)
                                 )),
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(19, 20, 21),
-                                        ModAlias(22, 23, 24)
+                                        ModAlias(ModType.SHIP_MOD, 19, 20, 21),
+                                        ModAlias(ModType.SHIP_MOD, 22, 23, 24)
                                 ))
                         )
                 ),
-                ModAliases(
-                        gdxArrayOf(
-                                ModAlias(1, 2, 3),
-                                ModAlias(4, 5, 6)
-                        ),
-                        gdxArrayOf(
-                                ModAlias(7, 8, 9),
-                                ModAlias(10, 11, 12)
-                        )
+                gdxArrayOf(
+                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                 )
         )
         Assert.assertEquals(outputObj, refObj)

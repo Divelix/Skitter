@@ -1,24 +1,22 @@
 {
  "sellPrices": [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
  "upgradePrices": [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
- "mods": {
-  "ship": [
-   {
-    "index": 1001,
-    "name": "SHIP_MOD_NAME 1",
-    "effects": {
-     "HealthBooster": [ 1, 2 ]
-    }
+ "mods": [
+  {
+   "type": "ship_mod",
+   "index": 1001,
+   "name": "Chubby",
+   "effects": {
+    "HealthBooster": [ 1, 2 ]
    }
-  ],
-  "gun": [
-   {
-    "index": 2001,
-    "name": "GUN_MOD_NAME 2",
-    "effects": {
-     "DamageBooster": [ 3, 4 ]
-    }
+  },
+  {
+   "type": "gun_mod",
+   "index": 2001,
+   "name": "Killer",
+   "effects": {
+    "DamageBooster": [ 3, 4 ]
    }
-  ]
- }
+  }
+ ]
 }

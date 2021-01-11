@@ -56,45 +56,39 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
         val playerData = Player(123, "DefaultName", 100,
                 ActiveEquips(
                         ActiveEquip(1, 2, gdxArrayOf(
-                                ModAlias(1, 2, 3),
-                                ModAlias(4, 5, 6)
+                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                         )),
                         ActiveEquip(2, 3, gdxArrayOf(
-                                ModAlias(7, 8, 9),
-                                ModAlias(10, 11, 12)
+                                ModAlias(ModType.GUN_MOD, 7, 8, 9),
+                                ModAlias(ModType.GUN_MOD, 10, 11, 12)
                         ))
                 ),
                 Equips(
                         gdxArrayOf(
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(1, 2, 3),
-                                        ModAlias(4, 5, 6)
+                                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                                 )),
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(7, 8, 9),
-                                        ModAlias(10, 11, 12)
+                                        ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                                        ModAlias(ModType.SHIP_MOD, 10, 11, 12)
                                 ))
                         ),
                         gdxArrayOf(
                                 EquipAlias(3, 4, gdxArrayOf(
-                                        ModAlias(13, 14, 15),
-                                        ModAlias(16, 17, 18)
+                                        ModAlias(ModType.GUN_MOD, 13, 14, 15),
+                                        ModAlias(ModType.GUN_MOD, 16, 17, 18)
                                 )),
                                 EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(19, 20, 21),
-                                        ModAlias(22, 23, 24)
+                                        ModAlias(ModType.GUN_MOD, 19, 20, 21),
+                                        ModAlias(ModType.GUN_MOD, 22, 23, 24)
                                 ))
                         )
                 ),
-                ModAliases(
-                        gdxArrayOf(
-                                ModAlias(1, 2, 3),
-                                ModAlias(4, 5, 6)
-                        ),
-                        gdxArrayOf(
-                                ModAlias(7, 8, 9),
-                                ModAlias(10, 11, 12)
-                        )
+                gdxArrayOf(
+                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                        ModAlias(ModType.GUN_MOD, 4, 5, 6)
                 )
         )
         val json = context.inject<Json>()

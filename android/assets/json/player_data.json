@@ -10,7 +10,9 @@
 	{
 		"index": 1,
 		"level": 1,
-		"mods": []
+		"mods": [
+			{ "index": 1001, "level": 1, "quantity": 1 }
+		]
 	}
 ],
 "guns": [
@@ -34,5 +36,8 @@
 		{ "index": 2005, "level": 1, "quantity": 5 },
 		{ "index": 2006, "level": 1, "quantity": 6 }
 	]
-}
+},
+"mods": [
+	{ "type": "ship_mod", "index": 1001, "level": 1, "quantity": 1 }
+]
 }

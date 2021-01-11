@@ -22,10 +22,10 @@ import ktx.style.get
 
 class ModView(val modAlias: ModAlias, val assets: Assets, selectMod: (ModView) -> Unit): Group() {
     private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
-    private val textureName: String
-    private val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
-    private val lvlDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL))
-    private val noLvlDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.WHITE_PIXEL))
+    val textureName: String
+    val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
+    val lvlDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL))
+    val noLvlDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.WHITE_PIXEL))
     private val quantityLabel: Label
     private val levelBars: Table
     private val carriage: Image
@@ -37,18 +37,18 @@ class ModView(val modAlias: ModAlias, val assets: Assets, selectMod: (ModView) -
 
         val bg = Image(bgDrawable).apply { setFillParent(true) }
         textureName = when (modAlias.index) {
-            1001 -> Constants.MOD_SHIP_HEALTH
-            1002 -> Constants.MOD_SHIP_SPEED
-            1003 -> Constants.MOD_SHIP_CHUBBER
+            1001 -> Drawables.MOD_SHIP_HEALTH()
+            1002 -> Drawables.MOD_SHIP_SPEED()
+            1003 -> Drawables.MOD_SHIP_CHUBBER()
 
-            2001 -> Constants.MOD_GUN_DAMAGE
-            2002 -> Constants.MOD_GUN_CAPACITY
-            2003 -> Constants.MOD_GUN_RELOAD
-            2004 -> Constants.MOD_GUN_SPEED
-            2005 -> Constants.MOD_GUN_CRIT
-            2006 -> Constants.MOD_GUN_CHANCE
+            2001 -> Drawables.MOD_GUN_DAMAGE()
+            2002 -> Drawables.MOD_GUN_CAPACITY()
+            2003 -> Drawables.MOD_GUN_RELOAD()
+            2004 -> Drawables.MOD_GUN_SPEED()
+            2005 -> Drawables.MOD_GUN_CRIT()
+            2006 -> Drawables.MOD_GUN_CHANCE()
 
-            else -> Constants.STAR
+            else -> Drawables.STAR()
         }
         carriage = Image(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.CARRIAGE_SHADOW())).apply {
             setFillParent(true)

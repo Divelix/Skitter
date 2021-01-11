@@ -3,7 +3,9 @@ package com.divelix.skitter.data
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.IntArray
+import com.divelix.skitter.gdxFloatArrayOf
 import ktx.collections.*
+import java.util.*
 
 object Data {
     var renderTime = 0f
@@ -88,37 +90,39 @@ data class ShipsData(
 )
 
 //----------- MOD -----------
-sealed class Mod
-data class ShipMod(
-        val index: Int = 0,
-        val name: String = "None",
-        val effects: GdxMap<ShipModEffects, GdxFloatArray> = gdxMapOf()
-) : Mod()
-
-data class GunMod(
-        val index: Int = 0,
-        val name: String = "None",
-        val effects: GdxMap<GunModEffects, GdxFloatArray> = gdxMapOf()
-) : Mod()
-
-enum class ShipModEffects {
-    HealthBooster,
-    SpeedBooster
+enum class ModType {
+    SHIP_MOD,
+    GUN_MOD;
+    operator fun invoke() = toString().toLowerCase(Locale.ROOT)
 }
 
-enum class GunModEffects {
-    DamageBooster
-}
-
-data class Mods(
-        val ship: Array<ShipMod> = gdxArrayOf(),
-        val gun: Array<GunMod> = gdxArrayOf()
+data class Mod(
+        val type: ModType = ModType.SHIP_MOD,
+        val index: Int = 0,
+        val name: String = "None",
+        val effects: GdxMap<ModEffect, GdxFloatArray> = gdxMapOf()
 )
+
+data class A(
+        val floats1: GdxFloatArray = gdxFloatArrayOf(),
+        val floats2: GdxFloatArray = gdxFloatArrayOf(),
+)
+
+sealed class ModEffect {
+    sealed class ShipModEffect: ModEffect() {
+        object HealthBooster : ShipModEffect()
+        object SpeedBooster : ShipModEffect()
+    }
+
+    sealed class GunModEffect: ModEffect() {
+        object DamageBooster : GunModEffect()
+    }
+}
 
 data class ModsData(
         val sellPrices: GdxIntArray = IntArray(),
         val upgradePrices: GdxIntArray = IntArray(),
-        val mods: Mods = Mods()
+        val mods: Array<Mod> = gdxArrayOf()
 )
 
 //----------------- Remote -----------------
@@ -129,16 +133,14 @@ data class Player(
         val coins: Int = 0,
         val activeEquips: ActiveEquips = ActiveEquips(),
         val equips: Equips = Equips(),
-        val mods: ModAliases = ModAliases()
+        val mods: Array<ModAlias> = gdxArrayOf()
 )
 
 data class ActiveEquips(val ship: ActiveEquip = ActiveEquip(), val gun: ActiveEquip = ActiveEquip())
 
 data class ActiveEquip(val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
 
-data class ModAlias(val index: Int = 0, val level: Int = 0, val quantity: Int = 0)
-
-data class ModAliases(val ship: Array<ModAlias> = gdxArrayOf(), val gun: Array<ModAlias> = gdxArrayOf())
+data class ModAlias(val type: ModType = ModType.SHIP_MOD, val index: Int = 0, val level: Int = 0, val quantity: Int = 0)
 
 data class EquipAlias(val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
 
