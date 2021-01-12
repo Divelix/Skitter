@@ -2,7 +2,6 @@ package com.divelix.skitter.data
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.IntArray
 import com.divelix.skitter.gdxFloatArrayOf
 import com.divelix.skitter.gdxIntArrayOf
 import ktx.collections.*
@@ -52,42 +51,53 @@ data class LoverData(var health: Float,
 //----------------------------------------- NEW DATA STRUCTURE -------------------------------------
 //---------------- Local ----------------
 //----------- EQUIP -----------
-sealed class EquipSpec
+enum class EquipType {
+    SHIP,
+    GUN;
+    operator fun invoke() = toString().toLowerCase(Locale.ROOT)
+}
+
+data class Equip(
+        val type: EquipType = EquipType.SHIP,
+        val index: Int = 0,
+        val name: String = "None",
+        val specs: EquipSpecs = ShipSpecs()
+)
+//data class Ship(
+//        val index: Int = 0,
+//        val name: String = "None",
+//        val specs: ShipSpecs = ShipSpecs()
+//) : Equip()
+//
+//data class Gun(
+//        val index: Int = 0,
+//        val name: String = "None",
+//        val specs: GunSpecs = GunSpecs()
+//) : Equip()
+
+sealed class EquipSpecs
 data class ShipSpecs(
-        val health: GdxFloatArray = GdxFloatArray(),
-        val speed: GdxFloatArray = GdxFloatArray()
-) : EquipSpec()
+        val health: GdxFloatArray = gdxFloatArrayOf(),
+        val speed: GdxFloatArray = gdxFloatArrayOf()
+) : EquipSpecs()
 
 data class GunSpecs(
-        val damage: GdxFloatArray = GdxFloatArray(),
-        val capacity: GdxFloatArray = GdxFloatArray(),
-        val reload: GdxFloatArray = GdxFloatArray(),
-        val speed: GdxFloatArray = GdxFloatArray(),
-        val crit: GdxFloatArray = GdxFloatArray(),
-        val chance: GdxFloatArray = GdxFloatArray()
-) : EquipSpec()
-
-sealed class Equip
-data class Ship(
-        val index: Int = 0,
-        val name: String = "None",
-        val specs: ShipSpecs = ShipSpecs()
-) : Equip()
-
-data class Gun(
-        val index: Int = 0,
-        val name: String = "None",
-        val specs: GunSpecs = GunSpecs()
-) : Equip()
+        val damage: GdxFloatArray = gdxFloatArrayOf(),
+        val capacity: GdxFloatArray = gdxFloatArrayOf(),
+        val reload: GdxFloatArray = gdxFloatArrayOf(),
+        val speed: GdxFloatArray = gdxFloatArrayOf(),
+        val crit: GdxFloatArray = gdxFloatArrayOf(),
+        val chance: GdxFloatArray = gdxFloatArrayOf()
+) : EquipSpecs()
 
 data class GunsData(
         val specs: Array<String> = gdxArrayOf(),
-        val guns: Array<Gun> = gdxArrayOf()
+        val guns: Array<Equip> = gdxArrayOf()
 )
 
 data class ShipsData(
         val specs: Array<String> = gdxArrayOf(),
-        val ships: Array<Ship> = gdxArrayOf()
+        val ships: Array<Equip> = gdxArrayOf()
 )
 
 //----------- MOD -----------
@@ -128,16 +138,12 @@ data class Player(
         val name: String = "None",
         val coins: Int = 0,
         val activeEquips: ActiveEquips = ActiveEquips(),
-        val equips: Equips = Equips(),
+        val equips: Array<EquipAlias> = gdxArrayOf(),
         val mods: Array<ModAlias> = gdxArrayOf()
 )
 
-data class ActiveEquips(val ship: ActiveEquip = ActiveEquip(), val gun: ActiveEquip = ActiveEquip())
+data class ActiveEquips(val ship: EquipAlias = EquipAlias(), val gun: EquipAlias = EquipAlias())
 
-data class ActiveEquip(val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
+data class EquipAlias(val type: EquipType = EquipType.SHIP, val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
 
 data class ModAlias(val type: ModType = ModType.SHIP_MOD, val index: Int = 0, val level: Int = 0, val quantity: Int = 0)
-
-data class EquipAlias(val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
-
-data class Equips(val ships: Array<EquipAlias> = gdxArrayOf(), val guns: Array<EquipAlias> = gdxArrayOf())

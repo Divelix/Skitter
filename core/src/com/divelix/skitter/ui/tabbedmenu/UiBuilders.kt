@@ -44,7 +44,7 @@ fun stockTable(modType: ModType, mods: Array<ModAlias>, assets: Assets, selectMo
                     if ((i + 1) % 4 == 0) row()
                 }
                 // fill empty space
-                for (i in 1..(4 - mods.size % 4)) {
+                for (i in 1..(4 - filteredMods.size % 4)) {
                     container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
                         background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                     }

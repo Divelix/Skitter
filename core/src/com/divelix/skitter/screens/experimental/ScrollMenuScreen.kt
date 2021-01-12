@@ -55,36 +55,24 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
 
         val playerData = Player(123, "DefaultName", 100,
                 ActiveEquips(
-                        ActiveEquip(1, 2, gdxArrayOf(
+                        EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
                                 ModAlias(ModType.SHIP_MOD, 1, 2, 3),
                                 ModAlias(ModType.SHIP_MOD, 4, 5, 6)
                         )),
-                        ActiveEquip(2, 3, gdxArrayOf(
-                                ModAlias(ModType.GUN_MOD, 7, 8, 9),
-                                ModAlias(ModType.GUN_MOD, 10, 11, 12)
+                        EquipAlias(EquipType.GUN, 1, 2, gdxArrayOf(
+                                ModAlias(ModType.GUN_MOD, 1, 2, 3),
+                                ModAlias(ModType.GUN_MOD, 4, 5, 6)
                         ))
                 ),
-                Equips(
-                        gdxArrayOf(
-                                EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
-                                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
-                                )),
-                                EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(ModType.SHIP_MOD, 7, 8, 9),
-                                        ModAlias(ModType.SHIP_MOD, 10, 11, 12)
-                                ))
-                        ),
-                        gdxArrayOf(
-                                EquipAlias(3, 4, gdxArrayOf(
-                                        ModAlias(ModType.GUN_MOD, 13, 14, 15),
-                                        ModAlias(ModType.GUN_MOD, 16, 17, 18)
-                                )),
-                                EquipAlias(1, 2, gdxArrayOf(
-                                        ModAlias(ModType.GUN_MOD, 19, 20, 21),
-                                        ModAlias(ModType.GUN_MOD, 22, 23, 24)
-                                ))
-                        )
+                gdxArrayOf(
+                        EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
+                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
+                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
+                        )),
+                        EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
+                                ModAlias(ModType.SHIP_MOD, 7, 8, 9),
+                                ModAlias(ModType.SHIP_MOD, 10, 11, 12)
+                        ))
                 ),
                 gdxArrayOf(
                         ModAlias(ModType.SHIP_MOD, 1, 2, 3),
