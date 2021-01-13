@@ -3,7 +3,6 @@ package com.divelix.skitter.ui.scrollmenu
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
-import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.tabbedmenu.*
 import com.divelix.skitter.ui.tabbedmenu.stockTable
@@ -18,12 +17,12 @@ class ModPage(context: Context, val playerData: Player, val modsData: ModsData) 
             field = value
             storeTable.setMod(value)
         }
-    private val storeTable by lazy { StoreTable(modsData) }
+    private val storeTable by lazy { ShowcaseTable(modsData) }
 
     init {
         val tabbedMenu = TabbedMenu(gdxArrayOf(
-                Tab(assets.manager.get(Constants.SHIP_ICON), stockTable(ModType.SHIP_MOD, playerData.mods, assets, ::selectMod)),
-                Tab(assets.manager.get(Constants.GUN_ICON), stockTable(ModType.GUN_MOD, playerData.mods, assets, ::selectMod))
+                Tab(assets.manager.get(Constants.SHIP_ICON), stockTable(ModType.SHIP_MOD, playerData.mods, ::selectMod)),
+                Tab(assets.manager.get(Constants.GUN_ICON), stockTable(ModType.GUN_MOD, playerData.mods, ::selectMod))
         ))
         table {
             setFillParent(true)

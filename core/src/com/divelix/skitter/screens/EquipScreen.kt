@@ -7,10 +7,9 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.ui.menu.EditScreen
 import com.divelix.skitter.ui.menu.EmptyModIcon
-import com.divelix.skitter.ui.menu.EquipTable
+import com.divelix.skitter.ui.menu.EquipTableOld
 import com.divelix.skitter.ui.menu.ModIcon
 import ktx.actors.plusAssign
-import ktx.scene2d.container
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
 
@@ -18,8 +17,8 @@ class EquipScreen(game: Main): EditScreen(game) {
     private val rootTable: Table
 
     init {
-        tabbedBar.tabs[0].content = EquipTable(Constants.SHIPS_TAB, assets, reader, playerData)
-        tabbedBar.tabs[1].content = EquipTable(Constants.GUNS_TAB, assets, reader, playerData)
+        tabbedBar.tabs[0].content = EquipTableOld(Constants.SHIPS_TAB, assets, reader, playerData)
+        tabbedBar.tabs[1].content = EquipTableOld(Constants.GUNS_TAB, assets, reader, playerData)
         tabbedBar.makeActive(tabbedBar.tabs[0])
 
         rootTable = scene2d.table {
@@ -87,11 +86,11 @@ class EquipScreen(game: Main): EditScreen(game) {
     }
 
     override fun updateUI() {
-        (tabbedBar.content.actor as EquipTable).updateSpecs()
+        (tabbedBar.content.actor as EquipTableOld).updateSpecs()
     }
 
     private fun isDup(modIcon: ModIcon): Boolean {
-        val suitTable = (tabbedBar.content.actor as EquipTable).suitTable
+        val suitTable = (tabbedBar.content.actor as EquipTableOld).suitTable
         suitTable.children.filter {(it as Container<*>).actor is ModIcon }.forEach {
             val suitModIcon = (it as Container<*>).actor as ModIcon
             if (suitModIcon.mod.index == modIcon.mod.index) return true
@@ -100,8 +99,8 @@ class EquipScreen(game: Main): EditScreen(game) {
     }
 
     override fun updatePlayerJson() {
-        (tabbedBar.tabs[0].content as EquipTable).updatePlayerData() // update ships
-        (tabbedBar.tabs[1].content as EquipTable).updatePlayerData() // update guns
+        (tabbedBar.tabs[0].content as EquipTableOld).updatePlayerData() // update ships
+        (tabbedBar.tabs[1].content as EquipTableOld).updatePlayerData() // update guns
         super.updatePlayerJson()
     }
 }

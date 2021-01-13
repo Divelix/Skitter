@@ -20,7 +20,7 @@ import ktx.scene2d.scene2d
 import ktx.scene2d.table
 import ktx.style.get
 
-class ModView(val modAlias: ModAlias, val assets: Assets, selectMod: (ModView) -> Unit): Group() {
+class ModView(val modAlias: ModAlias, selectMod: (ModView) -> Unit): Group() {
     private val iconHeight = Constants.MOD_WIDTH - 14f - 20f
     val textureName: String
     val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))

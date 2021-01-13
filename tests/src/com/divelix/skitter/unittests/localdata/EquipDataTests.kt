@@ -36,7 +36,7 @@ class EquipDataTests {
 
     @Test
     fun `check Equip serialization`() {
-        val inputObj = Equip(EquipType.SHIP, 1, "DefaultShip", ShipSpecs(
+        val inputObj = Equip(EquipType.SHIP, 1, "DefaultShip", "equip description", ShipSpecs(
                 gdxFloatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f),
                 gdxFloatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f)
         ))
@@ -46,6 +46,7 @@ class EquipDataTests {
                     "type": "ship",
                     "index": 1,
                     "name": "DefaultShip",
+                    "description": "equip description",
                     "specs": {
                     	"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
                     	"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
@@ -65,6 +66,7 @@ class EquipDataTests {
                     "type": "ship",
                     "index": 1,
                     "name": "DefaultShip",
+                    "description": "equip description",
                     "specs": {
                     	"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
                     	"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
@@ -72,7 +74,7 @@ class EquipDataTests {
                     }
                 """.trimIndent()
         val outputObj = json.fromJson<Equip>(inputStr)
-        val refObj = Equip(EquipType.SHIP, 1, "DefaultShip", ShipSpecs(
+        val refObj = Equip(EquipType.SHIP, 1, "DefaultShip", "equip description", ShipSpecs(
                 gdxFloatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f),
                 gdxFloatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f)
         ))
@@ -83,11 +85,11 @@ class EquipDataTests {
     fun `check EquipsData serialization`() {
         val inputObj = EquipsData(
                 gdxArrayOf(
-                        Equip(EquipType.SHIP, 1, "DefaultShip", ShipSpecs(
+                        Equip(EquipType.SHIP, 1, "DefaultShip", "equip description", ShipSpecs(
                                 gdxFloatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f),
                                 gdxFloatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f)
                         )),
-                        Equip(EquipType.GUN, 1, "DefaultGun", GunSpecs(
+                        Equip(EquipType.GUN, 1, "DefaultGun", "equip description", GunSpecs(
                                 gdxFloatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f),
                                 gdxFloatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f),
                                 gdxFloatArrayOf(3.1f, 3.2f, 3.3f, 3.4f, 3.5f, 3.6f, 3.7f, 3.8f, 3.9f, 3.10f),
@@ -105,6 +107,7 @@ class EquipDataTests {
                     		"type": "ship",
                     		"index": 1,
                     		"name": "DefaultShip",
+                    		"description": "equip description",
                     		"specs": {
                     			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
                     			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
@@ -114,6 +117,7 @@ class EquipDataTests {
                     		"type": "gun",
                     		"index": 1,
                     		"name": "DefaultGun",
+                    		"description": "equip description",
                     		"specs": {
                     			"damage": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
                     			"capacity": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ],
@@ -128,7 +132,6 @@ class EquipDataTests {
                 """.trimIndent()
         val outputStr = json.toJson(inputObj)
         val prettyOutputStr = json.prettyPrint(outputStr, printSettings)
-        println(prettyOutputStr)
         Assert.assertEquals(refStr, prettyOutputStr)
     }
 
@@ -142,6 +145,7 @@ class EquipDataTests {
                     		"type": "ship",
                     		"index": 1,
                     		"name": "DefaultShip",
+                    		"description": "equip description",
                     		"specs": {
                     			"health": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
                     			"speed": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ]
@@ -151,6 +155,7 @@ class EquipDataTests {
                     		"type": "gun",
                     		"index": 1,
                     		"name": "DefaultGun",
+                    		"description": "equip description",
                     		"specs": {
                     			"damage": [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.1 ],
                     			"capacity": [ 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.1 ],
@@ -166,11 +171,11 @@ class EquipDataTests {
         val outputObj = json.fromJson<EquipsData>(inputStr)
         val refObj = EquipsData(
                 gdxArrayOf(
-                        Equip(EquipType.SHIP, 1, "DefaultShip", ShipSpecs(
+                        Equip(EquipType.SHIP, 1, "DefaultShip", "equip description", ShipSpecs(
                                 gdxFloatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f),
                                 gdxFloatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f)
                         )),
-                        Equip(EquipType.GUN, 1, "DefaultGun", GunSpecs(
+                        Equip(EquipType.GUN, 1, "DefaultGun", "equip description", GunSpecs(
                                 gdxFloatArrayOf(1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 1.10f),
                                 gdxFloatArrayOf(2.1f, 2.2f, 2.3f, 2.4f, 2.5f, 2.6f, 2.7f, 2.8f, 2.9f, 2.10f),
                                 gdxFloatArrayOf(3.1f, 3.2f, 3.3f, 3.4f, 3.5f, 3.6f, 3.7f, 3.8f, 3.9f, 3.10f),
@@ -180,6 +185,6 @@ class EquipDataTests {
                         ))
                 )
         )
-        Assert.assertEquals(outputObj, refObj)
+        Assert.assertEquals(refObj, outputObj)
     }
 }

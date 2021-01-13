@@ -1,7 +1,6 @@
 package com.divelix.skitter.ui.tabbedmenu
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -12,21 +11,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
-import com.divelix.skitter.data.*
+import com.divelix.skitter.data.Assets
+import com.divelix.skitter.data.Constants
+import com.divelix.skitter.data.Player
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
-import com.divelix.skitter.ui.scrollmenu.ModSelector
 import ktx.actors.onClickEvent
-import ktx.collections.gdxArrayOf
 import ktx.scene2d.*
 import ktx.style.get
 
-class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: EquipsData) : Table(), KTable, ModSelector {
-    override var selectedModView: ModView? = null
-    val modType = when (equipType) {
-        EquipType.SHIP -> ModType.SHIP_MOD
-        EquipType.GUN -> ModType.GUN_MOD
-    }
+abstract class AEquipTable(val playerData: Player, val assets: Assets) : Table(), KTable {
     val description: Label
     val equipIcon: Image
     val specsNames: Label
@@ -49,7 +43,7 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
 
                 // Description
                 scrollPane {
-                    this@EquipTable.description = scaledLabel(Constants.LOREM_IPSUM).apply {
+                    this@AEquipTable.description = scaledLabel(Constants.LOREM_IPSUM).apply {
                         wrap = true
                         setAlignment(Align.top)
                     }
@@ -59,22 +53,26 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
                 table {
                     touchable = Touchable.enabled
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                    this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
+                    this@AEquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             .apply { setScaling(Scaling.fit) }.cell(pad = Constants.UI_PADDING)
+                    onClickEvent { event ->
+                        println("Equip icon clicked")
+                        this@AEquipTable.switchEquipWindow()
+                    }
                 }.cell(width = 100f, height = 100f)
 
                 // Stats
                 table {
                     left()
-                    this@EquipTable.specsNames = scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
-                    this@EquipTable.specsValues = scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
+                    this@AEquipTable.specsNames = scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
+                    this@AEquipTable.specsValues = scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
                 }.cell(width = 92f, height = 100f, padLeft = Constants.UI_PADDING)
             }.cell(padTop = Constants.UI_PADDING, padLeft = Constants.UI_PADDING, padBottom = 0f, padRight = Constants.UI_PADDING)
 
             row()
 
             // SuitTable
-            this@EquipTable.suitTable = table {
+            this@AEquipTable.suitTable = table {
                 pad(0f, Constants.UI_PADDING, Constants.UI_PADDING, Constants.UI_PADDING)
                 defaults().pad(Constants.UI_PADDING)
                 for (i in 1..8) {
@@ -94,24 +92,10 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
             // StockTable
             scrollPane {
                 container {
-                    this@EquipTable.stockTable = table {
+                    this@AEquipTable.stockTable = table {
                         pad(Constants.UI_PADDING)
                         defaults().pad(Constants.UI_PADDING)
-                        // fill with mods
-                        val modAliases = playerData.mods.filter { it.type == this@EquipTable.modType }
-                        modAliases.forEachIndexed { i, modAlias ->
-                            container(this@EquipTable.makeModView(modAlias))
-                            if ((i + 1) % 4 == 0) row()
-                        }
-                        // fill row with empty cells
-                        for (i in 1..(4 - modAliases.size % 4)) {
-                            container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
-                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                            }
-                        }
-                        row()
-                        // fill additional rows with empty cells
-                        for (i in 1..8) {
+                        for (i in 1..20) {
                             container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
                                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             }
@@ -122,19 +106,14 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
                 }
             }
         }
-        setEquip(
-                when (equipType) {
-                    EquipType.SHIP -> playerData.activeEquips.ship
-                    EquipType.GUN -> playerData.activeEquips.gun
-                }
-        )
+        showSuitMods()
+        showStockMods()
     }
 
-    private fun makeModView(modAlias: ModAlias) = ModView(modAlias, ::selectMod)
-
-    private fun setEquip(equipAlias: EquipAlias) {
-        val equip = equipsData.equips.single { it.type == equipType && it.index == equipAlias.index }
-    }
+    abstract fun makeEquipList(): Array<Pair<Texture, String>>
+    abstract fun showSpecs()
+    abstract fun showSuitMods()
+    abstract fun showStockMods()
 
     private fun makeEquipWindow(): Window {
         val window = scene2d.window("", "equip-choose") {
@@ -148,7 +127,7 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
                 table {
                     top()
                     defaults().padTop(12f)
-                    for (equip in this@EquipTable.equipList) {
+                    for (equip in this@AEquipTable.equipList) {
                         table {
                             left()
                             touchable = Touchable.enabled
@@ -160,7 +139,6 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
                                 image(equip.first).apply { setScaling(Scaling.fit) }
                                 onClickEvent { event ->
                                     println("Equip item clicked")
-                                    this@EquipTable.switchEquipWindow()
                                 }
                             }.cell(width = 88f, height = 88f, pad = 6f)
 
@@ -191,13 +169,6 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
         }
         stage.addActor(window)
         return window
-    }
-
-    private fun makeEquipList(): Array<Pair<TextureRegion, String>> {
-        return gdxArrayOf(
-                Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.GUN_DEFAULT()) to "default gun",
-                Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.GUN_SNIPER()) to "sniper gun"
-        )
     }
 
     private fun switchEquipWindow() {

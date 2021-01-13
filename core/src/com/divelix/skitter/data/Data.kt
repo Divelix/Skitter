@@ -61,6 +61,7 @@ data class Equip(
         val type: EquipType = EquipType.SHIP,
         val index: Int = 0,
         val name: String = "None",
+        val description: String = "",
         val specs: EquipSpecs = ShipSpecs()
 )
 

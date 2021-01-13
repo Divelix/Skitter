@@ -26,7 +26,6 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
     val scrollMenu: ScrollMenu
 
     init {
-//        fillJsonFile()
         scrollMenu = ScrollMenu(context)
         stage += scrollMenu
 //        stage.isDebugAll = true
@@ -40,44 +39,6 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
         }
         val multiplexer = InputMultiplexer(stage, handler)
         Gdx.input.inputProcessor = multiplexer
-    }
-
-    // It make new instance of PlayerData and write it to json file
-    fun fillJsonFile() {
-        val file = "json/playerData.json".toLocalFile()
-        val printSettings = JsonValue.PrettyPrintSettings().apply {
-            outputType = JsonWriter.OutputType.json
-            singleLineColumns = 100
-        }
-
-        val playerData = Player(123, "DefaultName", 100,
-                ActiveEquips(
-                        EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
-                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
-                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
-                        )),
-                        EquipAlias(EquipType.GUN, 1, 2, gdxArrayOf(
-                                ModAlias(ModType.GUN_MOD, 1, 2, 3),
-                                ModAlias(ModType.GUN_MOD, 4, 5, 6)
-                        ))
-                ),
-                gdxArrayOf(
-                        EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
-                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
-                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
-                        )),
-                        EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
-                                ModAlias(ModType.SHIP_MOD, 7, 8, 9),
-                                ModAlias(ModType.SHIP_MOD, 10, 11, 12)
-                        ))
-                ),
-                gdxArrayOf(
-                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
-                        ModAlias(ModType.GUN_MOD, 4, 5, 6)
-                )
-        )
-        val json = context.inject<Json>()
-        file.writeString(json.prettyPrint(playerData, printSettings), false)
     }
 
     override fun render(delta: Float) {

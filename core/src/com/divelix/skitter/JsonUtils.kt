@@ -51,21 +51,22 @@ class EquipSerializer: JsonSerializer<Equip> {
         val equipType = EquipType.valueOf(jsonValue[0].asString().toUpperCase(Locale.ROOT))
         val index = jsonValue[1].asInt()
         val name = jsonValue[2].asString()
+        val description = jsonValue[3].asString()
         val specs = when (equipType) {
             EquipType.SHIP -> ShipSpecs(
-                    GdxFloatArray(jsonValue[3][0].asFloatArray()),
-                    GdxFloatArray(jsonValue[3][1].asFloatArray())
+                    GdxFloatArray(jsonValue[4][0].asFloatArray()),
+                    GdxFloatArray(jsonValue[4][1].asFloatArray())
             )
             EquipType.GUN -> GunSpecs(
-                    GdxFloatArray(jsonValue[3][0].asFloatArray()),
-                    GdxFloatArray(jsonValue[3][1].asFloatArray()),
-                    GdxFloatArray(jsonValue[3][2].asFloatArray()),
-                    GdxFloatArray(jsonValue[3][3].asFloatArray()),
-                    GdxFloatArray(jsonValue[3][4].asFloatArray()),
-                    GdxFloatArray(jsonValue[3][5].asFloatArray())
+                    GdxFloatArray(jsonValue[4][0].asFloatArray()),
+                    GdxFloatArray(jsonValue[4][1].asFloatArray()),
+                    GdxFloatArray(jsonValue[4][2].asFloatArray()),
+                    GdxFloatArray(jsonValue[4][3].asFloatArray()),
+                    GdxFloatArray(jsonValue[4][4].asFloatArray()),
+                    GdxFloatArray(jsonValue[4][5].asFloatArray())
             )
         }
-        return Equip(equipType, index, name, specs)
+        return Equip(equipType, index, name, description, specs)
     }
 
     override fun write(json: Json, value: Equip, type: Class<*>?) {
@@ -74,6 +75,7 @@ class EquipSerializer: JsonSerializer<Equip> {
             writeValue("type", value.type())
             writeValue("index", value.index)
             writeValue("name", value.name)
+            writeValue("description", value.description)
             writeObjectStart("specs")
             when (value.type) {
                 EquipType.SHIP -> {

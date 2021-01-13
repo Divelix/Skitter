@@ -21,7 +21,7 @@ import ktx.scene2d.scene2d
 import ktx.scene2d.table
 import ktx.style.get
 
-class EquipTable(private val tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
+class EquipTableOld(private val tabName: String, val assets: Assets, val reader: JsonReader, val playerData: JsonValue): Table() {
     private val equipSpecs = Array<Float>(6)
     private val modEffects = Array<Float>(6)
     private val finalEquipSpecs = Array<Float>(6)

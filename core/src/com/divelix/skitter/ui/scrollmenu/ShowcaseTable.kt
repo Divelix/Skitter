@@ -16,7 +16,7 @@ import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.table
 import ktx.style.get
 
-class StoreTable(val modsData: ModsData): Table(), KTable {
+class ShowcaseTable(val modsData: ModsData): Table(), KTable {
     private val bigModTable by lazy { BigModTable(modsData.mods) }
 
     private val sellPriceLabel: Label
@@ -27,17 +27,17 @@ class StoreTable(val modsData: ModsData): Table(), KTable {
         table {
             image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.SELL_BTN()))).cell(width = 76f, height = 76f)
             row()
-            this@StoreTable.sellPriceLabel = scaledLabel("1000").cell(padTop = Constants.UI_MARGIN)
+            this@ShowcaseTable.sellPriceLabel = scaledLabel("1000").cell(padTop = Constants.UI_MARGIN)
         }
 
         // Big mod
-        add(this@StoreTable.bigModTable)
+        add(this@ShowcaseTable.bigModTable)
 
         // Upgrade button
         table {
             image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.UP_BTN()))).cell(width = 76f, height = 76f)
             row()
-            this@StoreTable.upgradePriceLabel = scaledLabel("800").cell(padTop = Constants.UI_MARGIN)
+            this@ShowcaseTable.upgradePriceLabel = scaledLabel("800").cell(padTop = Constants.UI_MARGIN)
         }
     }
 
