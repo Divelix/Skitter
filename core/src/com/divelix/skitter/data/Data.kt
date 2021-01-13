@@ -63,17 +63,6 @@ data class Equip(
         val name: String = "None",
         val specs: EquipSpecs = ShipSpecs()
 )
-//data class Ship(
-//        val index: Int = 0,
-//        val name: String = "None",
-//        val specs: ShipSpecs = ShipSpecs()
-//) : Equip()
-//
-//data class Gun(
-//        val index: Int = 0,
-//        val name: String = "None",
-//        val specs: GunSpecs = GunSpecs()
-//) : Equip()
 
 sealed class EquipSpecs
 data class ShipSpecs(
@@ -90,14 +79,8 @@ data class GunSpecs(
         val chance: GdxFloatArray = gdxFloatArrayOf()
 ) : EquipSpecs()
 
-data class GunsData(
-        val specs: Array<String> = gdxArrayOf(),
-        val guns: Array<Equip> = gdxArrayOf()
-)
-
-data class ShipsData(
-        val specs: Array<String> = gdxArrayOf(),
-        val ships: Array<Equip> = gdxArrayOf()
+data class EquipsData(
+        val equips: Array<Equip> = gdxArrayOf()
 )
 
 //----------- MOD -----------

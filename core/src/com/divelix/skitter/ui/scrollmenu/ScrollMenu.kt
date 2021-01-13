@@ -24,22 +24,18 @@ import ktx.scene2d.table
 import ktx.style.get
 
 class ScrollMenu(context: Context) : Group() {
-    val assets = context.inject<Assets>()
-    val json = context.inject<Json>()
-    val playerDataFile = "json/playerData.json".toLocalFile()
-//    val shipsDataFile = "json/ships.json".toLocalFile()
-//    val gunsDataFile = "json/guns.json".toLocalFile()
-    val modsDataFile = "json/mods.json".toLocalFile()
-    val playerData = json.fromJson<Player>(playerDataFile).also { println("Player deserialized") }
-//    val shipsData = json.fromJson<ShipsData>(shipsDataFile)
-//    val gunsData = json.fromJson<GunsData>(gunsDataFile)
-    val modsData = json.fromJson<ModsData>(modsDataFile).also { println("ModsData deserialized") }
-    val pages = gdxArrayOf(
-            Constants.EQUIP_ICON to EquipPage(context, playerData), // TODO add shipsData and gunsData
+    private val assets = context.inject<Assets>()
+    private val json = context.inject<Json>()
+    private val playerDataFile = "json/playerData.json".toLocalFile()
+    private val playerData = json.fromJson<Player>(playerDataFile)
+    private val equipsData = json.fromJson<EquipsData>("json/equips.json".toLocalFile())
+    private val modsData = json.fromJson<ModsData>("json/mods.json".toLocalFile())
+    private val pages = gdxArrayOf(
+            Constants.EQUIP_ICON to EquipPage(context, playerData, equipsData),
             Constants.BATTLE_ICON to PlayPage(context, playerData),
             Constants.MOD_ICON to ModPage(context, playerData, modsData))
 
-    val scrollPane: ScrollPane
+    private val scrollPane: ScrollPane
 
     init {
         setSize(Constants.STAGE_WIDTH.toFloat(), Constants.stageHeight)

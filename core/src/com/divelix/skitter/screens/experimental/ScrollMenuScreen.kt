@@ -33,9 +33,6 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
         val handler = object : InputAdapter() {
             override fun keyDown(keycode: Int): Boolean {
                 when (keycode) {
-                    Input.Keys.NUM_1 -> scrollMenu.scrollPane.scrollX = 0f
-                    Input.Keys.NUM_2 -> scrollMenu.scrollPane.scrollX = 350f
-                    Input.Keys.NUM_3 -> scrollMenu.scrollPane.scrollX = 700f
                     Input.Keys.S -> scrollMenu.saveToJson()
                 }
                 return true

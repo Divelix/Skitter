@@ -43,6 +43,7 @@ class BigModTable(val mods: Array<Mod>): Table(), KTable {
                 }
             }.cell(width = 150f, height = 78f)
         }
+        clearMod()
     }
 
     fun setMod(modView: ModView) {

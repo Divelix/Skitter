@@ -1,6 +1,7 @@
 package com.divelix.skitter.ui.scrollmenu
 
 import com.divelix.skitter.data.Constants
+import com.divelix.skitter.data.EquipsData
 import com.divelix.skitter.data.Player
 import com.divelix.skitter.ui.tabbedmenu.GunTable
 import com.divelix.skitter.ui.tabbedmenu.Tab
@@ -10,7 +11,7 @@ import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.table
 
-class EquipPage(context: Context, val playerData: Player) : Page(context) {
+class EquipPage(context: Context, val playerData: Player, val equipsData: EquipsData) : Page(context) {
 
     init {
         table {
