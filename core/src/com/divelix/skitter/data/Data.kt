@@ -106,6 +106,7 @@ sealed class ModEffect {
 
     sealed class GunModEffect: ModEffect() {
         object DamageBooster : GunModEffect()
+        object ReloadBooster : GunModEffect()
     }
 }
 

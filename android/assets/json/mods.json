@@ -1,21 +1,37 @@
 {
- "sellPrices": [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
- "upgradePrices": [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+ "sellPrices": [ 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 ],
+ "upgradePrices": [ 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 ],
  "mods": [
   {
    "type": "ship_mod",
    "index": 1,
-   "name": "Chubby",
+   "name": "Fatty",
    "effects": {
-    "HealthBooster": [ 1, 2 ]
+    "HealthBooster": [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ]
+   }
+  },
+  {
+   "type": "ship_mod",
+   "index": 2,
+   "name": "Swift",
+   "effects": {
+    "SpeedBooster": [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ]
+   }
+  },
+  {
+   "type": "gun_mod",
+   "index": 1,
+   "name": "Killer",
+   "effects": {
+    "DamageBooster": [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ]
    }
   },
   {
    "type": "gun_mod",
    "index": 2,
-   "name": "Killer",
+   "name": "Reloader",
    "effects": {
-    "DamageBooster": [ 3, 4 ]
+    "ReloadBooster": [ 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4 ]
    }
   }
  ]

@@ -2,8 +2,8 @@ package com.divelix.skitter.data
 
 import java.util.*
 
-enum class Drawables {
-//    UI
+enum class RegionName {
+    //    UI
     AIM_64,
     ANTI_SEAMLESS,
     APPLY_ICON,
@@ -24,12 +24,13 @@ enum class Drawables {
     UP_BTN,
     WHITE_CIRCLE,
 
-//    Equips
+    //    Equips
+    SHIP_DEFAULT,
+    SHIP_TANK,
     GUN_DEFAULT,
     GUN_SNIPER,
-    SHIP_DEFAULT,
 
-//    Mods
+    //    Mods
     MOD_GUN_CAPACITY,
     MOD_GUN_CHANCE,
     MOD_GUN_CRIT,
@@ -41,11 +42,11 @@ enum class Drawables {
     MOD_SHIP_SPEED,
     STAR,
 
-//    Gameplay
+    //    Gameplay
     BULLET_DEFAULT,
     DARK_HONEYCOMB,
 
-//    Enemies
+    //    Enemies
     AGENT,
     JUMPER,
     KID,

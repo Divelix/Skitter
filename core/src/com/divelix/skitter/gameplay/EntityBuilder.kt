@@ -114,7 +114,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.BULLET_DEFAULT()).texture) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.BULLET_DEFAULT()).texture) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
@@ -156,7 +156,7 @@ class EntityBuilder(private val engine: PooledEngine,
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.BULLET_DEFAULT()).texture) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.BULLET_DEFAULT()).texture) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
@@ -564,7 +564,7 @@ class EntityBuilder(private val engine: PooledEngine,
             }
             with<TextureComponent> {
 //                val bg = assets.manager.get<Texture>(Constants.GAMEPLAY_BG)
-                val bg = Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.DARK_HONEYCOMB()).texture
+                val bg = Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.DARK_HONEYCOMB()).texture
                 bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
                 val bgReg = TextureRegion(bg)
                 bgReg.setRegion(0, 0, width.toInt() * scale, height.toInt() * scale)

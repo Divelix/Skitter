@@ -4,10 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.Window
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
@@ -17,6 +14,7 @@ import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.scrollmenu.ModSelector
 import ktx.actors.onClickEvent
+import ktx.actors.txt
 import ktx.collections.gdxArrayOf
 import ktx.scene2d.*
 import ktx.style.get
@@ -134,6 +132,36 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
 
     private fun setEquip(equipAlias: EquipAlias) {
         val equip = equipsData.equips.single { it.type == equipType && it.index == equipAlias.index }
+        description.txt = equip.description
+        val regionName = when (equip.type) {
+            EquipType.SHIP -> when (equip.index) {
+                1 -> RegionName.SHIP_DEFAULT
+                2 -> RegionName.SHIP_TANK
+                else -> throw Exception("no drawable for ship index = ${equip.index}")
+            }
+            EquipType.GUN -> when (equip.index) {
+                1 -> RegionName.GUN_DEFAULT
+                2 -> RegionName.GUN_SNIPER
+                else -> throw Exception("no drawable for gun index = ${equip.index}")
+            }
+        }
+        equipIcon.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName()))
+        val i = equipAlias.level - 1
+        when (equip.specs) {
+            is ShipSpecs -> {
+                specsNames.txt = "HEALTH: \nSPEED: "
+                specsValues.txt ="${equip.specs.health[i]}\n${equip.specs.speed[i]}"
+            }
+            is GunSpecs -> {
+                specsNames.txt = "DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: "
+                specsValues.txt ="${equip.specs.damage[i]}\n${equip.specs.capacity[i]}\n" +
+                        "${equip.specs.reload[i]}\n${equip.specs.speed[i]}\n" +
+                        "${equip.specs.crit[i]}\n${equip.specs.chance[i]}"
+            }
+        }
+        equipAlias.mods.forEachIndexed { i, modAlias ->
+            (suitTable.children[i] as Container<*>).actor = makeModView(modAlias)
+        }
     }
 
     private fun makeEquipWindow(): Window {
@@ -195,8 +223,8 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
 
     private fun makeEquipList(): Array<Pair<TextureRegion, String>> {
         return gdxArrayOf(
-                Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.GUN_DEFAULT()) to "default gun",
-                Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.GUN_SNIPER()) to "sniper gun"
+                Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.GUN_DEFAULT()) to "default gun",
+                Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.GUN_SNIPER()) to "sniper gun"
         )
     }
 

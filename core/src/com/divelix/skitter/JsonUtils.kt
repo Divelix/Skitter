@@ -135,6 +135,7 @@ class ModSerializer: JsonSerializer<Mod> {
                 }
                 ModType.GUN_MOD -> when (it.name) {
                     ModEffect.GunModEffect.DamageBooster::class.simpleName -> ModEffect.GunModEffect.DamageBooster
+                    ModEffect.GunModEffect.ReloadBooster::class.simpleName -> ModEffect.GunModEffect.ReloadBooster
                     else -> throw Exception("No such gun mod effect")
                 }
             }

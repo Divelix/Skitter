@@ -8,9 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Drawables
+import com.divelix.skitter.data.RegionName
 import com.divelix.skitter.data.ModAlias
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
@@ -37,20 +36,20 @@ class ModView(val modAlias: ModAlias, selectMod: (ModView) -> Unit): Group() {
 
         val bg = Image(bgDrawable).apply { setFillParent(true) }
         textureName = when (modAlias.index) {
-            1001 -> Drawables.MOD_SHIP_HEALTH()
-            1002 -> Drawables.MOD_SHIP_SPEED()
-            1003 -> Drawables.MOD_SHIP_CHUBBER()
+            1001 -> RegionName.MOD_SHIP_HEALTH()
+            1002 -> RegionName.MOD_SHIP_SPEED()
+            1003 -> RegionName.MOD_SHIP_CHUBBER()
 
-            2001 -> Drawables.MOD_GUN_DAMAGE()
-            2002 -> Drawables.MOD_GUN_CAPACITY()
-            2003 -> Drawables.MOD_GUN_RELOAD()
-            2004 -> Drawables.MOD_GUN_SPEED()
-            2005 -> Drawables.MOD_GUN_CRIT()
-            2006 -> Drawables.MOD_GUN_CHANCE()
+            2001 -> RegionName.MOD_GUN_DAMAGE()
+            2002 -> RegionName.MOD_GUN_CAPACITY()
+            2003 -> RegionName.MOD_GUN_RELOAD()
+            2004 -> RegionName.MOD_GUN_SPEED()
+            2005 -> RegionName.MOD_GUN_CRIT()
+            2006 -> RegionName.MOD_GUN_CHANCE()
 
-            else -> Drawables.STAR()
+            else -> RegionName.STAR()
         }
-        carriage = Image(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.CARRIAGE_SHADOW())).apply {
+        carriage = Image(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.CARRIAGE_SHADOW())).apply {
             setFillParent(true)
             isVisible = false
         }

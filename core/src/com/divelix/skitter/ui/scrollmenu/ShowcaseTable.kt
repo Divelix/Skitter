@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Drawables
+import com.divelix.skitter.data.RegionName
 import com.divelix.skitter.data.ModsData
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
@@ -25,7 +25,7 @@ class ShowcaseTable(val modsData: ModsData): Table(), KTable {
     init {
         // Sell button
         table {
-            image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.SELL_BTN()))).cell(width = 76f, height = 76f)
+            image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.SELL_BTN()))).cell(width = 76f, height = 76f)
             row()
             this@ShowcaseTable.sellPriceLabel = scaledLabel("1000").cell(padTop = Constants.UI_MARGIN)
         }
@@ -35,7 +35,7 @@ class ShowcaseTable(val modsData: ModsData): Table(), KTable {
 
         // Upgrade button
         table {
-            image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(Drawables.UP_BTN()))).cell(width = 76f, height = 76f)
+            image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.UP_BTN()))).cell(width = 76f, height = 76f)
             row()
             this@ShowcaseTable.upgradePriceLabel = scaledLabel("800").cell(padTop = Constants.UI_MARGIN)
         }
