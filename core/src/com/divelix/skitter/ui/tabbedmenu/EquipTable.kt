@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.*
 import com.divelix.skitter.image
@@ -15,25 +14,38 @@ import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.scrollmenu.ModSelector
 import ktx.actors.onClickEvent
 import ktx.actors.txt
-import ktx.collections.filter
+import ktx.collections.*
 import ktx.scene2d.*
 import ktx.style.get
 
-class EquipTable(val equipType: EquipType, val playerData: Player, val equipsData: EquipsData) : Table(), KTable, ModSelector {
+class EquipTable(
+        private val equipType: EquipType,
+        private val playerData: Player,
+        private val equipsData: EquipsData
+) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
-    val modType = when (equipType) {
+    var selectedEquipAlias: EquipAlias = when (equipType) {
+        EquipType.SHIP -> playerData.activeEquips.ship
+        EquipType.GUN -> playerData.activeEquips.gun
+    }
+        set(value) {
+            field = value
+            setEquip(value)
+        }
+
+    private val modType = when (equipType) {
         EquipType.SHIP -> ModType.SHIP_MOD
         EquipType.GUN -> ModType.GUN_MOD
     }
-    val equipName: Label
-    val description: Label
-    val equipIcon: Image
-    val specsNames: Label
-    val specsValues: Label
-    val equipList by lazy { makeEquipList() }
-    val equipWindow by lazy { makeEquipWindow() }
-    val suitTable: Table
-    val stockTable: Table
+    private val equipName: Label
+    private val description: Label
+    private val equipIcon: Image
+    private val specsNames: Label
+    private val specsValues: Label
+    private val equipMap by lazy { makeEquipMap() }
+    private val equipWindow by lazy { makeEquipWindow() }
+    private val suitTable: Table
+    private val stockTable: Table
 
     init {
         padTop(Constants.UI_MARGIN)
@@ -129,12 +141,6 @@ class EquipTable(val equipType: EquipType, val playerData: Player, val equipsDat
                 }
             }
         }
-        setEquip(
-                when (equipType) {
-                    EquipType.SHIP -> playerData.activeEquips.ship
-                    EquipType.GUN -> playerData.activeEquips.gun
-                }
-        )
     }
 
     // separate method creation motivated by impossibility to pass ::selectMod inside DSL scope
@@ -142,7 +148,7 @@ class EquipTable(val equipType: EquipType, val playerData: Player, val equipsDat
 
     // fill info and suit tables with chosen equip data
     private fun setEquip(equipAlias: EquipAlias) {
-        val equip = equipsData.equips.single { it.type == equipType && it.index == equipAlias.index }
+        val equip = equipMap[equipAlias]
         equipName.txt = equip.name
         description.txt = equip.description
         val regionName = chooseEquipRegionName(equip.type, equip.index)
@@ -176,7 +182,7 @@ class EquipTable(val equipType: EquipType, val playerData: Player, val equipsDat
             table {
                 top()
                 defaults().padTop(12f)
-                for (equip in this@EquipTable.equipList) {
+                this@EquipTable.equipMap.forEach { (equipAlias, equip) ->
                     table {
                         left()
                         touchable = Touchable.enabled
@@ -184,11 +190,12 @@ class EquipTable(val equipType: EquipType, val playerData: Player, val equipsDat
 
                         // Icon
                         table {
-                            val regionName = this@EquipTable.chooseEquipRegionName(equip.type, equip.index)
+                            val regionName = this@EquipTable.chooseEquipRegionName(equipAlias.type, equipAlias.index)
                             background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(Constants.LIGHT_GRAY_PIXEL))
                             image(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName())).apply { setScaling(Scaling.fit) }
                             onClickEvent { _ ->
                                 println("Equip item clicked")
+                                this@EquipTable.selectedEquipAlias = equipAlias
                                 this@EquipTable.switchEquipWindow()
                             }
                         }.cell(width = 88f, height = 88f, pad = 6f)
@@ -219,14 +226,14 @@ class EquipTable(val equipType: EquipType, val playerData: Player, val equipsDat
         }
     }.apply { this@EquipTable.stage.addActor(this) }
 
-    private fun makeEquipList(): Array<Equip> {
-        return equipsData.equips
-                .filter { it.type == equipType }
-                .filter {
-                    playerData.equips
-                            .filter { it.type == equipType }
-                            .map { it.index }.contains(it.index)
-                }
+    private fun makeEquipMap(): GdxMap<EquipAlias, Equip> {
+        val equipMap = GdxMap<EquipAlias, Equip>()
+        val equips = equipsData.equips.filter { it.type == equipType }
+        playerData.equips.filter { it.type == equipType }.forEach { equipAlias ->
+            equipMap.put(equipAlias, equips.single { it.index == equipAlias.index })
+
+        }
+        return equipMap
     }
 
     private fun switchEquipWindow() {
