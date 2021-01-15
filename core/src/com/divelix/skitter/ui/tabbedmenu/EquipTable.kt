@@ -15,16 +15,17 @@ import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.scrollmenu.ModSelector
 import ktx.actors.onClickEvent
 import ktx.actors.txt
-import ktx.collections.gdxArrayOf
+import ktx.collections.filter
 import ktx.scene2d.*
 import ktx.style.get
 
-class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: EquipsData) : Table(), KTable, ModSelector {
+class EquipTable(val equipType: EquipType, val playerData: Player, val equipsData: EquipsData) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
     val modType = when (equipType) {
         EquipType.SHIP -> ModType.SHIP_MOD
         EquipType.GUN -> ModType.GUN_MOD
     }
+    val equipName: Label
     val description: Label
     val equipIcon: Image
     val specsNames: Label
@@ -46,11 +47,15 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
                 pad(Constants.UI_PADDING)
 
                 // Description
-                scrollPane {
-                    this@EquipTable.description = scaledLabel(Constants.LOREM_IPSUM).apply {
-                        wrap = true
-                        setAlignment(Align.top)
-                    }
+                table {
+                    this@EquipTable.equipName = scaledLabel("Name").apply { setAlignment(Align.top) }
+                    row()
+                    scrollPane {
+                        this@EquipTable.description = scaledLabel(Constants.LOREM_IPSUM).apply {
+                            wrap = true
+                            setAlignment(Align.top)
+                        }
+                    }.cell(grow = true)
                 }.cell(width = 92f, height = 100f, padRight = Constants.UI_PADDING)
 
                 // Icon
@@ -59,6 +64,10 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                     this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             .apply { setScaling(Scaling.fit) }.cell(pad = Constants.UI_PADDING)
+                    onClickEvent { event ->
+                        println("Equip icon clicked")
+                        this@EquipTable.switchEquipWindow()
+                    }
                 }.cell(width = 100f, height = 100f)
 
                 // Stats
@@ -96,7 +105,7 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
                         pad(Constants.UI_PADDING)
                         defaults().pad(Constants.UI_PADDING)
                         // fill with mods
-                        val modAliases = playerData.mods.filter { it.type == this@EquipTable.modType }
+                        val modAliases = this@EquipTable.playerData.mods.filter { it.type == this@EquipTable.modType }
                         modAliases.forEachIndexed { i, modAlias ->
                             container(this@EquipTable.makeModView(modAlias))
                             if ((i + 1) % 4 == 0) row()
@@ -128,35 +137,27 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
         )
     }
 
+    // separate method creation motivated by impossibility to pass ::selectMod inside DSL scope
     private fun makeModView(modAlias: ModAlias) = ModView(modAlias, ::selectMod)
 
+    // fill info and suit tables with chosen equip data
     private fun setEquip(equipAlias: EquipAlias) {
         val equip = equipsData.equips.single { it.type == equipType && it.index == equipAlias.index }
+        equipName.txt = equip.name
         description.txt = equip.description
-        val regionName = when (equip.type) {
-            EquipType.SHIP -> when (equip.index) {
-                1 -> RegionName.SHIP_DEFAULT
-                2 -> RegionName.SHIP_TANK
-                else -> throw Exception("no drawable for ship index = ${equip.index}")
-            }
-            EquipType.GUN -> when (equip.index) {
-                1 -> RegionName.GUN_DEFAULT
-                2 -> RegionName.GUN_SNIPER
-                else -> throw Exception("no drawable for gun index = ${equip.index}")
-            }
-        }
+        val regionName = chooseEquipRegionName(equip.type, equip.index)
         equipIcon.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName()))
-        val i = equipAlias.level - 1
-        when (equip.specs) {
+        val idx = equipAlias.level - 1
+        when (val specs = equip.specs) {
             is ShipSpecs -> {
                 specsNames.txt = "HEALTH: \nSPEED: "
-                specsValues.txt ="${equip.specs.health[i]}\n${equip.specs.speed[i]}"
+                specsValues.txt = "${specs.health[idx]}\n${specs.speed[idx]}"
             }
             is GunSpecs -> {
                 specsNames.txt = "DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: "
-                specsValues.txt ="${equip.specs.damage[i]}\n${equip.specs.capacity[i]}\n" +
-                        "${equip.specs.reload[i]}\n${equip.specs.speed[i]}\n" +
-                        "${equip.specs.crit[i]}\n${equip.specs.chance[i]}"
+                specsValues.txt = "${specs.damage[idx]}\n${specs.capacity[idx]}\n" +
+                        "${specs.reload[idx]}\n${specs.speed[idx]}\n" +
+                        "${specs.crit[idx]}\n${specs.chance[idx]}"
             }
         }
         equipAlias.mods.forEachIndexed { i, modAlias ->
@@ -164,71 +165,84 @@ class EquipTable(val equipType: EquipType, playerData: Player, val equipsData: E
         }
     }
 
-    private fun makeEquipWindow(): Window {
-        val window = scene2d.window("", "equip-choose") {
-            isVisible = false
-            val windowHeight = Constants.stageHeight - 192f - 50f - 12f
-            setSize(326f, windowHeight)
-            setPosition((Constants.STAGE_WIDTH - width) / 2f, Constants.stageHeight - height - 192f - 14f)
-            top()
-            scrollPane {
-                setScrollingDisabled(true, false)
-                table {
-                    top()
-                    defaults().padTop(12f)
-                    for (equip in this@EquipTable.equipList) {
+    private fun makeEquipWindow() = scene2d.window("", "equip-choose") {
+        isVisible = false
+        val windowHeight = Constants.stageHeight - 192f - 50f - 12f
+        setSize(326f, windowHeight)
+        setPosition((Constants.STAGE_WIDTH - width) / 2f, Constants.stageHeight - height - 192f - 14f)
+        top()
+        scrollPane {
+            setScrollingDisabled(true, false)
+            table {
+                top()
+                defaults().padTop(12f)
+                for (equip in this@EquipTable.equipList) {
+                    table {
+                        left()
+                        touchable = Touchable.enabled
+                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.GRAY_PIXEL))
+
+                        // Icon
                         table {
-                            left()
-                            touchable = Touchable.enabled
-                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.GRAY_PIXEL))
+                            val regionName = this@EquipTable.chooseEquipRegionName(equip.type, equip.index)
+                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(Constants.LIGHT_GRAY_PIXEL))
+                            image(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName())).apply { setScaling(Scaling.fit) }
+                            onClickEvent { _ ->
+                                println("Equip item clicked")
+                                this@EquipTable.switchEquipWindow()
+                            }
+                        }.cell(width = 88f, height = 88f, pad = 6f)
 
-                            // Icon
-                            table {
-//                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.LIGHT_GRAY_PIXEL))
-                                image(equip.first).apply { setScaling(Scaling.fit) }
-                                onClickEvent { event ->
-                                    println("Equip item clicked")
-                                    this@EquipTable.switchEquipWindow()
-                                }
-                            }.cell(width = 88f, height = 88f, pad = 6f)
+                        // Description
+                        table {
+                            debug = true
+                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
+                            label("DEFAULT EQUIP", Constants.STYLE_BOLD_ORANGE)
+                            row()
+                            label("A bunch of text that describes the equip shortly") {
+                                wrap = true
+                                setAlignment(Align.top)
+                            }.cell(grow = true)
+                        }.cell(grow = true, padTop = 6f, padBottom = 6f)
 
-                            // Description
-                            table {
-                                debug = true
-                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                                label("DEFAULT EQUIP", Constants.STYLE_BOLD_ORANGE)
-                                row()
-                                label("A bunch of text that describes the equip shortly") {
-                                    wrap = true
-                                    setAlignment(Align.top)
-                                }.cell(grow = true)
-                            }.cell(grow = true, padTop = 6f, padBottom = 6f)
-
-                            // Stats
-                            table {
+                        // Stats
+                        table {
 //                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                                left()
-                                scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
-                                scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
-                            }.cell(pad = 6f)
-                        }.cell(width = 302f, height = 100f)
-                        row()
-                    }
+                            left()
+                            scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
+                            scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
+                        }.cell(pad = 6f)
+                    }.cell(width = 302f, height = 100f)
+                    row()
                 }
             }
         }
-        stage.addActor(window)
-        return window
-    }
+    }.apply { this@EquipTable.stage.addActor(this) }
 
-    private fun makeEquipList(): Array<Pair<TextureRegion, String>> {
-        return gdxArrayOf(
-                Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.GUN_DEFAULT()) to "default gun",
-                Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.GUN_SNIPER()) to "sniper gun"
-        )
+    private fun makeEquipList(): Array<Equip> {
+        return equipsData.equips
+                .filter { it.type == equipType }
+                .filter {
+                    playerData.equips
+                            .filter { it.type == equipType }
+                            .map { it.index }.contains(it.index)
+                }
     }
 
     private fun switchEquipWindow() {
         equipWindow.isVisible = !equipWindow.isVisible
+    }
+
+    private fun chooseEquipRegionName(type: EquipType, index: Int) = when (type) {
+        EquipType.SHIP -> when (index) {
+            1 -> RegionName.SHIP_DEFAULT
+            2 -> RegionName.SHIP_TANK
+            else -> throw Exception("no drawable for ship index = $index")
+        }
+        EquipType.GUN -> when (index) {
+            1 -> RegionName.GUN_DEFAULT
+            2 -> RegionName.GUN_SNIPER
+            else -> throw Exception("no drawable for gun index = $index")
+        }
     }
 }
