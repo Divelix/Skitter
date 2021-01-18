@@ -12,6 +12,7 @@ import com.divelix.skitter.data.*
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.scrollmenu.ModSelector
+import ktx.actors.onClick
 import ktx.actors.onClickEvent
 import ktx.actors.txt
 import ktx.collections.*
@@ -25,12 +26,12 @@ class EquipTable(
 ) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
     var selectedEquipAlias: EquipAlias = when (equipType) {
-        EquipType.SHIP -> playerData.activeEquips.ship
-        EquipType.GUN -> playerData.activeEquips.gun
+        EquipType.SHIP -> playerData.equips.single { it.type == EquipType.SHIP && it.index == playerData.activeEquips.shipIndex }
+        EquipType.GUN -> playerData.equips.single { it.type == EquipType.GUN && it.index == playerData.activeEquips.gunIndex }
     }
         set(value) {
             field = value
-            setEquip(value)
+            setActiveEquip(value)
         }
 
     private val modType = when (equipType) {
@@ -60,7 +61,7 @@ class EquipTable(
 
                 // Description
                 table {
-                    this@EquipTable.equipName = scaledLabel("Name").apply { setAlignment(Align.top) }
+                    this@EquipTable.equipName = scaledLabel("Equip name")
                     row()
                     scrollPane {
                         this@EquipTable.description = scaledLabel(Constants.LOREM_IPSUM).apply {
@@ -76,8 +77,7 @@ class EquipTable(
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                     this@EquipTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             .apply { setScaling(Scaling.fit) }.cell(pad = Constants.UI_PADDING)
-                    onClickEvent { event ->
-                        println("Equip icon clicked")
+                    onClickEvent { _ ->
                         this@EquipTable.switchEquipWindow()
                     }
                 }.cell(width = 100f, height = 100f)
@@ -97,7 +97,7 @@ class EquipTable(
                 pad(0f, Constants.UI_PADDING, Constants.UI_PADDING, Constants.UI_PADDING)
                 defaults().pad(Constants.UI_PADDING)
                 for (i in 1..8) {
-                    container(Actor().apply { setSize(64f, 64f) }) {
+                    container(this@EquipTable.makeEmptyCell()) {
                         background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                     }
                     if (i % 4 == 0) row()
@@ -116,22 +116,9 @@ class EquipTable(
                     this@EquipTable.stockTable = table {
                         pad(Constants.UI_PADDING)
                         defaults().pad(Constants.UI_PADDING)
-                        // fill with mods
-                        val modAliases = this@EquipTable.playerData.mods.filter { it.type == this@EquipTable.modType }
-                        modAliases.forEachIndexed { i, modAlias ->
-                            container(this@EquipTable.makeModView(modAlias))
-                            if ((i + 1) % 4 == 0) row()
-                        }
-                        // fill row with empty cells
-                        for (i in 1..(4 - modAliases.size % 4)) {
-                            container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
-                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                            }
-                        }
-                        row()
-                        // fill additional rows with empty cells
-                        for (i in 1..8) {
-                            container(Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }) {
+                        // fill with empty cells
+                        for (i in 1..16) {
+                            container(this@EquipTable.makeEmptyCell()) {
                                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             }
                             if (i % 4 == 0) row()
@@ -141,38 +128,13 @@ class EquipTable(
                 }
             }
         }
-    }
-
-    // separate method creation motivated by impossibility to pass ::selectMod inside DSL scope
-    private fun makeModView(modAlias: ModAlias) = ModView(modAlias, ::selectMod)
-
-    // fill info and suit tables with chosen equip data
-    private fun setEquip(equipAlias: EquipAlias) {
-        val equip = equipMap[equipAlias]
-        equipName.txt = equip.name
-        description.txt = equip.description
-        val regionName = chooseEquipRegionName(equip.type, equip.index)
-        equipIcon.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName()))
-        val idx = equipAlias.level - 1
-        when (val specs = equip.specs) {
-            is ShipSpecs -> {
-                specsNames.txt = "HEALTH: \nSPEED: "
-                specsValues.txt = "${specs.health[idx]}\n${specs.speed[idx]}"
-            }
-            is GunSpecs -> {
-                specsNames.txt = "DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: "
-                specsValues.txt = "${specs.damage[idx]}\n${specs.capacity[idx]}\n" +
-                        "${specs.reload[idx]}\n${specs.speed[idx]}\n" +
-                        "${specs.crit[idx]}\n${specs.chance[idx]}"
-            }
-        }
-        equipAlias.mods.forEachIndexed { i, modAlias ->
-            (suitTable.children[i] as Container<*>).actor = makeModView(modAlias)
-        }
+        fillStockTable()
+        setActiveEquip(selectedEquipAlias)
     }
 
     private fun makeEquipWindow() = scene2d.window("", "equip-choose") {
         isVisible = false
+        isModal = true
         val windowHeight = Constants.stageHeight - 192f - 50f - 12f
         setSize(326f, windowHeight)
         setPosition((Constants.STAGE_WIDTH - width) / 2f, Constants.stageHeight - height - 192f - 14f)
@@ -187,17 +149,16 @@ class EquipTable(
                         left()
                         touchable = Touchable.enabled
                         background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.GRAY_PIXEL))
+                        onClickEvent { _ ->
+                            this@EquipTable.selectedEquipAlias = equipAlias
+                            this@EquipTable.switchEquipWindow()
+                        }
 
                         // Icon
                         table {
                             val regionName = this@EquipTable.chooseEquipRegionName(equipAlias.type, equipAlias.index)
                             background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(Constants.LIGHT_GRAY_PIXEL))
                             image(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName())).apply { setScaling(Scaling.fit) }
-                            onClickEvent { _ ->
-                                println("Equip item clicked")
-                                this@EquipTable.selectedEquipAlias = equipAlias
-                                this@EquipTable.switchEquipWindow()
-                            }
                         }.cell(width = 88f, height = 88f, pad = 6f)
 
                         // Description
@@ -225,6 +186,58 @@ class EquipTable(
             }
         }
     }.apply { this@EquipTable.stage.addActor(this) }
+
+    // separate method creation motivated by impossibility to pass ::selectMod inside DSL scope
+    private fun makeModView(modAlias: ModAlias) = ModView(modAlias, ::selectMod)
+
+    private fun makeEmptyCell() = Actor().apply {
+        setSize(Constants.MOD_SIZE, Constants.MOD_SIZE)
+        onClick {
+            println("Empty mod was clicked")
+            val selected = this@EquipTable.selectedModView
+            if (selected != null) {
+                val selectedContainer = selected.parent as Container<*>
+                (this.parent as Container<*>).actor = selected
+                selectedContainer.actor = this
+            }
+        }
+    }
+
+    // fill info and suit tables with chosen equip data
+    private fun setActiveEquip(equipAlias: EquipAlias) {
+        val equip = equipMap[equipAlias]
+        equipName.txt = equip.name
+        description.txt = equip.description
+        val regionName = chooseEquipRegionName(equip.type, equip.index)
+        equipIcon.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName()))
+        val idx = equipAlias.level - 1
+        when (val specs = equip.specs) {
+            is ShipSpecs -> {
+                specsNames.txt = "HEALTH: \nSPEED: "
+                specsValues.txt = "${specs.health[idx]}\n${specs.speed[idx]}"
+            }
+            is GunSpecs -> {
+                specsNames.txt = "DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: "
+                specsValues.txt = "${specs.damage[idx]}\n${specs.capacity[idx]}\n" +
+                        "${specs.reload[idx]}\n${specs.speed[idx]}\n" +
+                        "${specs.crit[idx]}\n${specs.chance[idx]}"
+            }
+        }
+        equipAlias.mods.forEachIndexed { i, modAlias ->
+            (suitTable.children[i] as Container<*>).actor = makeModView(modAlias)
+        }
+        when (equipAlias.type) {
+            EquipType.SHIP -> playerData.activeEquips.shipIndex = equipAlias.index
+            EquipType.GUN -> playerData.activeEquips.gunIndex = equipAlias.index
+        }
+    }
+
+    private fun fillStockTable() {
+        val modAliases = playerData.mods.filter { it.type == modType }
+        modAliases.forEachIndexed { i, modAlias ->
+            (stockTable.children[i] as Container<*>).actor = makeModView(modAlias)
+        }
+    }
 
     private fun makeEquipMap(): GdxMap<EquipAlias, Equip> {
         val equipMap = GdxMap<EquipAlias, Equip>()

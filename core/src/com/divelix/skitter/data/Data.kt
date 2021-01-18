@@ -127,7 +127,7 @@ data class Player(
         val mods: Array<ModAlias> = gdxArrayOf()
 )
 
-data class ActiveEquips(val ship: EquipAlias = EquipAlias(), val gun: EquipAlias = EquipAlias())
+data class ActiveEquips(var shipIndex: Int = 0, var gunIndex: Int = 0)
 
 data class EquipAlias(val type: EquipType = EquipType.SHIP, val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
 

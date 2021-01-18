@@ -94,96 +94,25 @@ class PlayerDataTests {
 
     @Test
     fun `check ActiveEquips serialization`() {
-        val inputObj = ActiveEquips(
-                EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
-                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
-                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
-                )),
-                EquipAlias(EquipType.GUN, 1, 2, gdxArrayOf(
-                        ModAlias(ModType.GUN_MOD, 1, 2, 3),
-                        ModAlias(ModType.GUN_MOD, 4, 5, 6)
-                ))
-        )
-        val refStr =
-                """
-                    {
-                    "ship": {
-                    	"type": "ship",
-                    	"index": 1,
-                    	"level": 2,
-                    	"mods": [
-                    		{ "type": "ship_mod", "index": 1, "level": 2, "quantity": 3 },
-                    		{ "type": "ship_mod", "index": 4, "level": 5, "quantity": 6 }
-                    	]
-                    },
-                    "gun": {
-                    	"type": "gun",
-                    	"index": 1,
-                    	"level": 2,
-                    	"mods": [
-                    		{ "type": "gun_mod", "index": 1, "level": 2, "quantity": 3 },
-                    		{ "type": "gun_mod", "index": 4, "level": 5, "quantity": 6 }
-                    	]
-                    }
-                    }
-                """.trimIndent()
+        val inputObj = ActiveEquips(2, 5)
+        val refStr = """{ "shipIndex": 2, "gunIndex": 5 }"""
         val outputStr = json.toJson(inputObj)
         val prettyOutputStr = json.prettyPrint(outputStr, printSettings)
-        Assert.assertEquals(prettyOutputStr, refStr)
+        Assert.assertEquals(refStr, prettyOutputStr)
     }
 
     @Test
     fun `check ActiveEquips deserialization`() {
-        val inputStr =
-                """
-                    {
-                    "ship": {
-                    	"type": "ship",
-                    	"index": 1,
-                    	"level": 2,
-                    	"mods": [
-                    		{ "type": "ship_mod", "index": 1, "level": 2, "quantity": 3 },
-                    		{ "type": "ship_mod", "index": 4, "level": 5, "quantity": 6 }
-                    	]
-                    },
-                    "gun": {
-                    	"type": "gun",
-                    	"index": 1,
-                    	"level": 2,
-                    	"mods": [
-                    		{ "type": "gun_mod", "index": 1, "level": 2, "quantity": 3 },
-                    		{ "type": "gun_mod", "index": 4, "level": 5, "quantity": 6 }
-                    	]
-                    }
-                    }
-                """.trimIndent()
+        val inputStr = """{ "shipIndex": 2, "gunIndex": 5 }"""
         val outputObj = json.fromJson<ActiveEquips>(inputStr)
-        val refObj = ActiveEquips(
-                EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
-                        ModAlias(ModType.SHIP_MOD, 1, 2, 3),
-                        ModAlias(ModType.SHIP_MOD, 4, 5, 6)
-                )),
-                EquipAlias(EquipType.GUN, 1, 2, gdxArrayOf(
-                        ModAlias(ModType.GUN_MOD, 1, 2, 3),
-                        ModAlias(ModType.GUN_MOD, 4, 5, 6)
-                ))
-        )
+        val refObj = ActiveEquips(2, 5)
         Assert.assertEquals(refObj, outputObj)
     }
 
     @Test
     fun `check Player serialization`() {
         val inputObj = Player(123, "DefaultName", 100,
-                ActiveEquips(
-                        EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
-                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
-                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
-                        )),
-                        EquipAlias(EquipType.GUN, 1, 2, gdxArrayOf(
-                                ModAlias(ModType.GUN_MOD, 1, 2, 3),
-                                ModAlias(ModType.GUN_MOD, 4, 5, 6)
-                        ))
-                ),
+                ActiveEquips(1, 1),
                 gdxArrayOf(
                         EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
                                 ModAlias(ModType.SHIP_MOD, 1, 2, 3),
@@ -205,26 +134,7 @@ class PlayerDataTests {
                     "id": 123,
                     "name": "DefaultName",
                     "coins": 100,
-                    "activeEquips": {
-                    	"ship": {
-                    		"type": "ship",
-                    		"index": 1,
-                    		"level": 2,
-                    		"mods": [
-                    			{ "type": "ship_mod", "index": 1, "level": 2, "quantity": 3 },
-                    			{ "type": "ship_mod", "index": 4, "level": 5, "quantity": 6 }
-                    		]
-                    	},
-                    	"gun": {
-                    		"type": "gun",
-                    		"index": 1,
-                    		"level": 2,
-                    		"mods": [
-                    			{ "type": "gun_mod", "index": 1, "level": 2, "quantity": 3 },
-                    			{ "type": "gun_mod", "index": 4, "level": 5, "quantity": 6 }
-                    		]
-                    	}
-                    },
+                    "activeEquips": { "shipIndex": 1, "gunIndex": 1 },
                     "equips": [
                     	{
                     		"type": "ship",
@@ -264,26 +174,7 @@ class PlayerDataTests {
                     "id": 123,
                     "name": "DefaultName",
                     "coins": 100,
-                    "activeEquips": {
-                    	"ship": {
-                    		"type": "ship",
-                    		"index": 1,
-                    		"level": 2,
-                    		"mods": [
-                    			{ "type": "ship_mod", "index": 1, "level": 2, "quantity": 3 },
-                    			{ "type": "ship_mod", "index": 4, "level": 5, "quantity": 6 }
-                    		]
-                    	},
-                    	"gun": {
-                    		"type": "gun",
-                    		"index": 1,
-                    		"level": 2,
-                    		"mods": [
-                    			{ "type": "gun_mod", "index": 1, "level": 2, "quantity": 3 },
-                    			{ "type": "gun_mod", "index": 4, "level": 5, "quantity": 6 }
-                    		]
-                    	}
-                    },
+                    "activeEquips": { "shipIndex": 1, "gunIndex": 1 },
                     "equips": [
                     	{
                     		"type": "ship",
@@ -312,16 +203,7 @@ class PlayerDataTests {
                 """.trimIndent()
         val outputObj = json.fromJson<Player>(inputStr)
         val refObj = Player(123, "DefaultName", 100,
-                ActiveEquips(
-                        EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
-                                ModAlias(ModType.SHIP_MOD, 1, 2, 3),
-                                ModAlias(ModType.SHIP_MOD, 4, 5, 6)
-                        )),
-                        EquipAlias(EquipType.GUN, 1, 2, gdxArrayOf(
-                                ModAlias(ModType.GUN_MOD, 1, 2, 3),
-                                ModAlias(ModType.GUN_MOD, 4, 5, 6)
-                        ))
-                ),
+                ActiveEquips(1, 1),
                 gdxArrayOf(
                         EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
                                 ModAlias(ModType.SHIP_MOD, 1, 2, 3),
