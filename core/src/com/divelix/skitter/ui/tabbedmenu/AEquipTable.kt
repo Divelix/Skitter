@@ -13,14 +13,14 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Player
+import com.divelix.skitter.data.PlayerData
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import ktx.actors.onClickEvent
 import ktx.scene2d.*
 import ktx.style.get
 
-abstract class AEquipTable(val playerData: Player, val assets: Assets) : Table(), KTable {
+abstract class AEquipTable(val playerData: PlayerData, val assets: Assets) : Table(), KTable {
     val description: Label
     val equipIcon: Image
     val specsNames: Label

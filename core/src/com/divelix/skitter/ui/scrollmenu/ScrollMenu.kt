@@ -27,7 +27,7 @@ class ScrollMenu(context: Context) : Group() {
     private val assets = context.inject<Assets>()
     private val json = context.inject<Json>()
     private val playerDataFile = "json/playerData.json".toLocalFile()
-    private val playerData = json.fromJson<Player>(playerDataFile)
+    private val playerData = json.fromJson<PlayerData>(playerDataFile)
     private val equipsData = json.fromJson<EquipsData>("json/equips.json".toLocalFile())
     private val modsData = json.fromJson<ModsData>("json/mods.json".toLocalFile())
     private val pages = gdxArrayOf(

@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Json
 import com.divelix.skitter.data.Assets
-import com.divelix.skitter.data.Player
 import com.divelix.skitter.screens.LoadingScreen
 import ktx.inject.Context
 import ktx.inject.register

@@ -118,7 +118,7 @@ data class ModsData(
 
 //----------------- Remote -----------------
 //----------- PLAYER -----------
-data class Player(
+data class PlayerData(
         val id: Int = -1,
         val name: String = "None",
         val coins: Int = 0,

@@ -27,24 +27,27 @@ object Constants {
     const val MOD_HEIGHT = 64f // TODO remove
     const val SHIPS_TAB = "ShipsTab"
     const val GUNS_TAB = "GunsTab"
+    const val SUIT_TABLE = "suit_table"
+    const val STOCK_TABLE = "stock_table"
 
     // Colors
     const val ORANGE_COLOR = "orange"
 
     // Background textures
-    const val BLACK_PIXEL_30 = "blackPixel30"
-    const val BLACK_PIXEL_50 = "blackPixel50"
-    const val BLACK_PIXEL_70 = "blackPixel70"
-    const val BLACK_PIXEL = "blackPixel"
-    const val YELLOW_PIXEL = "yellowPixel"
-    const val WHITE_PIXEL = "whitePixel"
-    const val LIGHT_GRAY_PIXEL = "lightGray"
+    const val BLACK_PIXEL_30 = "black_pixel_30"
+    const val BLACK_PIXEL_50 = "black_pixel_50"
+    const val BLACK_PIXEL_70 = "black_pixel_70"
+    const val BLACK_PIXEL = "black_pixel"
+    const val YELLOW_PIXEL = "yellow_pixel"
+    const val WHITE_PIXEL = "white_pixel"
+    const val LIGHT_GRAY_PIXEL = "light_gray"
     const val GRAY_PIXEL = "gray"
-    const val DARK_GRAY_PIXEL = "darkGray"
+    const val DARK_GRAY_PIXEL = "dark_gray"
 
     // Styles
-    const val STYLE_BOLD = "boldLabel"
-    const val STYLE_BOLD_ORANGE = "boldOrangeLabel"
+    const val STYLE_BOLD = "bold_label"
+    const val STYLE_BOLD_ORANGE = "bold_orange_label"
+    const val STYLE_EQUIP_CHOOSE = "equip_choose"
 
     // Control params
     const val CAMERA_RADIUS = 2f

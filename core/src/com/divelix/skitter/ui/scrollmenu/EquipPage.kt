@@ -3,14 +3,13 @@ package com.divelix.skitter.ui.scrollmenu
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.EquipType
 import com.divelix.skitter.data.EquipsData
-import com.divelix.skitter.data.Player
+import com.divelix.skitter.data.PlayerData
 import com.divelix.skitter.ui.tabbedmenu.*
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.table
 
-class EquipPage(context: Context, val playerData: Player, val equipsData: EquipsData) : Page(context), ModSelector {
-    override var selectedModView: ModView? = null
+class EquipPage(context: Context, playerData: PlayerData, equipsData: EquipsData) : Page(context) {
 
     init {
         val tabbedMenu = TabbedMenu(gdxArrayOf(

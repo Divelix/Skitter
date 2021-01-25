@@ -21,7 +21,7 @@ import ktx.style.get
 
 class EquipTable(
         private val equipType: EquipType,
-        private val playerData: Player,
+        private val playerData: PlayerData,
         private val equipsData: EquipsData
 ) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
@@ -106,13 +106,21 @@ class EquipTable(
         }
         row()
 
+        // Action button
+        table {
+            container {
+                size(326f, 50f)
+                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
+            }
+        }
+
+        row()
+
         // Bottom table
         table {
-            pad(Constants.UI_MARGIN)
-
-            // StockTable
             scrollPane {
                 container {
+                    // StockTable
                     this@EquipTable.stockTable = table {
                         pad(Constants.UI_PADDING)
                         defaults().pad(Constants.UI_PADDING)
@@ -132,7 +140,7 @@ class EquipTable(
         setActiveEquip(selectedEquipAlias)
     }
 
-    private fun makeEquipWindow() = scene2d.window("", "equip-choose") {
+    private fun makeEquipWindow() = scene2d.window("", Constants.STYLE_EQUIP_CHOOSE) {
         isVisible = false
         isModal = true
         val windowHeight = Constants.stageHeight - 192f - 50f - 12f
@@ -144,7 +152,7 @@ class EquipTable(
             table {
                 top()
                 defaults().padTop(12f)
-                this@EquipTable.equipMap.forEach { (equipAlias, equip) ->
+                this@EquipTable.equipMap.forEach { (equipAlias, _) ->
                     table {
                         left()
                         touchable = Touchable.enabled
@@ -194,11 +202,14 @@ class EquipTable(
         setSize(Constants.MOD_SIZE, Constants.MOD_SIZE)
         onClick {
             println("Empty mod was clicked")
-            val selected = this@EquipTable.selectedModView
-            if (selected != null) {
-                val selectedContainer = selected.parent as Container<*>
-                (this.parent as Container<*>).actor = selected
-                selectedContainer.actor = this
+            this@EquipTable.selectedModView.let { selected ->
+                if (selected != null) {
+                    val selectedContainer = selected.parent as Container<*>
+                    (this.parent as Container<*>).actor = selected
+                    selectedContainer.actor = this
+                    selected.deactivate()
+                    this@EquipTable.selectedModView = null
+                }
             }
         }
     }
@@ -206,6 +217,8 @@ class EquipTable(
     // fill info and suit tables with chosen equip data
     private fun setActiveEquip(equipAlias: EquipAlias) {
         val equip = equipMap[equipAlias]
+
+        //fill info table
         equipName.txt = equip.name
         description.txt = equip.description
         val regionName = chooseEquipRegionName(equip.type, equip.index)
@@ -223,9 +236,17 @@ class EquipTable(
                         "${specs.crit[idx]}\n${specs.chance[idx]}"
             }
         }
+
+        // clear suit table
+        suitTable.children.forEach {
+            (it as Container<*>).actor = makeEmptyCell()
+        }
+        // fill suit table with active equip mods
         equipAlias.mods.forEachIndexed { i, modAlias ->
             (suitTable.children[i] as Container<*>).actor = makeModView(modAlias)
         }
+
+        // update PlayerData
         when (equipAlias.type) {
             EquipType.SHIP -> playerData.activeEquips.shipIndex = equipAlias.index
             EquipType.GUN -> playerData.activeEquips.gunIndex = equipAlias.index

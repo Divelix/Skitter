@@ -162,7 +162,7 @@ class Assets: Disposable {
                 titleFont = manager.get(Constants.ROBOTO_LIGHT_FONT)
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
-            window("equip-choose", extend = defaultStyle) {
+            window(Constants.STYLE_EQUIP_CHOOSE, extend = defaultStyle) {
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.DARK_GRAY_PIXEL))
             }
 

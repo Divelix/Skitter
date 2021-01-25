@@ -111,7 +111,7 @@ class PlayerDataTests {
 
     @Test
     fun `check Player serialization`() {
-        val inputObj = Player(123, "DefaultName", 100,
+        val inputObj = PlayerData(123, "DefaultName", 100,
                 ActiveEquips(1, 1),
                 gdxArrayOf(
                         EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(
@@ -201,8 +201,8 @@ class PlayerDataTests {
                     ]
                     }
                 """.trimIndent()
-        val outputObj = json.fromJson<Player>(inputStr)
-        val refObj = Player(123, "DefaultName", 100,
+        val outputObj = json.fromJson<PlayerData>(inputStr)
+        val refObj = PlayerData(123, "DefaultName", 100,
                 ActiveEquips(1, 1),
                 gdxArrayOf(
                         EquipAlias(EquipType.SHIP, 1, 2, gdxArrayOf(

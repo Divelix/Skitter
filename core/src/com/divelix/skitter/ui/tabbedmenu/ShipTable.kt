@@ -5,11 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Player
+import com.divelix.skitter.data.PlayerData
 import ktx.actors.txt
 import ktx.collections.gdxArrayOf
 
-class ShipTable(playerData: Player, assets: Assets) : AEquipTable(playerData, assets) {
+class ShipTable(playerData: PlayerData, assets: Assets) : AEquipTable(playerData, assets) {
     init {
         description.txt = "Ship description"
         equipIcon.drawable = TextureRegionDrawable(assets.manager.get<Texture>(Constants.SHIP_DEFAULT))

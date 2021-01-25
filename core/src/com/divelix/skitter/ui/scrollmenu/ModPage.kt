@@ -11,7 +11,7 @@ import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(context: Context, val playerData: Player, val modsData: ModsData) : Page(context), ModSelector {
+class ModPage(context: Context, val playerData: PlayerData, val modsData: ModsData) : Page(context), ModSelector {
     override var selectedModView: ModView? = null
         set(value) {
             field = value
