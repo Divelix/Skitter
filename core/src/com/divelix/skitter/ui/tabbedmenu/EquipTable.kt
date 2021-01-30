@@ -1,10 +1,12 @@
 package com.divelix.skitter.ui.tabbedmenu
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
@@ -16,6 +18,7 @@ import ktx.actors.onClick
 import ktx.actors.onClickEvent
 import ktx.actors.txt
 import ktx.collections.*
+import ktx.log.debug
 import ktx.scene2d.*
 import ktx.style.get
 
@@ -25,6 +28,19 @@ class EquipTable(
         private val equipsData: EquipsData
 ) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
+        set(value) {
+            field = value
+            actionButton.isVisible = true
+            when (value?.parent?.parent?.name) {
+                Constants.SUIT_TABLE -> {
+                    (actionButton.actor as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.MOVE_DOWN_ICON()))
+                }
+                Constants.STOCK_TABLE -> {
+                    (actionButton.actor as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.MOVE_UP_ICON()))
+                }
+                else -> actionButton.isVisible = false
+            }
+        }
     var selectedEquipAlias: EquipAlias = when (equipType) {
         EquipType.SHIP -> playerData.equips.single { it.type == EquipType.SHIP && it.index == playerData.activeEquips.shipIndex }
         EquipType.GUN -> playerData.equips.single { it.type == EquipType.GUN && it.index == playerData.activeEquips.gunIndex }
@@ -47,6 +63,7 @@ class EquipTable(
     private val equipWindow by lazy { makeEquipWindow() }
     private val suitTable: Table
     private val stockTable: Table
+    private val actionButton by lazy { makeActionButton() }
 
     init {
         padTop(Constants.UI_MARGIN)
@@ -94,6 +111,7 @@ class EquipTable(
 
             // SuitTable
             this@EquipTable.suitTable = table {
+                name = Constants.SUIT_TABLE
                 pad(0f, Constants.UI_PADDING, Constants.UI_PADDING, Constants.UI_PADDING)
                 defaults().pad(Constants.UI_PADDING)
                 for (i in 1..8) {
@@ -107,12 +125,7 @@ class EquipTable(
         row()
 
         // Action button
-        table {
-            container {
-                size(326f, 50f)
-                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
-            }
-        }
+        add(actionButton)
 
         row()
 
@@ -122,6 +135,7 @@ class EquipTable(
                 container {
                     // StockTable
                     this@EquipTable.stockTable = table {
+                        name = Constants.STOCK_TABLE
                         pad(Constants.UI_PADDING)
                         defaults().pad(Constants.UI_PADDING)
                         // fill with empty cells
@@ -138,6 +152,20 @@ class EquipTable(
         }
         fillStockTable()
         setActiveEquip(selectedEquipAlias)
+    }
+
+    private fun makeActionButton() = scene2d.container {
+        isVisible = false
+        size(326f, 50f)
+        touchable = Touchable.enabled
+        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
+        actor = Image(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.MOVE_UP_ICON()))
+                .apply {
+                    setScaling(Scaling.fit)
+                }
+        onClick {
+            debug { "action button click" }
+        }
     }
 
     private fun makeEquipWindow() = scene2d.window("", Constants.STYLE_EQUIP_CHOOSE) {
@@ -200,18 +228,18 @@ class EquipTable(
 
     private fun makeEmptyCell() = Actor().apply {
         setSize(Constants.MOD_SIZE, Constants.MOD_SIZE)
-        onClick {
-            println("Empty mod was clicked")
-            this@EquipTable.selectedModView.let { selected ->
-                if (selected != null) {
-                    val selectedContainer = selected.parent as Container<*>
-                    (this.parent as Container<*>).actor = selected
-                    selectedContainer.actor = this
-                    selected.deactivate()
-                    this@EquipTable.selectedModView = null
-                }
-            }
-        }
+//        onClick {
+//            debug { "Empty mod was clicked" }
+//            this@EquipTable.selectedModView.let { selected ->
+//                if (selected != null) {
+//                    val selectedContainer = selected.parent as Container<*>
+//                    (this.parent as Container<*>).actor = selected
+//                    selectedContainer.actor = this
+//                    selected.deactivate()
+//                    this@EquipTable.selectedModView = null
+//                }
+//            }
+//        }
     }
 
     // fill info and suit tables with chosen equip data
