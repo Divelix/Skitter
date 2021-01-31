@@ -1,12 +1,10 @@
 package com.divelix.skitter.ui.tabbedmenu
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
@@ -164,7 +162,33 @@ class EquipTable(
                     setScaling(Scaling.fit)
                 }
         onClick {
-            debug { "action button click" }
+            val targetTable = when (this@EquipTable.selectedModView?.parent?.parent?.name) {
+                Constants.SUIT_TABLE -> this@EquipTable.stockTable
+                Constants.STOCK_TABLE -> this@EquipTable.suitTable
+                else -> throw Exception("Can't find ModView parent table name")
+            }
+            if (targetTable == this@EquipTable.suitTable) {
+                val overlapModAlias = this@EquipTable.suitTable.children
+                        .filter { (it as Container<*>).actor is ModView }
+                        .map { ((it as Container<*>).actor as ModView).modAlias }
+                        .singleOrNull {
+                            it.type == this@EquipTable.selectedModView?.modAlias?.type && it.index == this@EquipTable.selectedModView?.modAlias?.index
+                        }
+                if (overlapModAlias != null) {
+                    debug { "SuitTable already has such mod" }
+                    return@onClick
+                }
+            }
+            this@EquipTable.selectedModView.let { selected ->
+                if (selected != null) {
+                    val selectedContainer = selected.parent as Container<*>
+                    val targetContainer = targetTable.children.first { (it as Container<*>).actor !is ModView } as Container<*>
+                    targetContainer.actor = selected
+                    selectedContainer.actor = this@EquipTable.makeEmptyCell()
+                    selected.deactivate()
+                    this@EquipTable.selectedModView = null
+                }
+            }
         }
     }
 
@@ -228,18 +252,6 @@ class EquipTable(
 
     private fun makeEmptyCell() = Actor().apply {
         setSize(Constants.MOD_SIZE, Constants.MOD_SIZE)
-//        onClick {
-//            debug { "Empty mod was clicked" }
-//            this@EquipTable.selectedModView.let { selected ->
-//                if (selected != null) {
-//                    val selectedContainer = selected.parent as Container<*>
-//                    (this.parent as Container<*>).actor = selected
-//                    selectedContainer.actor = this
-//                    selected.deactivate()
-//                    this@EquipTable.selectedModView = null
-//                }
-//            }
-//        }
     }
 
     // fill info and suit tables with chosen equip data
