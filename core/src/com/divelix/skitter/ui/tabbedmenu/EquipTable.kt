@@ -12,6 +12,7 @@ import com.divelix.skitter.data.*
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.scrollmenu.ModSelector
+import com.divelix.skitter.utils.AliasBinder
 import ktx.actors.onClick
 import ktx.actors.onClickEvent
 import ktx.actors.txt
@@ -22,8 +23,7 @@ import ktx.style.get
 
 class EquipTable(
         private val equipType: EquipType,
-        private val playerData: PlayerData,
-        private val equipsData: EquipsData
+        private val playerData: PlayerData
 ) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
         set(value) {
@@ -57,7 +57,6 @@ class EquipTable(
     private val equipIcon: Image
     private val specsNames: Label
     private val specsValues: Label
-    private val equipMap by lazy { makeEquipMap() }
     private val equipWindow by lazy { makeEquipWindow() }
     private val suitTable: Table
     private val stockTable: Table
@@ -161,34 +160,37 @@ class EquipTable(
                 .apply {
                     setScaling(Scaling.fit)
                 }
-        onClick {
-            val targetTable = when (this@EquipTable.selectedModView?.parent?.parent?.name) {
-                Constants.SUIT_TABLE -> this@EquipTable.stockTable
-                Constants.STOCK_TABLE -> this@EquipTable.suitTable
-                else -> throw Exception("Can't find ModView parent table name")
+        onClick { this@EquipTable.onActiveButtonClick() }
+    }
+
+    private fun onActiveButtonClick() {
+        val targetTable = when (selectedModView?.parent?.parent?.name) {
+            Constants.SUIT_TABLE -> stockTable
+            Constants.STOCK_TABLE -> suitTable
+            else -> throw Exception("Can't find name ModView parent table")
+        }
+        if (targetTable == suitTable) {
+            val overlapModAlias = suitTable.children
+                    .filter { (it as Container<*>).actor is ModView }
+                    .map { ((it as Container<*>).actor as ModView).modAlias }
+                    .singleOrNull {
+                        it.type == selectedModView?.modAlias?.type && it.index == selectedModView?.modAlias?.index
+                    }
+            if (overlapModAlias != null) {
+                debug { "SuitTable already has such mod" }
+                return
+            } else {
+//                TODO make stats update here
+//                updateInfoTableByMod(selectedModView)
             }
-            if (targetTable == this@EquipTable.suitTable) {
-                val overlapModAlias = this@EquipTable.suitTable.children
-                        .filter { (it as Container<*>).actor is ModView }
-                        .map { ((it as Container<*>).actor as ModView).modAlias }
-                        .singleOrNull {
-                            it.type == this@EquipTable.selectedModView?.modAlias?.type && it.index == this@EquipTable.selectedModView?.modAlias?.index
-                        }
-                if (overlapModAlias != null) {
-                    debug { "SuitTable already has such mod" }
-                    return@onClick
-                }
-            }
-            this@EquipTable.selectedModView.let { selected ->
-                if (selected != null) {
-                    val selectedContainer = selected.parent as Container<*>
-                    val targetContainer = targetTable.children.first { (it as Container<*>).actor !is ModView } as Container<*>
-                    targetContainer.actor = selected
-                    selectedContainer.actor = this@EquipTable.makeEmptyCell()
-                    selected.deactivate()
-                    this@EquipTable.selectedModView = null
-                }
-            }
+        }
+        if (selectedModView != null) {
+            val selectedContainer = selectedModView!!.parent as Container<*>
+            val targetContainer = targetTable.children.first { (it as Container<*>).actor !is ModView } as Container<*>
+            targetContainer.actor = selectedModView
+            selectedContainer.actor = makeEmptyCell()
+            selectedModView!!.deactivate()
+            selectedModView = null
         }
     }
 
@@ -204,7 +206,7 @@ class EquipTable(
             table {
                 top()
                 defaults().padTop(12f)
-                this@EquipTable.equipMap.forEach { (equipAlias, _) ->
+                this@EquipTable.playerData.equips.forEach { equipAlias ->
                     table {
                         left()
                         touchable = Touchable.enabled
@@ -256,7 +258,17 @@ class EquipTable(
 
     // fill info and suit tables with chosen equip data
     private fun setActiveEquip(equipAlias: EquipAlias) {
-        val equip = equipMap[equipAlias]
+        val equip = AliasBinder.getEquip(equipAlias)
+
+        // clear suit table
+        suitTable.children.forEach {
+            (it as Container<*>).actor = makeEmptyCell()
+        }
+        // fill suit table with active equip mods
+        equipAlias.mods.forEachIndexed { i, modAlias ->
+            (suitTable.children[i] as Container<*>).actor = makeModView(modAlias)
+            // TODO make specs
+        }
 
         //fill info table
         equipName.txt = equip.name
@@ -277,15 +289,6 @@ class EquipTable(
             }
         }
 
-        // clear suit table
-        suitTable.children.forEach {
-            (it as Container<*>).actor = makeEmptyCell()
-        }
-        // fill suit table with active equip mods
-        equipAlias.mods.forEachIndexed { i, modAlias ->
-            (suitTable.children[i] as Container<*>).actor = makeModView(modAlias)
-        }
-
         // update PlayerData
         when (equipAlias.type) {
             EquipType.SHIP -> playerData.activeEquips.shipIndex = equipAlias.index
@@ -298,16 +301,6 @@ class EquipTable(
         modAliases.forEachIndexed { i, modAlias ->
             (stockTable.children[i] as Container<*>).actor = makeModView(modAlias)
         }
-    }
-
-    private fun makeEquipMap(): GdxMap<EquipAlias, Equip> {
-        val equipMap = GdxMap<EquipAlias, Equip>()
-        val equips = equipsData.equips.filter { it.type == equipType }
-        playerData.equips.filter { it.type == equipType }.forEach { equipAlias ->
-            equipMap.put(equipAlias, equips.single { it.index == equipAlias.index })
-
-        }
-        return equipMap
     }
 
     private fun switchEquipWindow() {

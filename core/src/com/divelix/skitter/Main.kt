@@ -19,17 +19,6 @@ class Main : Game() {
         Gdx.app.logLevel = Application.LOG_DEBUG
         context.register {
             bindSingleton(this@Main)
-            bindSingleton(Json().apply {
-                setUsePrototypes(false) // to not erase default values (false, 0)
-                setSerializer(GdxIntArraySerializer())
-                setSerializer(GdxFloatArraySerializer())
-                // Player data (remote)
-                setSerializer(EquipAliasSerializer())
-                setSerializer(ModAliasSerializer())
-                // Game data (local)
-                setSerializer(EquipSerializer())
-                setSerializer(ModSerializer())
-            })
             bindSingleton(Assets())
             bindSingleton(SpriteBatch())
             bindSingleton(ShapeRenderer())

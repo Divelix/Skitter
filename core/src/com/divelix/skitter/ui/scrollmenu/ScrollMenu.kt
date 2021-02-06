@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.*
 import com.divelix.skitter.image
+import com.divelix.skitter.utils.JsonProcessor
 import ktx.actors.onClickEvent
 import ktx.assets.toLocalFile
 import ktx.collections.gdxArrayOf
@@ -25,15 +26,12 @@ import ktx.style.get
 
 class ScrollMenu(context: Context) : Group() {
     private val assets = context.inject<Assets>()
-    private val json = context.inject<Json>()
     private val playerDataFile = "json/playerData.json".toLocalFile()
-    private val playerData = json.fromJson<PlayerData>(playerDataFile)
-    private val equipsData = json.fromJson<EquipsData>("json/equips.json".toLocalFile())
-    private val modsData = json.fromJson<ModsData>("json/mods.json".toLocalFile())
+    private val playerData = JsonProcessor.fromJson<PlayerData>(playerDataFile)
     private val pages = gdxArrayOf(
-            Constants.EQUIP_ICON to EquipPage(context, playerData, equipsData),
+            Constants.EQUIP_ICON to EquipPage(context, playerData),
             Constants.BATTLE_ICON to PlayPage(context, playerData),
-            Constants.MOD_ICON to ModPage(context, playerData, modsData))
+            Constants.MOD_ICON to ModPage(context, playerData))
 
     private val scrollPane: ScrollPane
 
@@ -71,7 +69,7 @@ class ScrollMenu(context: Context) : Group() {
             outputType = JsonWriter.OutputType.json
             singleLineColumns = 100
         }
-        playerDataFile.writeString(json.prettyPrint(playerData, printSettings), false)
+        playerDataFile.writeString(JsonProcessor.prettyPrint(playerData, printSettings), false)
         log.debug { "Player data was saved to json" }
     }
 

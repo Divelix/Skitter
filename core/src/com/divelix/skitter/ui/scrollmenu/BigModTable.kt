@@ -10,12 +10,13 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Mod
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.tabbedmenu.ModView
+import com.divelix.skitter.utils.AliasBinder
 import ktx.actors.txt
 import ktx.scene2d.*
 import ktx.style.get
 import ktx.collections.*
 
-class BigModTable(val mods: Array<Mod>): Table(), KTable {
+class BigModTable: Table(), KTable {
     private val bigModView by lazy { BigModView() }
 
     private val modName: Label
@@ -49,7 +50,7 @@ class BigModTable(val mods: Array<Mod>): Table(), KTable {
     fun setMod(modView: ModView) {
         bigModView.setMod(modView)
         val modAlias = modView.modAlias
-        val modData = mods.singleOrNull { it.type == modAlias.type && it.index == modAlias.index }
+        val modData = AliasBinder.modsData.mods.singleOrNull { it.type == modAlias.type && it.index == modAlias.index }
         if (modData != null) {
             modName.txt = "<${modData.name}>"
             var specString = ""

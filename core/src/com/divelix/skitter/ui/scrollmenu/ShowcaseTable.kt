@@ -10,14 +10,15 @@ import com.divelix.skitter.data.ModsData
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.tabbedmenu.ModView
+import com.divelix.skitter.utils.AliasBinder
 import ktx.actors.txt
 import ktx.scene2d.KTable
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.table
 import ktx.style.get
 
-class ShowcaseTable(val modsData: ModsData): Table(), KTable {
-    private val bigModTable by lazy { BigModTable(modsData.mods) }
+class ShowcaseTable: Table(), KTable {
+    private val bigModTable by lazy { BigModTable() }
 
     private val sellPriceLabel: Label
     private val upgradePriceLabel: Label
@@ -44,8 +45,8 @@ class ShowcaseTable(val modsData: ModsData): Table(), KTable {
     fun setMod(modView: ModView?) {
         if (modView != null) {
             bigModTable.setMod(modView)
-            sellPriceLabel.txt = "${modsData.sellPrices[modView.modAlias.level-1]}"
-            upgradePriceLabel.txt = "${modsData.upgradePrices[modView.modAlias.level-1]}"
+            sellPriceLabel.txt = "${AliasBinder.modsData.sellPrices[modView.modAlias.level-1]}"
+            upgradePriceLabel.txt = "${AliasBinder.modsData.upgradePrices[modView.modAlias.level-1]}"
         } else {
             bigModTable.clearMod()
             sellPriceLabel.txt = ""

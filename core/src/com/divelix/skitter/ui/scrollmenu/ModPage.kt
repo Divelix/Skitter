@@ -6,18 +6,19 @@ import com.divelix.skitter.data.*
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.tabbedmenu.*
 import com.divelix.skitter.ui.tabbedmenu.stockTable
+import com.divelix.skitter.utils.AliasBinder
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(context: Context, val playerData: PlayerData, val modsData: ModsData) : Page(context), ModSelector {
+class ModPage(context: Context, val playerData: PlayerData) : Page(context), ModSelector {
     override var selectedModView: ModView? = null
         set(value) {
             field = value
             storeTable.setMod(value)
         }
-    private val storeTable by lazy { ShowcaseTable(modsData) }
+    private val storeTable by lazy { ShowcaseTable() }
 
     init {
         val tabbedMenu = TabbedMenu(gdxArrayOf(
