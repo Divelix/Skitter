@@ -164,34 +164,38 @@ class EquipTable(
     }
 
     private fun onActiveButtonClick() {
-        val targetTable = when (selectedModView?.parent?.parent?.name) {
+        require(selectedModView != null) { "selectedModView == null" }
+        val modView = selectedModView as ModView
+
+        val targetTable = when (modView.parent.parent.name) {
             Constants.SUIT_TABLE -> stockTable
             Constants.STOCK_TABLE -> suitTable
             else -> throw Exception("Can't find name ModView parent table")
         }
         if (targetTable == suitTable) {
+            // Check mod index duplicate
             val overlapModAlias = suitTable.children
                     .filter { (it as Container<*>).actor is ModView }
                     .map { ((it as Container<*>).actor as ModView).modAlias }
                     .singleOrNull {
-                        it.type == selectedModView?.modAlias?.type && it.index == selectedModView?.modAlias?.index
+                        it.type == modView.modAlias.type && it.index == modView.modAlias.index
                     }
-            if (overlapModAlias != null) {
+            if (overlapModAlias == null) {
+                selectedEquipAlias.mods.add(modView.modAlias)
+            } else {
                 debug { "SuitTable already has such mod" }
                 return
-            } else {
-//                TODO make stats update here
-//                updateInfoTableByMod(selectedModView)
             }
+        } else {
+            selectedEquipAlias.mods.removeValue(modView.modAlias, false)
         }
-        if (selectedModView != null) {
-            val selectedContainer = selectedModView!!.parent as Container<*>
-            val targetContainer = targetTable.children.first { (it as Container<*>).actor !is ModView } as Container<*>
-            targetContainer.actor = selectedModView
-            selectedContainer.actor = makeEmptyCell()
-            selectedModView!!.deactivate()
-            selectedModView = null
-        }
+        // Move ModView in UI
+        val selectedContainer = modView.parent as Container<*>
+        val targetContainer = targetTable.children.first { (it as Container<*>).actor !is ModView } as Container<*>
+        targetContainer.actor = modView
+        selectedContainer.actor = makeEmptyCell()
+        modView.deactivate()
+        selectedModView = null
     }
 
     private fun makeEquipWindow() = scene2d.window("", Constants.STYLE_EQUIP_CHOOSE) {
