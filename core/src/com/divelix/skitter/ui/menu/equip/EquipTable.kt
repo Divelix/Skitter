@@ -3,28 +3,19 @@ package com.divelix.skitter.ui.menu.equip
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.*
-import com.divelix.skitter.image
-import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.menu.scroll.ModSelector
 import com.divelix.skitter.ui.menu.ModView
 import com.divelix.skitter.utils.AliasBinder
-import com.divelix.skitter.utils.RegionBinder
-import ktx.actors.onClick
-import ktx.actors.onClickEvent
-import ktx.actors.txt
 import ktx.collections.*
 import ktx.log.debug
 import ktx.scene2d.*
 import ktx.style.get
 
 class EquipTable(
-        private val equipType: EquipType,
+        equipType: EquipType,
         private val playerData: PlayerData
 ) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
@@ -54,12 +45,11 @@ class EquipTable(
         EquipType.SHIP -> ModType.SHIP_MOD
         EquipType.GUN -> ModType.GUN_MOD
     }
-    private val infoTable = InfoTable(::switchEquipWindow)
-
-    private val equipWindow by lazy { makeEquipWindow() }
-    private val suitTable: Table
-    private val stockTable: Table
-    private val actionButton by lazy { makeActionButton() }
+    private val infoTable by lazy { InfoTable(::switchEquipWindow) }
+    private val suitTable by lazy { SuitTable(::makeEmptyCell) }
+    private val stockTable by lazy { StockTable(::makeEmptyCell) }
+    private val equipWindow by lazy { EquipWindow(playerData, ::chooseEquip).apply { this@EquipTable.stage.addActor(this) } }
+    private val actionButton by lazy { ActionButton(::onActionButtonClick) }
 
     init {
         padTop(Constants.UI_MARGIN)
@@ -74,18 +64,9 @@ class EquipTable(
             row()
 
             // SuitTable
-            this@EquipTable.suitTable = table {
-                name = Constants.SUIT_TABLE
-                pad(0f, Constants.UI_PADDING, Constants.UI_PADDING, Constants.UI_PADDING)
-                defaults().pad(Constants.UI_PADDING)
-                for (i in 1..8) {
-                    container(this@EquipTable.makeEmptyCell()) {
-                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                    }
-                    if (i % 4 == 0) row()
-                }
-            }
+            add(this@EquipTable.suitTable)
         }
+
         row()
 
         // Action button
@@ -96,20 +77,8 @@ class EquipTable(
         // Bottom table
         table {
             scrollPane {
-                container {
-                    // StockTable
-                    this@EquipTable.stockTable = table {
-                        name = Constants.STOCK_TABLE
-                        pad(Constants.UI_PADDING)
-                        defaults().pad(Constants.UI_PADDING)
-                        // fill with empty cells
-                        for (i in 1..16) {
-                            container(this@EquipTable.makeEmptyCell()) {
-                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                            }
-                            if (i % 4 == 0) row()
-                        }
-                    }
+                // StockTable
+                container(this@EquipTable.stockTable) {
                     background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                 }
             }
@@ -118,19 +87,7 @@ class EquipTable(
         setActiveEquip(selectedEquipAlias)
     }
 
-    private fun makeActionButton() = scene2d.container {
-        isVisible = false
-        size(326f, 50f)
-        touchable = Touchable.enabled
-        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-        actor = Image(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.MOVE_UP_ICON()))
-                .apply {
-                    setScaling(Scaling.fit)
-                }
-        onClick { this@EquipTable.onActiveButtonClick() }
-    }
-
-    private fun onActiveButtonClick() {
+    private fun onActionButtonClick() {
         require(selectedModView != null) { "selectedModView == null" }
         val modView = selectedModView as ModView
 
@@ -165,60 +122,10 @@ class EquipTable(
         selectedModView = null
     }
 
-    private fun makeEquipWindow() = scene2d.window("", Constants.STYLE_EQUIP_CHOOSE) {
-        isVisible = false
-        isModal = true
-        val windowHeight = Constants.stageHeight - 192f - 50f - 12f
-        setSize(326f, windowHeight)
-        setPosition((Constants.STAGE_WIDTH - width) / 2f, Constants.stageHeight - height - 192f - 14f)
-        top()
-        scrollPane {
-            setScrollingDisabled(true, false)
-            table {
-                top()
-                defaults().padTop(12f)
-                this@EquipTable.playerData.equips.forEach { equipAlias ->
-                    table {
-                        left()
-                        touchable = Touchable.enabled
-                        background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.GRAY_PIXEL))
-                        onClickEvent { _ ->
-                            this@EquipTable.selectedEquipAlias = equipAlias
-                            this@EquipTable.switchEquipWindow()
-                        }
-
-                        // Icon
-                        table {
-                            val regionName = RegionBinder.chooseEquipRegionName(equipAlias.type, equipAlias.index)
-                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(Constants.LIGHT_GRAY_PIXEL))
-                            image(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName())).apply { setScaling(Scaling.fit) }
-                        }.cell(width = 88f, height = 88f, pad = 6f)
-
-                        // Description
-                        table {
-                            debug = true
-                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                            label("DEFAULT EQUIP", Constants.STYLE_BOLD_ORANGE)
-                            row()
-                            label("A bunch of text that describes the equip shortly") {
-                                wrap = true
-                                setAlignment(Align.top)
-                            }.cell(grow = true)
-                        }.cell(grow = true, padTop = 6f, padBottom = 6f)
-
-                        // Stats
-                        table {
-//                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                            left()
-                            scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
-                            scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
-                        }.cell(pad = 6f)
-                    }.cell(width = 302f, height = 100f)
-                    row()
-                }
-            }
-        }
-    }.apply { this@EquipTable.stage.addActor(this) }
+    private fun chooseEquip(equipAlias: EquipAlias) {
+        selectedEquipAlias = equipAlias
+        switchEquipWindow()
+    }
 
     // separate method creation motivated by impossibility to pass ::selectMod inside DSL scope
     private fun makeModView(modAlias: ModAlias) = ModView(modAlias, ::selectMod)

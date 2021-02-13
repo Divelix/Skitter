@@ -13,6 +13,7 @@ import com.divelix.skitter.ui.menu.scroll.ScrollMenu
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
+import ktx.collections.*
 
 class ScrollMenuScreen(game: Main) : KtxScreen {
     val context = game.getContext()
@@ -20,10 +21,9 @@ class ScrollMenuScreen(game: Main) : KtxScreen {
     val assets = context.inject<Assets>()
     private val stage = Stage(TopViewport(Constants.STAGE_WIDTH.toFloat(), Constants.stageHeight), batch)
 
-    val scrollMenu: ScrollMenu
+    val scrollMenu: ScrollMenu = ScrollMenu(context)
 
     init {
-        scrollMenu = ScrollMenu(context)
         stage += scrollMenu
 //        stage.isDebugAll = true
         val handler = object : InputAdapter() {
