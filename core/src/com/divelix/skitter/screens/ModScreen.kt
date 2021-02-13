@@ -14,10 +14,10 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.data.ModOld
 import com.divelix.skitter.image
-import com.divelix.skitter.ui.menu.EditScreen
-import com.divelix.skitter.ui.menu.EmptyModIcon
-import com.divelix.skitter.ui.menu.ModIcon
-import com.divelix.skitter.ui.menu.StockTableOld
+import com.divelix.skitter.ui.legacy.EditScreen
+import com.divelix.skitter.ui.legacy.EmptyModIcon
+import com.divelix.skitter.ui.legacy.ModIcon
+import com.divelix.skitter.ui.legacy.StockTableOld
 import com.divelix.skitter.ui.ScaledLabel
 import ktx.actors.plusAssign
 import ktx.actors.txt

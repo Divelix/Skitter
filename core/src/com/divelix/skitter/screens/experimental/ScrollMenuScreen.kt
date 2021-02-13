@@ -7,15 +7,12 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.utils.*
 import com.divelix.skitter.Main
 import com.divelix.skitter.data.*
-import com.divelix.skitter.ui.scrollmenu.ScrollMenu
+import com.divelix.skitter.ui.menu.scroll.ScrollMenu
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
-import ktx.assets.toLocalFile
-import ktx.collections.*
 
 class ScrollMenuScreen(game: Main) : KtxScreen {
     val context = game.getContext()

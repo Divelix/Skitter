@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.scrollmenu
+package com.divelix.skitter.ui.menu.scroll
 
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.divelix.skitter.data.Assets

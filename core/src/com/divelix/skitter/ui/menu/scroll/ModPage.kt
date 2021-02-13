@@ -1,12 +1,14 @@
-package com.divelix.skitter.ui.scrollmenu
+package com.divelix.skitter.ui.menu.scroll
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
 import com.divelix.skitter.scaledLabel
+import com.divelix.skitter.ui.menu.ModView
+import com.divelix.skitter.ui.menu.tabs.Tab
+import com.divelix.skitter.ui.menu.tabs.TabbedMenu
 import com.divelix.skitter.ui.tabbedmenu.*
 import com.divelix.skitter.ui.tabbedmenu.stockTable
-import com.divelix.skitter.utils.AliasBinder
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.*

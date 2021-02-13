@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.tabbedmenu
+package com.divelix.skitter.ui.menu.equip
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Touchable

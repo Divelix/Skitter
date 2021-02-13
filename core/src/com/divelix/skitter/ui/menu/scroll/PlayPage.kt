@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.scrollmenu
+package com.divelix.skitter.ui.menu.scroll
 
 import com.badlogic.gdx.graphics.Texture
 import com.divelix.skitter.Main

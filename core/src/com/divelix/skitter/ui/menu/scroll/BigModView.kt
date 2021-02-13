@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.scrollmenu
+package com.divelix.skitter.ui.menu.scroll
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -7,14 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Mod
-import com.divelix.skitter.ui.tabbedmenu.ModView
+import com.divelix.skitter.ui.menu.ModView
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.image
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
-import ktx.scene2d.vis.visImage
-import ktx.scene2d.vis.visTable
 import ktx.style.get
 
 class BigModView : Group() {

@@ -2,19 +2,13 @@ package com.divelix.skitter.ui.tabbedmenu
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.*
 import com.divelix.skitter.image
-import com.divelix.skitter.scaledLabel
-import ktx.actors.onClick
-import ktx.actors.onClickEvent
+import com.divelix.skitter.ui.menu.ModView
 import ktx.scene2d.*
-import ktx.scene2d.vis.visImage
 import ktx.style.get
 
 fun bigMod(selectedMod: ModView?): Table = scene2d.table {

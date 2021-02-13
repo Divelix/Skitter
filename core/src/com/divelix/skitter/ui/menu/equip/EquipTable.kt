@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.tabbedmenu
+package com.divelix.skitter.ui.menu.equip
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -11,7 +11,8 @@ import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.*
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
-import com.divelix.skitter.ui.scrollmenu.ModSelector
+import com.divelix.skitter.ui.menu.scroll.ModSelector
+import com.divelix.skitter.ui.menu.ModView
 import com.divelix.skitter.utils.AliasBinder
 import ktx.actors.onClick
 import ktx.actors.onClickEvent

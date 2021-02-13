@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.menu
+package com.divelix.skitter.ui.legacy
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input

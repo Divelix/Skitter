@@ -28,7 +28,7 @@ import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.LevelManager
 import com.divelix.skitter.screens.MenuScreen
 import com.divelix.skitter.screens.PlayScreen
-import com.divelix.skitter.ui.menu.ImgBgButton
+import com.divelix.skitter.ui.legacy.ImgBgButton
 import com.divelix.skitter.utils.TopViewport
 import com.kotcrab.vis.ui.widget.VisWindow
 import ktx.actors.*

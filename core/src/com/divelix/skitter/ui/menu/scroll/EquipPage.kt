@@ -1,7 +1,9 @@
-package com.divelix.skitter.ui.scrollmenu
+package com.divelix.skitter.ui.menu.scroll
 
 import com.divelix.skitter.data.*
-import com.divelix.skitter.ui.tabbedmenu.*
+import com.divelix.skitter.ui.menu.equip.EquipTable
+import com.divelix.skitter.ui.menu.tabs.Tab
+import com.divelix.skitter.ui.menu.tabs.TabbedMenu
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.table

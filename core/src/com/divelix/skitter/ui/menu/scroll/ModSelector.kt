@@ -1,6 +1,6 @@
-package com.divelix.skitter.ui.scrollmenu
+package com.divelix.skitter.ui.menu.scroll
 
-import com.divelix.skitter.ui.tabbedmenu.ModView
+import com.divelix.skitter.ui.menu.ModView
 
 interface ModSelector {
     var selectedModView: ModView?
