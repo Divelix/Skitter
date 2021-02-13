@@ -8,7 +8,7 @@ import com.divelix.skitter.ui.menu.ModView
 import com.divelix.skitter.ui.menu.tabs.Tab
 import com.divelix.skitter.ui.menu.tabs.TabbedMenu
 import com.divelix.skitter.ui.tabbedmenu.*
-import com.divelix.skitter.ui.tabbedmenu.stockTable
+import com.divelix.skitter.ui.menu.stockTable
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.*

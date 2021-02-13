@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.tabbedmenu
+package com.divelix.skitter.ui.menu
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.*
 import com.divelix.skitter.image
-import com.divelix.skitter.ui.menu.ModView
 import ktx.scene2d.*
 import ktx.style.get
 
