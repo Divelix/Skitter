@@ -45,10 +45,10 @@ class EquipTable(
         EquipType.SHIP -> ModType.SHIP_MOD
         EquipType.GUN -> ModType.GUN_MOD
     }
-    private val infoTable by lazy { InfoTable(::switchEquipWindow) }
+    private val infoTable by lazy { InfoTable(::showEquipWindow) }
     private val suitTable by lazy { SuitTable(::makeEmptyCell) }
     private val stockTable by lazy { StockTable(::makeEmptyCell) }
-    private val equipWindow by lazy { EquipWindow(playerData, ::chooseEquip).apply { this@EquipTable.stage.addActor(this) } }
+    private val equipWindow by lazy { EquipWindow(playerData.equips.filter { it.type == equipType }, ::chooseEquip).apply { this@EquipTable.stage.addActor(this) } }
     private val actionButton by lazy { ActionButton(::onActionButtonClick) }
 
     init {
@@ -124,7 +124,7 @@ class EquipTable(
 
     private fun chooseEquip(equipAlias: EquipAlias) {
         selectedEquipAlias = equipAlias
-        switchEquipWindow()
+        hideEquipWindow()
     }
 
     // separate method creation motivated by impossibility to pass ::selectMod inside DSL scope
@@ -165,7 +165,11 @@ class EquipTable(
         }
     }
 
-    private fun switchEquipWindow() {
-        equipWindow.isVisible = !equipWindow.isVisible
+    private fun showEquipWindow() {
+        equipWindow.isVisible = true
+    }
+
+    private fun hideEquipWindow() {
+        equipWindow.isVisible = false
     }
 }

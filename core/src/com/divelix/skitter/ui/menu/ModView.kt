@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
 import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
+import com.divelix.skitter.utils.RegionBinder
 import ktx.actors.onClick
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.scene2d
@@ -32,23 +33,7 @@ class ModView(val modAlias: ModAlias, selectMod: (ModView) -> Unit): Group() {
         setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
 
         val bg = Image(bgDrawable).apply { setFillParent(true) }
-        textureName = when(modAlias.type) {
-            ModType.SHIP_MOD -> when (modAlias.index) {
-                1 -> RegionName.MOD_SHIP_HEALTH()
-                2 -> RegionName.MOD_SHIP_SPEED()
-                3 -> RegionName.MOD_SHIP_CHUBBER()
-                else -> RegionName.STAR()
-            }
-            ModType.GUN_MOD -> when (modAlias.index) {
-                1 -> RegionName.MOD_GUN_DAMAGE()
-                2 -> RegionName.MOD_GUN_CAPACITY()
-                3 -> RegionName.MOD_GUN_RELOAD()
-                4 -> RegionName.MOD_GUN_SPEED()
-                5 -> RegionName.MOD_GUN_CRIT()
-                6 -> RegionName.MOD_GUN_CHANCE()
-                else -> RegionName.STAR()
-            }
-        }
+        textureName = RegionBinder.chooseModRegionName(modAlias.type, modAlias.index)
         carriage = Image(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.CARRIAGE_SHADOW())).apply {
             setFillParent(true)
             isVisible = false

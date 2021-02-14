@@ -2,14 +2,16 @@ package com.divelix.skitter.ui.menu.equip
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.EquipAlias
-import com.divelix.skitter.data.PlayerData
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.utils.RegionBinder
 import ktx.actors.onClickEvent
@@ -17,9 +19,9 @@ import ktx.scene2d.*
 import ktx.style.get
 
 class EquipWindow(
-        playerData: PlayerData,
+        equips: Array<EquipAlias>,
         chooseEquip: (EquipAlias) -> Unit
-): Window("", Scene2DSkin.defaultSkin, Constants.STYLE_EQUIP_CHOOSE), KTable {
+) : Window("", Scene2DSkin.defaultSkin, Constants.STYLE_EQUIP_CHOOSE), KTable {
 
     init {
         isVisible = false
@@ -33,7 +35,7 @@ class EquipWindow(
             table {
                 top()
                 defaults().padTop(12f)
-                playerData.equips.forEach { equipAlias ->
+                equips.forEach { equipAlias ->
                     table {
                         left()
                         touchable = Touchable.enabled
@@ -63,7 +65,7 @@ class EquipWindow(
 
                         // Stats
                         table {
-//                                background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
+//                            background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             left()
                             scaledLabel("DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: ")
                             scaledLabel("100\n13\n0.5\n10\nx2.0\n20%")
@@ -73,5 +75,17 @@ class EquipWindow(
                 }
             }
         }
+
+        // close window if clicked outside of it
+        addListener(object: InputListener() {
+            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                if (x < 0 || x > width || y < 0 || y > height) {
+                    isVisible = false
+                    event.cancel()
+                    return true
+                }
+                return false
+            }
+        })
     }
 }
