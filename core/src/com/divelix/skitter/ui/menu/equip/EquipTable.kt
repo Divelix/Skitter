@@ -1,7 +1,6 @@
 package com.divelix.skitter.ui.menu.equip
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -21,21 +20,10 @@ class EquipTable(
     override var selectedModView: ModView? = null
         set(value) {
             field = value
-            actionButton.isVisible = true
-            when (value?.parent?.parent?.name) {
-                Constants.SUIT_TABLE -> {
-                    (actionButton.actor as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.MOVE_DOWN_ICON()))
-                }
-                Constants.STOCK_TABLE -> {
-                    (actionButton.actor as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.MOVE_UP_ICON()))
-                }
-                else -> actionButton.isVisible = false
-            }
+            actionButton.showFor(value)
         }
-    var selectedEquipAlias: EquipAlias = when (equipType) {
-        EquipType.SHIP -> playerData.equips.single { it.type == EquipType.SHIP && it.index == playerData.activeEquips.shipIndex }
-        EquipType.GUN -> playerData.equips.single { it.type == EquipType.GUN && it.index == playerData.activeEquips.gunIndex }
-    }
+
+    private var selectedEquipAlias: EquipAlias = fetchActiveEquipAlias(equipType)
         set(value) {
             field = value
             setActiveEquip(value)
@@ -87,6 +75,12 @@ class EquipTable(
         setActiveEquip(selectedEquipAlias)
     }
 
+
+    private fun fetchActiveEquipAlias(equipType: EquipType) = when (equipType) {
+        EquipType.SHIP -> playerData.equips.single { it.type == EquipType.SHIP && it.index == playerData.activeEquips.shipIndex }
+        EquipType.GUN -> playerData.equips.single { it.type == EquipType.GUN && it.index == playerData.activeEquips.gunIndex }
+    }
+
     private fun onActionButtonClick() {
         require(selectedModView != null) { "selectedModView == null" }
         val modView = selectedModView as ModView
@@ -94,7 +88,7 @@ class EquipTable(
         val targetTable = when (modView.parent.parent.name) {
             Constants.SUIT_TABLE -> stockTable
             Constants.STOCK_TABLE -> suitTable
-            else -> throw Exception("Can't find name ModView parent table")
+            else -> throw Exception("Can't find ModView's parent table name")
         }
         if (targetTable == suitTable) {
             // Check mod index duplicate
@@ -136,8 +130,6 @@ class EquipTable(
 
     // fill info and suit tables with chosen equip data
     private fun setActiveEquip(equipAlias: EquipAlias) {
-        val equip = AliasBinder.getEquip(equipAlias)
-
         // clear suit table
         suitTable.children.forEach {
             (it as Container<*>).actor = makeEmptyCell()

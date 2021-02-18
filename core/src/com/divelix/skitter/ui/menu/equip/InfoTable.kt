@@ -16,10 +16,11 @@ import com.divelix.skitter.utils.AliasBinder
 import com.divelix.skitter.utils.RegionBinder
 import ktx.actors.onClickEvent
 import ktx.actors.txt
+import ktx.collections.*
 import ktx.scene2d.*
 import ktx.style.get
 
-class InfoTable(switchWindow: () -> Unit) : Table(), KTable {
+class InfoTable(showEquipWindow: () -> Unit) : Table(), KTable {
 
     private val equipName: Label
     private val description: Label
@@ -49,7 +50,7 @@ class InfoTable(switchWindow: () -> Unit) : Table(), KTable {
             this@InfoTable.equipIcon = image(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                     .apply { setScaling(Scaling.fit) }.cell(pad = Constants.UI_PADDING)
             onClickEvent { _ ->
-                switchWindow()
+                showEquipWindow()
             }
         }.cell(width = 100f, height = 100f)
 
@@ -68,17 +69,29 @@ class InfoTable(switchWindow: () -> Unit) : Table(), KTable {
         description.txt = equip.description
         val regionName = RegionBinder.chooseEquipRegionName(equip.type, equip.index)
         equipIcon.drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(regionName()))
-        val idx = equipAlias.level - 1
+        val equipLvlIndex = equipAlias.level - 1
         when (val specs = equip.specs) {
             is ShipSpecs -> {
+                var health = specs.health[equipLvlIndex]
+                var speed = specs.speed[equipLvlIndex]
+                equipAlias.mods.forEach { modAlias ->
+                    val modLvlIndex = modAlias.level - 1
+                    val mod = AliasBinder.getMod(modAlias)
+                    mod.effects.forEach { (effect, values) ->
+                        when(effect as ModEffect.ShipModEffect) {
+                            is ModEffect.ShipModEffect.HealthBooster -> health += values?.get(modLvlIndex) ?: 1f
+                            is ModEffect.ShipModEffect.SpeedBooster -> speed += values?.get(modLvlIndex) ?: 1f
+                        }
+                    }
+                }
                 specsNames.txt = "HEALTH: \nSPEED: "
-                specsValues.txt = "${specs.health[idx]}\n${specs.speed[idx]}"
+                specsValues.txt = "${health}\n${speed}"
             }
             is GunSpecs -> {
                 specsNames.txt = "DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: "
-                specsValues.txt = "${specs.damage[idx]}\n${specs.capacity[idx]}\n" +
-                        "${specs.reload[idx]}\n${specs.speed[idx]}\n" +
-                        "${specs.crit[idx]}\n${specs.chance[idx]}"
+                specsValues.txt = "${specs.damage[equipLvlIndex]}\n${specs.capacity[equipLvlIndex]}\n" +
+                        "${specs.reload[equipLvlIndex]}\n${specs.speed[equipLvlIndex]}\n" +
+                        "${specs.crit[equipLvlIndex]}\n${specs.chance[equipLvlIndex]}"
             }
         }
     }

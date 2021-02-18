@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.RegionName
+import com.divelix.skitter.ui.menu.ModView
 import ktx.actors.onClick
 import ktx.scene2d.KGroup
 import ktx.scene2d.Scene2DSkin
@@ -26,5 +27,18 @@ class ActionButton(action: () -> Unit): Container<Image>(), KGroup {
                     setScaling(Scaling.fit)
                 }
         onClick { action() }
+    }
+
+    fun showFor(modView: ModView?) {
+        isVisible = true
+        when (modView?.parent?.parent?.name) {
+            Constants.SUIT_TABLE -> {
+                (actor as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.MOVE_DOWN_ICON()))
+            }
+            Constants.STOCK_TABLE -> {
+                (actor as Image).drawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.MOVE_UP_ICON()))
+            }
+            else -> isVisible = false
+        }
     }
 }
