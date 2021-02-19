@@ -88,10 +88,24 @@ class InfoTable(showEquipWindow: () -> Unit) : Table(), KTable {
                 specsValues.txt = "${health}\n${speed}"
             }
             is GunSpecs -> {
+                var damage = specs.damage[equipLvlIndex]
+                var capacity = specs.capacity[equipLvlIndex]
+                var reload = specs.reload[equipLvlIndex]
+                var speed = specs.speed[equipLvlIndex]
+                var crit = specs.crit[equipLvlIndex]
+                var chance = specs.chance[equipLvlIndex]
+                equipAlias.mods.forEach { modAlias ->
+                    val modLvlIndex = modAlias.level - 1
+                    val mod = AliasBinder.getMod(modAlias)
+                    mod.effects.forEach { (effect, values) ->
+                        when(effect as ModEffect.GunModEffect) {
+                            is ModEffect.GunModEffect.DamageBooster -> damage += values?.get(modLvlIndex) ?: 1f
+                            is ModEffect.GunModEffect.ReloadBooster -> reload += values?.get(modLvlIndex) ?: 1f
+                        }
+                    }
+                }
                 specsNames.txt = "DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: "
-                specsValues.txt = "${specs.damage[equipLvlIndex]}\n${specs.capacity[equipLvlIndex]}\n" +
-                        "${specs.reload[equipLvlIndex]}\n${specs.speed[equipLvlIndex]}\n" +
-                        "${specs.crit[equipLvlIndex]}\n${specs.chance[equipLvlIndex]}"
+                specsValues.txt = "${damage}\n${capacity}\n${reload}\n${speed}\n${crit}\n${chance}"
             }
         }
     }
