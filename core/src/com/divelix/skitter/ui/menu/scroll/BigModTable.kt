@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.data.Constants
+import com.divelix.skitter.data.ModEffect
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.menu.ModView
 import com.divelix.skitter.utils.AliasBinder
@@ -48,17 +49,20 @@ class BigModTable: Table(), KTable {
     fun setMod(modView: ModView) {
         bigModView.setMod(modView)
         val modAlias = modView.modAlias
-        val modData = AliasBinder.modsData.mods.singleOrNull { it.type == modAlias.type && it.index == modAlias.index }
-        if (modData != null) {
-            modName.txt = "<${modData.name}>"
-            var specString = ""
-            modData.effects.forEach { (key, value) ->
-                specString += "$key: $value\n"
+        val mod = AliasBinder.getMod(modAlias)
+        modName.txt = "<${mod.name}>"
+        var specString = ""
+        mod.effects.forEach { (key, value) ->
+            val effectName = when(key) {
+                is ModEffect.ShipModEffect.HealthBooster -> "health"
+                is ModEffect.ShipModEffect.SpeedBooster -> "speed"
+
+                is ModEffect.GunModEffect.DamageBooster -> "damage"
+                is ModEffect.GunModEffect.ReloadBooster -> "reload"
             }
-            modSpecs.txt = specString
-        } else {
-            println("Mod $modAlias not found in database")
+            specString += "$effectName: ${value?.get(modAlias.level-1) ?: -1}\n"
         }
+        modSpecs.txt = specString
     }
 
     fun clearMod() {
