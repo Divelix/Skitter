@@ -107,6 +107,9 @@ class EquipTable(
         } else {
             selectedEquipAlias.mods.removeValue(modView.modAlias, false)
         }
+        // Update stats in InfoTable
+        infoTable.setInfo(selectedEquipAlias)
+
         // Move ModView in UI
         val selectedContainer = modView.parent as Container<*>
         val targetContainer = targetTable.children.first { (it as Container<*>).actor !is ModView } as Container<*>
