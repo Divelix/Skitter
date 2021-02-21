@@ -144,7 +144,7 @@ class Assets: Disposable {
             label("black", extend = defaultStyle) {
                 fontColor = Color.BLACK
             }
-            label("mod-name", extend = defaultStyle) {
+            label(Constants.STYLE_MOD_NAME, extend = defaultStyle) {
                 fontColor = Color.YELLOW
             }
             label("mod-level", extend = defaultStyle) {

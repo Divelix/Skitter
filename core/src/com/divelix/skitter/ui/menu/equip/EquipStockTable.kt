@@ -10,7 +10,7 @@ import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
 import ktx.style.get
 
-class StockTable(makeEmptyCell: () -> Actor): Table(), KTable {
+class EquipStockTable(makeEmptyCell: () -> Actor): Table(), KTable {
 
     init {
         name = Constants.STOCK_TABLE

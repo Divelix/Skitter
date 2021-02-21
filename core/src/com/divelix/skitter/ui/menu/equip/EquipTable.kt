@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
 import com.divelix.skitter.ui.menu.scroll.ModSelector
 import com.divelix.skitter.ui.menu.ModView
-import com.divelix.skitter.utils.AliasBinder
 import ktx.collections.*
 import ktx.log.debug
 import ktx.scene2d.*
@@ -35,7 +34,7 @@ class EquipTable(
     }
     private val infoTable by lazy { InfoTable(::showEquipWindow) }
     private val suitTable by lazy { SuitTable(::makeEmptyCell) }
-    private val stockTable by lazy { StockTable(::makeEmptyCell) }
+    private val stockTable by lazy { EquipStockTable(::makeEmptyCell) }
     private val equipWindow by lazy { EquipWindow(playerData.equips.filter { it.type == equipType }, ::chooseEquip).apply { this@EquipTable.stage.addActor(this) } }
     private val actionButton by lazy { ActionButton(::onActionButtonClick) }
 

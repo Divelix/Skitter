@@ -48,6 +48,7 @@ object Constants {
     const val STYLE_BOLD = "bold_label"
     const val STYLE_BOLD_ORANGE = "bold_orange_label"
     const val STYLE_EQUIP_CHOOSE = "equip_choose"
+    const val STYLE_MOD_NAME = "mod_name"
 
     // Control params
     const val CAMERA_RADIUS = 2f
