@@ -1,7 +1,6 @@
-package com.divelix.skitter.ui.menu.mod
+package com.divelix.skitter.ui.menu
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -9,35 +8,32 @@ import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.ModAlias
 import com.divelix.skitter.data.ModType
-import com.divelix.skitter.ui.menu.ModTable
-import com.divelix.skitter.ui.menu.ModView
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
 import ktx.scene2d.scrollPane
 import ktx.scene2d.table
 import ktx.style.get
 
-class ModStockTable(
-        val modType: ModType,
-        val modAliases: Array<ModAlias>,
+class StockTable(
+        private val modType: ModType,
+        private val modAliases: Array<ModAlias>,
         selectMod: (ModView) -> Unit
 ): ModTable(selectMod) {
     val tableWithMods: Table
 
     init {
-        pad(Constants.UI_MARGIN)
-
         scrollPane {
             setScrollingDisabled(true, false)
             setScrollbarsVisible(false)
             container {
                 // StockTable
-                this@ModStockTable.tableWithMods = table {
+                this@StockTable.tableWithMods = table {
+                    name = Constants.STOCK_TABLE
                     pad(Constants.UI_PADDING)
                     defaults().pad(Constants.UI_PADDING)
                     // fill with empty cells
                     for (i in 1..16) {
-                        container(this@ModStockTable.makeEmptyCell()) {
+                        container(this@StockTable.makeEmptyCell()) {
                             background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                         }
                         if (i % 4 == 0) row()

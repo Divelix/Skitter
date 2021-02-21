@@ -5,12 +5,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Constants
+import com.divelix.skitter.ui.menu.ModTable
+import com.divelix.skitter.ui.menu.ModView
 import ktx.scene2d.KTable
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
 import ktx.style.get
 
-class SuitTable(makeEmptyCell: () -> Actor): Table(), KTable {
+class SuitTable(selectMod: (ModView) -> Unit): ModTable(selectMod) {
 
     init {
         name = Constants.SUIT_TABLE

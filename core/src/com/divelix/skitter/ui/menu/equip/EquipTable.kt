@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
 import com.divelix.skitter.ui.menu.scroll.ModSelector
 import com.divelix.skitter.ui.menu.ModView
+import com.divelix.skitter.ui.menu.StockTable
 import ktx.collections.*
 import ktx.log.debug
 import ktx.scene2d.*
@@ -33,8 +34,8 @@ class EquipTable(
         EquipType.GUN -> ModType.GUN_MOD
     }
     private val infoTable by lazy { InfoTable(::showEquipWindow) }
-    private val suitTable by lazy { SuitTable(::makeEmptyCell) }
-    private val stockTable by lazy { EquipStockTable(::makeEmptyCell) }
+    private val suitTable by lazy { SuitTable(::selectMod) }
+    private val stockTable by lazy { StockTable(modType, playerData.mods.filter { it.type == modType }, ::selectMod) }
     private val equipWindow by lazy { EquipWindow(playerData.equips.filter { it.type == equipType }, ::chooseEquip).apply { this@EquipTable.stage.addActor(this) } }
     private val actionButton by lazy { ActionButton(::onActionButtonClick) }
 
@@ -61,16 +62,9 @@ class EquipTable(
 
         row()
 
-        // Bottom table
-        table {
-            scrollPane {
-                // StockTable
-                container(this@EquipTable.stockTable) {
-                    background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                }
-            }
-        }
-        fillStockTable()
+        // StockTable
+        add(stockTable)
+
         setActiveEquip(selectedEquipAlias)
     }
 
@@ -111,9 +105,13 @@ class EquipTable(
 
         // Move ModView in UI
         val selectedContainer = modView.parent as Container<*>
-        val targetContainer = targetTable.children.first { (it as Container<*>).actor !is ModView } as Container<*>
+        val targetContainer = if (targetTable == suitTable) {
+            targetTable.children.first { (it as Container<*>).actor !is ModView } as Container<*>
+        } else {
+            (targetTable as StockTable).tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
+        }
         targetContainer.actor = modView
-        selectedContainer.actor = makeEmptyCell()
+        selectedContainer.actor = stockTable.makeEmptyCell() //TODO need to abstract from stockTable
         modView.deactivate()
         selectedModView = null
     }
@@ -123,22 +121,15 @@ class EquipTable(
         hideEquipWindow()
     }
 
-    // separate method creation motivated by impossibility to pass ::selectMod inside DSL scope
-    private fun makeModView(modAlias: ModAlias) = ModView(modAlias, ::selectMod)
-
-    private fun makeEmptyCell() = Actor().apply {
-        setSize(Constants.MOD_SIZE, Constants.MOD_SIZE)
-    }
-
     // fill info and suit tables with chosen equip data
     private fun setActiveEquip(equipAlias: EquipAlias) {
         // clear suit table
         suitTable.children.forEach {
-            (it as Container<*>).actor = makeEmptyCell()
+            (it as Container<*>).actor = stockTable.makeEmptyCell() //TODO need to abstract from stockTable
         }
         // fill suit table with active equip mods
         equipAlias.mods.forEachIndexed { i, modAlias ->
-            (suitTable.children[i] as Container<*>).actor = makeModView(modAlias)
+            (suitTable.children[i] as Container<*>).actor = stockTable.makeModView(modAlias) //TODO need to abstract from stockTable
             // TODO make specs
         }
 
@@ -149,13 +140,6 @@ class EquipTable(
         when (equipAlias.type) {
             EquipType.SHIP -> playerData.activeEquips.shipIndex = equipAlias.index
             EquipType.GUN -> playerData.activeEquips.gunIndex = equipAlias.index
-        }
-    }
-
-    private fun fillStockTable() {
-        val modAliases = playerData.mods.filter { it.type == modType }
-        modAliases.forEachIndexed { i, modAlias ->
-            (stockTable.children[i] as Container<*>).actor = makeModView(modAlias)
         }
     }
 

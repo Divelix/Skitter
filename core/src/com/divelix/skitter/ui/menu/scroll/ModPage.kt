@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.menu.ModView
-import com.divelix.skitter.ui.menu.mod.ModStockTable
+import com.divelix.skitter.ui.menu.StockTable
 import com.divelix.skitter.ui.menu.mod.ShowcaseTable
 import com.divelix.skitter.ui.menu.tabs.Tab
 import com.divelix.skitter.ui.menu.tabs.TabbedMenu
@@ -23,8 +23,8 @@ class ModPage(context: Context, val playerData: PlayerData) : Page(context), Mod
         }
     private val showcaseTable by lazy { ShowcaseTable(::sellMod, ::upgradeMod) }
     private val tabbedMenu = TabbedMenu(gdxArrayOf(
-            Tab(assets.manager.get(Constants.SHIP_ICON), ModStockTable(ModType.SHIP_MOD, playerData.mods, ::selectMod)),
-            Tab(assets.manager.get(Constants.GUN_ICON), ModStockTable(ModType.GUN_MOD, playerData.mods, ::selectMod))
+            Tab(assets.manager.get(Constants.SHIP_ICON), StockTable(ModType.SHIP_MOD, playerData.mods, ::selectMod)),
+            Tab(assets.manager.get(Constants.GUN_ICON), StockTable(ModType.GUN_MOD, playerData.mods, ::selectMod))
     ))
 
     init {
@@ -69,7 +69,7 @@ class ModPage(context: Context, val playerData: PlayerData) : Page(context), Mod
         updateStockTableFor(modAlias.type)
         val newModView = when (modAlias.type) { //TODO find elegant solution to this
             ModType.SHIP_MOD -> {
-                (tabbedMenu.tabs[0].contentTable as ModStockTable).tableWithMods.children
+                (tabbedMenu.tabs[0].contentTable as StockTable).tableWithMods.children
                         .filter { (it as Container<*>).actor is ModView }
                         .map { (it as Container<*>).actor as ModView }
                         .single {
@@ -79,7 +79,7 @@ class ModPage(context: Context, val playerData: PlayerData) : Page(context), Mod
                         }
             }
             ModType.GUN_MOD -> {
-                (tabbedMenu.tabs[1].contentTable as ModStockTable).tableWithMods.children
+                (tabbedMenu.tabs[1].contentTable as StockTable).tableWithMods.children
                         .filter { (it as Container<*>).actor is ModView }
                         .map { (it as Container<*>).actor as ModView }
                         .single {
@@ -94,8 +94,8 @@ class ModPage(context: Context, val playerData: PlayerData) : Page(context), Mod
 
     private fun updateStockTableFor(modType: ModType) {
         when (modType) {
-            ModType.SHIP_MOD -> (tabbedMenu.tabs[0].contentTable as ModStockTable).reloadMods()
-            ModType.GUN_MOD -> (tabbedMenu.tabs[1].contentTable as ModStockTable).reloadMods()
+            ModType.SHIP_MOD -> (tabbedMenu.tabs[0].contentTable as StockTable).reloadMods()
+            ModType.GUN_MOD -> (tabbedMenu.tabs[1].contentTable as StockTable).reloadMods()
         }
     }
 }

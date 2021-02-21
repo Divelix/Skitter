@@ -13,14 +13,14 @@ import ktx.style.get
 class TabbedMenu(val tabs: Array<Tab>) : Table() {
     private val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
     private var activeTab = tabs[0]
-    private val content = Container<Table>(activeTab.contentTable)
+    private val content = Container(activeTab.contentTable)
 
     init {
         defaults().growX()
         tabs.forEach {
             add(it.apply {
                 background = bgDrawable
-                onClickEvent { event -> switchTo(it) }
+                onClickEvent { _ -> switchTo(it) }
             })
         }
         row()
@@ -29,7 +29,7 @@ class TabbedMenu(val tabs: Array<Tab>) : Table() {
         switchTo(tabs[0])
     }
 
-    fun switchTo(tab: Tab) {
+    private fun switchTo(tab: Tab) {
         activeTab.background = bgDrawable
         activeTab = tab
         activeTab.background = null
