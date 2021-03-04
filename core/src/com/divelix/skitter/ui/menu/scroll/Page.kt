@@ -13,6 +13,4 @@ abstract class Page(val context: Context) : Group(), KGroup {
         width = Constants.STAGE_WIDTH.toFloat()
         height = Constants.stageHeight
     }
-
-    abstract fun update()
 }

@@ -121,7 +121,7 @@ data class ModsData(
 data class PlayerData(
         val id: Int = -1,
         val name: String = "None",
-        val coins: Int = 0,
+        var coins: Int = 0,
         val activeEquips: ActiveEquips = ActiveEquips(),
         val equips: Array<EquipAlias> = gdxArrayOf(),
         val mods: Array<ModAlias> = gdxArrayOf()

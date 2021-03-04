@@ -28,10 +28,13 @@ class ScrollMenu(context: Context) : Group() {
     private val assets = context.inject<Assets>()
     private val playerDataFile = "json/playerData.json".toLocalFile()
     private val playerData = JsonProcessor.fromJson<PlayerData>(playerDataFile)
+    private val equipPage = EquipPage(context, playerData)
+    private val playPage = PlayPage(context, playerData)
+    private val modPage = ModPage(context, playerData, equipPage::updateUI)
     private val pages = gdxArrayOf(
-            Constants.EQUIP_ICON to EquipPage(context, playerData),
-            Constants.BATTLE_ICON to PlayPage(context, playerData),
-            Constants.MOD_ICON to ModPage(context, playerData))
+            Constants.EQUIP_ICON to equipPage,
+            Constants.BATTLE_ICON to playPage,
+            Constants.MOD_ICON to modPage)
 
     private val scrollPane: ScrollPane
 
@@ -58,12 +61,6 @@ class ScrollMenu(context: Context) : Group() {
         scrollPane.updateVisualScroll() // disables animation
     }
 
-    fun updateUI() {
-        pages.forEach {
-            it.second.update()
-        }
-    }
-
     fun saveToJson() {
         val printSettings = JsonValue.PrettyPrintSettings().apply {
             outputType = JsonWriter.OutputType.json
@@ -86,8 +83,6 @@ class ScrollMenu(context: Context) : Group() {
                             .apply { setScaling(Scaling.fit) }
                             .cell(fill = true, padTop = 5f, padBottom = 5f)
                             .onClickEvent { event ->
-//                                println("[EVENT = $event; ACTOR = $actor]")
-                                updateUI()
 //                                saveToJson()
                                 scrollPane.scrollX = index * Constants.STAGE_WIDTH.toFloat()
                             }

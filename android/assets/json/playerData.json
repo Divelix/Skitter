@@ -1,7 +1,7 @@
 {
 	"id": 123,
 	"name": "DefaultName",
-	"coins": 100,
+	"coins": 100000,
 	"activeEquips": { "shipIndex": 1, "gunIndex": 1 },
 	"equips": [
 		{

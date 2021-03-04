@@ -21,6 +21,4 @@ class PlayPage(context: Context, val playerData: PlayerData) : Page(context) {
             }
         }
     }
-
-    override fun update() {}
 }

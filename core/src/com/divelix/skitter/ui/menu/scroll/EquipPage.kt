@@ -22,7 +22,8 @@ class EquipPage(context: Context, playerData: PlayerData) : Page(context) {
         }
     }
 
-    override fun update() {
-//        nameLabel.setText(playerData.name)
+    fun updateUI() {
+        //TODO update ui
+        println("TODO update ui in EquipPage")
     }
 }

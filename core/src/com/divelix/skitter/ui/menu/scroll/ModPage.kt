@@ -3,6 +3,7 @@ package com.divelix.skitter.ui.menu.scroll
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.SnapshotArray
 import com.divelix.skitter.data.*
@@ -12,18 +13,21 @@ import com.divelix.skitter.ui.menu.StockTable
 import com.divelix.skitter.ui.menu.mod.ShowcaseTable
 import com.divelix.skitter.ui.menu.tabs.Tab
 import com.divelix.skitter.ui.menu.tabs.TabbedMenu
+import com.divelix.skitter.utils.AliasBinder
+import ktx.actors.txt
 import ktx.collections.gdxArrayOf
 import ktx.collections.removeAll
 import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(context: Context, val playerData: PlayerData) : Page(context), ModSelector {
+class ModPage(context: Context, val playerData: PlayerData, val updateEquipPageUI: () -> Unit) : Page(context), ModSelector {
     override var selectedModView: ModView? = null
         set(value) {
             field = value
             showcaseTable.setMod(value)
         }
+    private val coinsLabel: Label
     private val showcaseTable by lazy { ShowcaseTable(::sellMod, ::upgradeMod) }
     private val tabbedMenu = TabbedMenu(gdxArrayOf(
             Tab(assets.manager.get(Constants.SHIP_ICON), StockTable(ModType.SHIP_MOD, playerData.mods, ::selectMod).apply { padTop(Constants.UI_MARGIN) }),
@@ -38,17 +42,13 @@ class ModPage(context: Context, val playerData: PlayerData) : Page(context), Mod
             table {
                 right().pad(12f)
                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
-                scaledLabel(this@ModPage.playerData.coins.toString(), style = Constants.STYLE_MOD_NAME)
+                this@ModPage.coinsLabel = scaledLabel(this@ModPage.playerData.coins.toString(), style = Constants.STYLE_MOD_NAME)
             }.cell(fillX = true)
             row()
             add(this@ModPage.showcaseTable)
             row()
             add(this@ModPage.tabbedMenu)
         }
-    }
-
-    override fun update() {
-        // TODO update UI
     }
 
     private fun sellMod() {
@@ -61,13 +61,17 @@ class ModPage(context: Context, val playerData: PlayerData) : Page(context), Mod
             playerData.mods.removeValue(modView.modAlias, false)
             selectMod(modView) // deactivates mod
         }
+        playerData.coins += AliasBinder.modsData.sellPrices[modAlias.level - 1]
+        coinsLabel.txt = playerData.coins.toString()
         updateStockTableFor(modAlias.type)
+        updateEquipPageUI()
     }
 
     private fun upgradeMod() {
         if (selectedModView == null) return
         val modView = selectedModView as ModView
         val modAlias = modView.modAlias
+        if (modAlias.level == 10) return
         if (modAlias.quantity == 1) {
             modAlias.level++
             val resultModAlias = mergeModsFor(modAlias)
@@ -81,6 +85,9 @@ class ModPage(context: Context, val playerData: PlayerData) : Page(context), Mod
             updateStockTableFor(modAlias.type)
             selectForModAlias(resultModAlias)
         }
+        playerData.coins -= AliasBinder.modsData.upgradePrices[modAlias.level - 1]
+        coinsLabel.txt = playerData.coins.toString()
+        updateEquipPageUI()
     }
 
     private fun updateStockTableFor(modType: ModType) {
@@ -110,6 +117,7 @@ class ModPage(context: Context, val playerData: PlayerData) : Page(context), Mod
                         it.modAlias.quantity == modAlias.quantity
             }
 
+    // merge mods in player's data for modAlias
     private fun mergeModsFor(modAlias: ModAlias): ModAlias {
         val mergeCandidates = playerData.mods
                 .filter { it.type == modAlias.type && it.index == modAlias.index && it.level == modAlias.level }
