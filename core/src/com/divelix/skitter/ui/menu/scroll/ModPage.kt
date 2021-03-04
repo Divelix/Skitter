@@ -21,7 +21,7 @@ import ktx.inject.Context
 import ktx.scene2d.*
 import ktx.style.get
 
-class ModPage(context: Context, val playerData: PlayerData, val updateEquipPageUI: () -> Unit) : Page(context), ModSelector {
+class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor: (ModType) -> Unit) : Page(context), ModSelector {
     override var selectedModView: ModView? = null
         set(value) {
             field = value
@@ -64,7 +64,7 @@ class ModPage(context: Context, val playerData: PlayerData, val updateEquipPageU
         playerData.coins += AliasBinder.modsData.sellPrices[modAlias.level - 1]
         coinsLabel.txt = playerData.coins.toString()
         updateStockTableFor(modAlias.type)
-        updateEquipPageUI()
+        reloadEquipsFor(modAlias.type)
     }
 
     private fun upgradeMod() {
@@ -87,7 +87,7 @@ class ModPage(context: Context, val playerData: PlayerData, val updateEquipPageU
         }
         playerData.coins -= AliasBinder.modsData.upgradePrices[modAlias.level - 1]
         coinsLabel.txt = playerData.coins.toString()
-        updateEquipPageUI()
+        reloadEquipsFor(modAlias.type)
     }
 
     private fun updateStockTableFor(modType: ModType) {

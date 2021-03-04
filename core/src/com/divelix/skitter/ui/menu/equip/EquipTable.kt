@@ -14,7 +14,7 @@ import ktx.scene2d.*
 import ktx.style.get
 
 class EquipTable(
-        equipType: EquipType,
+        val equipType: EquipType,
         private val playerData: PlayerData
 ) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
@@ -149,5 +149,9 @@ class EquipTable(
 
     private fun hideEquipWindow() {
         equipWindow.isVisible = false
+    }
+
+    fun reload() {
+        TODO("reload everything for that mod")
     }
 }

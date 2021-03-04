@@ -9,11 +9,13 @@ import ktx.inject.Context
 import ktx.scene2d.table
 
 class EquipPage(context: Context, playerData: PlayerData) : Page(context) {
+    private val shipTable by lazy { EquipTable(EquipType.SHIP, playerData) }
+    private val gunTable by lazy { EquipTable(EquipType.GUN, playerData) }
 
     init {
         val tabbedMenu = TabbedMenu(gdxArrayOf(
-                Tab(assets.manager.get(Constants.SHIP_ICON), EquipTable(EquipType.SHIP, playerData)),
-                Tab(assets.manager.get(Constants.GUN_ICON), EquipTable(EquipType.GUN, playerData))
+                Tab(assets.manager.get(Constants.SHIP_ICON), shipTable),
+                Tab(assets.manager.get(Constants.GUN_ICON), gunTable)
         ))
         table {
             setFillParent(true)
@@ -22,8 +24,8 @@ class EquipPage(context: Context, playerData: PlayerData) : Page(context) {
         }
     }
 
-    fun updateUI() {
-        //TODO update ui
-        println("TODO update ui in EquipPage")
+    fun reloadForModType(modType: ModType) = when (modType) {
+        ModType.SHIP_MOD ->  shipTable.reload()
+        ModType.GUN_MOD ->  gunTable.reload()
     }
 }
