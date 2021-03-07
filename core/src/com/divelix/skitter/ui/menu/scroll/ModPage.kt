@@ -15,6 +15,7 @@ import com.divelix.skitter.ui.menu.tabs.Tab
 import com.divelix.skitter.ui.menu.tabs.TabbedMenu
 import com.divelix.skitter.utils.AliasBinder
 import ktx.actors.txt
+import ktx.collections.filter
 import ktx.collections.gdxArrayOf
 import ktx.collections.removeAll
 import ktx.inject.Context
@@ -30,8 +31,8 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
     private val coinsLabel: Label
     private val showcaseTable by lazy { ShowcaseTable(::sellMod, ::upgradeMod) }
     private val tabbedMenu = TabbedMenu(gdxArrayOf(
-            Tab(assets.manager.get(Constants.SHIP_ICON), StockTable(ModType.SHIP_MOD, playerData.mods, ::selectMod).apply { padTop(Constants.UI_MARGIN) }),
-            Tab(assets.manager.get(Constants.GUN_ICON), StockTable(ModType.GUN_MOD, playerData.mods, ::selectMod).apply { padTop(Constants.UI_MARGIN) })
+            Tab(assets.manager.get(Constants.SHIP_ICON), StockTable(playerData.mods.filter { it.type == ModType.SHIP_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN) }),
+            Tab(assets.manager.get(Constants.GUN_ICON), StockTable(playerData.mods.filter { it.type == ModType.GUN_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN) })
     ))
 
     init {
@@ -59,6 +60,7 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
             modAlias.quantity--
         } else {
             playerData.mods.removeValue(modView.modAlias, false)
+            removeModFromEquips(modAlias)
             selectMod(modView) // deactivates mod
         }
         playerData.coins += AliasBinder.modsData.sellPrices[modAlias.level - 1]
@@ -76,29 +78,46 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
             modAlias.level++
             val resultModAlias = mergeModsFor(modAlias)
             updateStockTableFor(modAlias.type)
-            selectForModAlias(resultModAlias)
+            selectModViewFor(resultModAlias)
         } else {
             modAlias.quantity--
             val newModAlias = ModAlias(modAlias.type, modAlias.index, modAlias.level + 1, 1)
             playerData.mods.add(newModAlias)
             val resultModAlias = mergeModsFor(newModAlias)
             updateStockTableFor(modAlias.type)
-            selectForModAlias(resultModAlias)
+            selectModViewFor(resultModAlias)
         }
         playerData.coins -= AliasBinder.modsData.upgradePrices[modAlias.level - 1]
         coinsLabel.txt = playerData.coins.toString()
+        upgradeModInEquips(modAlias)
         reloadEquipsFor(modAlias.type)
+    }
+
+    //TODO test this
+    private fun removeModFromEquips(modAlias: ModAlias) {
+        playerData.equips.forEach { equip ->
+            val removeCandidate = equip.mods.singleOrNull {it.type == modAlias.type && it.index == modAlias.index && it.level == modAlias.level}
+            if (removeCandidate != null) equip.mods.removeValue(removeCandidate, false)
+        }
+    }
+
+    //TODO test this
+    private fun upgradeModInEquips(modAlias: ModAlias) {
+        playerData.equips.forEach { equip ->
+            val upgradeCandidate = equip.mods.singleOrNull { it.type == modAlias.type && it.index == modAlias.index }
+            if (upgradeCandidate != null && upgradeCandidate.level < modAlias.level) upgradeCandidate.level = modAlias.level
+        }
     }
 
     private fun updateStockTableFor(modType: ModType) {
         when (modType) {
-            ModType.SHIP_MOD -> (tabbedMenu.tabs[0].contentTable as StockTable).reloadMods()
-            ModType.GUN_MOD -> (tabbedMenu.tabs[1].contentTable as StockTable).reloadMods()
+            ModType.SHIP_MOD -> (tabbedMenu.tabs[0].contentTable as StockTable).reload()
+            ModType.GUN_MOD -> (tabbedMenu.tabs[1].contentTable as StockTable).reload()
         }
     }
 
     // find and select upgraded mod among new ModViews
-    private fun selectForModAlias(modAlias: ModAlias) {
+    private fun selectModViewFor(modAlias: ModAlias) {
         val newModView = when (modAlias.type) {
             ModType.SHIP_MOD -> findModView(modAlias, (tabbedMenu.tabs[0].contentTable as StockTable).tableWithMods.children)
             ModType.GUN_MOD -> findModView(modAlias, (tabbedMenu.tabs[1].contentTable as StockTable).tableWithMods.children)

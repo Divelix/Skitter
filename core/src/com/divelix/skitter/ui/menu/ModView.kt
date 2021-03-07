@@ -13,6 +13,7 @@ import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.utils.RegionBinder
 import ktx.actors.onClick
+import ktx.actors.txt
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
@@ -24,7 +25,7 @@ class ModView(val modAlias: ModAlias, selectMod: (ModView) -> Unit): Group() {
     val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.YELLOW_PIXEL))
     val lvlDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL))
     val noLvlDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.WHITE_PIXEL))
-    private val quantityLabel: Label
+    val quantityLabel: Label
     private val levelBars: Table
     private val carriage: Image
 
@@ -81,7 +82,12 @@ class ModView(val modAlias: ModAlias, selectMod: (ModView) -> Unit): Group() {
         carriage.isVisible = false
     }
 
-    fun updateLevelBars() {
+    fun update() {
+        quantityLabel.txt = modAlias.quantity.toString()
+        updateLevelBars()
+    }
+
+    private fun updateLevelBars() {
         for (i in 1..10) {
             (levelBars.children[i - 1] as Image).drawable = if (i <= modAlias.level) lvlDrawable else noLvlDrawable
         }
