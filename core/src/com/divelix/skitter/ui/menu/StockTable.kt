@@ -14,6 +14,7 @@ import ktx.scene2d.scrollPane
 import ktx.scene2d.table
 import ktx.style.get
 import ktx.collections.*
+import ktx.log.debug
 
 class StockTable(
         private val modAliases: Array<ModAlias>,
@@ -42,7 +43,7 @@ class StockTable(
                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
         }
-//        reload()
+        reload()
     }
 
     fun reload() {
@@ -50,9 +51,18 @@ class StockTable(
         modAliases.forEach { addModView(it) }
     }
 
+    fun addMod(modAlias: ModAlias): ModView {
+        modAliases.add(modAlias)
+        val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
+        val newModView = makeModView(modAlias)
+        targetContainer.actor = newModView
+        return newModView
+    }
+
     override fun addModView(modAlias: ModAlias) {
         val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
-        targetContainer.actor = makeModView(modAlias)
+        val newModView = makeModView(modAlias)
+        targetContainer.actor = newModView
     }
 
     override fun removeModView(modAlias: ModAlias) {
@@ -61,13 +71,29 @@ class StockTable(
                 .map { (it as Container<*>).actor as ModView }
                 .single { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
         if (modView.modAlias.quantity > 1) {
-            modView.quantityLabel.txt = (modView.modAlias.quantity - 1).toString()
+            modView.modAlias.quantity--
+            modView.update()
         } else {
+            modAliases.removeValue(modAlias, false)
             (modView.parent as Container<*>).actor = makeEmptyCell()
         }
     }
 
     override fun clearAll() {
         tableWithMods.children.forEach { (it as Container<*>).actor = makeEmptyCell() }
+    }
+
+    fun tryMerge(modView: ModView): ModView {
+        val modAlias = modView.modAlias
+        val mergeCandidates = modAliases
+                .filter { it.type == modAlias.type && it.index == modAlias.index && it.level == modAlias.level }
+        if (mergeCandidates.size == 1) return modView
+        val overallQuantity = mergeCandidates
+                .map { it.quantity }
+                .reduce { overallQuantity, quantity -> overallQuantity + quantity }
+        modAliases.removeAll(mergeCandidates)
+        val resultModAlias = ModAlias(modAlias.type, modAlias.index, modAlias.level, overallQuantity)
+        modAliases.add(resultModAlias)
+        return makeModView(resultModAlias)
     }
 }

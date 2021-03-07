@@ -8,6 +8,7 @@ import com.divelix.skitter.ui.menu.scroll.ModSelector
 import com.divelix.skitter.ui.menu.ModView
 import com.divelix.skitter.ui.menu.StockTable
 import ktx.collections.*
+import ktx.log.debug
 import ktx.scene2d.*
 import ktx.style.get
 
@@ -89,7 +90,7 @@ class EquipTable(
             else -> throw Exception("Can't find ModView's parent table name")
         }
         if (targetTable == suitTable) {
-            if (suitTable.addMod(modAlias)) stockTable.removeMod(modAlias) else return
+            if (suitTable.addMod(modAlias)) stockTable.removeModView(modAlias) else return
         } else {
             stockTable.addMod(modAlias)
             suitTable.removeMod(modAlias)

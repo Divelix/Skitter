@@ -30,9 +30,11 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
         }
     private val coinsLabel: Label
     private val showcaseTable by lazy { ShowcaseTable(::sellMod, ::upgradeMod) }
+    private val shipStockTable = StockTable(playerData.mods.filter { it.type == ModType.SHIP_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN) }
+    private val gunStockTable = StockTable(playerData.mods.filter { it.type == ModType.GUN_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN) }
     private val tabbedMenu = TabbedMenu(gdxArrayOf(
-            Tab(assets.manager.get(Constants.SHIP_ICON), StockTable(playerData.mods.filter { it.type == ModType.SHIP_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN) }),
-            Tab(assets.manager.get(Constants.GUN_ICON), StockTable(playerData.mods.filter { it.type == ModType.GUN_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN) })
+            Tab(assets.manager.get(Constants.SHIP_ICON), shipStockTable),
+            Tab(assets.manager.get(Constants.GUN_ICON), gunStockTable)
     ))
 
     init {
@@ -58,14 +60,16 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
         val modAlias = modView.modAlias
         if (modAlias.quantity > 1) {
             modAlias.quantity--
+            modView.update()
         } else {
-            playerData.mods.removeValue(modView.modAlias, false)
-            removeModFromEquips(modAlias)
+            when (modAlias.type) {
+                ModType.SHIP_MOD -> shipStockTable.removeModView(modAlias)
+                ModType.GUN_MOD -> gunStockTable.removeModView(modAlias)
+            }
             selectMod(modView) // deactivates mod
         }
         playerData.coins += AliasBinder.modsData.sellPrices[modAlias.level - 1]
         coinsLabel.txt = playerData.coins.toString()
-        updateStockTableFor(modAlias.type)
         reloadEquipsFor(modAlias.type)
     }
 
@@ -73,19 +77,20 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
         if (selectedModView == null) return
         val modView = selectedModView as ModView
         val modAlias = modView.modAlias
+        val stockTable = when (modAlias.type) {
+            ModType.SHIP_MOD -> shipStockTable
+            ModType.GUN_MOD -> gunStockTable
+        }
         if (modAlias.level == 10) return
         if (modAlias.quantity == 1) {
             modAlias.level++
-            val resultModAlias = mergeModsFor(modAlias)
-            updateStockTableFor(modAlias.type)
-            selectModViewFor(resultModAlias)
+            modView.update()
+            selectMod(stockTable.tryMerge(modView))
         } else {
             modAlias.quantity--
-            val newModAlias = ModAlias(modAlias.type, modAlias.index, modAlias.level + 1, 1)
-            playerData.mods.add(newModAlias)
-            val resultModAlias = mergeModsFor(newModAlias)
-            updateStockTableFor(modAlias.type)
-            selectModViewFor(resultModAlias)
+            modView.update()
+            val upgradedModView = stockTable.addMod(modAlias.copy(level = modAlias.level + 1, quantity = 1))
+            selectMod(stockTable.tryMerge(upgradedModView))
         }
         playerData.coins -= AliasBinder.modsData.upgradePrices[modAlias.level - 1]
         coinsLabel.txt = playerData.coins.toString()
@@ -94,25 +99,10 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
     }
 
     //TODO test this
-    private fun removeModFromEquips(modAlias: ModAlias) {
-        playerData.equips.forEach { equip ->
-            val removeCandidate = equip.mods.singleOrNull {it.type == modAlias.type && it.index == modAlias.index && it.level == modAlias.level}
-            if (removeCandidate != null) equip.mods.removeValue(removeCandidate, false)
-        }
-    }
-
-    //TODO test this
     private fun upgradeModInEquips(modAlias: ModAlias) {
         playerData.equips.forEach { equip ->
             val upgradeCandidate = equip.mods.singleOrNull { it.type == modAlias.type && it.index == modAlias.index }
             if (upgradeCandidate != null && upgradeCandidate.level < modAlias.level) upgradeCandidate.level = modAlias.level
-        }
-    }
-
-    private fun updateStockTableFor(modType: ModType) {
-        when (modType) {
-            ModType.SHIP_MOD -> (tabbedMenu.tabs[0].contentTable as StockTable).reload()
-            ModType.GUN_MOD -> (tabbedMenu.tabs[1].contentTable as StockTable).reload()
         }
     }
 

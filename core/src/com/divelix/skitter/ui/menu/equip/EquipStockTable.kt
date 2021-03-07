@@ -17,11 +17,12 @@ import ktx.scene2d.scrollPane
 import ktx.scene2d.table
 import ktx.style.get
 import ktx.collections.*
+import ktx.log.debug
 
 class EquipStockTable(
         selectMod: (ModView) -> Unit
 ) : ModTable(selectMod) {
-    private var modAliases: Array<ModAlias> = gdxArrayOf()
+    var modAliases: Array<ModAlias> = gdxArrayOf()
     private val tableWithMods: Table
 
     init {
@@ -71,11 +72,6 @@ class EquipStockTable(
         }
     }
 
-    fun removeMod(modAlias: ModAlias) {
-        modAliases.removeValue(modAlias, false)
-        removeModView(modAlias)
-    }
-
     override fun addModView(modAlias: ModAlias) {
         val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
         targetContainer.actor = makeModView(modAlias)
@@ -91,6 +87,7 @@ class EquipStockTable(
             modView.modAlias.quantity--
             modView.update()
         } else {
+            modAliases.removeValue(modAlias, false)
             (modView.parent as Container<*>).actor = makeEmptyCell()
         }
     }

@@ -11,9 +11,7 @@ abstract class ModTable(private val selectMod: (ModView) -> Unit) : Table(), KTa
 
     fun makeModView(modAlias: ModAlias) = ModView(modAlias, selectMod)
 
-    fun makeEmptyCell() = Actor().apply {
-        setSize(Constants.MOD_SIZE, Constants.MOD_SIZE)
-    }
+    fun makeEmptyCell() = Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }
 
     abstract fun addModView(modAlias: ModAlias)
 

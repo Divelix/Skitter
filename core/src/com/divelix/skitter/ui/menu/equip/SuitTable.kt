@@ -12,6 +12,7 @@ import ktx.collections.GdxArray
 import ktx.collections.filter
 import ktx.collections.gdxArrayOf
 import ktx.collections.map
+import ktx.log.debug
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
 import ktx.style.get
@@ -51,7 +52,7 @@ class SuitTable(selectMod: (ModView) -> Unit): ModTable(selectMod) {
             modAliases.add(newModAlias)
             addModView(newModAlias)
         } else {
-            ktx.log.debug { "SuitTable already has such mod" }
+            debug { "SuitTable already has such mod" }
             return false
         }
         return true
