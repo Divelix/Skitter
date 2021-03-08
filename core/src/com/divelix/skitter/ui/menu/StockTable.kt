@@ -4,22 +4,21 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.ModAlias
-import ktx.actors.txt
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
 import ktx.scene2d.scrollPane
 import ktx.scene2d.table
 import ktx.style.get
 import ktx.collections.*
-import ktx.log.debug
 
+// contains all available mods to player
 class StockTable(
-        private val modAliases: Array<ModAlias>,
-        selectMod: (ModView) -> Unit
-) : ModTable(selectMod) {
+        canModifyPlayerData: Boolean,
+        modAliases: GdxArray<ModAlias>,
+        val selectMod: (ModView) -> Unit
+) : ModTable(canModifyPlayerData, modAliases, selectMod) {
     val tableWithMods: Table
 
     init {
@@ -43,57 +42,51 @@ class StockTable(
                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
         }
-        reload()
+        addAll()
     }
 
-    fun reload() {
-        clearAll()
-        modAliases.forEach { addModView(it) }
-    }
-
-    fun addMod(modAlias: ModAlias): ModView {
-        modAliases.add(modAlias)
+    override fun addMod(modAlias: ModAlias, modifyData: Boolean) {
+        val resultModAlias = if (modifyData) {
+            // find mod aliases with same index and level
+            val mergeCandidate = modAliases
+                    .singleOrNull { it.index == modAlias.index && it.level == modAlias.level }
+            val mergedModAlias = if (mergeCandidate == null) {
+                modAlias
+            } else {
+                val oldModQuantity = mergeCandidate.quantity // save mod quantity before it will be removed
+                removeMod(mergeCandidate, true) // remove duplicate
+                ModAlias(modAlias.type, modAlias.index, modAlias.level, oldModQuantity + modAlias.quantity)
+            }
+            modAliases.add(mergedModAlias)
+            mergedModAlias
+        } else {
+            modAlias
+        }
         val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
-        val newModView = makeModView(modAlias)
-        targetContainer.actor = newModView
-        return newModView
+        targetContainer.actor = makeModView(resultModAlias).apply { selectMod(this) }
     }
 
-    override fun addModView(modAlias: ModAlias) {
-        val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
-        val newModView = makeModView(modAlias)
-        targetContainer.actor = newModView
-    }
 
-    override fun removeModView(modAlias: ModAlias) {
+    override fun removeMod(modAlias: ModAlias, modifyData: Boolean) {
         val modView = tableWithMods.children
                 .filter { (it as Container<*>).actor is ModView }
                 .map { (it as Container<*>).actor as ModView }
                 .single { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
-        if (modView.modAlias.quantity > 1) {
-            modView.modAlias.quantity--
-            modView.update()
+        if (modifyData) modAliases.removeValue(modAlias, false)
+        (modView.parent as Container<*>).actor = makeEmptyCell()
+    }
+
+    fun subtractOneFromSimilarTo(other: ModAlias) {
+        val modAlias = modAliases.single { it.index == other.index && it.level == other.level}
+        if (modAlias.quantity > 1) {
+            modAlias.quantity--
+            tableWithMods.children
+                    .filter { (it as Container<*>).actor is ModView }
+                    .map { (it as Container<*>).actor as ModView }
+                    .single { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
+                    .update()
         } else {
-            modAliases.removeValue(modAlias, false)
-            (modView.parent as Container<*>).actor = makeEmptyCell()
+            removeMod(modAlias, true)
         }
-    }
-
-    override fun clearAll() {
-        tableWithMods.children.forEach { (it as Container<*>).actor = makeEmptyCell() }
-    }
-
-    fun tryMerge(modView: ModView): ModView {
-        val modAlias = modView.modAlias
-        val mergeCandidates = modAliases
-                .filter { it.type == modAlias.type && it.index == modAlias.index && it.level == modAlias.level }
-        if (mergeCandidates.size == 1) return modView
-        val overallQuantity = mergeCandidates
-                .map { it.quantity }
-                .reduce { overallQuantity, quantity -> overallQuantity + quantity }
-        modAliases.removeAll(mergeCandidates)
-        val resultModAlias = ModAlias(modAlias.type, modAlias.index, modAlias.level, overallQuantity)
-        modAliases.add(resultModAlias)
-        return makeModView(resultModAlias)
     }
 }

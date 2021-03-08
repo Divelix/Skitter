@@ -10,7 +10,6 @@ import com.divelix.skitter.ui.menu.ModTable
 import com.divelix.skitter.ui.menu.ModView
 import ktx.collections.GdxArray
 import ktx.collections.filter
-import ktx.collections.gdxArrayOf
 import ktx.collections.map
 import ktx.log.debug
 import ktx.scene2d.Scene2DSkin
@@ -18,8 +17,11 @@ import ktx.scene2d.container
 import ktx.style.get
 
 // Contain unique mods (by type and index)
-class SuitTable(selectMod: (ModView) -> Unit): ModTable(selectMod) {
-    var modAliases: GdxArray<ModAlias> = gdxArrayOf()
+class SuitTable(
+        canModifyPlayerData: Boolean,
+        modAliases: GdxArray<ModAlias>,
+        selectMod: (ModView) -> Unit
+) : ModTable(canModifyPlayerData, modAliases, selectMod) {
 
     init {
         name = Constants.SUIT_TABLE
@@ -33,51 +35,37 @@ class SuitTable(selectMod: (ModView) -> Unit): ModTable(selectMod) {
         }
     }
 
-    fun reloadFor(equipAlias: EquipAlias) {
-        clearAll()
-        modAliases = equipAlias.mods
-        modAliases.forEach { addModView(it) }
+    fun addAllFor(equipAlias: EquipAlias) {
+        removeAll()
+        setModAliases(equipAlias.mods)
+        addAll()
     }
 
-    fun addMod(modAlias: ModAlias): Boolean {
-        // Check mod index duplicate
-        val overlapModAlias = children
-                .filter { (it as Container<*>).actor is ModView }
-                .map { ((it as Container<*>).actor as ModView).modAlias }
-                .singleOrNull {
-                    it.type == modAlias.type && it.index == modAlias.index
-                }
-        if (overlapModAlias == null) {
-            val newModAlias = modAlias.copy(quantity = 1)
-            modAliases.add(newModAlias)
-            addModView(newModAlias)
+    override fun addMod(modAlias: ModAlias, modifyData: Boolean) {
+        if (modifyData) {
+            val overlap = modAliases.firstOrNull { it.index == modAlias.index }
+            if (overlap == null) {
+                modAliases.add(modAlias.copy(quantity = 1).apply { addView(this) })
+            } else {
+                debug { "SuitTable already has such mod" }
+                return
+            }
         } else {
-            debug { "SuitTable already has such mod" }
-            return false
+            addView(modAlias)
         }
-        return true
     }
 
-    fun removeMod(modAlias: ModAlias) {
-        modAliases.removeValue(modAlias, false)
-        removeModView(modAlias)
-    }
-
-    override fun addModView(modAlias: ModAlias) {
+    private fun addView(modAlias: ModAlias) {
         val targetContainer = children.first { (it as Container<*>).actor !is ModView } as Container<*>
         targetContainer.actor = makeModView(modAlias)
     }
 
-    override fun removeModView(modAlias: ModAlias) {
+    override fun removeMod(modAlias: ModAlias, modifyData: Boolean) {
         val modView = children
                 .filter { (it as Container<*>).actor is ModView }
                 .map { (it as Container<*>).actor as ModView }
-                .single { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
-
-        (modView.parent as Container<*>).actor = makeEmptyCell()
-    }
-
-    override fun clearAll() {
-        children.forEach { (it as Container<*>).actor = makeEmptyCell() }
+                .singleOrNull { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
+        if (modView != null) (modView.parent as Container<*>).actor = makeEmptyCell()
+        if (modifyData) modAliases.removeValue(modAlias, false)
     }
 }
