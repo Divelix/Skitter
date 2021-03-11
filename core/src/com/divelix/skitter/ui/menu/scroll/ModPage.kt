@@ -30,8 +30,8 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
         }
     private val coinsLabel: Label
     private val showcaseTable by lazy { ShowcaseTable(::sellMod, ::upgradeMod) }
-    private val shipStockTable = StockTable(true, playerData.mods.filter { it.type == ModType.SHIP_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN) }
-    private val gunStockTable = StockTable(true, playerData.mods.filter { it.type == ModType.GUN_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN) }
+    private val shipStockTable = StockTable(true, playerData.mods.filter { it.type == ModType.SHIP_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN); addAll() }
+    private val gunStockTable = StockTable(true, playerData.mods.filter { it.type == ModType.GUN_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN); addAll() }
     private val tabbedMenu = TabbedMenu(gdxArrayOf(
             Tab(assets.manager.get(Constants.SHIP_ICON), shipStockTable),
             Tab(assets.manager.get(Constants.GUN_ICON), gunStockTable)
@@ -85,14 +85,13 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
         if (modAlias.quantity == 1) {
             modAlias.level++
             modView.update()
+            showcaseTable.setMod(modView)
             //TODO need to merge here
-            selectMod(modView)
         } else {
             modAlias.quantity--
             modView.update()
-            stockTable.addMod(modAlias.copy(level = modAlias.level + 1, quantity = 1), true)
-            //TODO need to merge here
-            //TODO need to select here
+            val newModView = modAlias.copy(level = modAlias.level + 1, quantity = 1)
+            stockTable.addMod(newModView, true)
         }
         playerData.coins -= AliasBinder.modsData.upgradePrices[modAlias.level - 1]
         coinsLabel.txt = playerData.coins.toString()

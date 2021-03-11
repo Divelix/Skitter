@@ -41,18 +41,19 @@ class SuitTable(
         addAll()
     }
 
-    override fun addMod(modAlias: ModAlias, modifyData: Boolean) {
+    override fun addMod(modAlias: ModAlias, modifyData: Boolean): Boolean {
         if (modifyData) {
             val overlap = modAliases.firstOrNull { it.index == modAlias.index }
             if (overlap == null) {
                 modAliases.add(modAlias.copy(quantity = 1).apply { addView(this) })
             } else {
                 debug { "SuitTable already has such mod" }
-                return
+                return false
             }
         } else {
             addView(modAlias)
         }
+        return true
     }
 
     private fun addView(modAlias: ModAlias) {

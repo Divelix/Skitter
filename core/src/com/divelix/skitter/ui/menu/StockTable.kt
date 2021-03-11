@@ -42,10 +42,10 @@ class StockTable(
                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
         }
-        addAll()
+//        addAll()
     }
 
-    override fun addMod(modAlias: ModAlias, modifyData: Boolean) {
+    override fun addMod(modAlias: ModAlias, modifyData: Boolean): Boolean {
         val resultModAlias = if (modifyData) {
             // find mod aliases with same index and level
             val mergeCandidate = modAliases
@@ -64,6 +64,7 @@ class StockTable(
         }
         val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
         targetContainer.actor = makeModView(resultModAlias).apply { selectMod(this) }
+        return true
     }
 
 
@@ -71,13 +72,16 @@ class StockTable(
         val modView = tableWithMods.children
                 .filter { (it as Container<*>).actor is ModView }
                 .map { (it as Container<*>).actor as ModView }
-                .single { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
-        if (modifyData) modAliases.removeValue(modAlias, false)
-        (modView.parent as Container<*>).actor = makeEmptyCell()
+                .singleOrNull { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
+        if (modView != null) {
+            if (modifyData) modAliases.removeValue(modAlias, false)
+            (modView.parent as Container<*>).actor = makeEmptyCell()
+        }
     }
 
     fun subtractOneFromSimilarTo(other: ModAlias) {
-        val modAlias = modAliases.single { it.index == other.index && it.level == other.level}
+        val modAlias = modAliases.singleOrNull { it.index == other.index && it.level == other.level }
+                ?: return
         if (modAlias.quantity > 1) {
             modAlias.quantity--
             tableWithMods.children

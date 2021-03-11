@@ -17,7 +17,7 @@ abstract class ModTable(
 
     init { setModAliases(mods) }
 
-    abstract fun addMod(modAlias: ModAlias, modifyData: Boolean)
+    abstract fun addMod(modAlias: ModAlias, modifyData: Boolean): Boolean
 
     abstract fun removeMod(modAlias: ModAlias, modifyData: Boolean)
 

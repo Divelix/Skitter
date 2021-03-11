@@ -82,8 +82,8 @@ class EquipTable(
             else -> throw Exception("Can't find ModView's parent table name")
         }
         if (targetTable == suitTable) {
-            suitTable.addMod(modAlias, true)
-            stockTable.subtractOneFromSimilarTo(modAlias)
+            if (suitTable.addMod(modAlias, true))
+                stockTable.subtractOneFromSimilarTo(modAlias)
         } else {
             stockTable.addMod(modAlias, true)
             suitTable.removeMod(modAlias, true)
@@ -103,7 +103,9 @@ class EquipTable(
     // fill info and suit tables with chosen equip data
     private fun setActiveEquip(equipAlias: EquipAlias) {
         // fill stockTable
+        stockTable.removeAll()
         stockTable.setModAliases(playerData.mods.filter { it.type == modType })
+        stockTable.addAll()
 
         // subtract equip mods from stockTable
         equipAlias.mods.forEach { stockTable.subtractOneFromSimilarTo(it) }
