@@ -35,12 +35,6 @@ class SuitTable(
         }
     }
 
-    fun addAllFor(equipAlias: EquipAlias) {
-        removeAll()
-        setModAliases(equipAlias.mods)
-        addAll()
-    }
-
     override fun addMod(modAlias: ModAlias, modifyData: Boolean): Boolean {
         if (modifyData) {
             val overlap = modAliases.firstOrNull { it.index == modAlias.index }

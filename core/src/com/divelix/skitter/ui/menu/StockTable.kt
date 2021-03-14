@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.ModAlias
+import com.divelix.skitter.data.ModType
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
 import ktx.scene2d.scrollPane
@@ -16,10 +17,11 @@ import ktx.collections.*
 // contains all available mods to player
 class StockTable(
         canModifyPlayerData: Boolean,
+        val playerMods: GdxArray<ModAlias>,
         modAliases: GdxArray<ModAlias>,
         val selectMod: (ModView) -> Unit
 ) : ModTable(canModifyPlayerData, modAliases, selectMod) {
-    val tableWithMods: Table
+    private val tableWithMods: Table
 
     init {
         scrollPane {
@@ -42,12 +44,11 @@ class StockTable(
                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
         }
-//        addAll()
     }
 
     override fun addMod(modAlias: ModAlias, modifyData: Boolean): Boolean {
         val resultModAlias = if (modifyData) {
-            // find mod aliases with same index and level
+            // find mod aliases with the same indices and levels
             val mergeCandidate = modAliases
                     .singleOrNull { it.index == modAlias.index && it.level == modAlias.level }
             val mergedModAlias = if (mergeCandidate == null) {
@@ -57,13 +58,15 @@ class StockTable(
                 removeMod(mergeCandidate, true) // remove duplicate
                 ModAlias(modAlias.type, modAlias.index, modAlias.level, oldModQuantity + modAlias.quantity)
             }
+            // need both as modAliases is mutable and doesn't ADD mods to playerData
             modAliases.add(mergedModAlias)
+            playerMods.add(mergedModAlias)
             mergedModAlias
         } else {
             modAlias
         }
         val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
-        targetContainer.actor = makeModView(resultModAlias).apply { selectMod(this) }
+        targetContainer.actor = makeModView(resultModAlias).apply { if (modifyData) selectMod(this) }
         return true
     }
 
@@ -74,7 +77,11 @@ class StockTable(
                 .map { (it as Container<*>).actor as ModView }
                 .singleOrNull { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
         if (modView != null) {
-            if (modifyData) modAliases.removeValue(modAlias, false)
+            if (modifyData) {
+                // need both as modAliases is mutable and doesn't REMOVE mods to playerData
+                modAliases.removeValue(modAlias, false)
+                playerMods.removeValue(modAlias, false)
+            }
             (modView.parent as Container<*>).actor = makeEmptyCell()
         }
     }

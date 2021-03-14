@@ -81,7 +81,7 @@ data class GunSpecs(
 ) : EquipSpecs()
 
 data class EquipsData(
-        val equips: Array<Equip> = gdxArrayOf()
+        val equips: GdxArray<Equip> = gdxArrayOf()
 )
 
 //----------- MOD -----------
@@ -123,12 +123,12 @@ data class PlayerData(
         val name: String = "None",
         var coins: Int = 0,
         val activeEquips: ActiveEquips = ActiveEquips(),
-        val equips: Array<EquipAlias> = gdxArrayOf(),
-        val mods: Array<ModAlias> = gdxArrayOf()
+        val equips: GdxArray<EquipAlias> = gdxArrayOf(),
+        val mods: GdxArray<ModAlias> = gdxArrayOf()
 )
 
 data class ActiveEquips(var shipIndex: Int = 0, var gunIndex: Int = 0)
 
-data class EquipAlias(val type: EquipType = EquipType.SHIP, val index: Int = 0, val level: Int = 0, val mods: Array<ModAlias> = gdxArrayOf())
+data class EquipAlias(val type: EquipType = EquipType.SHIP, val index: Int = 0, val level: Int = 0, val mods: GdxArray<ModAlias> = gdxArrayOf())
 
 data class ModAlias(val type: ModType = ModType.SHIP_MOD, val index: Int = 0, var level: Int = 0, var quantity: Int = 1)

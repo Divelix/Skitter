@@ -8,6 +8,7 @@ import com.divelix.skitter.ui.menu.scroll.ModSelector
 import com.divelix.skitter.ui.menu.ModView
 import com.divelix.skitter.ui.menu.StockTable
 import ktx.collections.*
+import ktx.log.debug
 import ktx.scene2d.*
 import ktx.style.get
 
@@ -33,7 +34,7 @@ class EquipTable(
     }
     private val infoTable by lazy { InfoTable(::showEquipWindow) }
     private val suitTable by lazy { SuitTable(true, selectedEquipAlias.mods, ::selectMod) }
-    private val stockTable by lazy { StockTable(false, playerData.mods.filter { it.type == modType }, ::selectMod) }
+    private val stockTable by lazy { StockTable(false, playerData.mods, playerData.mods.filter { it.type == modType }, ::selectMod) }
     private val equipWindow by lazy { EquipWindow(playerData.equips.filter { it.type == equipType }, ::chooseEquip).apply { this@EquipTable.stage.addActor(this) } }
     private val actionButton by lazy { ActionButton(::onActionButtonClick) }
 
@@ -103,15 +104,17 @@ class EquipTable(
     // fill info and suit tables with chosen equip data
     private fun setActiveEquip(equipAlias: EquipAlias) {
         // fill stockTable
-        stockTable.removeAll()
+        stockTable.removeAllViews()
         stockTable.setModAliases(playerData.mods.filter { it.type == modType })
-        stockTable.addAll()
+        stockTable.addAllViews()
 
         // subtract equip mods from stockTable
-        equipAlias.mods.forEach { stockTable.subtractOneFromSimilarTo(it) }
+//        equipAlias.mods.forEach { stockTable.subtractOneFromSimilarTo(it) }
 
         // fill suitTable
-        suitTable.addAllFor(equipAlias)
+        suitTable.removeAllViews()
+        suitTable.setModAliases(equipAlias.mods)
+        suitTable.addAllViews()
 
         // fill info table
         infoTable.setInfo(equipAlias)
@@ -132,6 +135,16 @@ class EquipTable(
     }
 
     fun reload() {
+        setBestMods()
         setActiveEquip(selectedEquipAlias)
+    }
+
+    fun setBestMods() {
+        selectedEquipAlias.mods.forEach { suitMod ->
+            val maxLevelMod = playerData.mods
+                    .filter { it.type == suitMod.type && it.index == suitMod.index }
+                    .maxByOrNull { it.level }
+            if (maxLevelMod != null) suitMod.level = maxLevelMod.level
+        }
     }
 }

@@ -13,6 +13,7 @@ abstract class ModTable(
         mods: GdxArray<ModAlias>,
         private val selectMod: (ModView) -> Unit
 ) : Table(), KTable {
+    // TODO ponder on that line (lateinit is not cool here)
     lateinit var modAliases: GdxArray<ModAlias> private set
 
     init { setModAliases(mods) }
@@ -35,7 +36,7 @@ abstract class ModTable(
 
     fun makeEmptyCell() = Actor().apply { setSize(Constants.MOD_SIZE, Constants.MOD_SIZE) }
 
-    fun addAll() = modAliases.forEach { addMod(it, false) }
+    fun addAllViews() = modAliases.forEach { addMod(it, false) }
 
-    fun removeAll() = modAliases.forEach { removeMod(it, false) }
+    fun removeAllViews() = modAliases.forEach { removeMod(it, false) }
 }
