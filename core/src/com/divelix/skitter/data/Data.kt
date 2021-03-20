@@ -18,26 +18,20 @@ object Data {
     val dirVec = Vector2()
 }
 
-data class PlayerDataOld(val shipOld: ShipDataOld,
-                         val gunOld: GunDataOld)
+//---------------------------------------------- Local ---------------------------------------------
 
-data class ShipDataOld(var health: Float,
-                       var speed: Float)
+// ----------- GAMEPLAY ------------
+data class ActivePlayerData(
+        var shipHealth: Float = 1f,
+        var shipSpeed: Float = 1f,
+        var gunDamage: Float = 1f,
+        var gunCapacity: Int = 1,
+        var gunReload: Float = 1f,
+        var gunSpeed: Float = 1f,
+        var gunCrit: Float = 1f,
+        var gunChance: Float = 1f
+)
 
-data class GunDataOld(var damage: Float,
-                      var capacity: Int,
-                      var reloadTime: Float,
-                      var bulletSpeed: Float,
-                      var critMultiplier: Float,
-                      var critChance: Float)
-
-data class LoverData(var health: Float,
-                     var maxSpeed: Float,
-                     var maxForce: Float,
-                     var damage: Float)
-
-//----------------------------------------- NEW DATA STRUCTURE -------------------------------------
-//---------------- Local ----------------
 //----------- EQUIP -----------
 enum class EquipType {
     SHIP,
@@ -104,7 +98,7 @@ data class ModsData(
         val mods: Array<Mod> = gdxArrayOf()
 )
 
-//----------------- Remote -----------------
+//--------------------------------------------- Remote ---------------------------------------------
 //----------- PLAYER -----------
 data class PlayerData(
         val id: Int = -1,
@@ -113,18 +107,6 @@ data class PlayerData(
         val activeEquips: ActiveEquips = ActiveEquips(),
         val equips: GdxArray<EquipAlias> = gdxArrayOf(),
         val mods: GdxArray<ModAlias> = gdxArrayOf()
-)
-
-// used in gameplay
-data class ActivePlayerData(
-        var shipHealth: Float = 1f,
-        var shipSpeed: Float = 1f,
-        var gunDamage: Float = 1f,
-        var gunCapacity: Int = 1,
-        var gunReload: Float = 1f,
-        var gunSpeed: Float = 1f,
-        var gunCrit: Float = 1f,
-        var gunChance: Float = 1f
 )
 
 data class ActiveEquips(var shipIndex: Int = 0, var gunIndex: Int = 0)
