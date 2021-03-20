@@ -14,7 +14,8 @@ import ktx.style.get
 
 class EquipTable(
         private val equipType: EquipType,
-        private val playerData: PlayerData
+        private val playerData: PlayerData,
+        private val activePlayerData: ActivePlayerData
 ) : Table(), KTable, ModSelector {
     override var selectedModView: ModView? = null
         set(value) {
@@ -32,7 +33,7 @@ class EquipTable(
         EquipType.SHIP -> ModType.SHIP_MOD
         EquipType.GUN -> ModType.GUN_MOD
     }
-    private val infoTable by lazy { InfoTable(::showEquipWindow) }
+    private val infoTable by lazy { InfoTable(activePlayerData, ::showEquipWindow) }
     private val suitTable by lazy { SuitTable(true, selectedEquipAlias.mods, ::selectMod) }
     private val stockTable by lazy { StockTable(false, playerData.mods, playerData.mods.filter { it.type == modType }, ::selectMod) }
     private val equipWindow by lazy { EquipWindow(playerData.equips.filter { it.type == equipType }, ::chooseEquip).apply { this@EquipTable.stage.addActor(this) } }

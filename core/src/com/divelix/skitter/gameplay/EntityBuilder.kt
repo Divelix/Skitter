@@ -41,18 +41,17 @@ import ktx.log.info
 import ktx.scene2d.Scene2DSkin
 import ktx.style.get
 
-class EntityBuilder(private val engine: PooledEngine,
+class EntityBuilder(private val activePlayerData: ActivePlayerData,
+                    private val engine: PooledEngine,
                     private val world: World,
                     private val assets: Assets) {
 
     fun createPlayer(x: Float, y: Float): Entity {
         val entityType = TypeComponent.PLAYER
-        engine.entity {
-        }
         return engine.entity {
             with<PlayerComponent>()
             with<TypeComponent> { type = entityType }
-            with<HealthComponent> { health = Data.playerDataOld.shipOld.health }
+            with<HealthComponent> { health = activePlayerData.shipHealth }
 //            with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
                 position.set(x, y, 2f)
@@ -103,11 +102,11 @@ class EntityBuilder(private val engine: PooledEngine,
         val dirAngle = dirVec.angle() - 90f
         val width = 0.2f
         val height = 1f
-        val speed = Data.playerDataOld.gunOld.bulletSpeed
+        val speed = activePlayerData.gunSpeed
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<BulletComponent> {
-                damage = Data.playerDataOld.gunOld.damage
+                damage = activePlayerData.gunDamage
             }
             with<TransformComponent> {
                 position.set(initPos.x, initPos.y, 1f)

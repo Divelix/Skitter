@@ -8,9 +8,9 @@ import ktx.collections.gdxArrayOf
 import ktx.inject.Context
 import ktx.scene2d.table
 
-class EquipPage(context: Context, playerData: PlayerData) : Page(context) {
-    private val shipTable by lazy { EquipTable(EquipType.SHIP, playerData) }
-    private val gunTable by lazy { EquipTable(EquipType.GUN, playerData) }
+class EquipPage(context: Context, playerData: PlayerData, activePlayerData: ActivePlayerData) : Page(context) {
+    private val shipTable by lazy { EquipTable(EquipType.SHIP, playerData, activePlayerData) }
+    private val gunTable by lazy { EquipTable(EquipType.GUN, playerData, activePlayerData) }
 
     init {
         val tabbedMenu = TabbedMenu(gdxArrayOf(

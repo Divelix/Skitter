@@ -13,21 +13,9 @@ object Data {
     var reloadTimer = 0f
     var score = 0
     val matchHistory = gdxMapOf<Enemy, Int>()
-    val playerDataOld: PlayerDataOld
 
     //    val loverData: LoverData
     val dirVec = Vector2()
-
-    init {
-        val shipData = ShipDataOld(0f, 0f)
-        val gunData = GunDataOld(0f, 0, 0f, 0f, 0f, 0f)
-        playerDataOld = PlayerDataOld(shipData, gunData)
-
-//        val reader = JsonReader()
-//        val enemyReader = reader.parse(Constants.ENEMIES_FILE.toInternalFile())
-//        val loverSpecs = enemyReader.get("enemies")[0].get("specs")
-//        loverData = LoverData(loverSpecs[0].asFloat(), loverSpecs[1].asFloat(), loverSpecs[2].asFloat(), loverSpecs[3].asFloat())
-    }
 }
 
 data class PlayerDataOld(val shipOld: ShipDataOld,
@@ -125,6 +113,18 @@ data class PlayerData(
         val activeEquips: ActiveEquips = ActiveEquips(),
         val equips: GdxArray<EquipAlias> = gdxArrayOf(),
         val mods: GdxArray<ModAlias> = gdxArrayOf()
+)
+
+// used in gameplay
+data class ActivePlayerData(
+        var shipHealth: Float = 1f,
+        var shipSpeed: Float = 1f,
+        var gunDamage: Float = 1f,
+        var gunCapacity: Int = 1,
+        var gunReload: Float = 1f,
+        var gunSpeed: Float = 1f,
+        var gunCrit: Float = 1f,
+        var gunChance: Float = 1f
 )
 
 data class ActiveEquips(var shipIndex: Int = 0, var gunIndex: Int = 0)

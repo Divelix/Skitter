@@ -20,8 +20,10 @@ import ktx.collections.*
 import ktx.scene2d.*
 import ktx.style.get
 
-class InfoTable(showEquipWindow: () -> Unit) : Table(), KTable {
-
+class InfoTable(
+        private val activePlayerData: ActivePlayerData,
+        showEquipWindow: () -> Unit
+) : Table(), KTable {
     private val equipName: Label
     private val description: Label
     private val equipIcon: Image
@@ -86,10 +88,14 @@ class InfoTable(showEquipWindow: () -> Unit) : Table(), KTable {
                 }
                 specsNames.txt = "HEALTH: \nSPEED: "
                 specsValues.txt = "${health}\n${speed}"
+
+                //update active data
+                activePlayerData.shipHealth = health
+                activePlayerData.shipSpeed = speed
             }
             is GunSpecs -> {
                 var damage = specs.damage[equipLvlIndex]
-                var capacity = specs.capacity[equipLvlIndex]
+                var capacity = specs.capacity[equipLvlIndex].toInt()
                 var reload = specs.reload[equipLvlIndex]
                 var speed = specs.speed[equipLvlIndex]
                 var crit = specs.crit[equipLvlIndex]
@@ -106,6 +112,14 @@ class InfoTable(showEquipWindow: () -> Unit) : Table(), KTable {
                 }
                 specsNames.txt = "DAMAGE: \nCAPACITY: \nRELOAD: \nSPEED: \nCRITICAL: \nCHANCE: "
                 specsValues.txt = "${damage}\n${capacity}\n${reload}\n${speed}\n${crit}\n${chance}"
+
+                // update active data
+                activePlayerData.gunDamage = damage
+                activePlayerData.gunCapacity = capacity
+                activePlayerData.gunReload = reload
+                activePlayerData.gunSpeed = speed
+                activePlayerData.gunCrit = crit
+                activePlayerData.gunChance = chance
             }
         }
     }
