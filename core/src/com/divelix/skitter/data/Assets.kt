@@ -27,7 +27,7 @@ class Assets: Disposable {
     var manager: AssetManager = AssetManager()
         private set
 
-    lateinit var uiSkin: Skin
+    lateinit var skin: Skin
     lateinit var digitsFont: BitmapFont
 
     val bgColor = Color(0x684BA6FF)
@@ -42,8 +42,12 @@ class Assets: Disposable {
     }
 
     fun loadAssets() {
-        manager.load<TextureAtlas>(Constants.ATLAS_UI)
-        manager.load<Texture>(Constants.GAMEPLAY_BG)
+        manager.load<TextureAtlas>(Constants.ATLAS_SKIN)
+        Atlases.values().forEach {
+            manager.load<TextureAtlas>("textures/atlases/" + it() + ".atlas")
+        }
+
+//        manager.load<Texture>(Constants.GAMEPLAY_BG)
         manager.load<Texture>(Constants.EQUIP_ICON)
         manager.load<Texture>(Constants.BATTLE_ICON)
         manager.load<Texture>(Constants.MOD_ICON)
@@ -66,7 +70,7 @@ class Assets: Disposable {
         manager.load<Texture>(Constants.KID)
         manager.load<Texture>(Constants.RADIAL)
         manager.load<Texture>(Constants.JUMPER)
-        manager.load<Texture>(Constants.BULLET_DEFAULT)
+//        manager.load<Texture>(Constants.BULLET_DEFAULT)
         manager.load<Texture>(Constants.AIM)
         manager.load<Texture>(Constants.WHITE_CIRCLE)
         manager.load<Texture>(Constants.MENU_PLAY)
@@ -100,7 +104,7 @@ class Assets: Disposable {
     }
 
     fun setup() {
-        uiSkin = skin(manager.get(Constants.ATLAS_UI)) {
+        skin = skin(manager.get(Constants.ATLAS_SKIN)) {
             color(Constants.ORANGE_COLOR, 1f, 0.6f, 0f)
 //            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
 //            this["aim"] = manager.get<Texture>(Constants.AIM) // same with different syntax
@@ -108,9 +112,9 @@ class Assets: Disposable {
             this[Constants.BLACK_PIXEL_30] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.3f)); fill() })
             this[Constants.BLACK_PIXEL_50] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.5f)); fill() })
             this[Constants.BLACK_PIXEL_70] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 0.7f)); fill() })
-            this[Constants.RED_PIXEL_30] = Texture(bgPixel.apply { setColor(Color(1f, 0f, 0f, 0.3f)); fill() })
-            this[Constants.GREEN_PIXEL_30] = Texture(bgPixel.apply { setColor(Color(0f, 1f, 0f, 0.3f)); fill() })
-            this[Constants.BLUE_PIXEL_30] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 1f, 0.3f)); fill() })
+            this[Constants.BLACK_PIXEL] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 0f, 1f)); fill() })
+            this[Constants.YELLOW_PIXEL] = Texture(bgPixel.apply { setColor(Color(1f, 1f, 0f, 1f)); fill() })
+            this[Constants.WHITE_PIXEL] = Texture(bgPixel.apply { setColor(Color(1f, 1f, 1f, 1f)); fill() })
             this[Constants.LIGHT_GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.7f, .7f, .7f, 1f)); fill() })
             this[Constants.GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.3f, .3f, .3f, 1f)); fill() })
             this[Constants.DARK_GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.17f, .17f, .17f, 1f)); fill() })
@@ -140,7 +144,7 @@ class Assets: Disposable {
             label("black", extend = defaultStyle) {
                 fontColor = Color.BLACK
             }
-            label("mod-name", extend = defaultStyle) {
+            label(Constants.STYLE_MOD_NAME, extend = defaultStyle) {
                 fontColor = Color.YELLOW
             }
             label("mod-level", extend = defaultStyle) {
@@ -158,20 +162,25 @@ class Assets: Disposable {
                 titleFont = manager.get(Constants.ROBOTO_LIGHT_FONT)
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
-            window("equip-choose", extend = defaultStyle) {
+            window(Constants.STYLE_EQUIP_CHOOSE, extend = defaultStyle) {
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.DARK_GRAY_PIXEL))
             }
 
+        }.apply {
+            Atlases.values().forEach {
+                addRegions(manager.get("textures/atlases/" + it() + ".atlas"))
+            }
+
         }
-        Scene2DSkin.defaultSkin = uiSkin
-        VisUI.load(uiSkin)
+        Scene2DSkin.defaultSkin = skin
+        VisUI.load(skin)
 //        VisUI.load() // loads default vis skin
         VisUI.setDefaultTitleAlign(Align.center)
     }
 
     override fun dispose() {
         VisUI.dispose()
-        uiSkin.dispose()
+        skin.dispose()
         digitsFont.dispose()
         manager.dispose()
         frameBuffer.dispose()

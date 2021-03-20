@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.tabbedmenu
+package com.divelix.skitter.ui.menu.tabs
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Container
@@ -10,17 +10,17 @@ import ktx.actors.onClickEvent
 import ktx.scene2d.Scene2DSkin
 import ktx.style.get
 
-class TabbedMenu(tabs: Array<Tab>) : Table() {
+class TabbedMenu(val tabs: Array<Tab>) : Table() {
     private val bgDrawable = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
     private var activeTab = tabs[0]
-    private val content = Container<Table>(activeTab.contentTable)
+    private val content = Container(activeTab.contentTable)
 
     init {
         defaults().growX()
         tabs.forEach {
             add(it.apply {
                 background = bgDrawable
-                onClickEvent { event -> switchTo(it) }
+                onClickEvent { _ -> switchTo(it) }
             })
         }
         row()
@@ -29,7 +29,7 @@ class TabbedMenu(tabs: Array<Tab>) : Table() {
         switchTo(tabs[0])
     }
 
-    fun switchTo(tab: Tab) {
+    private fun switchTo(tab: Tab) {
         activeTab.background = bgDrawable
         activeTab = tab
         activeTab.background = null

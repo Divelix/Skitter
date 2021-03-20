@@ -10,7 +10,9 @@
 	{
 		"index": 1,
 		"level": 1,
-		"mods": []
+		"mods": [
+			{ "index": 1001, "level": 1, "quantity": 1 }
+		]
 	}
 ],
 "guns": [

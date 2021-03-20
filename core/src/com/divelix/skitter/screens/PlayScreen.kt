@@ -3,6 +3,7 @@ package com.divelix.skitter.screens
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
+import com.divelix.skitter.data.ActivePlayerData
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Data
 import com.divelix.skitter.gameplay.GameEngine
@@ -16,8 +17,8 @@ import ktx.assets.toLocalFile
 import ktx.log.debug
 import ktx.log.info
 
-class PlayScreen(val game: Main): KtxScreen {
-    private val gameEngine by lazy { GameEngine(game) }
+class PlayScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxScreen {
+    private val gameEngine by lazy { GameEngine(activePlayerData, game) }
     private val levelManager by lazy { LevelManager(gameEngine) }
 
     init {
@@ -32,7 +33,7 @@ class PlayScreen(val game: Main): KtxScreen {
         val handler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
-                    Input.Keys.BACK, Input.Keys.ESCAPE  -> game.screen = MenuScreen(game)
+//                    Input.Keys.BACK, Input.Keys.ESCAPE  -> game.screen = MenuScreen(game)
                     Input.Keys.SPACE -> GameEngine.isPaused = !GameEngine.isPaused
                     Input.Keys.N -> levelManager.goToNextLevel()
                     Input.Keys.D -> gameEngine.engine.entities
@@ -90,19 +91,8 @@ class PlayScreen(val game: Main): KtxScreen {
     }
 
     private fun loadPlayerData() {
-        val playerReader = JsonReader().parse(Constants.PLAYER_FILE.toLocalFile())
-        val shipSpecs = playerReader.get("active_ship_specs")
-        Data.playerDataOld.shipOld.health = shipSpecs[0].asFloat()
-        health = Data.playerDataOld.shipOld.health
-        Data.playerDataOld.shipOld.speed = shipSpecs[1].asFloat()
-        val gunSpecs = playerReader.get("active_gun_specs")
-        Data.playerDataOld.gunOld.damage = gunSpecs[0].asFloat()
-        Data.playerDataOld.gunOld.capacity = gunSpecs[1].asInt()
-        Data.playerDataOld.gunOld.reloadTime = gunSpecs[2].asFloat()
-        Data.playerDataOld.gunOld.bulletSpeed = gunSpecs[3].asFloat()
-        Data.playerDataOld.gunOld.critMultiplier = gunSpecs[4].asFloat()
-        Data.playerDataOld.gunOld.critChance = gunSpecs[5].asFloat()
-        ammo = Data.playerDataOld.gunOld.capacity
+        health = activePlayerData.shipHealth
+        ammo = activePlayerData.gunCapacity
     }
 
     companion object {

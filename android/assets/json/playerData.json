@@ -1,71 +1,50 @@
 {
-"id": 123,
-"name": "DefaultName",
-"coins": 100,
-"activeEquips": {
-	"ship": {
-		"index": 1,
-		"level": 2,
-		"mods": [
-			{ "index": 1, "level": 2, "quantity": 3 },
-			{ "index": 4, "level": 5, "quantity": 6 }
-		]
-	},
-	"gun": {
-		"index": 2,
-		"level": 3,
-		"mods": [
-			{ "index": 7, "level": 8, "quantity": 9 },
-			{ "index": 10, "level": 11, "quantity": 12 }
-		]
-	}
-},
-"equips": {
-	"ships": [
+	"id": 123,
+	"name": "DefaultName",
+	"coins": 100000,
+	"activeEquips": { "shipIndex": 1, "gunIndex": 1 },
+	"equips": [
 		{
+			"type": "ship",
 			"index": 1,
 			"level": 2,
 			"mods": [
-				{ "index": 1, "level": 2, "quantity": 3 },
-				{ "index": 4, "level": 5, "quantity": 6 }
+				{ "type": "ship_mod", "index": 1, "level": 1, "quantity": 1 },
+				{ "type": "ship_mod", "index": 2, "level": 1, "quantity": 1 }
 			]
 		},
 		{
-			"index": 1,
-			"level": 2,
+			"type": "ship",
+			"index": 2,
+			"level": 3,
 			"mods": [
-				{ "index": 7, "level": 8, "quantity": 9 },
-				{ "index": 10, "level": 11, "quantity": 12 }
-			]
-		}
-	],
-	"guns": [
-		{
-			"index": 3,
-			"level": 4,
-			"mods": [
-				{ "index": 13, "level": 14, "quantity": 15 },
-				{ "index": 16, "level": 17, "quantity": 18 }
+				{ "type": "ship_mod", "index": 1, "level": 1, "quantity": 1 },
+				{ "type": "ship_mod", "index": 2, "level": 1, "quantity": 1 }
 			]
 		},
 		{
+			"type": "gun",
 			"index": 1,
 			"level": 2,
 			"mods": [
-				{ "index": 19, "level": 20, "quantity": 21 },
-				{ "index": 22, "level": 23, "quantity": 24 }
+				{ "type": "gun_mod", "index": 1, "level": 1, "quantity": 1 },
+				{ "type": "gun_mod", "index": 2, "level": 1, "quantity": 1 }
+			]
+		},
+		{
+			"type": "gun",
+			"index": 2,
+			"level": 5,
+			"mods": [
+				{ "type": "gun_mod", "index": 1, "level": 1, "quantity": 1 },
+				{ "type": "gun_mod", "index": 2, "level": 1, "quantity": 1 }
 			]
 		}
-	]
-},
-"mods": {
-	"ship": [
-		{ "index": 1, "level": 2, "quantity": 3 },
-		{ "index": 4, "level": 5, "quantity": 6 }
 	],
-	"gun": [
-		{ "index": 7, "level": 8, "quantity": 9 },
-		{ "index": 10, "level": 11, "quantity": 12 }
+	"mods": [
+		{ "type": "ship_mod", "index": 1, "level": 1, "quantity": 2 },
+		{ "type": "ship_mod", "index": 2, "level": 1, "quantity": 3 },
+		{ "type": "gun_mod", "index": 1, "level": 1, "quantity": 2 },
+		{ "type": "gun_mod", "index": 2, "level": 1, "quantity": 1 }
 	]
-}
 }

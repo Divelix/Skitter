@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.tabbedmenu
+package com.divelix.skitter.ui.menu.tabs
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -11,6 +11,6 @@ class Tab(iconTexture: Texture, val contentTable: Table) : Table() {
     init {
         touchable = Touchable.enabled
         add(Image(iconTexture).apply { setScaling(Scaling.fit) }).size(50f).pad(8f)
-        onClickEvent { event -> this@Tab.background = null }
+        onClickEvent { _ -> this@Tab.background = null }
     }
 }

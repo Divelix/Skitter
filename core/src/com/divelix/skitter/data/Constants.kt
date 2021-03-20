@@ -27,24 +27,28 @@ object Constants {
     const val MOD_HEIGHT = 64f // TODO remove
     const val SHIPS_TAB = "ShipsTab"
     const val GUNS_TAB = "GunsTab"
+    const val SUIT_TABLE = "suit_table"
+    const val STOCK_TABLE = "stock_table"
 
     // Colors
     const val ORANGE_COLOR = "orange"
 
     // Background textures
-    const val BLACK_PIXEL_30 = "blackPixel30"
-    const val BLACK_PIXEL_50 = "blackPixel50"
-    const val BLACK_PIXEL_70 = "blackPixel70"
-    const val RED_PIXEL_30 = "redPixel30"
-    const val GREEN_PIXEL_30 = "greenPixel30"
-    const val BLUE_PIXEL_30 = "bluePixel30"
-    const val LIGHT_GRAY_PIXEL = "lightGray"
+    const val BLACK_PIXEL_30 = "black_pixel_30"
+    const val BLACK_PIXEL_50 = "black_pixel_50"
+    const val BLACK_PIXEL_70 = "black_pixel_70"
+    const val BLACK_PIXEL = "black_pixel"
+    const val YELLOW_PIXEL = "yellow_pixel"
+    const val WHITE_PIXEL = "white_pixel"
+    const val LIGHT_GRAY_PIXEL = "light_gray"
     const val GRAY_PIXEL = "gray"
-    const val DARK_GRAY_PIXEL = "darkGray"
+    const val DARK_GRAY_PIXEL = "dark_gray"
 
     // Styles
-    const val STYLE_BOLD = "boldLabel"
-    const val STYLE_BOLD_ORANGE = "boldOrangeLabel"
+    const val STYLE_BOLD = "bold_label"
+    const val STYLE_BOLD_ORANGE = "bold_orange_label"
+    const val STYLE_EQUIP_CHOOSE = "equip_choose"
+    const val STYLE_MOD_NAME = "mod_name"
 
     // Control params
     const val CAMERA_RADIUS = 2f
@@ -55,32 +59,34 @@ object Constants {
     const val MAX_TOUCHPAD_RADIUS_2 = MAX_TOUCHPAD_RADIUS * MAX_TOUCHPAD_RADIUS
 
 
+    // Equips
+    const val SHIP_DEFAULT = "textures/equips/ship_default.png"
+    const val GUN_DEFAULT = "textures/equips/gun_default.png"
+    const val GUN_SNIPER = "textures/equips/gun_sniper.png"
+
     // Gameplay
-    const val SHIP_DEFAULT = "textures/gameplay/ship-default.png"
-    const val GUN_DEFAULT = "textures/gameplay/gun-default.png"
-    const val GUN_SNIPER = "textures/gameplay/gun-sniper.png"
-    const val BULLET_DEFAULT = "textures/gameplay/bullet-default.png"
-    const val GAMEPLAY_BG = "textures/gameplay/dark-honeycomb.png"
+//    const val BULLET_DEFAULT = "textures/gameplay/bullet_default.png"
+//    const val GAMEPLAY_BG = "textures/gameplay/dark_honeycomb.png"
 
     // UI textures
     const val CARRIAGE = "textures/ui/carriage.png"
-    const val AIM = "textures/ui/aim-64.png"
-    const val EQUIP_ICON = "textures/ui/equip-icon.png"
-    const val BATTLE_ICON = "textures/ui/battle-icon.png"
-    const val MOD_ICON = "textures/ui/mod-icon.png"
+    const val AIM = "textures/ui/aim_64.png"
+    const val EQUIP_ICON = "textures/ui/equip_icon.png"
+    const val BATTLE_ICON = "textures/ui/battle_icon.png"
+    const val MOD_ICON = "textures/ui/mod_icon.png"
     const val WHITE_CIRCLE = "textures/ui/white_circle.png"
-    const val SHIP_ICON = "textures/ui/ship-icon.png"
-    const val GUN_ICON = "textures/ui/gun-icon.png"
-    const val APPLY_ICON = "textures/ui/apply-icon.png"
-    const val HOME_ICON = "textures/ui/home-icon.png"
-    const val RESTART_ICON = "textures/ui/restart-icon.png"
-    const val UP_BTN = "textures/ui/up-btn.png"
-    const val SELL_BTN = "textures/ui/sell-btn.png"
+    const val SHIP_ICON = "textures/ui/ship_icon.png"
+    const val GUN_ICON = "textures/ui/gun_icon.png"
+    const val APPLY_ICON = "textures/ui/apply_icon.png"
+    const val HOME_ICON = "textures/ui/home_icon.png"
+    const val RESTART_ICON = "textures/ui/restart_icon.png"
+    const val UP_BTN = "textures/ui/up_btn.png"
+    const val SELL_BTN = "textures/ui/sell_btn.png"
     const val PAUSE_BTN = "textures/ui/pause.png"
-    const val MENU_PLAY = "textures/ui/menu-play.png"
-    const val MENU_MOD = "textures/ui/menu-mod.png"
-    const val MENU_EQUIP = "textures/ui/menu-equip.png"
-    const val STAR = "textures/ui/star.png"
+    const val MENU_PLAY = "textures/ui/menu_play.png"
+    const val MENU_MOD = "textures/ui/menu_mod.png"
+    const val MENU_EQUIP = "textures/ui/menu_equip.png"
+    const val STAR = "textures/mods/star.png"
 
     // Fonts
     const val DIGITS_FNT = "fonts/digits.fnt"
@@ -90,23 +96,28 @@ object Constants {
     const val ROBOTO_LIGHT_FONT = "robotoLightFont"
     const val ROBOTO_BOLD_FONT = "robotoBoldFont"
 
-    // Skins
-    const val ATLAS_UI = "skins/uiskin.atlas"
+    // Atlases
+    const val ATLAS_SKIN = "textures/skins/skin.atlas"
+    const val ATLAS_UI = "textures/atlases/ui.atlas"
+    const val ATLAS_EQUIPS = "textures/atlases/equips.atlas"
+    const val ATLAS_MODS = "textures/atlases/mods.atlas"
+    const val ATLAS_GAMEPLAY = "textures/atlases/gameplay.atlas"
+    const val ATLAS_ENEMIES = "textures/atlases/enemies.atlas"
 
     // Shaders
     const val VERTEX_SHADER = "shaders/shader.vsh"
     const val FRAGMENT_SHADER = "shaders/shader.fsh"
 
     // Mods
-    const val MOD_SHIP_HEALTH = "textures/mods/mod-ship-health.png"
-    const val MOD_SHIP_SPEED = "textures/mods/mod-ship-speed.png"
-    const val MOD_SHIP_CHUBBER = "textures/mods/mod-ship-chubber.png"
-    const val MOD_GUN_DAMAGE = "textures/mods/mod-gun-damage.png"
-    const val MOD_GUN_CAPACITY = "textures/mods/mod-gun-capacity.png"
-    const val MOD_GUN_RELOAD = "textures/mods/mod-gun-reload.png"
-    const val MOD_GUN_SPEED = "textures/mods/mod-gun-speed.png"
-    const val MOD_GUN_CRIT = "textures/mods/mod-gun-crit.png"
-    const val MOD_GUN_CHANCE = "textures/mods/mod-gun-chance.png"
+    const val MOD_SHIP_HEALTH = "textures/mods/mod_ship_health.png"
+    const val MOD_SHIP_SPEED = "textures/mods/mod_ship_speed.png"
+    const val MOD_SHIP_CHUBBER = "textures/mods/mod_ship_chubber.png"
+    const val MOD_GUN_DAMAGE = "textures/mods/mod_gun_damage.png"
+    const val MOD_GUN_CAPACITY = "textures/mods/mod_gun_capacity.png"
+    const val MOD_GUN_RELOAD = "textures/mods/mod_gun_reload.png"
+    const val MOD_GUN_SPEED = "textures/mods/mod_gun_speed.png"
+    const val MOD_GUN_CRIT = "textures/mods/mod_gun_crit.png"
+    const val MOD_GUN_CHANCE = "textures/mods/mod_gun_chance.png"
 
     // Enemies
     const val AGENT = "textures/enemies/agent.png"

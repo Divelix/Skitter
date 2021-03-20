@@ -1,4 +1,4 @@
-package com.divelix.skitter.ui.scrollmenu
+package com.divelix.skitter.ui.menu.scroll
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Group
@@ -6,10 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
-import com.divelix.skitter.data.Assets
-import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.Player
+import com.divelix.skitter.data.*
 import com.divelix.skitter.image
+import com.divelix.skitter.utils.JsonProcessor
 import ktx.actors.onClickEvent
 import ktx.assets.toLocalFile
 import ktx.collections.gdxArrayOf
@@ -26,16 +25,19 @@ import ktx.scene2d.table
 import ktx.style.get
 
 class ScrollMenu(context: Context) : Group() {
-    val assets = context.inject<Assets>()
-    val json = context.inject<Json>()
-    val playerDataFile = "json/playerData.json".toLocalFile()
-    val playerData = json.fromJson<Player>(playerDataFile)
-    val pages = gdxArrayOf(
-            Constants.EQUIP_ICON to EquipPage(playerData, context),
-            Constants.BATTLE_ICON to PlayPage(playerData, context),
-            Constants.MOD_ICON to ModPage(playerData, context))
+    private val assets = context.inject<Assets>()
+    private val playerDataFile = "json/playerData.json".toLocalFile()
+    private val playerData = JsonProcessor.fromJson<PlayerData>(playerDataFile)
+    private val activePlayerData = ActivePlayerData()
+    private val equipPage = EquipPage(context, playerData, activePlayerData)
+    private val playPage = PlayPage(context, activePlayerData)
+    private val modPage = ModPage(context, playerData, equipPage::reloadForModType)
+    private val pages = gdxArrayOf(
+            Constants.EQUIP_ICON to equipPage,
+            Constants.BATTLE_ICON to playPage,
+            Constants.MOD_ICON to modPage)
 
-    val scrollPane: ScrollPane
+    private val scrollPane: ScrollPane
 
     init {
         setSize(Constants.STAGE_WIDTH.toFloat(), Constants.stageHeight)
@@ -53,12 +55,11 @@ class ScrollMenu(context: Context) : Group() {
         }
         addActor(scrollPane)
         addActor(BottomNav(pageNames.toGdxArray()))
-    }
 
-    fun updateUI() {
-        pages.forEach {
-            it.second.update()
-        }
+        // set initial scroll to middle page
+        scrollPane.layout()
+        scrollPane.scrollX = Constants.STAGE_WIDTH.toFloat()
+        scrollPane.updateVisualScroll() // disables animation
     }
 
     fun saveToJson() {
@@ -66,7 +67,7 @@ class ScrollMenu(context: Context) : Group() {
             outputType = JsonWriter.OutputType.json
             singleLineColumns = 100
         }
-        playerDataFile.writeString(json.prettyPrint(playerData, printSettings), false)
+        playerDataFile.writeString(JsonProcessor.prettyPrint(playerData, printSettings), false)
         log.debug { "Player data was saved to json" }
     }
 
@@ -83,8 +84,6 @@ class ScrollMenu(context: Context) : Group() {
                             .apply { setScaling(Scaling.fit) }
                             .cell(fill = true, padTop = 5f, padBottom = 5f)
                             .onClickEvent { event ->
-//                                println("[EVENT = $event; ACTOR = $actor]")
-                                updateUI()
 //                                saveToJson()
                                 scrollPane.scrollX = index * Constants.STAGE_WIDTH.toFloat()
                             }

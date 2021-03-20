@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
+import com.divelix.skitter.data.ActivePlayerData
 import com.divelix.skitter.gameplay.systems.BehaviorSystem
 import com.divelix.skitter.gameplay.systems.BulletSystem
 import com.divelix.skitter.gameplay.systems.CameraSystem
@@ -31,7 +32,8 @@ import com.divelix.skitter.gameplay.systems.WombSystem
 import com.divelix.skitter.ui.hud.Hud
 import ktx.graphics.use
 
-class GameEngine(val game: Main) {
+class GameEngine(val activePlayerData: ActivePlayerData,
+                 val game: Main) {
     private val context = game.getContext()
     private val assets = context.inject<Assets>()
     private val batch = context.inject<SpriteBatch>()
@@ -39,12 +41,12 @@ class GameEngine(val game: Main) {
     private val world = World(Vector2(0f, 0f), true)
     private val debugRenderer = Box2DDebugRenderer()
     val engine = PooledEngine(20, 200, 50, 100)
-    val entityBuilder = EntityBuilder(engine, world, assets)
+    val entityBuilder = EntityBuilder(activePlayerData, engine, world, assets)
 
     private val playCam = OrthographicCamera()
     val playerEntity by lazy { entityBuilder.createPlayer(5f, 2f) }
     val cameraEntity: Entity
-    val hud by lazy { Hud(game, entityBuilder, playerEntity, playCam) }
+    val hud by lazy { Hud(game, activePlayerData, entityBuilder, playerEntity, playCam) }
 
     init {
         isPaused = false
@@ -77,8 +79,8 @@ class GameEngine(val game: Main) {
     private fun createEngineSystems() {
         engine.run {
             addSystem(CameraSystem())
-            addSystem(PhysicsSystem(world))
-            addSystem(PlayerSystem())
+            addSystem(PhysicsSystem(activePlayerData, world))
+            addSystem(PlayerSystem(activePlayerData))
             addSystem(RenderingSystem(context, playCam))
             addSystem(DamageLabelSystem(playCam)) // before HealthSystem to let label update init position on last hit
             addSystem(HealthSystem(hud))
@@ -86,7 +88,7 @@ class GameEngine(val game: Main) {
             addSystem(BulletSystem())
 //            addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
             addSystem(DecaySystem(0.1f))
-//            addSystem(RegenerationSystem(0.5f))
+//            addSystem(RegenerationSystem(activePlayerData, 0.5f))
             addSystem(SlowSystem())
             addSystem(BehaviorSystem())
 //            addSystem(ClickableSystem(camera))

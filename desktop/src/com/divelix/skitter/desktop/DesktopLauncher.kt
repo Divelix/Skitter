@@ -10,6 +10,8 @@ object DesktopLauncher {
     fun main(arg: Array<String>) {
         LwjglApplication(Main(), LwjglApplicationConfiguration().apply {
             title = Constants.TITLE
+            x = 1180
+            y = 0
 //            width = TestAIScreen.D_WIDTH // for TestAIScreen
 //            height = TestAIScreen.D_HEIGHT
             width = Constants.DESKTOP_WIDTH

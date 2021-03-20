@@ -1,10 +1,24 @@
 apply plugin: "java"
 
 sourceCompatibility = 1.6
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = ["src/"]
 
-project.ext.mainClassName = "com.divelix.skitter.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../android/assets");
+project.ext {
+    mainClassName = "com.divelix.skitter.desktop.DesktopLauncher"
+    assetsDir = new File("../android/assets")
+    atlasNames = ['ui', 'equips', 'mods', 'gameplay', 'enemies']
+}
+
+import com.badlogic.gdx.tools.texturepacker.TexturePacker
+
+task texturePacker {
+    doLast {
+        logger.info "Calling TexturePacker:" + texturePacker
+        atlasNames.each { name ->
+            TexturePacker.process("android/assets/textures/${name}/", "android/assets/textures/atlases/", name)
+        }
+    }
+}
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
@@ -25,9 +39,9 @@ task debug(dependsOn: classes, type: JavaExec) {
 
 task dist(type: Jar) {
     from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
+    from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir);
- 
+
     manifest {
         attributes 'Main-Class': project.mainClassName
     }

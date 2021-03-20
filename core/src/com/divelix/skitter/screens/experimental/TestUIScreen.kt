@@ -7,9 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.ui.tabbedmenu.Tab
-import com.divelix.skitter.ui.tabbedmenu.TabbedMenu
-import com.divelix.skitter.ui.tabbedmenu.ShipTable
+import com.divelix.skitter.ui.menu.tabs.Tab
+import com.divelix.skitter.ui.menu.tabs.TabbedMenu
 import com.divelix.skitter.utils.TopViewport
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
@@ -29,7 +28,7 @@ class TestUIScreen(val game: Main) : KtxScreen {
             top()
 
             val tabbedMenu = TabbedMenu(gdxArrayOf(
-                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTable(assets)),
+//                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTable(assets)),
                     Tab(assets.manager.get<Texture>(Constants.GUN_ICON), scene2d.table { label("second") }),
                     Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { label("third") })
             ))

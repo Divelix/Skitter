@@ -12,9 +12,12 @@ import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Data
 import com.divelix.skitter.Main
+import com.divelix.skitter.data.RegionName
 import ktx.app.KtxScreen
 import ktx.assets.file
 import ktx.graphics.use
+import ktx.scene2d.Scene2DSkin
+import ktx.style.get
 
 class DistortionScreen(game: Main): KtxScreen {
     var isPause = false
@@ -62,7 +65,7 @@ class DistortionScreen(game: Main): KtxScreen {
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
             batch.projectionMatrix = camera.combined
             batch.use {
-                batch.draw(assets.manager.get<Texture>(Constants.GAMEPLAY_BG), 0f, 0f, Gdx.graphics.width*scale, Gdx.graphics.height*scale)
+                batch.draw(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.DARK_HONEYCOMB()).texture, 0f, 0f, Gdx.graphics.width*scale, Gdx.graphics.height*scale)
                 batch.draw(assets.manager.get<Texture>(Constants.GUN_DEFAULT), 0f, 0f, 300f*scale, 300f*scale)
                 batch.draw(assets.manager.get<Texture>(Constants.SHIP_DEFAULT), (Gdx.graphics.width - 300f)*scale, (Gdx.graphics.height - 300f)*scale, 300f*scale, 300f*scale)
             }

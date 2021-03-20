@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Json
 import com.divelix.skitter.data.Assets
-import com.divelix.skitter.data.Player
 import com.divelix.skitter.screens.LoadingScreen
 import ktx.inject.Context
 import ktx.inject.register
@@ -20,15 +19,7 @@ class Main : Game() {
         Gdx.app.logLevel = Application.LOG_DEBUG
         context.register {
             bindSingleton(this@Main)
-            bindSingleton(Json().apply {
-                setUsePrototypes(false) // to not erase default values (false, 0)
-                setSerializer(ShipSerializer())
-                setSerializer(GunSerializer())
-                setSerializer(ShipModSerializer())
-                setSerializer(GunModSerializer())
-            })
             bindSingleton(Assets())
-            bindSingleton(Player())
             bindSingleton(SpriteBatch())
             bindSingleton(ShapeRenderer())
         }

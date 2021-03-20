@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.ObjectSet
 import com.divelix.skitter.*
+import com.divelix.skitter.data.ActivePlayerData
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.components.B2dBodyComponent
@@ -23,7 +24,7 @@ import ktx.ashley.mapperFor
 import ktx.log.info
 import java.util.*
 
-class TestAIScreen(val game: Main): KtxScreen {
+class TestAIScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxScreen {
     companion object {
         const val D_WIDTH = 700
         const val D_HEIGHT = 700
@@ -36,7 +37,7 @@ class TestAIScreen(val game: Main): KtxScreen {
     private val world = World(Vector2(0f, 0f), true)
     private val debugRenderer = Box2DDebugRenderer(true, true, false, true, true, true)
     private val engine = PooledEngine()
-    private val entityBuilder = EntityBuilder(engine, world, assets)
+    private val entityBuilder = EntityBuilder(activePlayerData, engine, world, assets)
     private val camera = OrthographicCamera()
     private val blackList = ArrayList<Body>() // list of bodies to kill
 
@@ -137,7 +138,7 @@ class TestAIScreen(val game: Main): KtxScreen {
 
     private fun createEngineSystems() {
         engine.addSystem(RenderingSystem(context, camera))
-        engine.addSystem(PhysicsSystem(world))
+        engine.addSystem(PhysicsSystem(activePlayerData, world))
 //        engine.addSystem(HealthSystem())
         engine.addSystem(BulletSystem())
         engine.addSystem(BehaviorSystem())
