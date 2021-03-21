@@ -79,7 +79,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
         val initPos = sourceBody.position
         val initVelocity = sourceBody.linearVelocity
         val dirVec = aim.sub(initPos)
-        val dirAngle = dirVec.angle() - 90f
+        val dirAngle = dirVec.angleDeg() - 90f
         val width = 0.2f
         val height = 1f
         val speed = activePlayerData.gunSpeed
@@ -107,7 +107,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                     position.set(initPos)
                     bullet = true
                     userData = (this@entity).entity
-                    val velocity = Vector2(0f, 1f).scl(speed).rotate(dirAngle)
+                    val velocity = Vector2(0f, 1f).scl(speed).rotateDeg(dirAngle)
                     velocity.add(initVelocity)
                     linearVelocity.set(velocity)
                     angle = velocity.angleRad() - MathUtils.PI / 2
@@ -121,7 +121,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
         val initPos = sourceEntity.getComponent(B2dBodyComponent::class.java).body.position
         val initVelocity = sourceEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
         val dirVec = aim.sub(initPos)
-        val dirAngle = dirVec.angle() - 90f
+        val dirAngle = dirVec.angleDeg() - 90f
         val width = 0.5f
         val height = 0.5f
         val speed = 5f
@@ -149,7 +149,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                     position.set(initPos)
                     bullet = true
                     userData = (this@entity).entity
-                    val velocity = Vector2(0f, 1f).scl(speed).rotate(dirAngle)
+                    val velocity = Vector2(0f, 1f).scl(speed).rotateDeg(dirAngle)
                     velocity.add(initVelocity)
                     linearVelocity.set(velocity)
                     angle = velocity.angleRad() - MathUtils.PI / 2f
@@ -426,10 +426,6 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 origin.set(size).scl(0.5f)
             }
             with<TextureComponent> {
-                val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
-                    setColor(0.5f, 0.5f, 0.5f, 1f)
-                    fill()
-                }
                 sprite.setRegion(Scene2DSkin.defaultSkin.get<Texture>(Constants.LIGHT_GRAY_PIXEL))
             }
             with<B2dBodyComponent> {
