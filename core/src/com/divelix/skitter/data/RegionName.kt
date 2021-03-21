@@ -4,7 +4,7 @@ import java.util.*
 
 enum class RegionName {
     //    UI
-    AIM_64,
+    AIM,
     ANTI_SEAMLESS,
     APPLY_ICON,
     BATTLE_ICON,

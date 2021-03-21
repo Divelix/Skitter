@@ -23,10 +23,6 @@ object Constants {
     const val UI_MARGIN = 12f
     const val UI_PADDING = 7f
     const val MOD_SIZE = 64f
-    const val MOD_WIDTH = 64f // TODO remove
-    const val MOD_HEIGHT = 64f // TODO remove
-    const val SHIPS_TAB = "ShipsTab"
-    const val GUNS_TAB = "GunsTab"
     const val SUIT_TABLE = "suit_table"
     const val STOCK_TABLE = "stock_table"
 
@@ -64,30 +60,6 @@ object Constants {
     const val GUN_DEFAULT = "textures/equips/gun_default.png"
     const val GUN_SNIPER = "textures/equips/gun_sniper.png"
 
-    // Gameplay
-//    const val BULLET_DEFAULT = "textures/gameplay/bullet_default.png"
-//    const val GAMEPLAY_BG = "textures/gameplay/dark_honeycomb.png"
-
-    // UI textures
-    const val CARRIAGE = "textures/ui/carriage.png"
-    const val AIM = "textures/ui/aim_64.png"
-    const val EQUIP_ICON = "textures/ui/equip_icon.png"
-    const val BATTLE_ICON = "textures/ui/battle_icon.png"
-    const val MOD_ICON = "textures/ui/mod_icon.png"
-    const val WHITE_CIRCLE = "textures/ui/white_circle.png"
-    const val SHIP_ICON = "textures/ui/ship_icon.png"
-    const val GUN_ICON = "textures/ui/gun_icon.png"
-    const val APPLY_ICON = "textures/ui/apply_icon.png"
-    const val HOME_ICON = "textures/ui/home_icon.png"
-    const val RESTART_ICON = "textures/ui/restart_icon.png"
-    const val UP_BTN = "textures/ui/up_btn.png"
-    const val SELL_BTN = "textures/ui/sell_btn.png"
-    const val PAUSE_BTN = "textures/ui/pause.png"
-    const val MENU_PLAY = "textures/ui/menu_play.png"
-    const val MENU_MOD = "textures/ui/menu_mod.png"
-    const val MENU_EQUIP = "textures/ui/menu_equip.png"
-    const val STAR = "textures/mods/star.png"
-
     // Fonts
     const val DIGITS_FNT = "fonts/digits.fnt"
     const val DIGITS_PNG = "fonts/digits.png"
@@ -98,46 +70,14 @@ object Constants {
 
     // Atlases
     const val ATLAS_SKIN = "textures/skins/skin.atlas"
-    const val ATLAS_UI = "textures/atlases/ui.atlas"
-    const val ATLAS_EQUIPS = "textures/atlases/equips.atlas"
-    const val ATLAS_MODS = "textures/atlases/mods.atlas"
-    const val ATLAS_GAMEPLAY = "textures/atlases/gameplay.atlas"
-    const val ATLAS_ENEMIES = "textures/atlases/enemies.atlas"
 
     // Shaders
     const val VERTEX_SHADER = "shaders/shader.vsh"
     const val FRAGMENT_SHADER = "shaders/shader.fsh"
 
-    // Mods
-    const val MOD_SHIP_HEALTH = "textures/mods/mod_ship_health.png"
-    const val MOD_SHIP_SPEED = "textures/mods/mod_ship_speed.png"
-    const val MOD_SHIP_CHUBBER = "textures/mods/mod_ship_chubber.png"
-    const val MOD_GUN_DAMAGE = "textures/mods/mod_gun_damage.png"
-    const val MOD_GUN_CAPACITY = "textures/mods/mod_gun_capacity.png"
-    const val MOD_GUN_RELOAD = "textures/mods/mod_gun_reload.png"
-    const val MOD_GUN_SPEED = "textures/mods/mod_gun_speed.png"
-    const val MOD_GUN_CRIT = "textures/mods/mod_gun_crit.png"
-    const val MOD_GUN_CHANCE = "textures/mods/mod_gun_chance.png"
-
-    // Enemies
-    const val AGENT = "textures/enemies/agent.png"
-    const val SNIPER_BASE = "textures/enemies/sniper_base.png"
-    const val SNIPER_TOWER = "textures/enemies/sniper_tower.png"
-    const val WOMB = "textures/enemies/womb.png"
-    const val KID = "textures/enemies/kid.png"
-    const val RADIAL = "textures/enemies/radial.png"
-    const val JUMPER = "textures/enemies/jumper.png"
-
     // Audio
     const val HIT_SOUND = "audio/hit.wav"
     const val SHOT_SOUND = "audio/shot.wav"
-
-    // Json
-    const val PLAYER_FILE = "json/player_data.json"
-    const val MODS_FILE = "json/mods.json"
-    const val SHIPS_FILE = "json/ships.json"
-    const val GUNS_FILE = "json/guns.json"
-    const val ENEMIES_FILE = "json/enemies.json"
 
     // MISC
     const val LOREM_IPSUM = """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

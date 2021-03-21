@@ -66,8 +66,8 @@ class DistortionScreen(game: Main): KtxScreen {
             batch.projectionMatrix = camera.combined
             batch.use {
                 batch.draw(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.DARK_HONEYCOMB()).texture, 0f, 0f, Gdx.graphics.width*scale, Gdx.graphics.height*scale)
-                batch.draw(assets.manager.get<Texture>(Constants.GUN_DEFAULT), 0f, 0f, 300f*scale, 300f*scale)
-                batch.draw(assets.manager.get<Texture>(Constants.SHIP_DEFAULT), (Gdx.graphics.width - 300f)*scale, (Gdx.graphics.height - 300f)*scale, 300f*scale, 300f*scale)
+                batch.draw(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.GUN_DEFAULT()), 0f, 0f, 300f*scale, 300f*scale)
+                batch.draw(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.SHIP_DEFAULT()), (Gdx.graphics.width - 300f)*scale, (Gdx.graphics.height - 300f)*scale, 300f*scale, 300f*scale)
             }
         }
 

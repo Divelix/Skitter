@@ -12,26 +12,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.divelix.skitter.data.*
-import com.divelix.skitter.gameplay.components.B2dBodyComponent
-import com.divelix.skitter.gameplay.components.BindComponent
-import com.divelix.skitter.gameplay.components.BulletComponent
-import com.divelix.skitter.gameplay.components.CameraComponent
-import com.divelix.skitter.gameplay.components.DamageLabelComponent
-import com.divelix.skitter.gameplay.components.EnemyComponent
-import com.divelix.skitter.gameplay.components.HealthBarComponent
-import com.divelix.skitter.gameplay.components.HealthComponent
-import com.divelix.skitter.gameplay.components.JumperComponent
-import com.divelix.skitter.gameplay.components.PlayerComponent
-import com.divelix.skitter.gameplay.components.RadialComponent
-import com.divelix.skitter.gameplay.components.SniperComponent
-import com.divelix.skitter.gameplay.components.SpawnComponent
-import com.divelix.skitter.gameplay.components.SteerComponent
-import com.divelix.skitter.gameplay.components.TextureComponent
-import com.divelix.skitter.gameplay.components.TowerComponent
-import com.divelix.skitter.gameplay.components.TransformComponent
-import com.divelix.skitter.gameplay.components.TypeComponent
-import com.divelix.skitter.gameplay.components.VisionComponent
-import com.divelix.skitter.gameplay.components.WombComponent
+import com.divelix.skitter.gameplay.components.*
 import ktx.ashley.entity
 import ktx.ashley.get
 import ktx.ashley.with
@@ -43,8 +24,7 @@ import ktx.style.get
 
 class EntityBuilder(private val activePlayerData: ActivePlayerData,
                     private val engine: PooledEngine,
-                    private val world: World,
-                    private val assets: Assets) {
+                    private val world: World) {
 
     fun createPlayer(x: Float, y: Float): Entity {
         val entityType = TypeComponent.PLAYER
@@ -58,7 +38,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(Constants.PLAYER_SIZE, Constants.PLAYER_SIZE)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.SHIP_DEFAULT)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.SHIP_DEFAULT())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = Constants.PLAYER_SIZE / 2f) {
@@ -99,7 +79,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
         val initPos = sourceBody.position
         val initVelocity = sourceBody.linearVelocity
         val dirVec = aim.sub(initPos)
-        val dirAngle = dirVec.angle() - 90f
+        val dirAngle = dirVec.angleDeg() - 90f
         val width = 0.2f
         val height = 1f
         val speed = activePlayerData.gunSpeed
@@ -127,7 +107,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                     position.set(initPos)
                     bullet = true
                     userData = (this@entity).entity
-                    val velocity = Vector2(0f, 1f).scl(speed).rotate(dirAngle)
+                    val velocity = Vector2(0f, 1f).scl(speed).rotateDeg(dirAngle)
                     velocity.add(initVelocity)
                     linearVelocity.set(velocity)
                     angle = velocity.angleRad() - MathUtils.PI / 2
@@ -141,7 +121,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
         val initPos = sourceEntity.getComponent(B2dBodyComponent::class.java).body.position
         val initVelocity = sourceEntity.getComponent(B2dBodyComponent::class.java).body.linearVelocity
         val dirVec = aim.sub(initPos)
-        val dirAngle = dirVec.angle() - 90f
+        val dirAngle = dirVec.angleDeg() - 90f
         val width = 0.5f
         val height = 0.5f
         val speed = 5f
@@ -169,7 +149,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                     position.set(initPos)
                     bullet = true
                     userData = (this@entity).entity
-                    val velocity = Vector2(0f, 1f).scl(speed).rotate(dirAngle)
+                    val velocity = Vector2(0f, 1f).scl(speed).rotateDeg(dirAngle)
                     velocity.add(initVelocity)
                     linearVelocity.set(velocity)
                     angle = velocity.angleRad() - MathUtils.PI / 2f
@@ -202,7 +182,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(0.9f, 1.5f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.AGENT)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.AGENT())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     polygon(Vector2(0f, 0.75f), Vector2(-0.45f, -0.75f), Vector2(0.45f, -0.75f)) {
@@ -241,7 +221,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(1f, 1f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.JUMPER)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.JUMPER())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(0.5f, Vector2(0f, 0f)) {
@@ -270,7 +250,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
             with<VisionComponent>()
             with<EnemyComponent> { type = enemyType }
             with<TowerComponent> {
-                sprite.setRegion(assets.manager.get<Texture>(Constants.SNIPER_TOWER))
+                sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.SNIPER_TOWER()))
             }
             with<HealthComponent> { health = sniperHealth }
             with<HealthBarComponent> { maxValue = sniperHealth }
@@ -279,7 +259,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.SNIPER_BASE)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.SNIPER_BASE())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
@@ -322,7 +302,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.WOMB)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.WOMB())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
@@ -376,7 +356,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.KID)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.KID())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     circle(radius = entitySize / 2f) {
@@ -403,9 +383,9 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
     fun createRadial(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
         val enemyType = Enemy.RADIAL
-        val texture = assets.manager.get<Texture>(Constants.RADIAL)
+        val texture = Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.RADIAL())
         val textureWidth = 2f
-        val ratio = texture.height.toFloat() / texture.width
+        val ratio = texture.regionHeight.toFloat() / texture.regionWidth
         engine.entity {
             with<TypeComponent> { type = entityType }
             with<EnemyComponent> { type = enemyType }
@@ -446,11 +426,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 origin.set(size).scl(0.5f)
             }
             with<TextureComponent> {
-                val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
-                    setColor(0.5f, 0.5f, 0.5f, 1f)
-                    fill()
-                }
-                sprite.setRegion(Texture(pixel))
+                sprite.setRegion(Scene2DSkin.defaultSkin.get<Texture>(Constants.LIGHT_GRAY_PIXEL))
             }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
@@ -515,7 +491,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(radius * 2f, radius * 2f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.WHITE_CIRCLE)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.WHITE_CIRCLE())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     circle(radius = radius) {
@@ -554,20 +530,15 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
     }
 
     fun createBg(x: Float, y: Float, width: Float, height: Float) {
-        val scale = 25
         engine.entity {
             with<TransformComponent> {
                 position.set(x, y, 0f)
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> {
-//                val bg = assets.manager.get<Texture>(Constants.GAMEPLAY_BG)
-                val bg = Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.DARK_HONEYCOMB()).texture
-                bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
-                val bgReg = TextureRegion(bg)
-                bgReg.setRegion(0, 0, width.toInt() * scale, height.toInt() * scale)
-                sprite.setRegion(bgReg)
+            with<TileComponent> {
+                tile.region = Scene2DSkin.defaultSkin[RegionName.DARK_HONEYCOMB()]
+                tile.scale = 0.04f
             }
         }
     }
@@ -614,7 +585,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(radius * 2f, radius * 2f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.AIM)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.AIM())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     circle(radius) {
@@ -642,7 +613,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(radius * 2f, radius * 2f)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(assets.manager.get<Texture>(Constants.WHITE_CIRCLE)) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.WHITE_CIRCLE())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.StaticBody) {
                     circle(radius) {

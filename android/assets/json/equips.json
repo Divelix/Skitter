@@ -7,7 +7,7 @@
       "description": "Simple perfect. Default ship that has good stats, but nothing special",
       "specs": {
         "health": [ 100, 110, 120, 130, 140, 150, 160, 170, 180, 190 ],
-        "speed": [ 20, 25, 30, 35, 40, 45, 50, 55, 60, 65 ]
+        "speed": [ 10, 12, 15, 16, 18, 19, 20, 21, 22, 23 ]
       }
     },
     {
@@ -17,7 +17,7 @@
       "description": "Slow, but strong",
       "specs": {
         "health": [ 200, 210, 220, 230, 240, 250, 260, 270, 280, 290 ],
-        "speed": [ 10, 15, 20, 25, 30, 35, 40, 45, 50, 55 ]
+        "speed": [ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ]
       }
     },
     {

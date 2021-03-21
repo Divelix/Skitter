@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
@@ -30,11 +31,9 @@ import com.kotcrab.vis.ui.widget.VisWindow
 import ktx.actors.*
 import ktx.graphics.*
 import ktx.collections.*
-import ktx.scene2d.label
-import ktx.scene2d.scene2d
-import ktx.scene2d.table
-import ktx.scene2d.textButton
+import ktx.scene2d.*
 import ktx.scene2d.vis.*
+import ktx.style.get
 
 class Hud(
         val game: Main,
@@ -242,7 +241,7 @@ class Hud(
     }
 
     private fun makePauseButton(): Image {
-        return Image(TextureRegionDrawable(assets.manager.get<Texture>(Constants.PAUSE_BTN))).apply {
+        return Image(TextureRegionDrawable(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.PAUSE()))).apply {
             setSize(50f, 50f)
             setPosition(hudStage.width - width - 20f, hudStage.height - height - 20f)
             addListener(object : ClickListener() {
@@ -296,9 +295,9 @@ class Hud(
             defaults().padTop(10f)
             Data.matchHistory.forEach { (enemyType, quantity) ->
                 require(quantity != null)
-                val tex = assets.manager.get<Texture>(findEnemyTexturePath(enemyType))
-                val ratio = tex.width.toFloat() / tex.height
-                image(TextureRegionDrawable(tex)).cell(width = iconWidth, height = iconWidth / ratio)
+                val region = Scene2DSkin.defaultSkin.get<TextureRegion>(findEnemyTexturePath(enemyType))
+                val ratio = region.regionWidth.toFloat() / region.regionHeight
+                image(region).cell(width = iconWidth, height = iconWidth / ratio)
                 label("x${quantity}")
                 label("${quantity * 10}").cell(width = cellWidth).setAlignment(Align.center)
                 row()
@@ -351,12 +350,12 @@ class Hud(
 
     private fun findEnemyTexturePath(enemyType: Enemy): String {
         return when (enemyType) {
-            Enemy.AGENT -> Constants.AGENT
-            Enemy.JUMPER -> Constants.JUMPER
-            Enemy.SNIPER -> Constants.SNIPER_BASE
-            Enemy.WOMB -> Constants.WOMB
-            Enemy.KID -> Constants.KID
-            Enemy.RADIAL -> Constants.RADIAL
+            Enemy.AGENT -> RegionName.AGENT()
+            Enemy.JUMPER -> RegionName.JUMPER()
+            Enemy.SNIPER -> RegionName.SNIPER_BASE()
+            Enemy.WOMB -> RegionName.WOMB()
+            Enemy.KID -> RegionName.KID()
+            Enemy.RADIAL -> RegionName.RADIAL()
         }
     }
 

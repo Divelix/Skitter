@@ -18,6 +18,7 @@ import com.kotcrab.vis.ui.VisUI
 import ktx.assets.*
 import ktx.freetype.freeTypeFontParameters
 import ktx.freetype.registerFreeTypeFontLoaders
+import ktx.log.debug
 import ktx.scene2d.Scene2DSkin
 import ktx.style.*
 
@@ -42,52 +43,13 @@ class Assets: Disposable {
     }
 
     fun loadAssets() {
-        manager.load<TextureAtlas>(Constants.ATLAS_SKIN)
+        manager.load<TextureAtlas>(Constants.ATLAS_SKIN) // TODO replace default skin
         Atlases.values().forEach {
             manager.load<TextureAtlas>("textures/atlases/" + it() + ".atlas")
         }
-
-//        manager.load<Texture>(Constants.GAMEPLAY_BG)
-        manager.load<Texture>(Constants.EQUIP_ICON)
-        manager.load<Texture>(Constants.BATTLE_ICON)
-        manager.load<Texture>(Constants.MOD_ICON)
-        manager.load<Texture>(Constants.SHIP_ICON)
-        manager.load<Texture>(Constants.GUN_ICON)
-        manager.load<Texture>(Constants.APPLY_ICON)
-        manager.load<Texture>(Constants.HOME_ICON)
-        manager.load<Texture>(Constants.RESTART_ICON)
-        manager.load<Texture>(Constants.UP_BTN)
-        manager.load<Texture>(Constants.SELL_BTN)
-        manager.load<Texture>(Constants.PAUSE_BTN)
-        manager.load<Texture>(Constants.SHIP_DEFAULT)
-        manager.load<Texture>(Constants.GUN_DEFAULT)
-        manager.load<Texture>(Constants.GUN_SNIPER)
-        manager.load<Texture>(Constants.CARRIAGE)
-        manager.load<Texture>(Constants.AGENT)
-        manager.load<Texture>(Constants.SNIPER_BASE)
-        manager.load<Texture>(Constants.SNIPER_TOWER)
-        manager.load<Texture>(Constants.WOMB)
-        manager.load<Texture>(Constants.KID)
-        manager.load<Texture>(Constants.RADIAL)
-        manager.load<Texture>(Constants.JUMPER)
-//        manager.load<Texture>(Constants.BULLET_DEFAULT)
-        manager.load<Texture>(Constants.AIM)
-        manager.load<Texture>(Constants.WHITE_CIRCLE)
-        manager.load<Texture>(Constants.MENU_PLAY)
-        manager.load<Texture>(Constants.MENU_MOD)
-        manager.load<Texture>(Constants.MENU_EQUIP)
-        manager.load<Texture>(Constants.MOD_SHIP_HEALTH)
-        manager.load<Texture>(Constants.MOD_SHIP_SPEED)
-        manager.load<Texture>(Constants.MOD_SHIP_CHUBBER)
-        manager.load<Texture>(Constants.MOD_GUN_DAMAGE)
-        manager.load<Texture>(Constants.MOD_GUN_CAPACITY)
-        manager.load<Texture>(Constants.MOD_GUN_RELOAD)
-        manager.load<Texture>(Constants.MOD_GUN_SPEED)
-        manager.load<Texture>(Constants.MOD_GUN_CRIT)
-        manager.load<Texture>(Constants.MOD_GUN_CHANCE)
-        manager.load<Texture>(Constants.STAR)
         manager.load<Sound>(Constants.HIT_SOUND)
         manager.load<Sound>(Constants.SHOT_SOUND)
+
         manager.registerFreeTypeFontLoaders(replaceDefaultBitmapFontLoader = true)
         val robotoLightFontParams = freeTypeFontParameters(Constants.ROBOTO_LIGHT_TTF) {
             size = 128
@@ -118,10 +80,6 @@ class Assets: Disposable {
             this[Constants.LIGHT_GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.7f, .7f, .7f, 1f)); fill() })
             this[Constants.GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.3f, .3f, .3f, 1f)); fill() })
             this[Constants.DARK_GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.17f, .17f, .17f, 1f)); fill() })
-
-            set(Constants.EQUIP_ICON, manager.get<Texture>(Constants.EQUIP_ICON))
-            set(Constants.BATTLE_ICON, manager.get<Texture>(Constants.BATTLE_ICON))
-            set(Constants.MOD_ICON, manager.get<Texture>(Constants.MOD_ICON))
 
             label {
                 font = manager.get<BitmapFont>(Constants.ROBOTO_LIGHT_FONT).apply {
@@ -170,7 +128,6 @@ class Assets: Disposable {
             Atlases.values().forEach {
                 addRegions(manager.get("textures/atlases/" + it() + ".atlas"))
             }
-
         }
         Scene2DSkin.defaultSkin = skin
         VisUI.load(skin)

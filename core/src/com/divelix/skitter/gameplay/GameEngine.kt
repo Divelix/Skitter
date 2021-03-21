@@ -41,7 +41,7 @@ class GameEngine(val activePlayerData: ActivePlayerData,
     private val world = World(Vector2(0f, 0f), true)
     private val debugRenderer = Box2DDebugRenderer()
     val engine = PooledEngine(20, 200, 50, 100)
-    val entityBuilder = EntityBuilder(activePlayerData, engine, world, assets)
+    val entityBuilder = EntityBuilder(activePlayerData, engine, world)
 
     private val playCam = OrthographicCamera()
     val playerEntity by lazy { entityBuilder.createPlayer(5f, 2f) }

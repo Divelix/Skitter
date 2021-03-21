@@ -32,12 +32,11 @@ class TestAIScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxS
         const val HEIGHT = WIDTH * D_HEIGHT / D_WIDTH
     }
     private val context = game.getContext()
-    private val assets = context.inject<Assets>()
 
     private val world = World(Vector2(0f, 0f), true)
     private val debugRenderer = Box2DDebugRenderer(true, true, false, true, true, true)
     private val engine = PooledEngine()
-    private val entityBuilder = EntityBuilder(activePlayerData, engine, world, assets)
+    private val entityBuilder = EntityBuilder(activePlayerData, engine, world)
     private val camera = OrthographicCamera()
     private val blackList = ArrayList<Body>() // list of bodies to kill
 

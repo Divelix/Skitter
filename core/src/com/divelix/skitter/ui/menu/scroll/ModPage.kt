@@ -30,8 +30,8 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
     private val shipStockTable = StockTable(true, playerData.mods, playerData.mods.filter { it.type == ModType.SHIP_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN); addAllViews() }
     private val gunStockTable = StockTable(true, playerData.mods, playerData.mods.filter { it.type == ModType.GUN_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN); addAllViews() }
     private val tabbedMenu = TabbedMenu(gdxArrayOf(
-            Tab(assets.manager.get(Constants.SHIP_ICON), shipStockTable),
-            Tab(assets.manager.get(Constants.GUN_ICON), gunStockTable)
+            Tab(Scene2DSkin.defaultSkin[RegionName.SHIP_ICON()], shipStockTable),
+            Tab(Scene2DSkin.defaultSkin[RegionName.GUN_ICON()], gunStockTable)
     ))
 
     init {
