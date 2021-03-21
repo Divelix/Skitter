@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.*
-import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.utils.AliasBinder
 import com.divelix.skitter.utils.RegionBinder

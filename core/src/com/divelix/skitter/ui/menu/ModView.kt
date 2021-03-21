@@ -9,12 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
-import com.divelix.skitter.image
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.utils.RegionBinder
 import ktx.actors.onClick
 import ktx.actors.txt
 import ktx.scene2d.Scene2DSkin
+import ktx.scene2d.image
 import ktx.scene2d.scene2d
 import ktx.scene2d.table
 import ktx.style.get
@@ -31,7 +31,7 @@ class ModView(val modAlias: ModAlias, selectMod: (ModView) -> Unit): Group() {
 
     init {
         touchable = Touchable.enabled
-        setSize(Constants.MOD_WIDTH, Constants.MOD_HEIGHT)
+        setSize(Constants.MOD_SIZE, Constants.MOD_SIZE)
 
         val bg = Image(bgDrawable).apply { setFillParent(true) }
         textureName = RegionBinder.chooseModRegionName(modAlias.type, modAlias.index)

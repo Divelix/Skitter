@@ -3,10 +3,12 @@ package com.divelix.skitter.screens.experimental
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
+import com.divelix.skitter.data.RegionName
 import com.divelix.skitter.ui.menu.tabs.Tab
 import com.divelix.skitter.ui.menu.tabs.TabbedMenu
 import com.divelix.skitter.utils.TopViewport
@@ -14,6 +16,7 @@ import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.scene2d.*
 import ktx.collections.gdxArrayOf
+import ktx.style.get
 
 class TestUIScreen(val game: Main) : KtxScreen {
     private val context = game.getContext()
@@ -29,8 +32,8 @@ class TestUIScreen(val game: Main) : KtxScreen {
 
             val tabbedMenu = TabbedMenu(gdxArrayOf(
 //                    Tab(assets.manager.get<Texture>(Constants.SHIP_ICON), ShipTable(assets)),
-                    Tab(assets.manager.get<Texture>(Constants.GUN_ICON), scene2d.table { label("second") }),
-                    Tab(assets.manager.get<Texture>(Constants.MOD_GUN_CAPACITY), scene2d.table { label("third") })
+                    Tab(Scene2DSkin.defaultSkin[RegionName.GUN_ICON()], scene2d.table { label("second") }),
+                    Tab(Scene2DSkin.defaultSkin[RegionName.MOD_GUN_CAPACITY()], scene2d.table { label("third") })
             ))
             add(tabbedMenu)
         }

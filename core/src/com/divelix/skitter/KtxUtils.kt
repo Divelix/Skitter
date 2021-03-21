@@ -1,9 +1,6 @@
 package com.divelix.skitter
 
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.divelix.skitter.data.Constants
 import ktx.collections.GdxFloatArray
 import ktx.collections.GdxIntArray
@@ -26,25 +23,4 @@ inline fun <S> KWidget<S>.scaledLabel(
 ): Label {
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
     return actor(Label(text, skin, style).apply { setFontScale(scale) }, init)
-}
-
-// delete when new version of libktx comes out
-@Scene2dDsl
-@OptIn(ExperimentalContracts::class)
-inline fun <S> KWidget<S>.image(
-        texture: Texture,
-        init: (@Scene2dDsl Image).(S) -> Unit = {}
-): Image {
-    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
-    return actor(Image(texture), init)
-}
-
-@Scene2dDsl
-@OptIn(ExperimentalContracts::class)
-inline fun <S> KWidget<S>.image(
-        drawable: Drawable,
-        init: (@Scene2dDsl Image).(S) -> Unit = {}
-): Image {
-    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
-    return actor(Image(drawable), init)
 }
