@@ -17,9 +17,9 @@ class RadialSystem(interval: Float, val entityBuilder: EntityBuilder): IntervalI
         val body = entity[B2dBodyComponent.mapper]!!.body
         val pos = body.position
         val angle = body.angle
-        dirVec.setAngle(angle)
+        dirVec.setAngleDeg(angle)
         for (i in 1..6) {
-            dirVec.rotate(60f)
+            dirVec.rotateDeg(60f)
             target.set(pos).add(dirVec)
             entityBuilder.createEnemyBullet(entity, target)
         }

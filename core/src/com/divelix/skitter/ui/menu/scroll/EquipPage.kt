@@ -1,6 +1,5 @@
 package com.divelix.skitter.ui.menu.scroll
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.divelix.skitter.data.*
 import com.divelix.skitter.ui.menu.equip.EquipTable
 import com.divelix.skitter.ui.menu.tabs.Tab
@@ -18,7 +17,7 @@ class EquipPage(context: Context, playerData: PlayerData, activePlayerData: Acti
     init {
         val tabbedMenu = TabbedMenu(gdxArrayOf(
                 Tab(Scene2DSkin.defaultSkin[RegionName.SHIP_ICON()], shipTable),
-                Tab(Scene2DSkin.defaultSkin[RegionName.SHIP_ICON()], gunTable)
+                Tab(Scene2DSkin.defaultSkin[RegionName.GUN_ICON()], gunTable)
         ))
         table {
             setFillParent(true)

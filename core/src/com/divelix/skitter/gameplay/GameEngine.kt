@@ -16,7 +16,7 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.data.ActivePlayerData
 import com.divelix.skitter.gameplay.systems.BehaviorSystem
-import com.divelix.skitter.gameplay.systems.BulletSystem
+import com.divelix.skitter.gameplay.systems.ProjectileSystem
 import com.divelix.skitter.gameplay.systems.CameraSystem
 import com.divelix.skitter.gameplay.systems.DamageLabelSystem
 import com.divelix.skitter.gameplay.systems.DecaySystem
@@ -85,7 +85,7 @@ class GameEngine(val activePlayerData: ActivePlayerData,
             addSystem(DamageLabelSystem(playCam)) // before HealthSystem to let label update init position on last hit
             addSystem(HealthSystem(hud))
             addSystem(SniperSystem(entityBuilder))
-            addSystem(BulletSystem())
+            addSystem(ProjectileSystem())
 //            addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
             addSystem(DecaySystem(0.1f))
 //            addSystem(RegenerationSystem(activePlayerData, 0.5f))

@@ -40,7 +40,7 @@ class CameraSystem: IteratingSystem(allOf(CameraComponent::class).get()) {
             }
             difVec.set(bodPos).sub(camPos)
             if (difVec.len2() > Constants.CAMERA_RADIUS_2) {
-                radVec.set(Constants.CAMERA_RADIUS, 0f).rotate(difVec.angle())
+                radVec.set(Constants.CAMERA_RADIUS, 0f).rotateDeg(difVec.angleDeg())
                 camPos.set(bodPos).sub(radVec)
             }
             cameraCmp.camera.position.set(camPos, 0f)

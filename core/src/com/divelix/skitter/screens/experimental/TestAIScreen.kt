@@ -11,11 +11,10 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.ObjectSet
 import com.divelix.skitter.*
 import com.divelix.skitter.data.ActivePlayerData
-import com.divelix.skitter.data.Assets
 import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.components.B2dBodyComponent
 import com.divelix.skitter.gameplay.systems.BehaviorSystem
-import com.divelix.skitter.gameplay.systems.BulletSystem
+import com.divelix.skitter.gameplay.systems.ProjectileSystem
 import com.divelix.skitter.gameplay.systems.PhysicsSystem
 import com.divelix.skitter.gameplay.systems.RenderingSystem
 import com.divelix.skitter.gameplay.EntityBuilder
@@ -139,7 +138,7 @@ class TestAIScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxS
         engine.addSystem(RenderingSystem(context, camera))
         engine.addSystem(PhysicsSystem(activePlayerData, world))
 //        engine.addSystem(HealthSystem())
-        engine.addSystem(BulletSystem())
+        engine.addSystem(ProjectileSystem())
         engine.addSystem(BehaviorSystem())
     }
 

@@ -22,7 +22,7 @@ class PlayerSystem(val activePlayerData: ActivePlayerData): IteratingSystem(allO
         val bodyCmp = entity[B2dBodyComponent.mapper]!!
 
         PlayScreen.health = healthCmp.health
-        transCmp.rotation = Data.dirVec.angle() - 90f
+        transCmp.rotation = Data.dirVec.angleDeg() - 90f
 
         force.set(Data.dirVec).scl(activePlayerData.shipSpeed).scl(50f) // TODO hardcoded scl
         bodyCmp.body.applyForceToCenter(force, true)

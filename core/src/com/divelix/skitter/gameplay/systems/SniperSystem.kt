@@ -25,7 +25,7 @@ class SniperSystem(val entityBuilder: EntityBuilder): IteratingSystem(allOf(Snip
         val playerPos = playerEntity[TransformComponent.mapper]!!.position
         val body = entity[B2dBodyComponent.mapper]!!.body
         targetPos.set(playerPos.x, playerPos.y)
-        entity[TowerComponent.mapper]!!.angle = diffVec.set(targetPos).sub(body.position).angle()
+        entity[TowerComponent.mapper]!!.angle = diffVec.set(targetPos).sub(body.position).angleDeg()
 
         if (sniperCmp.firingTimer > 0f) {
             sniperCmp.firingTimer -= deltaTime
