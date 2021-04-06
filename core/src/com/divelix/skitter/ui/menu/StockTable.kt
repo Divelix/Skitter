@@ -66,7 +66,7 @@ class StockTable(
             modAlias
         }
         val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
-        targetContainer.actor = makeModView(resultModAlias).apply { if (modifyData) selectMod(this) }
+        targetContainer.actor = makeModView(resultModAlias)
         return true
     }
 
