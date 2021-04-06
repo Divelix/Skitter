@@ -2,8 +2,10 @@ package com.divelix.skitter
 
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.divelix.skitter.data.Constants
+import ktx.collections.GdxArray
 import ktx.collections.GdxFloatArray
 import ktx.collections.GdxIntArray
+import ktx.collections.filter
 import ktx.scene2d.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -24,3 +26,5 @@ inline fun <S> KWidget<S>.scaledLabel(
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
     return actor(Label(text, skin, style).apply { setFontScale(scale) }, init)
 }
+
+fun <L, R> GdxArray<L>.intersection(rArray: GdxArray<R>, filterPredicate : (L, R) -> Boolean) = filter { l -> rArray.any { filterPredicate(l, it)} }
