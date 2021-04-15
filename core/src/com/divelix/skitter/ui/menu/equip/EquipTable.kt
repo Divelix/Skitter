@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
-import com.divelix.skitter.intersection
 import com.divelix.skitter.ui.menu.scroll.ModSelector
 import com.divelix.skitter.ui.menu.ModView
 import com.divelix.skitter.ui.menu.StockTable

@@ -11,6 +11,7 @@ enum class RegionName {
     CARRIAGE,
     CARRIAGE_SHADOW,
     EQUIP_ICON,
+    EXIT_ICON,
     GUN_ICON,
     HOME_ICON,
     MENU_EQUIP,

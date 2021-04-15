@@ -51,7 +51,7 @@ class DamageLabelProvider(val hudStage: Stage, val playCam: OrthographicCamera) 
         }
     }
 
-    inner class DamageLabel: Label("", Scene2DSkin.defaultSkin, "damage-label"), Pool.Poolable {
+    inner class DamageLabel: Label("", Scene2DSkin.defaultSkin, Constants.STYLE_DAMAGE_LABEL), Pool.Poolable {
         val duration = 1f
         var ecsTimer = duration
         val prevPos = Vector2()

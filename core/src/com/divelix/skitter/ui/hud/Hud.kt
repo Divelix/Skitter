@@ -146,7 +146,7 @@ class Hud(
             setFillParent(true)
             top().pad(10f)
             defaults().expandX().left()
-            scoreLabel = scaledLabel("", 0.2f, style = "black").cell(colspan = 2, align = Align.center)
+            scoreLabel = scaledLabel("", 0.2f, style = Constants.STYLE_BLACK_LABEL).cell(colspan = 2, align = Align.center)
             row()
             enemyCountLabel = scaledLabel("").cell(height = 50f)
             row()
@@ -165,7 +165,7 @@ class Hud(
 //                })
 //            }.cell(align = Align.left)
         }
-        ammoLabel = scene2d.scaledLabel("", 0.3f, style = "black")
+        ammoLabel = scene2d.scaledLabel("", 0.3f, style = Constants.STYLE_BLACK_LABEL)
 
         hudStage += rootTable
         hudStage += ammoLabel
@@ -259,30 +259,26 @@ class Hud(
 
     private fun makePauseWindow(): Window {
         return scene2d.visWindow("Pause") {
-            titleLabel.setFontScale(Constants.DEFAULT_LABEL_SCALE)
+            titleLabel.setFontScale(0.2f)
             isVisible = false
             debugAll()
             centerWindow()
             defaults().expand()
-            padTop(25f) // title height
-            width = 200f
-            height = 100f
-//            val quantityLabel = label("retwert").cell(colspan = 2)
-            row()
-            textButton("Exit").cell(align = Align.left).addListener(object : ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    LevelManager.isNextLvlRequired = true
-                    game.screen = ScrollMenuScreen(game)
-                }
-            })
-            textButton("Resume").cell(align = Align.right).addListener(object : ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    GameEngine.isPaused = false
-                    isVisible = false
-                }
-            })
+            padTop(30f) // title height
+            width = 300f
+            height = 500f
+            imageButton(Constants.STYLE_EXIT_BTN)
+                    .cell(align = Align.center, height = 50f)
+                    .onTouchDown {
+                        LevelManager.isNextLvlRequired = true
+                        game.screen = ScrollMenuScreen(game)
+                    }
+            imageButton(Constants.STYLE_RESTART_BTN)
+                    .cell(align = Align.center, height = 50f)
+                    .onTouchDown {
+                        GameEngine.isPaused = false
+                        isVisible = false
+                    }
         }
     }
 
