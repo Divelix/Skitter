@@ -19,6 +19,7 @@ enum class RegionName {
     MENU_PLAY,
     MOD_ICON,
     MOVE_UP_ICON,
+    NEXT_ICON,
     MOVE_DOWN_ICON,
     PAUSE,
     RESTART_ICON,

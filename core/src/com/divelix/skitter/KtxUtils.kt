@@ -25,6 +25,4 @@ inline fun <S> KWidget<S>.scaledLabel(
 ): Label {
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
     return actor(Label(text, skin, style).apply { setFontScale(scale) }, init)
-}
-
-fun <L, R> GdxArray<L>.intersection(rArray: GdxArray<R>, filterPredicate : (L, R) -> Boolean) = filter { l -> rArray.any { filterPredicate(l, it)} }
+    }

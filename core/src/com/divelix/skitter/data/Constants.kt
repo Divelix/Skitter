@@ -53,7 +53,9 @@ object Constants {
     const val STYLE_MOD_LEVEL = "mod_level"
     const val STYLE_DAMAGE_LABEL = "damage_label"
     const val STYLE_EXIT_BTN = "exit_button"
+    const val STYLE_RESUME_BTN = "resume_button"
     const val STYLE_RESTART_BTN = "restart_button"
+    const val STYLE_NEXT_BTN = "next_button"
 
     // Control params
     const val CAMERA_RADIUS = 2f

@@ -72,7 +72,9 @@ class Hud(
     private val reloadPos = Vector2(hudStage.width - 15f - 30f, hudStage.height - 20f - 50f - 20f - 30f)
 
     private val pauseBtn: Image
-    private val pauseWindow: Window
+    private val pauseWindow: PauseWindow
+    private val gameOverWindow: GameOverWindow
+    private val victoryWindow: VictoryWindow
     private val hpHeight = 10f
     private val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
     private val healthBgImg = Image(Texture(pixel.apply { setColor(healthBgColor); fill() }))
@@ -140,7 +142,9 @@ class Hud(
 
     init {
 //        hudStage.isDebugAll = true
-        pauseWindow = makePauseWindow()
+        pauseWindow = PauseWindow(game)
+        gameOverWindow = GameOverWindow(game)
+        victoryWindow = VictoryWindow(game)
         pauseBtn = makePauseButton()
         rootTable = scene2d.table {
             setFillParent(true)
@@ -173,6 +177,8 @@ class Hud(
         hudStage += healthImg
         hudStage += pauseBtn
         hudStage += pauseWindow
+        hudStage += gameOverWindow
+        hudStage += victoryWindow
 
         healthBgImg.run {
             setSize(stage.width * 0.9f, hpHeight)
@@ -247,38 +253,13 @@ class Hud(
             addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     GameEngine.isPaused = true
-                    pauseWindow.isVisible = true
+                    pauseWindow.show()
 //                    Data.renderTime = 0f
 //                    Data.physicsTime = 0f
 //                    game.screen = MenuScreen(game)
                     super.touchUp(event, x, y, pointer, button)
                 }
             })
-        }
-    }
-
-    private fun makePauseWindow(): Window {
-        return scene2d.visWindow("Pause") {
-            titleLabel.setFontScale(0.2f)
-            isVisible = false
-            debugAll()
-            centerWindow()
-            defaults().expand()
-            padTop(30f) // title height
-            width = 300f
-            height = 500f
-            imageButton(Constants.STYLE_EXIT_BTN)
-                    .cell(align = Align.center, height = 50f)
-                    .onTouchDown {
-                        LevelManager.isNextLvlRequired = true
-                        game.screen = ScrollMenuScreen(game)
-                    }
-            imageButton(Constants.STYLE_RESTART_BTN)
-                    .cell(align = Align.center, height = 50f)
-                    .onTouchDown {
-                        GameEngine.isPaused = false
-                        isVisible = false
-                    }
         }
     }
 
@@ -301,37 +282,37 @@ class Hud(
         }
     }
 
-    private fun endWindow(title: String, content: KVisWindow.() -> Unit): VisWindow {
-        return scene2d.visWindow(title) {
-            debugAll()
-            centerWindow()
-            padTop(50f) // title height
-            defaults().top()
-            width = 320f
-            height = 500f
-            row()
-            content()
-        }
-    }
+//    private fun endWindow(title: String, content: KVisWindow.() -> Unit): VisWindow {
+//        return scene2d.visWindow(title) {
+//            debugAll()
+//            centerWindow()
+//            padTop(50f) // title height
+//            defaults().top()
+//            width = 320f
+//            height = 500f
+//            row()
+//            content()
+//        }
+//    }
 
-    private fun makeVictoryWindow(): VisWindow {
-        return endWindow("Victory") {
-            // Stats table
-            add(makeStatsTable()).expand(true, true)
-            row()
+//    private fun makeVictoryWindow(): VisWindow {
+//        return endWindow("Victory") {
+//            // Stats table
+//            add(makeStatsTable()).expand(true, true)
+//            row()
 //            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.HOME_ICON)) {
 //                LevelManager.isNextLvlRequired = true
 //                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
 //                game.screen = ScrollMenuScreen(game)
 //            })
-        }
-    }
+//        }
+//    }
 
-    private fun makeGameOverWindow(): VisWindow {
-        return endWindow("Game Over") {
-            // Stats table
-            add(makeStatsTable()).colspan(2).expand(true, true)
-            row()
+//    private fun makeGameOverWindow(): VisWindow {
+//        return endWindow("Game Over") {
+//            // Stats table
+//            add(makeStatsTable()).colspan(2).expand(true, true)
+//            row()
 //            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.RESTART_ICON)) {
 //                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
 //                // TODO make restart
@@ -341,8 +322,8 @@ class Hud(
 //                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
 //                game.screen = ScrollMenuScreen(game)
 //            })
-        }
-    }
+//        }
+//    }
 
     private fun findEnemyTexturePath(enemyType: Enemy): String {
         return when (enemyType) {
@@ -356,12 +337,14 @@ class Hud(
     }
 
     fun showGameOverWindow() {
-        hudStage += makeGameOverWindow()
+//        hudStage += makeGameOverWindow()
+        gameOverWindow.show()
         // TODO save match history
     }
 
     fun showVictoryWindow() {
-        hudStage += makeVictoryWindow()
+//        hudStage += makeVictoryWindow()
+        victoryWindow.show()
         // TODO save match history
     }
 

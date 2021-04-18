@@ -128,12 +128,18 @@ class Assets: Disposable {
             imageButton(Constants.STYLE_EXIT_BTN) {
                 imageUp = TextureRegionDrawable(this@skin.get<TextureRegion>(RegionName.EXIT_ICON()))
             }
+            imageButton(Constants.STYLE_RESUME_BTN) {
+                imageUp = TextureRegionDrawable(this@skin.get<TextureRegion>(RegionName.MENU_PLAY()))
+            }
             imageButton(Constants.STYLE_RESTART_BTN) {
                 imageUp = TextureRegionDrawable(this@skin.get<TextureRegion>(RegionName.RESTART_ICON()))
             }
+            imageButton(Constants.STYLE_NEXT_BTN) {
+                imageUp = TextureRegionDrawable(this@skin.get<TextureRegion>(RegionName.NEXT_ICON()))
+            }
             scrollPane {}
             window {
-                titleFontColor = Color.RED
+                titleFontColor = Color.WHITE
                 titleFont = manager.get(Constants.ROBOTO_LIGHT_FONT)
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
