@@ -30,8 +30,9 @@ class GameOverWindow(game: Main, title: String = "GameOver"): ModalWindow(title)
             imageButton(Constants.STYLE_RESTART_BTN)
                     .cell(align = Align.center)
                     .onTouchDown {
-                        // TODO make restart
-                        println("Restart button clicked")
+                        LevelManager.isRestartNeeded = true
+                        this@GameOverWindow.hide()
+                        GameEngine.isPaused = false
                     }
         }
     }

@@ -29,13 +29,14 @@ class VictoryWindow(game: Main, title: String = "Victory"): ModalWindow(title) {
             imageButton(Constants.STYLE_RESTART_BTN)
                     .cell(align = Align.center)
                     .onTouchDown {
-                        // TODO make restart
-                        println("Restart button clicked")
+                        LevelManager.isRestartNeeded = true
+                        this@VictoryWindow.hide()
+                        GameEngine.isPaused = false
                     }
             imageButton(Constants.STYLE_NEXT_BTN)
                     .cell(align = Align.center)
                     .onTouchDown {
-                        // TODO make transition to next level
+                        // TODO make transition to next chapter
                         print("Next button clicked")
 //                        GameEngine.isPaused = false
 //                        this@VictoryWindow.hide()

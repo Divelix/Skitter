@@ -36,8 +36,9 @@ class PauseWindow(game: Main, title: String = "Pause"): ModalWindow(title) {
             imageButton(Constants.STYLE_RESTART_BTN)
                     .cell(align = Align.center)
                     .onTouchDown {
-                        // TODO make restart
-                        println("Restart button clicked")
+                        LevelManager.isRestartNeeded = true
+                        this@PauseWindow.hide()
+                        GameEngine.isPaused = false
                     }
         }
     }

@@ -323,14 +323,10 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
         }
     }
 
-    fun createKid(womb: Entity) {
+    fun createKid(x: Float, y: Float) {
         val entityType = TypeComponent.ENEMY
         val enemyType = Enemy.KID
         val entitySize = 0.5f
-        val initPos = womb[B2dBodyComponent.mapper]!!.body.position.apply {
-            x += MathUtils.random(-1f, 1f)
-            y += MathUtils.random(-1f, 1f)
-        }
         engine.entity {
             with<VisionComponent>()
             with<SteerComponent> {
@@ -352,7 +348,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 health = 1f
             }
             with<TransformComponent> {
-                position.set(initPos.x, initPos.y, 0f)
+                position.set(x, y, 0f)
                 size.set(entitySize, entitySize)
                 origin.set(size).scl(0.5f)
             }
@@ -371,7 +367,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                     }
                     linearDamping = 1f
                     angularDamping = 30f
-                    position.set(initPos)
+                    position.set(x, y)
                     userData = (this@entity).entity
                 }
             }
