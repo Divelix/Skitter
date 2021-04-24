@@ -112,12 +112,12 @@ class B2dContactListener(
         val targetHealthCmp = targetEntity[HealthComponent.mapper]
         require(targetHealthCmp != null) {"Null HealthComponent"}
         if (targetHealthCmp.isIntHp) {
-            targetHealthCmp.health--
+            targetHealthCmp.currentHealth--
         } else {
-            if (targetHealthCmp.health > damage)
-                targetHealthCmp.health -= damage
+            if (targetHealthCmp.currentHealth > damage)
+                targetHealthCmp.currentHealth -= damage
             else
-                targetHealthCmp.health = 0f
+                targetHealthCmp.currentHealth = 0f
             hud.damageLabelsProvider.makeDamageLabel(damage, targetEntity)
         }
         hitSound.play()

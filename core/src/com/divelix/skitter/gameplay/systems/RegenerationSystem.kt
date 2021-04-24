@@ -3,7 +3,6 @@ package com.divelix.skitter.gameplay.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import com.divelix.skitter.data.ActivePlayerData
-import com.divelix.skitter.data.Data
 import com.divelix.skitter.gameplay.components.HealthComponent
 import com.divelix.skitter.gameplay.components.RegenerationComponent
 import ktx.ashley.allOf
@@ -17,7 +16,7 @@ class RegenerationSystem(private val activePlayerData: ActivePlayerData,
         val regenCmp = entity[RegenerationComponent.mapper]!!
         val healthCmp = entity[HealthComponent.mapper]!!
 
-        if (healthCmp.health < activePlayerData.shipHealth)
-            healthCmp.health += regenCmp.amount
+        if (healthCmp.currentHealth < activePlayerData.shipHealth)
+            healthCmp.currentHealth += regenCmp.amount
     }
 }

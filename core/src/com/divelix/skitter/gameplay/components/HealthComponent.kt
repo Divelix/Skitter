@@ -6,11 +6,12 @@ import ktx.ashley.mapperFor
 
 class HealthComponent: Component, Pool.Poolable {
     var isIntHp = false
-    var health = 0f
+    var maxHealth = 0f
+    var currentHealth = 0f
 
     override fun reset() {
         isIntHp = false
-        health = 0f
+        currentHealth = maxHealth
     }
 
     companion object {

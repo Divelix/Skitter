@@ -3,7 +3,6 @@ package com.divelix.skitter.gameplay.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.divelix.skitter.data.Data
-import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.components.EnemyComponent
 import com.divelix.skitter.gameplay.components.HealthComponent
 import com.divelix.skitter.gameplay.components.PlayerComponent
@@ -21,7 +20,7 @@ class HealthSystem(
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val healthCmp = entity[HealthComponent.mapper]!!
 
-        if (healthCmp.health <= 0f) {
+        if (healthCmp.currentHealth <= 0f) {
             if (entity.has(EnemyComponent.mapper)) {
                 LevelManager.enemiesCount--
                 Data.score += 100
@@ -31,11 +30,10 @@ class HealthSystem(
                 } else {
                     Data.matchHistory[enemyType] = 1
                 }
+                engine.removeEntity(entity)
             } else if (entity.has(PlayerComponent.mapper)) {
-                GameEngine.slowRate = 10f
                 hud.showGameOverWindow()
             }
-            engine.removeEntity(entity)
         }
     }
 }

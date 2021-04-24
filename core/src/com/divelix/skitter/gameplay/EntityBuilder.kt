@@ -31,7 +31,10 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
         return engine.entity {
             with<PlayerComponent>()
             with<TypeComponent> { type = entityType }
-            with<HealthComponent> { health = activePlayerData.shipHealth }
+            with<HealthComponent> {
+                maxHealth = activePlayerData.shipHealth
+                currentHealth = maxHealth
+            }
 //            with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
                 position.set(x, y, 2f)
@@ -175,7 +178,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
             }
             with<TypeComponent> { type = entityType }
             with<EnemyComponent> { type = enemyType }
-            with<HealthComponent> { health = 100f }
+            with<HealthComponent> { currentHealth = 100f }
             with<HealthBarComponent> { maxValue = 100f }
             with<TransformComponent> {
                 position.set(x, y, 0f)
@@ -214,7 +217,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
             with<TypeComponent> { type = entityType }
             with<JumperComponent>()
             with<EnemyComponent> { type = enemyType }
-            with<HealthComponent> { health = 100f }
+            with<HealthComponent> { currentHealth = 100f }
             with<HealthBarComponent> { maxValue = 100f }
             with<TransformComponent> {
                 position.set(x, y, 0f)
@@ -252,7 +255,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
             with<TowerComponent> {
                 sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.SNIPER_TOWER()))
             }
-            with<HealthComponent> { health = sniperHealth }
+            with<HealthComponent> { currentHealth = sniperHealth }
             with<HealthBarComponent> { maxValue = sniperHealth }
             with<TransformComponent> {
                 position.set(x, y, 1f)
@@ -295,7 +298,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
             with<WombComponent>()
             with<TypeComponent> { type = entityType }
             with<EnemyComponent> { type = enemyType }
-            with<HealthComponent> { health = wombHealth }
+            with<HealthComponent> { currentHealth = wombHealth }
             with<HealthBarComponent> { maxValue = wombHealth }
             with<TransformComponent> {
                 position.set(x, y, 0f)
@@ -345,7 +348,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
             with<EnemyComponent> { type = enemyType }
             with<HealthComponent> {
                 isIntHp = true
-                health = 1f
+                currentHealth = 1f
             }
             with<TransformComponent> {
                 position.set(x, y, 0f)
@@ -386,7 +389,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
             with<TypeComponent> { type = entityType }
             with<EnemyComponent> { type = enemyType }
             with<RadialComponent>()
-            with<HealthComponent> { health = 100f }
+            with<HealthComponent> { currentHealth = 100f }
             with<HealthBarComponent> { maxValue = 100f }
             with<TransformComponent> {
                 position.set(x, y, 2f)
@@ -445,7 +448,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
             with<TypeComponent> { type = entityType }
             with<HealthComponent> {
                 isIntHp = true
-                health = 5f
+                currentHealth = 5f
             }
             with<HealthBarComponent> { maxValue = 5f }
             with<TransformComponent> {

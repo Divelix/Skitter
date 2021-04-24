@@ -84,7 +84,7 @@ class RenderingSystem(
                 require(healthBarCmp != null && healthCmp != null) {"Entity has no HealthComponent or HealthBarComponent"}
                 if (textureCmp.sprite.texture == null) { error{"No texture for health bar"}; return }
                 healthBarCmp.sprite.run {
-                    setSize(width * healthCmp.health / healthBarCmp.maxValue, healthBarCmp.height)
+                    setSize(width * healthCmp.currentHealth / healthBarCmp.maxValue, healthBarCmp.height)
                     setOrigin(originX, originY)
                     setOriginBasedPosition(x, y + height)
                     draw(batch)

@@ -26,6 +26,7 @@ import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.LevelManager
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.screens.ScrollMenuScreen
+import com.divelix.skitter.utils.RegionBinder
 import com.divelix.skitter.utils.TopViewport
 import com.kotcrab.vis.ui.widget.VisWindow
 import ktx.actors.*
@@ -200,19 +201,21 @@ class Hud(
 
     fun update() {
         Gdx.gl.glEnable(GL20.GL_BLEND)
-        shape.projectionMatrix = hudCam.combined
-        shape.use(ShapeRenderer.ShapeType.Filled) {
-            if (isDriven) {
-                shape.color = activeColor
-                shape.circle(fixedPoint.x, fixedPoint.y, 10f)
-                shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
+        if (!GameEngine.isPaused) {
+            shape.projectionMatrix = hudCam.combined
+            shape.use(ShapeRenderer.ShapeType.Filled) {
+                if (isDriven) {
+                    shape.color = activeColor
+                    shape.circle(fixedPoint.x, fixedPoint.y, 10f)
+                    shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
+                }
+                shape.color = scoreColor
+                shape.circle(175f, 725f, 60f)
+                shape.color = reloadBGColor
+                shape.circle(reloadPos, 30f)
+                shape.color = reloadFGColor
+                shape.arc(reloadPos, 30f, 90f, Data.reloadTimer / activePlayerData.gunReload * 360)
             }
-            shape.color = scoreColor
-            shape.circle(175f, 725f, 60f)
-            shape.color = reloadBGColor
-            shape.circle(reloadPos, 30f)
-            shape.color = reloadFGColor
-            shape.arc(reloadPos, 30f, 90f, Data.reloadTimer / activePlayerData.gunReload * 360)
         }
         healthImg.run {
             val hpWidth = stage.width * PlayScreen.health / activePlayerData.shipHealth
@@ -272,67 +275,13 @@ class Hud(
             defaults().padTop(10f)
             Data.matchHistory.forEach { (enemyType, quantity) ->
                 require(quantity != null)
-                val region = Scene2DSkin.defaultSkin.get<TextureRegion>(findEnemyTexturePath(enemyType))
+                val region = Scene2DSkin.defaultSkin.get<TextureRegion>(RegionBinder.chooseEnemyRegionName(enemyType))
                 val ratio = region.regionWidth.toFloat() / region.regionHeight
                 image(region).cell(width = iconWidth, height = iconWidth / ratio)
                 label("x${quantity}")
                 label("${quantity * 10}").cell(width = cellWidth).setAlignment(Align.center)
                 row()
             }
-        }
-    }
-
-//    private fun endWindow(title: String, content: KVisWindow.() -> Unit): VisWindow {
-//        return scene2d.visWindow(title) {
-//            debugAll()
-//            centerWindow()
-//            padTop(50f) // title height
-//            defaults().top()
-//            width = 320f
-//            height = 500f
-//            row()
-//            content()
-//        }
-//    }
-
-//    private fun makeVictoryWindow(): VisWindow {
-//        return endWindow("Victory") {
-//            // Stats table
-//            add(makeStatsTable()).expand(true, true)
-//            row()
-//            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.HOME_ICON)) {
-//                LevelManager.isNextLvlRequired = true
-//                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-//                game.screen = ScrollMenuScreen(game)
-//            })
-//        }
-//    }
-
-//    private fun makeGameOverWindow(): VisWindow {
-//        return endWindow("Game Over") {
-//            // Stats table
-//            add(makeStatsTable()).colspan(2).expand(true, true)
-//            row()
-//            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.RESTART_ICON)) {
-//                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-//                // TODO make restart
-//            })
-//            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.HOME_ICON)) {
-//                LevelManager.isNextLvlRequired = true
-//                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-//                game.screen = ScrollMenuScreen(game)
-//            })
-//        }
-//    }
-
-    private fun findEnemyTexturePath(enemyType: Enemy): String {
-        return when (enemyType) {
-            Enemy.AGENT -> RegionName.AGENT()
-            Enemy.JUMPER -> RegionName.JUMPER()
-            Enemy.SNIPER -> RegionName.SNIPER_BASE()
-            Enemy.WOMB -> RegionName.WOMB()
-            Enemy.KID -> RegionName.KID()
-            Enemy.RADIAL -> RegionName.RADIAL()
         }
     }
 

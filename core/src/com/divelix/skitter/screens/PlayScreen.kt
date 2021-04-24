@@ -1,10 +1,8 @@
 package com.divelix.skitter.screens
 
 import com.badlogic.gdx.*
-import com.badlogic.gdx.utils.JsonReader
 import com.divelix.skitter.*
 import com.divelix.skitter.data.ActivePlayerData
-import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.Data
 import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.components.EnemyComponent
@@ -13,7 +11,6 @@ import com.divelix.skitter.gameplay.LevelManager
 import ktx.app.KtxScreen
 import ktx.ashley.get
 import ktx.ashley.has
-import ktx.assets.toLocalFile
 import ktx.log.debug
 import ktx.log.info
 
@@ -30,7 +27,7 @@ class PlayScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxScr
 
         loadPlayerData()
 
-        val handler = object: InputAdapter() {
+        val keysHandler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
 //                    Input.Keys.BACK, Input.Keys.ESCAPE  -> game.screen = MenuScreen(game)
@@ -41,22 +38,22 @@ class PlayScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxScr
                             .forEach {
                                 val targetHealthCmp = it[HealthComponent.mapper]
                                 require(targetHealthCmp != null) {"Null HealthComponent"}
-                                targetHealthCmp.health = 0f
+                                targetHealthCmp.currentHealth = 0f
                             }
                     Input.Keys.I -> gameEngine.engine.entities
                             .filter { it.has(EnemyComponent.mapper) }
                             .forEach {
                                 val targetHealthCmp = it[HealthComponent.mapper]
                                 require(targetHealthCmp != null) {"Null HealthComponent"}
-                                debug(TAG) { targetHealthCmp.health.toString() }
-                                println(targetHealthCmp.health.toString())
+                                debug(TAG) { targetHealthCmp.currentHealth.toString() }
+                                println(targetHealthCmp.currentHealth.toString())
                             }
                     Input.Keys.M -> println(Data.matchHistory)
                 }
                 return false
             }
         }
-        val multiplexer = InputMultiplexer(handler, gameEngine.hud.hudStage, gameEngine.hud.playerCtrl)
+        val multiplexer = InputMultiplexer(keysHandler, gameEngine.hud.hudStage, gameEngine.hud.playerCtrl)
         Gdx.input.inputProcessor = multiplexer
     }
 

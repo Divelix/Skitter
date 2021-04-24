@@ -3,17 +3,15 @@ package com.divelix.skitter.gameplay
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.divelix.skitter.data.Data
-import com.divelix.skitter.gameplay.components.B2dBodyComponent
-import com.divelix.skitter.gameplay.components.CameraComponent
-import com.divelix.skitter.gameplay.components.PlayerComponent
 import com.divelix.skitter.data.Chapter
 import com.divelix.skitter.data.Enemy
 import com.divelix.skitter.data.EnemyBundle
 import com.divelix.skitter.data.Level
-import com.divelix.skitter.gameplay.components.EnemyComponent
+import com.divelix.skitter.gameplay.components.*
 import ktx.ashley.allOf
 import ktx.ashley.hasNot
 import ktx.collections.*
+import ktx.log.debug
 
 class LevelManager(private val gameEngine: GameEngine) {
     private val hud = gameEngine.hud
@@ -46,6 +44,9 @@ class LevelManager(private val gameEngine: GameEngine) {
     fun update() {
         if (isRestartNeeded) {
             isRestartNeeded = false
+            hud.isDriven = false
+            hud.isShipSlowdown = true
+            HealthComponent.mapper.get(gameEngine.playerEntity).apply { currentHealth = maxHealth }
             engine.removeAllEntities(allOf(EnemyComponent::class).get())
             enemiesCount = 0
             level = 0
