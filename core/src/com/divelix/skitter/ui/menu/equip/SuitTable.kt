@@ -8,6 +8,7 @@ import com.divelix.skitter.data.EquipAlias
 import com.divelix.skitter.data.ModAlias
 import com.divelix.skitter.ui.menu.ModTable
 import com.divelix.skitter.ui.menu.ModView
+import com.sun.org.apache.xpath.internal.operations.Bool
 import ktx.collections.GdxArray
 import ktx.collections.filter
 import ktx.collections.map
@@ -35,7 +36,7 @@ class SuitTable(
         }
     }
 
-    override fun addMod(modAlias: ModAlias, modifyData: Boolean): Boolean {
+    override fun addMod(modAlias: ModAlias, modifyData: Boolean, needSelection: Boolean): Boolean {
         if (modifyData) {
             val overlap = modAliases.firstOrNull { it.index == modAlias.index }
             if (overlap == null) {

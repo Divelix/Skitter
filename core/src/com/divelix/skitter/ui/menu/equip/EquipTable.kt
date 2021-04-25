@@ -86,7 +86,7 @@ class EquipTable(
             if (suitTable.addMod(modAlias, true))
                 stockTable.subtractOneFromSimilarTo(modAlias)
         } else {
-            stockTable.addMod(modAlias, true)
+            stockTable.addMod(modAlias, true, needSelection = false)
             suitTable.removeMod(modAlias, true)
         }
         // Update stats in InfoTable

@@ -46,7 +46,7 @@ class StockTable(
         }
     }
 
-    override fun addMod(modAlias: ModAlias, modifyData: Boolean): Boolean {
+    override fun addMod(modAlias: ModAlias, modifyData: Boolean, needSelection: Boolean): Boolean {
         val resultModAlias = if (modifyData) {
             // find mod aliases with the same indices and levels
             val mergeCandidate = modAliases
@@ -66,7 +66,7 @@ class StockTable(
             modAlias
         }
         val targetContainer = tableWithMods.children.first { (it as Container<*>).actor !is ModView } as Container<*>
-        targetContainer.actor = makeModView(resultModAlias).apply { if (modifyData) selectMod(this) }
+        targetContainer.actor = makeModView(resultModAlias).apply { if (modifyData && needSelection) selectMod(this) }
         return true
     }
 
