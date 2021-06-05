@@ -25,8 +25,6 @@ class PlayScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxScr
         Data.matchHistory.clear()
         LevelManager.enemiesCount = 0
 
-        loadPlayerData()
-
         val keysHandler = object: InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when(keycode) {
@@ -87,14 +85,7 @@ class PlayScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxScr
         gameEngine.engine.clearPools()
     }
 
-    private fun loadPlayerData() {
-        health = activePlayerData.shipHealth
-        ammo = activePlayerData.gunCapacity
-    }
-
     companion object {
         val TAG = PlayScreen::class.simpleName!!
-        var ammo = 0
-        var health = 0f
     }
 }

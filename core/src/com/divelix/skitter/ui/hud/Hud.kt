@@ -24,6 +24,8 @@ import com.divelix.skitter.data.*
 import com.divelix.skitter.gameplay.EntityBuilder
 import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.LevelManager
+import com.divelix.skitter.gameplay.components.AmmoComponent
+import com.divelix.skitter.gameplay.components.HealthComponent
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.screens.ScrollMenuScreen
 import com.divelix.skitter.utils.RegionBinder
@@ -192,11 +194,11 @@ class Hud(
     }
 
     fun shoot(aim: Vector2) {
-        if (PlayScreen.ammo <= 0) return
+        if (AmmoComponent.mapper.get(playerEntity).currentAmmo <= 0) return
         entityBuilder.createPlayerBullet(playerEntity, aim)
         assets.manager.get<Sound>(Constants.SHOT_SOUND).play()
-        if (PlayScreen.ammo == activePlayerData.gunCapacity) Data.reloadTimer = 0f // fix for reload on first shot
-        PlayScreen.ammo--
+        if (AmmoComponent.mapper.get(playerEntity).currentAmmo == AmmoComponent.mapper.get(playerEntity).maxAmmo) Data.reloadTimer = 0f // fix for reload on first shot
+        AmmoComponent.mapper.get(playerEntity).currentAmmo--
     }
 
     fun update() {
@@ -218,7 +220,7 @@ class Hud(
             }
         }
         healthImg.run {
-            val hpWidth = stage.width * PlayScreen.health / activePlayerData.shipHealth
+            val hpWidth = stage.width * HealthComponent.mapper.get(playerEntity).currentHealth / activePlayerData.shipHealth
             width = hpWidth * 0.9f
             x = hpWidth * 0.05f + (stage.width - hpWidth) / 2f
         }
@@ -230,7 +232,7 @@ class Hud(
         scoreLabel.setText("${Data.score}")
         enemyCountLabel.setText("Enemies: ${LevelManager.enemiesCount}")
         ammoLabel.run {
-            setText("${PlayScreen.ammo}")
+            setText("${AmmoComponent.mapper.get(playerEntity).currentAmmo}")
             pack()
             setPosition(reloadPos.x - width / 2f, reloadPos.y - height / 2f)
         }

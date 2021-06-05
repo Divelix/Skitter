@@ -8,6 +8,7 @@ import com.divelix.skitter.data.Enemy
 import com.divelix.skitter.data.EnemyBundle
 import com.divelix.skitter.data.Level
 import com.divelix.skitter.gameplay.components.*
+import com.divelix.skitter.screens.PlayScreen
 import ktx.ashley.allOf
 import ktx.ashley.hasNot
 import ktx.collections.*
@@ -47,6 +48,7 @@ class LevelManager(private val gameEngine: GameEngine) {
             hud.isDriven = false
             hud.isShipSlowdown = true
             HealthComponent.mapper.get(gameEngine.playerEntity).apply { currentHealth = maxHealth }
+            AmmoComponent.mapper.get(gameEngine.playerEntity).apply { currentAmmo = maxAmmo }
             engine.removeAllEntities(allOf(EnemyComponent::class).get())
             enemiesCount = 0
             level = 0

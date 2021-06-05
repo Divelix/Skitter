@@ -18,7 +18,8 @@ class HealthSystem(
 ): IteratingSystem(allOf(HealthComponent::class).get()) {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        val healthCmp = entity[HealthComponent.mapper]!!
+        val healthCmp = entity[HealthComponent.mapper]
+        require(healthCmp != null) {"Entity $entity don't have necessary components for HealthSystem"}
 
         if (healthCmp.currentHealth <= 0f) {
             if (entity.has(EnemyComponent.mapper)) {

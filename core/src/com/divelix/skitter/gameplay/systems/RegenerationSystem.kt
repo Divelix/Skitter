@@ -13,8 +13,9 @@ class RegenerationSystem(private val activePlayerData: ActivePlayerData,
 ) : IntervalIteratingSystem(allOf(RegenerationComponent::class, HealthComponent::class).get(), interval) {
 
     override fun processEntity(entity: Entity) {
-        val regenCmp = entity[RegenerationComponent.mapper]!!
-        val healthCmp = entity[HealthComponent.mapper]!!
+        val regenCmp = entity[RegenerationComponent.mapper]
+        val healthCmp = entity[HealthComponent.mapper]
+        require(regenCmp != null && healthCmp != null) {"Entity $entity don't have necessary components for RegenerationSystem"}
 
         if (healthCmp.currentHealth < activePlayerData.shipHealth)
             healthCmp.currentHealth += regenCmp.amount

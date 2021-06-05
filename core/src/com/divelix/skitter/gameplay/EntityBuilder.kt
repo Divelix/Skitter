@@ -35,6 +35,10 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 maxHealth = activePlayerData.shipHealth
                 currentHealth = maxHealth
             }
+            with<AmmoComponent> {
+                maxAmmo = activePlayerData.gunCapacity
+                currentAmmo = maxAmmo
+            }
 //            with<RegenerationComponent> { amount = 1f }
             with<TransformComponent> {
                 position.set(x, y, 2f)

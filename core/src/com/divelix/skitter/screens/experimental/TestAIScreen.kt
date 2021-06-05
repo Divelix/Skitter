@@ -136,7 +136,7 @@ class TestAIScreen(val game: Main, val activePlayerData: ActivePlayerData): KtxS
 
     private fun createEngineSystems() {
         engine.addSystem(RenderingSystem(context, camera))
-        engine.addSystem(PhysicsSystem(activePlayerData, world))
+        engine.addSystem(PhysicsSystem(world))
 //        engine.addSystem(HealthSystem())
         engine.addSystem(ProjectileSystem())
         engine.addSystem(BehaviorSystem())

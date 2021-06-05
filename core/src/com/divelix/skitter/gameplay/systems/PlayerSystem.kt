@@ -17,11 +17,10 @@ class PlayerSystem(val activePlayerData: ActivePlayerData): IteratingSystem(allO
     private val force = Vector2()
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        val transCmp = entity[TransformComponent.mapper]!!
-        val healthCmp = entity[HealthComponent.mapper]!!
-        val bodyCmp = entity[B2dBodyComponent.mapper]!!
+        val transCmp = entity[TransformComponent.mapper]
+        val bodyCmp = entity[B2dBodyComponent.mapper]
+        require(transCmp != null && bodyCmp!= null) {"Entity $entity don't have necessary components for PlayerSystem"}
 
-        PlayScreen.health = healthCmp.currentHealth
         transCmp.rotation = Data.dirVec.angleDeg() - 90f
 
         force.set(Data.dirVec).scl(activePlayerData.shipSpeed).scl(50f) // TODO hardcoded scl
