@@ -15,20 +15,7 @@ import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
 import com.divelix.skitter.data.ActivePlayerData
-import com.divelix.skitter.gameplay.systems.BehaviorSystem
-import com.divelix.skitter.gameplay.systems.BulletSystem
-import com.divelix.skitter.gameplay.systems.CameraSystem
-import com.divelix.skitter.gameplay.systems.DamageLabelSystem
-import com.divelix.skitter.gameplay.systems.DecaySystem
-import com.divelix.skitter.gameplay.systems.HealthSystem
-import com.divelix.skitter.gameplay.systems.JumperSystem
-import com.divelix.skitter.gameplay.systems.PhysicsSystem
-import com.divelix.skitter.gameplay.systems.PlayerSystem
-import com.divelix.skitter.gameplay.systems.RadialSystem
-import com.divelix.skitter.gameplay.systems.RenderingSystem
-import com.divelix.skitter.gameplay.systems.SlowSystem
-import com.divelix.skitter.gameplay.systems.SniperSystem
-import com.divelix.skitter.gameplay.systems.WombSystem
+import com.divelix.skitter.gameplay.systems.*
 import com.divelix.skitter.ui.hud.Hud
 import ktx.graphics.use
 
@@ -79,13 +66,14 @@ class GameEngine(val activePlayerData: ActivePlayerData,
     private fun createEngineSystems() {
         engine.run {
             addSystem(CameraSystem())
-            addSystem(PhysicsSystem(activePlayerData, world))
+            addSystem(PhysicsSystem(world))
             addSystem(PlayerSystem(activePlayerData))
             addSystem(RenderingSystem(context, playCam))
             addSystem(DamageLabelSystem(playCam)) // before HealthSystem to let label update init position on last hit
             addSystem(HealthSystem(hud))
+            addSystem(AmmoSystem(activePlayerData.gunReload))
             addSystem(SniperSystem(entityBuilder))
-            addSystem(BulletSystem())
+            addSystem(ProjectileSystem())
 //            addSystem(SpawnSystem(2f, entityBuilder, playerEntity))
             addSystem(DecaySystem(0.1f))
 //            addSystem(RegenerationSystem(activePlayerData, 0.5f))

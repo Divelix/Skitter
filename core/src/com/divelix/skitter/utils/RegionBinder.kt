@@ -1,5 +1,6 @@
 package com.divelix.skitter.utils
 
+import com.divelix.skitter.data.Enemy
 import com.divelix.skitter.data.EquipType
 import com.divelix.skitter.data.ModType
 import com.divelix.skitter.data.RegionName
@@ -34,5 +35,14 @@ object RegionBinder {
             6 -> RegionName.MOD_GUN_CHANCE()
             else -> RegionName.STAR()
         }
+    }
+
+    fun chooseEnemyRegionName(enemyType: Enemy) = when (enemyType) {
+        Enemy.AGENT -> RegionName.AGENT()
+        Enemy.JUMPER -> RegionName.JUMPER()
+        Enemy.SNIPER -> RegionName.SNIPER_BASE()
+        Enemy.WOMB -> RegionName.WOMB()
+        Enemy.KID -> RegionName.KID()
+        Enemy.RADIAL -> RegionName.RADIAL()
     }
 }

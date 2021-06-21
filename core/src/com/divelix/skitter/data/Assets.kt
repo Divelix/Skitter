@@ -66,7 +66,10 @@ class Assets: Disposable {
     }
 
     fun setup() {
-        skin = skin(manager.get(Constants.ATLAS_SKIN)) {
+        skin = skin {
+            Atlases.values().forEach {
+                addRegions(manager.get("textures/atlases/" + it() + ".atlas"))
+            }
             color(Constants.ORANGE_COLOR, 1f, 0.6f, 0f)
 //            set("aim", manager.get<Texture>(Constants.AIM)) // works for Images, i.e. image("aim")
 //            this["aim"] = manager.get<Texture>(Constants.AIM) // same with different syntax
@@ -80,6 +83,9 @@ class Assets: Disposable {
             this[Constants.LIGHT_GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.7f, .7f, .7f, 1f)); fill() })
             this[Constants.GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.3f, .3f, .3f, 1f)); fill() })
             this[Constants.DARK_GRAY_PIXEL] = Texture(bgPixel.apply { setColor(Color(.17f, .17f, .17f, 1f)); fill() })
+            this[Constants.RED_PIXEL] = Texture(bgPixel.apply { setColor(Color(1f, 0f, 0f, 1f)); fill() })
+            this[Constants.GREEN_PIXEL] = Texture(bgPixel.apply { setColor(Color(0f, 1f, 0f, 1f)); fill() })
+            this[Constants.BLUE_PIXEL] = Texture(bgPixel.apply { setColor(Color(0f, 0f, 1f, 1f)); fill() })
 
             label {
                 font = manager.get<BitmapFont>(Constants.ROBOTO_LIGHT_FONT).apply {
@@ -96,27 +102,44 @@ class Assets: Disposable {
             label(Constants.STYLE_BOLD_ORANGE, extend = Constants.STYLE_BOLD) {
                 fontColor = this@skin[Constants.ORANGE_COLOR]
             }
-            label("equip-specs", extend = defaultStyle) {
+            label(Constants.STYLE_EQUIP_SPECS, extend = defaultStyle) {
                 fontColor = Color.WHITE
             }
-            label("black", extend = defaultStyle) {
+            label(Constants.STYLE_BLACK_LABEL, extend = defaultStyle) {
                 fontColor = Color.BLACK
             }
             label(Constants.STYLE_MOD_NAME, extend = defaultStyle) {
                 fontColor = Color.YELLOW
             }
-            label("mod-level", extend = defaultStyle) {
+            label(Constants.STYLE_MOD_LEVEL, extend = defaultStyle) {
                 fontColor = Color.GREEN
             }
-            label("damage-label", extend = defaultStyle) {
+            label(Constants.STYLE_DAMAGE_LABEL, extend = defaultStyle) {
                 fontColor = Color.RED
             }
             textButton {
-                font = manager.get<BitmapFont>(Constants.ROBOTO_LIGHT_FONT)
+                font = manager.get(Constants.ROBOTO_LIGHT_FONT)
+                font.data.setScale(0.2f)
+                fontColor = Color.WHITE
+                over = this@skin[Constants.RED_PIXEL]
+                up = this@skin[Constants.GREEN_PIXEL]
+                down = this@skin[Constants.BLUE_PIXEL]
+            }
+            imageButton(Constants.STYLE_EXIT_BTN) {
+                imageUp = TextureRegionDrawable(this@skin.get<TextureRegion>(RegionName.EXIT_ICON()))
+            }
+            imageButton(Constants.STYLE_RESUME_BTN) {
+                imageUp = TextureRegionDrawable(this@skin.get<TextureRegion>(RegionName.MENU_PLAY()))
+            }
+            imageButton(Constants.STYLE_RESTART_BTN) {
+                imageUp = TextureRegionDrawable(this@skin.get<TextureRegion>(RegionName.RESTART_ICON()))
+            }
+            imageButton(Constants.STYLE_NEXT_BTN) {
+                imageUp = TextureRegionDrawable(this@skin.get<TextureRegion>(RegionName.NEXT_ICON()))
             }
             scrollPane {}
             window {
-                titleFontColor = Color.RED
+                titleFontColor = Color.WHITE
                 titleFont = manager.get(Constants.ROBOTO_LIGHT_FONT)
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
@@ -124,10 +147,6 @@ class Assets: Disposable {
                 background = TextureRegionDrawable(this@skin.get<Texture>(Constants.DARK_GRAY_PIXEL))
             }
 
-        }.apply {
-            Atlases.values().forEach {
-                addRegions(manager.get("textures/atlases/" + it() + ".atlas"))
-            }
         }
         Scene2DSkin.defaultSkin = skin
         VisUI.load(skin)

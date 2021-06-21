@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
 
-class BulletComponent: Component, Pool.Poolable {
+class ProjectileComponent: Component, Pool.Poolable {
     var timer = 10f
     var damage = 0f
 
@@ -14,6 +14,6 @@ class BulletComponent: Component, Pool.Poolable {
     }
 
     companion object {
-        val mapper = mapperFor<BulletComponent>()
+        val mapper = mapperFor<ProjectileComponent>()
     }
 }

@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.*
 import com.divelix.skitter.data.Assets
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.Main
-import com.divelix.skitter.gameplay.components.BulletComponent
+import com.divelix.skitter.gameplay.components.ProjectileComponent
 import com.divelix.skitter.gameplay.components.HealthComponent
 import com.divelix.skitter.gameplay.components.SlowComponent
 import com.divelix.skitter.gameplay.components.TypeComponent
@@ -41,7 +41,7 @@ class B2dContactListener(
                 }
             }
             TypeComponent.PLAYER_BULLET, TypeComponent.ENEMY_BULLET -> {
-                val bulletCmp = entityA[BulletComponent.mapper]
+                val bulletCmp = entityA[ProjectileComponent.mapper]
                 require(bulletCmp != null) {"Null BulletComponent"}
                 when(typeB) {
                     TypeComponent.ENEMY, TypeComponent.PLAYER -> bulletHitsTarget(bulletCmp.damage, entityB)
@@ -112,12 +112,12 @@ class B2dContactListener(
         val targetHealthCmp = targetEntity[HealthComponent.mapper]
         require(targetHealthCmp != null) {"Null HealthComponent"}
         if (targetHealthCmp.isIntHp) {
-            targetHealthCmp.health--
+            targetHealthCmp.currentHealth--
         } else {
-            if (targetHealthCmp.health > damage)
-                targetHealthCmp.health -= damage
+            if (targetHealthCmp.currentHealth > damage)
+                targetHealthCmp.currentHealth -= damage
             else
-                targetHealthCmp.health = 0f
+                targetHealthCmp.currentHealth = 0f
             hud.damageLabelsProvider.makeDamageLabel(damage, targetEntity)
         }
         hitSound.play()

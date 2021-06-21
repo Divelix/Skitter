@@ -8,7 +8,6 @@ import com.divelix.skitter.ui.menu.scroll.ModSelector
 import com.divelix.skitter.ui.menu.ModView
 import com.divelix.skitter.ui.menu.StockTable
 import ktx.collections.*
-import ktx.log.debug
 import ktx.scene2d.*
 import ktx.style.get
 
@@ -87,7 +86,7 @@ class EquipTable(
             if (suitTable.addMod(modAlias, true))
                 stockTable.subtractOneFromSimilarTo(modAlias)
         } else {
-            stockTable.addMod(modAlias, true)
+            stockTable.addMod(modAlias, true, needSelection = false)
             suitTable.removeMod(modAlias, true)
         }
         // Update stats in InfoTable
@@ -104,27 +103,40 @@ class EquipTable(
 
     // fill info and suit tables with chosen equip data
     private fun setActiveEquip(equipAlias: EquipAlias) {
-        // fill stockTable
-        stockTable.removeAllViews()
-        stockTable.setModAliases(playerData.mods.filter { it.type == modType })
-        stockTable.addAllViews()
-
-        // subtract equip mods from stockTable
-//        equipAlias.mods.forEach { stockTable.subtractOneFromSimilarTo(it) }
+        // fill info table
+        infoTable.setInfo(equipAlias)
 
         // fill suitTable
         suitTable.removeAllViews()
         suitTable.setModAliases(equipAlias.mods)
         suitTable.addAllViews()
 
-        // fill info table
-        infoTable.setInfo(equipAlias)
+        // fill stockTable
+        stockTable.removeAllViews()
+        val stockMods = playerData.mods.filter {it.type == modType}
+        val stockMinusSuit = subtractSuitFromStock(stockMods, equipAlias.mods)
+        stockTable.setModAliases(stockMinusSuit)
+        stockTable.addAllViews()
 
         // update active equip in PlayerData
         when (equipAlias.type) {
             EquipType.SHIP -> playerData.activeEquips.shipIndex = equipAlias.index
             EquipType.GUN -> playerData.activeEquips.gunIndex = equipAlias.index
         }
+    }
+
+    private fun subtractSuitFromStock(stockMods: GdxArray<ModAlias>, suitMods: GdxArray<ModAlias>): GdxArray<ModAlias> {
+        val result = GdxArray<ModAlias>()
+        stockMods.forEach { stock ->
+            val isInSuit = suitMods.any { it.index == stock.index && it.level == stock.level }
+            if (isInSuit) {
+                if (stock.quantity > 1)
+                    result.add(stock.copy(quantity = stock.quantity - 1))
+            } else {
+                result.add(stock.copy())
+            }
+        }
+        return result
     }
 
     private fun showEquipWindow() {
@@ -140,7 +152,7 @@ class EquipTable(
         setActiveEquip(selectedEquipAlias)
     }
 
-    fun setBestMods() {
+    private fun setBestMods() {
         selectedEquipAlias.mods.forEach { suitMod ->
             val maxLevelMod = playerData.mods
                     .filter { it.type == suitMod.type && it.index == suitMod.index }

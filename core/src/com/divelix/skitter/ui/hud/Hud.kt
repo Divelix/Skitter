@@ -24,8 +24,11 @@ import com.divelix.skitter.data.*
 import com.divelix.skitter.gameplay.EntityBuilder
 import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.LevelManager
+import com.divelix.skitter.gameplay.components.AmmoComponent
+import com.divelix.skitter.gameplay.components.HealthComponent
 import com.divelix.skitter.screens.PlayScreen
 import com.divelix.skitter.screens.ScrollMenuScreen
+import com.divelix.skitter.utils.RegionBinder
 import com.divelix.skitter.utils.TopViewport
 import com.kotcrab.vis.ui.widget.VisWindow
 import ktx.actors.*
@@ -72,7 +75,9 @@ class Hud(
     private val reloadPos = Vector2(hudStage.width - 15f - 30f, hudStage.height - 20f - 50f - 20f - 30f)
 
     private val pauseBtn: Image
-    private val pauseWindow: Window
+    private val pauseWindow: PauseWindow
+    private val gameOverWindow: GameOverWindow
+    private val victoryWindow: VictoryWindow
     private val hpHeight = 10f
     private val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
     private val healthBgImg = Image(Texture(pixel.apply { setColor(healthBgColor); fill() }))
@@ -140,13 +145,15 @@ class Hud(
 
     init {
 //        hudStage.isDebugAll = true
-        pauseWindow = makePauseWindow()
+        pauseWindow = PauseWindow(game)
+        gameOverWindow = GameOverWindow(game)
+        victoryWindow = VictoryWindow(game)
         pauseBtn = makePauseButton()
         rootTable = scene2d.table {
             setFillParent(true)
             top().pad(10f)
             defaults().expandX().left()
-            scoreLabel = scaledLabel("", 0.2f, style = "black").cell(colspan = 2, align = Align.center)
+            scoreLabel = scaledLabel("", 0.2f, style = Constants.STYLE_BLACK_LABEL).cell(colspan = 2, align = Align.center)
             row()
             enemyCountLabel = scaledLabel("").cell(height = 50f)
             row()
@@ -165,7 +172,7 @@ class Hud(
 //                })
 //            }.cell(align = Align.left)
         }
-        ammoLabel = scene2d.scaledLabel("", 0.3f, style = "black")
+        ammoLabel = scene2d.scaledLabel("", 0.3f, style = Constants.STYLE_BLACK_LABEL)
 
         hudStage += rootTable
         hudStage += ammoLabel
@@ -173,6 +180,8 @@ class Hud(
         hudStage += healthImg
         hudStage += pauseBtn
         hudStage += pauseWindow
+        hudStage += gameOverWindow
+        hudStage += victoryWindow
 
         healthBgImg.run {
             setSize(stage.width * 0.9f, hpHeight)
@@ -185,31 +194,33 @@ class Hud(
     }
 
     fun shoot(aim: Vector2) {
-        if (PlayScreen.ammo <= 0) return
+        if (AmmoComponent.mapper.get(playerEntity).currentAmmo <= 0) return
         entityBuilder.createPlayerBullet(playerEntity, aim)
         assets.manager.get<Sound>(Constants.SHOT_SOUND).play()
-        if (PlayScreen.ammo == activePlayerData.gunCapacity) Data.reloadTimer = 0f // fix for reload on first shot
-        PlayScreen.ammo--
+        if (AmmoComponent.mapper.get(playerEntity).currentAmmo == AmmoComponent.mapper.get(playerEntity).maxAmmo) Data.reloadTimer = 0f // fix for reload on first shot
+        AmmoComponent.mapper.get(playerEntity).currentAmmo--
     }
 
     fun update() {
         Gdx.gl.glEnable(GL20.GL_BLEND)
-        shape.projectionMatrix = hudCam.combined
-        shape.use(ShapeRenderer.ShapeType.Filled) {
-            if (isDriven) {
-                shape.color = activeColor
-                shape.circle(fixedPoint.x, fixedPoint.y, 10f)
-                shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
+        if (!GameEngine.isPaused) {
+            shape.projectionMatrix = hudCam.combined
+            shape.use(ShapeRenderer.ShapeType.Filled) {
+                if (isDriven) {
+                    shape.color = activeColor
+                    shape.circle(fixedPoint.x, fixedPoint.y, 10f)
+                    shape.rectLine(fixedPoint.x, fixedPoint.y, floatPoint.x, floatPoint.y, 3f)
+                }
+                shape.color = scoreColor
+                shape.circle(175f, 725f, 60f)
+                shape.color = reloadBGColor
+                shape.circle(reloadPos, 30f)
+                shape.color = reloadFGColor
+                shape.arc(reloadPos, 30f, 90f, Data.reloadTimer / activePlayerData.gunReload * 360)
             }
-            shape.color = scoreColor
-            shape.circle(175f, 725f, 60f)
-            shape.color = reloadBGColor
-            shape.circle(reloadPos, 30f)
-            shape.color = reloadFGColor
-            shape.arc(reloadPos, 30f, 90f, Data.reloadTimer / activePlayerData.gunReload * 360)
         }
         healthImg.run {
-            val hpWidth = stage.width * PlayScreen.health / activePlayerData.shipHealth
+            val hpWidth = stage.width * HealthComponent.mapper.get(playerEntity).currentHealth / activePlayerData.shipHealth
             width = hpWidth * 0.9f
             x = hpWidth * 0.05f + (stage.width - hpWidth) / 2f
         }
@@ -221,7 +232,7 @@ class Hud(
         scoreLabel.setText("${Data.score}")
         enemyCountLabel.setText("Enemies: ${LevelManager.enemiesCount}")
         ammoLabel.run {
-            setText("${PlayScreen.ammo}")
+            setText("${AmmoComponent.mapper.get(playerEntity).currentAmmo}")
             pack()
             setPosition(reloadPos.x - width / 2f, reloadPos.y - height / 2f)
         }
@@ -247,40 +258,11 @@ class Hud(
             addListener(object : ClickListener() {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     GameEngine.isPaused = true
-                    pauseWindow.isVisible = true
+                    pauseWindow.show()
 //                    Data.renderTime = 0f
 //                    Data.physicsTime = 0f
 //                    game.screen = MenuScreen(game)
                     super.touchUp(event, x, y, pointer, button)
-                }
-            })
-        }
-    }
-
-    private fun makePauseWindow(): Window {
-        return scene2d.visWindow("Pause") {
-            titleLabel.setFontScale(Constants.DEFAULT_LABEL_SCALE)
-            isVisible = false
-            debugAll()
-            centerWindow()
-            defaults().expand()
-            padTop(25f) // title height
-            width = 200f
-            height = 100f
-//            val quantityLabel = label("retwert").cell(colspan = 2)
-            row()
-            textButton("Exit").cell(align = Align.left).addListener(object : ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    LevelManager.isNextLvlRequired = true
-                    game.screen = ScrollMenuScreen(game)
-                }
-            })
-            textButton("Resume").cell(align = Align.right).addListener(object : ClickListener() {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    super.touchUp(event, x, y, pointer, button)
-                    GameEngine.isPaused = false
-                    isVisible = false
                 }
             })
         }
@@ -295,7 +277,7 @@ class Hud(
             defaults().padTop(10f)
             Data.matchHistory.forEach { (enemyType, quantity) ->
                 require(quantity != null)
-                val region = Scene2DSkin.defaultSkin.get<TextureRegion>(findEnemyTexturePath(enemyType))
+                val region = Scene2DSkin.defaultSkin.get<TextureRegion>(RegionBinder.chooseEnemyRegionName(enemyType))
                 val ratio = region.regionWidth.toFloat() / region.regionHeight
                 image(region).cell(width = iconWidth, height = iconWidth / ratio)
                 label("x${quantity}")
@@ -305,67 +287,15 @@ class Hud(
         }
     }
 
-    private fun endWindow(title: String, content: KVisWindow.() -> Unit): VisWindow {
-        return scene2d.visWindow(title) {
-            debugAll()
-            centerWindow()
-            padTop(50f) // title height
-            defaults().top()
-            width = 320f
-            height = 500f
-            row()
-            content()
-        }
-    }
-
-    private fun makeVictoryWindow(): VisWindow {
-        return endWindow("Victory") {
-            // Stats table
-            add(makeStatsTable()).expand(true, true)
-            row()
-//            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.HOME_ICON)) {
-//                LevelManager.isNextLvlRequired = true
-//                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-//                game.screen = ScrollMenuScreen(game)
-//            })
-        }
-    }
-
-    private fun makeGameOverWindow(): VisWindow {
-        return endWindow("Game Over") {
-            // Stats table
-            add(makeStatsTable()).colspan(2).expand(true, true)
-            row()
-//            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.RESTART_ICON)) {
-//                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-//                // TODO make restart
-//            })
-//            add(ImgBgButton(assets, assets.manager.get<Texture>(Constants.HOME_ICON)) {
-//                LevelManager.isNextLvlRequired = true
-//                GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-//                game.screen = ScrollMenuScreen(game)
-//            })
-        }
-    }
-
-    private fun findEnemyTexturePath(enemyType: Enemy): String {
-        return when (enemyType) {
-            Enemy.AGENT -> RegionName.AGENT()
-            Enemy.JUMPER -> RegionName.JUMPER()
-            Enemy.SNIPER -> RegionName.SNIPER_BASE()
-            Enemy.WOMB -> RegionName.WOMB()
-            Enemy.KID -> RegionName.KID()
-            Enemy.RADIAL -> RegionName.RADIAL()
-        }
-    }
-
     fun showGameOverWindow() {
-        hudStage += makeGameOverWindow()
+//        hudStage += makeGameOverWindow()
+        gameOverWindow.show()
         // TODO save match history
     }
 
     fun showVictoryWindow() {
-        hudStage += makeVictoryWindow()
+//        hudStage += makeVictoryWindow()
+        victoryWindow.show()
         // TODO save match history
     }
 

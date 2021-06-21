@@ -12,9 +12,9 @@ class DecaySystem(interval: Float): IntervalIteratingSystem(allOf(DecayComponent
         val decayCmp = entity[DecayComponent.mapper]!!
         val healthCmp = entity[HealthComponent.mapper]!!
 
-        if (healthCmp.health > decayCmp.damage)
-            healthCmp.health -= decayCmp.damage
+        if (healthCmp.currentHealth > decayCmp.damage)
+            healthCmp.currentHealth -= decayCmp.damage
         else
-            healthCmp.health = 0f
+            healthCmp.currentHealth = 0f
     }
 }

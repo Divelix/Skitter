@@ -39,12 +39,23 @@ object Constants {
     const val LIGHT_GRAY_PIXEL = "light_gray"
     const val GRAY_PIXEL = "gray"
     const val DARK_GRAY_PIXEL = "dark_gray"
+    const val RED_PIXEL = "red_pixel"
+    const val GREEN_PIXEL = "green_pixel"
+    const val BLUE_PIXEL = "blue_pixel"
 
     // Styles
     const val STYLE_BOLD = "bold_label"
     const val STYLE_BOLD_ORANGE = "bold_orange_label"
+    const val STYLE_EQUIP_SPECS = "equip_specs"
     const val STYLE_EQUIP_CHOOSE = "equip_choose"
+    const val STYLE_BLACK_LABEL = "black_label"
     const val STYLE_MOD_NAME = "mod_name"
+    const val STYLE_MOD_LEVEL = "mod_level"
+    const val STYLE_DAMAGE_LABEL = "damage_label"
+    const val STYLE_EXIT_BTN = "exit_button"
+    const val STYLE_RESUME_BTN = "resume_button"
+    const val STYLE_RESTART_BTN = "restart_button"
+    const val STYLE_NEXT_BTN = "next_button"
 
     // Control params
     const val CAMERA_RADIUS = 2f

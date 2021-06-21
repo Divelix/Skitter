@@ -16,16 +16,15 @@ import ktx.ashley.allOf
 import ktx.ashley.get
 import kotlin.math.min
 
-class PhysicsSystem(private val activePlayerData: ActivePlayerData,
-                    private val world: World
-) : IteratingSystem(allOf(B2dBodyComponent::class, TransformComponent::class).get()) {
+class PhysicsSystem(private val world: World) :
+    IteratingSystem(allOf(B2dBodyComponent::class, TransformComponent::class).get()) {
 
     private val entities: Array<Entity> = Array()
     private var accumulator = 0f
 
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
-        reloadAmmo(deltaTime)
+        Data.reloadTimer += deltaTime
         accumulator += min(deltaTime, 0.25f)
         if (accumulator >= Constants.B2D_STEP_TIME) {
             val stepTime = Constants.B2D_STEP_TIME / GameEngine.slowRate
@@ -52,17 +51,5 @@ class PhysicsSystem(private val activePlayerData: ActivePlayerData,
     override fun processEntity(entity: Entity, deltaTime: Float) {
         // add Items to queue
         entities.add(entity)
-    }
-
-    fun reloadAmmo(delta: Float) {
-        if (PlayScreen.ammo < activePlayerData.gunCapacity) {
-            Data.reloadTimer += delta
-            if (Data.reloadTimer >= activePlayerData.gunReload) {
-                PlayScreen.ammo++
-                Data.reloadTimer = 0f
-            }
-        } else {
-            Data.reloadTimer = activePlayerData.gunReload
-        }
     }
 }

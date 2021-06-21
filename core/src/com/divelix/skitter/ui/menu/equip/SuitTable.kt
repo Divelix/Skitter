@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Constants
-import com.divelix.skitter.data.EquipAlias
 import com.divelix.skitter.data.ModAlias
 import com.divelix.skitter.ui.menu.ModTable
 import com.divelix.skitter.ui.menu.ModView
@@ -31,11 +30,11 @@ class SuitTable(
             container(makeEmptyCell()) {
                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
-            if (i % 4 == 0) row()
+            if (i % 4 == 0) row()   
         }
     }
 
-    override fun addMod(modAlias: ModAlias, modifyData: Boolean): Boolean {
+    override fun addMod(modAlias: ModAlias, modifyData: Boolean, needSelection: Boolean): Boolean {
         if (modifyData) {
             val overlap = modAliases.firstOrNull { it.index == modAlias.index }
             if (overlap == null) {

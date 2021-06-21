@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.*
 import com.divelix.skitter.utils.JsonProcessor
 import ktx.actors.onClickEvent
+import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile
 import ktx.collections.gdxArrayOf
 import ktx.collections.toGdxArray
@@ -21,9 +22,13 @@ import ktx.scene2d.*
 import ktx.style.get
 
 class ScrollMenu(context: Context) : Group() {
-    private val assets = context.inject<Assets>()
-    private val playerDataFile = "json/playerData.json".toLocalFile()
-    private val playerData = JsonProcessor.fromJson<PlayerData>(playerDataFile)
+    private val playerDataPath = "json/playerData.json"
+    private val playerDataFile = playerDataPath.toLocalFile()
+    private val playerData: PlayerData = try {
+        JsonProcessor.fromJson(playerDataPath.toLocalFile())
+    } catch (e: SerializationException) {
+        JsonProcessor.fromJson(playerDataPath.toInternalFile())
+    }
     private val activePlayerData = ActivePlayerData()
     private val equipPage = EquipPage(context, playerData, activePlayerData)
     private val playPage = PlayPage(context, activePlayerData)

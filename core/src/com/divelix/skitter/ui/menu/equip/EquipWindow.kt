@@ -57,7 +57,7 @@ class EquipWindow(
                             background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
                             label("DEFAULT EQUIP", Constants.STYLE_BOLD_ORANGE)
                             row()
-                            label("A bunch of text that describes the equip shortly") {
+                            scaledLabel("A bunch of text that describes the equip shortly") {
                                 wrap = true
                                 setAlignment(Align.top)
                             }.cell(grow = true)

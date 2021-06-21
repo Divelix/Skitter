@@ -172,9 +172,9 @@ class BehaviorPlanner {
             p2.set(wall.getWorldPoint(p2))
             if (dstBetweenPointAndLine(agent.position, p1, p2) < critDstToObs) {
                 diff.set(p2).sub(p1)
-                val angle = if (agent.position.sub(p1).angle(diff) < 0f) 90f else -90f
+                val angle = if (agent.position.sub(p1).angleDeg(diff) < 0f) 90f else -90f
                 diff.nor()
-                diff.rotate(angle)
+                diff.rotateDeg(angle)
 //                println(diff)
                 wallObsForce += diff
             }

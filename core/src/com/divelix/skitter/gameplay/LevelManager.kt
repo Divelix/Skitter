@@ -3,15 +3,16 @@ package com.divelix.skitter.gameplay
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.divelix.skitter.data.Data
-import com.divelix.skitter.gameplay.components.B2dBodyComponent
-import com.divelix.skitter.gameplay.components.CameraComponent
-import com.divelix.skitter.gameplay.components.PlayerComponent
 import com.divelix.skitter.data.Chapter
 import com.divelix.skitter.data.Enemy
 import com.divelix.skitter.data.EnemyBundle
 import com.divelix.skitter.data.Level
+import com.divelix.skitter.gameplay.components.*
+import com.divelix.skitter.screens.PlayScreen
+import ktx.ashley.allOf
 import ktx.ashley.hasNot
 import ktx.collections.*
+import ktx.log.debug
 
 class LevelManager(private val gameEngine: GameEngine) {
     private val hud = gameEngine.hud
@@ -42,6 +43,17 @@ class LevelManager(private val gameEngine: GameEngine) {
     )
 
     fun update() {
+        if (isRestartNeeded) {
+            isRestartNeeded = false
+            hud.isDriven = false
+            hud.isShipSlowdown = true
+            HealthComponent.mapper.get(gameEngine.playerEntity).apply { currentHealth = maxHealth }
+            AmmoComponent.mapper.get(gameEngine.playerEntity).apply { currentAmmo = maxAmmo }
+            engine.removeAllEntities(allOf(EnemyComponent::class).get())
+            enemiesCount = 0
+            level = 0
+            isNextLvlRequired = true
+        }
         if (isNextLvlRequired) {
             goToNextLevel()
             isNextLvlRequired = false
@@ -59,24 +71,24 @@ class LevelManager(private val gameEngine: GameEngine) {
             hud.showVictoryWindow()
             return
         }
-        if (level > 1) destroyLevel()
+        destroyLevel()
         buildLevel(chapter.levels[level - 1])
     }
 
-    fun buildLevel(level: Level) {
+    private fun buildLevel(level: Level) {
         makeBattleground(0f, 0f, level.size.x, level.size.y)
         resetPlayerTo(level.size.x / 2f, 1f)
 //        makeObstacles(level)
         makeEnemies(level)
     }
 
-    fun destroyLevel() {
+    private fun destroyLevel() {
         engine.entities
                 .filter { it.hasNot(PlayerComponent.mapper) && it.hasNot(CameraComponent.mapper) }
                 .forEach { engine.removeEntity(it) }
     }
 
-    fun makeEnemies(level: Level) {
+    private fun makeEnemies(level: Level) {
         level.enemies.forEach {enemyBundle ->
             repeat(enemyBundle.quantity) {
                 when(enemyBundle.enemy) {
@@ -84,6 +96,7 @@ class LevelManager(private val gameEngine: GameEngine) {
                     Enemy.JUMPER -> entityBuilder.createJumper(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
                     Enemy.RADIAL -> entityBuilder.createRadial(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
                     Enemy.WOMB -> entityBuilder.createWomb(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
+                    Enemy.KID -> entityBuilder.createKid(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
                     Enemy.SNIPER -> entityBuilder.createSniper(MathUtils.random(level.size.x), MathUtils.random(level.size.y))
                 }
             }
@@ -91,7 +104,7 @@ class LevelManager(private val gameEngine: GameEngine) {
 //        entityBuilder.createPuddle(MathUtils.random(level.size.x), MathUtils.random(level.size.y), 1f)
     }
 
-    fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {
+    private fun makeBattleground(x: Float, y: Float, width: Float, height: Float) {
         entityBuilder.createBg(x + width / 2f, y + height / 2f, width, height)
         entityBuilder.createWall(Vector2(x, y), Vector2(x, y + height))
         entityBuilder.createWall(Vector2(x, y + height), Vector2(x + width, y + height))
@@ -100,7 +113,7 @@ class LevelManager(private val gameEngine: GameEngine) {
         doorPos.set(x + width / 2f, y + height - 0.5f)
     }
 
-    fun makeObstacles() {
+    private fun makeObstacles() {
         entityBuilder.createBreakableObstacle(1f, 7f)
         entityBuilder.createBreakableObstacle(3f, 7f)
         entityBuilder.createBreakableObstacle(5f, 7f)
@@ -114,7 +127,7 @@ class LevelManager(private val gameEngine: GameEngine) {
         entityBuilder.createBreakableObstacle(6f, 15f)
     }
 
-    fun resetPlayerTo(x: Float, y: Float) {
+    private fun resetPlayerTo(x: Float, y: Float) {
         B2dBodyComponent.mapper.get(gameEngine.playerEntity).body.setTransform(x, y, 0f)
         CameraComponent.mapper.get(gameEngine.cameraEntity).needCenter = true
         Data.dirVec.set(0f, 1f)
@@ -123,5 +136,6 @@ class LevelManager(private val gameEngine: GameEngine) {
     companion object {
         var enemiesCount = 0
         var isNextLvlRequired = true
+        var isRestartNeeded = false
     }
 }
