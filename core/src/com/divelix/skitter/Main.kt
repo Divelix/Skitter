@@ -31,9 +31,5 @@ class Main : Game() {
     }
 
     fun getContext(): Context { return context }
-
-//    fun initAspectRatio(): Float {
-//        return Gdx.graphics.width / Gdx.graphics.height.toFloat()
-//    }
 }
 
