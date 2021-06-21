@@ -10,7 +10,7 @@ object DesktopLauncher {
     fun main(arg: Array<String>) {
         Lwjgl3Application(Main(), Lwjgl3ApplicationConfiguration().apply {
             setTitle(Constants.TITLE)
-            setWindowPosition(1180, 500)
+            setWindowPosition(1000, 100)
             setWindowSizeLimits(
                 Constants.DESKTOP_WIDTH,
                 Constants.DESKTOP_HEIGHT,

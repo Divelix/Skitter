@@ -3,20 +3,13 @@ package com.divelix.skitter.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.MathUtils
-import com.divelix.skitter.data.Assets
 import com.divelix.skitter.Main
-import com.divelix.skitter.data.RegionName
+import com.divelix.skitter.data.Assets
 import ktx.app.KtxScreen
 import ktx.graphics.use
-import ktx.log.debug
-import ktx.scene2d.Scene2DSkin
-import ktx.style.get
-import java.lang.Exception
 
 class LoadingScreen(private val game: Main): KtxScreen {
 
@@ -30,6 +23,7 @@ class LoadingScreen(private val game: Main): KtxScreen {
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         assets.loadSplashAssets()
         assets.loadAssets()
+        Gdx.gl20.glViewport(0, 0, Gdx.graphics.width, Gdx.graphics.height) // lwjgl3 need it
     }
 
     override fun render(delta: Float) {

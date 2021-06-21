@@ -36,7 +36,7 @@ data class ActivePlayerData(
 enum class EquipType {
     SHIP,
     GUN;
-    operator fun invoke() = toString().toLowerCase(Locale.ROOT)
+    operator fun invoke() = toString().lowercase(Locale.ROOT)
 }
 
 data class Equip(

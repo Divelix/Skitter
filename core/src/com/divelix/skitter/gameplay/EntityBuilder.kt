@@ -93,7 +93,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.BULLET_DEFAULT()).texture) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.BULLET_DEFAULT())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
@@ -135,7 +135,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
                 size.set(width, height)
                 origin.set(size).scl(0.5f)
             }
-            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.BULLET_DEFAULT()).texture) }
+            with<TextureComponent> { sprite.setRegion(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionName.BULLET_DEFAULT())) }
             with<B2dBodyComponent> {
                 body = world.body(type = BodyDef.BodyType.DynamicBody) {
                     box(width = width, height = height) {
