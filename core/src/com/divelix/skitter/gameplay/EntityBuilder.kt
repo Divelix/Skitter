@@ -69,7 +69,7 @@ class EntityBuilder(private val activePlayerData: ActivePlayerData,
         return engine.entity {
             with<CameraComponent> {
                 camera = playCam
-                camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_WIDTH * Gdx.graphics.height / Gdx.graphics.width)
+                camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_WIDTH / Constants.aspectRatio)
             }
             if (playerEntity != null) with<BindComponent> { entity = playerEntity }
         }

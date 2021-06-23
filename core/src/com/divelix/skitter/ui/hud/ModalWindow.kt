@@ -1,14 +1,11 @@
 package com.divelix.skitter.ui.hud
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.gameplay.GameEngine
-import com.divelix.skitter.ui.ScaledLabel
 import ktx.scene2d.KTable
 import ktx.scene2d.Scene2DSkin
-import ktx.scene2d.table
 
 abstract class ModalWindow(title: String = ""): Window(title, Scene2DSkin.defaultSkin), KTable {
 

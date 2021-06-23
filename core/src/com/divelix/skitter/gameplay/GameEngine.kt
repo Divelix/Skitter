@@ -66,9 +66,9 @@ class GameEngine(val activePlayerData: ActivePlayerData,
     private fun createEngineSystems() {
         engine.run {
             addSystem(CameraSystem())
-            addSystem(PhysicsSystem(world))
             addSystem(PlayerSystem(activePlayerData))
             addSystem(RenderingSystem(context, playCam))
+            addSystem(PhysicsSystem(world))
             addSystem(DamageLabelSystem(playCam)) // before HealthSystem to let label update init position on last hit
             addSystem(HealthSystem(hud))
             addSystem(AmmoSystem(activePlayerData.gunReload))

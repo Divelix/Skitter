@@ -1,6 +1,7 @@
 package com.divelix.skitter.ui.hud
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.Main
@@ -15,40 +16,59 @@ import com.divelix.skitter.utils.RegionBinder
 import ktx.actors.onTouchDown
 import ktx.collections.component1
 import ktx.collections.component2
-import ktx.scene2d.Scene2DSkin
-import ktx.scene2d.imageButton
-import ktx.scene2d.table
+import ktx.scene2d.*
 import ktx.style.get
 
 class GameOverWindow(game: Main, title: String = "GameOver"): ModalWindow(title) {
+    val content: Container<*>
+
     init {
-//        controlsTable.apply {
-//            debug()
-//            defaults().size(130f, 50f).pad(10f)
-//            imageButton(Constants.STYLE_EXIT_BTN)
-//                .cell(align = Align.center)
-//                .onTouchDown {
-//                    LevelManager.isNextLvlRequired = true
-//                    GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
-//                    game.screen = ScrollMenuScreen(game)
-//                }
-//            imageButton(Constants.STYLE_RESTART_BTN)
-//                .cell(align = Align.center)
-//                .onTouchDown {
-//                    LevelManager.isRestartNeeded = true
-//                    this@GameOverWindow.hide()
-//                    GameEngine.isPaused = false
-//                }
-//        }
+        content = container {
+            debug()
+        }.cell(grow = true)
+        row()
+        table {
+            defaults().align(Align.center).size(130f, 50f)
+            imageButton(Constants.STYLE_EXIT_BTN)
+                .onTouchDown {
+                    LevelManager.isNextLvlRequired = true
+                    GameEngine.slowRate = Constants.DEFAULT_SLOW_RATE
+                    game.screen = ScrollMenuScreen(game)
+                }
+            imageButton(Constants.STYLE_RESTART_BTN)
+                .onTouchDown {
+                    LevelManager.isRestartNeeded = true
+                    this@GameOverWindow.hide()
+                    GameEngine.isPaused = false
+                    Data.matchHistory.clear()
+                }
+        }
     }
 
     override fun update() {
-//        contentTable.clear()
-//        for ((enemy, enemyCount) in Data.matchHistory) {
-//            contentTable.add(Image(Scene2DSkin.defaultSkin.get<TextureRegion>(RegionBinder.chooseEnemyRegionName(enemy))))
-//            contentTable.add(ScaledLabel("count: $enemyCount"))
-//            contentTable.row()
-//            row()
-//        }
+        content.actor = table {
+            var score = 0
+            scrollPane {
+                table {
+                    debugAll()
+                    for ((enemy, enemyCount) in Data.matchHistory) {
+                        val imgName = RegionBinder.chooseEnemyRegionName(enemy)
+                        val region = Scene2DSkin.defaultSkin.get<TextureRegion>(imgName)
+                        image(region).cell(width = 50f, height = 50f, pad = 10f)
+                        scaledLabel("x$enemyCount", scale = 0.2f)
+                        val scorePoints = enemyCount!! * 100
+                        score += scorePoints
+                        scaledLabel(
+                            "$scorePoints",
+                            scale = 0.2f
+                        ).apply { setAlignment(Align.center) }
+                            .cell(width = 100f)
+                        row()
+                    }
+                }
+            }
+            row()
+            scaledLabel("Score: $score", scale = .25f).cell(colspan = 3)
+        }
     }
 }
