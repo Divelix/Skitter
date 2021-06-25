@@ -6,21 +6,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.ModAlias
-import com.divelix.skitter.data.ModType
 import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
 import ktx.scene2d.scrollPane
 import ktx.scene2d.table
 import ktx.style.get
 import ktx.collections.*
+import ktx.log.debug
 
-// contains all available mods to player
+// Contains all available mods to player for specific type of equip
 class StockTable(
-        canModifyPlayerData: Boolean,
         val playerMods: GdxArray<ModAlias>,
         modAliases: GdxArray<ModAlias>,
-        val selectMod: (ModView) -> Unit
-) : ModTable(canModifyPlayerData, modAliases, selectMod) {
+        val selectMod: (ModView) -> Unit,
+        canModifyPlayerData: Boolean = false
+) : ModTable(modAliases, selectMod, canModifyPlayerData) {
     private val tableWithMods: Table
 
     init {
@@ -60,7 +60,7 @@ class StockTable(
             }
             // need both as modAliases is mutable and doesn't ADD mods to playerData
             modAliases.add(mergedModAlias)
-            playerMods.add(mergedModAlias)
+            playerMods.add(mergedModAlias) // TODO bug with mod duplication in equip
             mergedModAlias
         } else {
             modAlias
@@ -78,7 +78,7 @@ class StockTable(
                 .singleOrNull { it.modAlias.index == modAlias.index && it.modAlias.level == modAlias.level }
         if (modView != null) {
             if (modifyData) {
-                // need both as modAliases is mutable and doesn't REMOVE mods to playerData
+                // need both as modAliases is mutable and does not remove mods in playerData
                 modAliases.removeValue(modAlias, false)
                 playerMods.removeValue(modAlias, false)
             }

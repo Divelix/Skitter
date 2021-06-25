@@ -15,12 +15,12 @@ import ktx.scene2d.Scene2DSkin
 import ktx.scene2d.container
 import ktx.style.get
 
-// Contain unique mods (by type and index)
+// Contains unique by type and index mods for specific equip
 class SuitTable(
-        canModifyPlayerData: Boolean,
         modAliases: GdxArray<ModAlias>,
-        selectMod: (ModView) -> Unit
-) : ModTable(canModifyPlayerData, modAliases, selectMod) {
+        selectMod: (ModView) -> Unit,
+        canModifyPlayerData: Boolean = true
+) : ModTable(modAliases, selectMod, canModifyPlayerData) {
 
     init {
         name = Constants.SUIT_TABLE
@@ -30,7 +30,7 @@ class SuitTable(
             container(makeEmptyCell()) {
                 background = TextureRegionDrawable(Scene2DSkin.defaultSkin.get<Texture>(Constants.BLACK_PIXEL_30))
             }
-            if (i % 4 == 0) row()   
+            if (i % 4 == 0) row()
         }
     }
 

@@ -9,9 +9,9 @@ import ktx.collections.gdxArrayOf
 import ktx.scene2d.KTable
 
 abstract class ModTable(
-        private val canModifyPlayerData: Boolean,
         mods: GdxArray<ModAlias>,
-        private val selectMod: (ModView) -> Unit
+        private val selectMod: (ModView) -> Unit,
+        private val canModifyPlayerData: Boolean = false
 ) : Table(), KTable {
     // TODO ponder on that line (lateinit is not cool here)
     lateinit var modAliases: GdxArray<ModAlias> private set

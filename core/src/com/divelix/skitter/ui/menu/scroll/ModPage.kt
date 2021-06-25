@@ -27,8 +27,8 @@ class ModPage(context: Context, val playerData: PlayerData, val reloadEquipsFor:
         }
     private val coinsLabel: Label
     private val showcaseTable by lazy { ShowcaseTable(::sellMod, ::upgradeMod) }
-    private val shipStockTable = StockTable(true, playerData.mods, playerData.mods.filter { it.type == ModType.SHIP_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN); addAllViews() }
-    private val gunStockTable = StockTable(true, playerData.mods, playerData.mods.filter { it.type == ModType.GUN_MOD }, ::selectMod).apply { padTop(Constants.UI_MARGIN); addAllViews() }
+    private val shipStockTable = StockTable(playerData.mods, playerData.mods.filter { it.type == ModType.SHIP_MOD }, ::selectMod, true).apply { padTop(Constants.UI_MARGIN); addAllViews() }
+    private val gunStockTable = StockTable(playerData.mods, playerData.mods.filter { it.type == ModType.GUN_MOD }, ::selectMod, true).apply { padTop(Constants.UI_MARGIN); addAllViews() }
     private val tabbedMenu = TabbedMenu(gdxArrayOf(
             Tab(Scene2DSkin.defaultSkin[RegionName.SHIP_ICON()], shipStockTable),
             Tab(Scene2DSkin.defaultSkin[RegionName.GUN_ICON()], gunStockTable)

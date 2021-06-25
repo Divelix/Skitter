@@ -10,7 +10,7 @@ import java.util.*
 
 class EquipAliasSerializer: JsonSerializer<EquipAlias> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): EquipAlias {
-        val modType = EquipType.valueOf(jsonValue[0].asString().toUpperCase(Locale.ROOT))
+        val modType = EquipType.valueOf(jsonValue[0].asString().uppercase(Locale.ROOT))
         val index = jsonValue[1].asInt()
         val level = jsonValue[2].asInt()
         val mods = gdxArrayOf<ModAlias>()
@@ -48,7 +48,7 @@ class EquipAliasSerializer: JsonSerializer<EquipAlias> {
 
 class EquipSerializer: JsonSerializer<Equip> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Equip {
-        val equipType = EquipType.valueOf(jsonValue[0].asString().toUpperCase(Locale.ROOT))
+        val equipType = EquipType.valueOf(jsonValue[0].asString().uppercase(Locale.ROOT))
         val index = jsonValue[1].asInt()
         val name = jsonValue[2].asString()
         val description = jsonValue[3].asString()
@@ -101,7 +101,7 @@ class EquipSerializer: JsonSerializer<Equip> {
 
 class ModAliasSerializer: JsonSerializer<ModAlias> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): ModAlias {
-        val modType = ModType.valueOf(jsonValue[0].asString().toUpperCase(Locale.ROOT))
+        val modType = ModType.valueOf(jsonValue[0].asString().uppercase(Locale.ROOT))
         val index = jsonValue[1].asInt()
         val level = jsonValue[2].asInt()
         val quantity = jsonValue[3].asInt()
@@ -122,7 +122,7 @@ class ModAliasSerializer: JsonSerializer<ModAlias> {
 
 class ModSerializer: JsonSerializer<Mod> {
     override fun read(json: Json, jsonValue: JsonValue, type: Class<*>?): Mod {
-        val modType = ModType.valueOf(jsonValue[0].asString().toUpperCase(Locale.ROOT))
+        val modType = ModType.valueOf(jsonValue[0].asString().uppercase(Locale.ROOT))
         val index = jsonValue[1].asInt()
         val name = jsonValue[2].asString()
         val effects = gdxMapOf<ModEffect, GdxFloatArray>()
