@@ -13,7 +13,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class PlayerDataTests {
+class PlayerDataSerializationTests {
     private lateinit var json: Json
     private lateinit var printSettings: JsonValue.PrettyPrintSettings
 

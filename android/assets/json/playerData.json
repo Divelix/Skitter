@@ -9,7 +9,7 @@
 			"index": 1,
 			"level": 1,
 			"mods": [
-				{ "type": "ship_mod", "index": 1, "level": 1, "quantity": 1 },
+				{ "type": "ship_mod", "index": 1, "level": 1, "quantity": 1 }
 			]
 		},
 		{

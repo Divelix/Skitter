@@ -18,6 +18,11 @@ object Constants {
     const val DEFAULT_SLOW_RATE = 1f
     const val PLAYER_SIZE = 2f
 
+    // Data values
+    const val EQUIP_MAX_LEVEL = 10
+    const val MOD_MAX_LEVEL = 10
+    const val MOD_MAX_QUANTITY = 100
+
     // UI values
     const val DEFAULT_LABEL_SCALE = 0.1f
     const val UI_MARGIN = 12f
