@@ -1,9 +1,7 @@
 package com.divelix.skitter.data.editors
 
-import com.divelix.skitter.data.EquipAlias
-import com.divelix.skitter.data.EquipType
-import com.divelix.skitter.data.ModAlias
-import com.divelix.skitter.data.PlayerData
+import com.divelix.skitter.data.*
+import com.divelix.skitter.data.binders.AliasBinder
 import ktx.collections.*
 import ktx.log.*
 
@@ -42,18 +40,55 @@ class PlayerDataEditor(private val playerData: PlayerData) {
 
     fun upgradeMod(mod: ModAlias): Boolean {
         val playerMod = playerData.mods.singleOrNull { it.type == mod.type && it.index == mod.index && it.level == mod.level }
-        return if (playerMod != null && playerMod.quantity == 1) {
-            ModEditor.upgradeMod(playerMod)
-        } else if (playerMod != null && playerMod.quantity > 1) {
-            playerData.mods += playerMod.copy(level = playerMod.level + 1, quantity = 1)
-            ModEditor.decrementMod(playerMod)
+        if (playerMod == null) {
+            error { "No such mod in PlayerData" }
+            return false
         } else {
-            error { "No such mod in PlayerData or quantity < 1" }
-            false
+            val upgradePrice = AliasBinder.modsData.upgradePrices[playerMod.level-1]
+            return if(playerData.coins < upgradePrice) {
+                error { "Not enough money to upgrade" }
+                false
+            } else { // allowed to upgrade
+                playerData.coins -= upgradePrice
+                when {
+                    playerMod.quantity == 1 -> {
+                        ModEditor.upgradeMod(playerMod)
+                    }
+                    playerMod.quantity > 1 -> {
+                        playerData.mods += playerMod.copy(level = playerMod.level + 1, quantity = 1)
+                        ModEditor.decrementMod(playerMod)
+                    }
+                    else -> {
+                        error { "Upgrade candidate has quantity < 1" }
+                        false
+                    }
+                }
+            }
         }
     }
 
     fun sellMod(mod: ModAlias): Boolean {
-        TODO()
+        val playerMod = playerData.mods.singleOrNull { it.type == mod.type && it.index == mod.index && it.level == mod.level }
+        if (playerMod == null) {
+            error { "No such mod in PlayerData" }
+            return false
+        } else {
+            val sellPrice = AliasBinder.modsData.sellPrices[playerMod.level-1]
+            playerData.coins += sellPrice
+            return when {
+                playerMod.quantity == 1 -> {
+                    playerData.mods.removeValue(playerMod, false)
+                    true
+                }
+                playerMod.quantity > 1 -> {
+                    ModEditor.decrementMod(playerMod)
+                    true
+                }
+                else -> {
+                    error { "Sell candidate has quantity < 1" }
+                    false
+                }
+            }
+        }
     }
 }

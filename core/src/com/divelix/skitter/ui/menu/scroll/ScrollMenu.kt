@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.*
 import com.divelix.skitter.data.JsonProcessor
+import com.divelix.skitter.data.editors.PlayerDataEditor
 import ktx.actors.onClickEvent
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile

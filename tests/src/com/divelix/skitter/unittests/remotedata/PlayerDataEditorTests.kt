@@ -2,6 +2,7 @@ package com.divelix.skitter.unittests.remotedata
 
 import com.divelix.skitter.GdxTestRunner
 import com.divelix.skitter.data.*
+import com.divelix.skitter.data.binders.AliasBinder
 import com.divelix.skitter.data.editors.PlayerDataEditor
 import ktx.collections.*
 import org.junit.Assert
@@ -78,15 +79,29 @@ class PlayerDataEditorTests {
     }
 
     @Test
-    fun `check upgradeMod upgrades mod`() {
+    fun `check upgradeMod upgrades mod for coins`() {
+        val arbitraryLargeNumber = 100000
         val mod = ModAlias(ModType.SHIP_MOD, 12, 5, 1)
-        val expected = PlayerData().apply { mods += mod.copy(level = 6) }
+        val expectedPrice = arbitraryLargeNumber - AliasBinder.modsData.upgradePrices[mod.level-1]
+        val expected = PlayerData(coins = expectedPrice).apply { mods += mod.copy(level = 6) }
 
-        val actual = PlayerData().apply { mods += mod.copy() }
+        val actual = PlayerData(coins = arbitraryLargeNumber).apply { mods += mod.copy() }
         val playerDataEditor = PlayerDataEditor(actual)
         playerDataEditor.upgradeMod(mod.copy())
 
         Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `check upgradeMod won't upgrade mod if there is not enough coins`() {
+        val arbitraryLargeNumber = 0
+        val mod = ModAlias(ModType.SHIP_MOD, 12, 5, 1)
+
+        val playerData = PlayerData(coins = arbitraryLargeNumber).apply { mods += mod.copy() }
+        val playerDataEditor = PlayerDataEditor(playerData)
+        val isUpgraded = playerDataEditor.upgradeMod(mod.copy())
+
+        Assert.assertFalse(isUpgraded)
     }
 
     @Test
@@ -101,16 +116,55 @@ class PlayerDataEditorTests {
 
     @Test
     fun `check upgradeMod works with multiple quantity`() {
+        val arbitraryLargeNumber = 100000
         val mod = ModAlias(ModType.SHIP_MOD, 12, 1, 2)
-        val expected = PlayerData().apply {
+        val expectedPrice = arbitraryLargeNumber - AliasBinder.modsData.upgradePrices[mod.level-1]
+        val expected = PlayerData(coins = expectedPrice).apply {
             mods += mod.copy(level = 1, quantity = 1)
             mods += mod.copy(level = 2, quantity = 1)
         }
 
-        val actual = PlayerData().apply { mods += mod.copy() }
+        val actual = PlayerData(coins = arbitraryLargeNumber).apply { mods += mod.copy() }
         val playerDataEditor = PlayerDataEditor(actual)
         playerDataEditor.upgradeMod(mod.copy())
 
         Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `check sellMod removes mod with single quantity`() {
+        val mod = ModAlias(ModType.SHIP_MOD, 12, 5, 1)
+        val sellPrice = AliasBinder.modsData.sellPrices[mod.level-1]
+        val expected = PlayerData(coins = sellPrice)
+
+        val actual = PlayerData().apply { mods += mod.copy() }
+        val playerDataEditor = PlayerDataEditor(actual)
+        playerDataEditor.sellMod(mod.copy())
+
+        Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `check sellMod decrements mod with multiple quantity`() {
+        val mod = ModAlias(ModType.SHIP_MOD, 12, 5, 2)
+        val sellPrice = AliasBinder.modsData.sellPrices[mod.level-1]
+        val expected = PlayerData(coins = sellPrice).apply { mods += mod.copy(quantity = mod.quantity-1) }
+
+        val actual = PlayerData().apply { mods += mod.copy() }
+        val playerDataEditor = PlayerDataEditor(actual)
+        playerDataEditor.sellMod(mod.copy())
+
+        Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `check sellMod fails for mod quantity less than 1`() {
+        val mod = ModAlias(ModType.SHIP_MOD, 12, 5, 0)
+
+        val playerData = PlayerData().apply { mods += mod.copy() }
+        val playerDataEditor = PlayerDataEditor(playerData)
+        val isSold = playerDataEditor.sellMod(mod.copy())
+
+        Assert.assertFalse(isSold)
     }
 }
