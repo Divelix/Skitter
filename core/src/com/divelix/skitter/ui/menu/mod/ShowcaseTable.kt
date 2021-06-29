@@ -9,8 +9,7 @@ import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.RegionName
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.ui.menu.ModView
-import com.divelix.skitter.ui.menu.mod.BigModTable
-import com.divelix.skitter.utils.AliasBinder
+import com.divelix.skitter.data.binders.AliasBinder
 import ktx.actors.onClick
 import ktx.actors.txt
 import ktx.scene2d.KTable

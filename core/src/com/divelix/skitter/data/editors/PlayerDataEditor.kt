@@ -5,6 +5,7 @@ import com.divelix.skitter.data.EquipType
 import com.divelix.skitter.data.ModAlias
 import com.divelix.skitter.data.PlayerData
 import ktx.collections.*
+import ktx.log.*
 
 class PlayerDataEditor(private val playerData: PlayerData) {
 
@@ -34,15 +35,25 @@ class PlayerDataEditor(private val playerData: PlayerData) {
         return playerEquip != null && EquipEditor.addModToEquip(mod, playerEquip)
     }
 
-    fun removeModFromEquip(mod: ModAlias, equip: EquipAlias) {
-        TODO()
+    fun removeModFromEquip(mod: ModAlias, equip: EquipAlias): Boolean {
+        val playerEquip = playerData.equips.singleOrNull {it.type == equip.type && it.index == equip.index}
+        return playerEquip != null && EquipEditor.removeModFromEquip(mod, playerEquip)
     }
 
-    fun upgradeMod(mod: ModAlias) {
-        TODO()
+    fun upgradeMod(mod: ModAlias): Boolean {
+        val playerMod = playerData.mods.singleOrNull { it.type == mod.type && it.index == mod.index && it.level == mod.level }
+        return if (playerMod != null && playerMod.quantity == 1) {
+            ModEditor.upgradeMod(playerMod)
+        } else if (playerMod != null && playerMod.quantity > 1) {
+            playerData.mods += playerMod.copy(level = playerMod.level + 1, quantity = 1)
+            ModEditor.decrementMod(playerMod)
+        } else {
+            error { "No such mod in PlayerData or quantity < 1" }
+            false
+        }
     }
 
-    fun removeMod(mod: ModAlias) {
+    fun sellMod(mod: ModAlias): Boolean {
         TODO()
     }
 }

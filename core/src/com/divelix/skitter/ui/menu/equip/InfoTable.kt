@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.*
 import com.divelix.skitter.scaledLabel
-import com.divelix.skitter.utils.AliasBinder
-import com.divelix.skitter.utils.RegionBinder
+import com.divelix.skitter.data.binders.AliasBinder
+import com.divelix.skitter.data.binders.RegionBinder
 import ktx.actors.onClickEvent
 import ktx.actors.txt
 import ktx.collections.*

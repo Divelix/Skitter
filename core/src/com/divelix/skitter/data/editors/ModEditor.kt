@@ -7,11 +7,11 @@ import ktx.log.error
 object ModEditor {
 
     fun upgradeMod(mod: ModAlias): Boolean {
-        return if (mod.level < Constants.MOD_MAX_LEVEL) {
+        return if (mod.quantity == 1 && mod.level < Constants.MOD_MAX_LEVEL) {
             mod.level++
             true
         } else {
-            error { "Mod can't upgrade as it is already has max level" }
+            error { "Mod can't upgrade as it is already has max level or quantity > 1" }
             false
         }
     }

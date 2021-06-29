@@ -10,12 +10,11 @@ import com.divelix.skitter.ui.menu.StockTable
 import com.divelix.skitter.ui.menu.mod.ShowcaseTable
 import com.divelix.skitter.ui.menu.tabs.Tab
 import com.divelix.skitter.ui.menu.tabs.TabbedMenu
-import com.divelix.skitter.utils.AliasBinder
+import com.divelix.skitter.data.binders.AliasBinder
 import ktx.actors.txt
 import ktx.collections.filter
 import ktx.collections.gdxArrayOf
 import ktx.inject.Context
-import ktx.log.debug
 import ktx.scene2d.*
 import ktx.style.get
 

@@ -1,8 +1,8 @@
-package com.divelix.skitter.utils
+package com.divelix.skitter.data.binders
 
 import com.divelix.skitter.data.*
+import com.divelix.skitter.data.JsonProcessor
 import ktx.assets.toInternalFile
-import ktx.assets.toLocalFile
 import ktx.json.fromJson
 
 object AliasBinder {

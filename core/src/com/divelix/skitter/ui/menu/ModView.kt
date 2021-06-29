@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.divelix.skitter.data.*
 import com.divelix.skitter.scaledLabel
-import com.divelix.skitter.utils.RegionBinder
+import com.divelix.skitter.data.binders.RegionBinder
 import ktx.actors.onClick
 import ktx.actors.txt
 import ktx.scene2d.Scene2DSkin

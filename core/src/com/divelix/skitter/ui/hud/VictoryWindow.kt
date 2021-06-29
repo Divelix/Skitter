@@ -10,7 +10,7 @@ import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.LevelManager
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.screens.ScrollMenuScreen
-import com.divelix.skitter.utils.RegionBinder
+import com.divelix.skitter.data.binders.RegionBinder
 import ktx.actors.onTouchDown
 import ktx.style.get
 import ktx.collections.*

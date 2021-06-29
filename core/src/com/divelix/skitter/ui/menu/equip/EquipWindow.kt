@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Scaling
 import com.divelix.skitter.data.Constants
 import com.divelix.skitter.data.EquipAlias
 import com.divelix.skitter.scaledLabel
-import com.divelix.skitter.utils.RegionBinder
+import com.divelix.skitter.data.binders.RegionBinder
 import ktx.actors.onClickEvent
 import ktx.scene2d.*
 import ktx.style.get

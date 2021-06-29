@@ -111,6 +111,6 @@ data class PlayerData(
 
 data class ActiveEquips(var shipIndex: Int = 0, var gunIndex: Int = 0)
 
-data class EquipAlias(val type: EquipType = EquipType.SHIP, val index: Int = 0, var level: Int = 0, val mods: GdxArray<ModAlias> = gdxArrayOf())
+data class EquipAlias(val type: EquipType = EquipType.SHIP, val index: Int = 0, var level: Int = 1, val mods: GdxArray<ModAlias> = gdxArrayOf())
 
-data class ModAlias(val type: ModType = ModType.SHIP_MOD, val index: Int = 0, var level: Int = 0, var quantity: Int = 1)
+data class ModAlias(val type: ModType = ModType.SHIP_MOD, val index: Int = 0, var level: Int = 1, var quantity: Int = 1)

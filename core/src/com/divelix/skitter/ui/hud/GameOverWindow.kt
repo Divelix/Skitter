@@ -2,7 +2,6 @@ package com.divelix.skitter.ui.hud
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Container
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Align
 import com.divelix.skitter.Main
 import com.divelix.skitter.data.Constants
@@ -11,8 +10,7 @@ import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.LevelManager
 import com.divelix.skitter.scaledLabel
 import com.divelix.skitter.screens.ScrollMenuScreen
-import com.divelix.skitter.ui.ScaledLabel
-import com.divelix.skitter.utils.RegionBinder
+import com.divelix.skitter.data.binders.RegionBinder
 import ktx.actors.onTouchDown
 import ktx.collections.component1
 import ktx.collections.component2

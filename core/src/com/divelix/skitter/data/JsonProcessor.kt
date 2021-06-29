@@ -1,4 +1,4 @@
-package com.divelix.skitter.utils
+package com.divelix.skitter.data
 
 import com.badlogic.gdx.utils.Json
 import com.divelix.skitter.*

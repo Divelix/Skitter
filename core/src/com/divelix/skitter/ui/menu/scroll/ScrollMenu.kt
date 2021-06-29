@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.*
 import com.badlogic.gdx.utils.Array
 import com.divelix.skitter.data.*
-import com.divelix.skitter.utils.JsonProcessor
+import com.divelix.skitter.data.JsonProcessor
 import ktx.actors.onClickEvent
 import ktx.assets.toInternalFile
 import ktx.assets.toLocalFile

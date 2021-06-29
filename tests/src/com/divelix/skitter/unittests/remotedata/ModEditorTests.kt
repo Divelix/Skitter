@@ -20,6 +20,13 @@ class ModEditorTests {
     }
 
     @Test
+    fun `check if upgradeMod don't affect multiple mods`() {
+        val mod = ModAlias(quantity = 2)
+        val isAllowed = ModEditor.upgradeMod(mod)
+        Assert.assertFalse(isAllowed)
+    }
+
+    @Test
     fun `check if incrementMod don't exceed max quantity`() {
         val mod = ModAlias(quantity = Constants.MOD_MAX_QUANTITY)
         val isAllowed = ModEditor.incrementMod(mod)

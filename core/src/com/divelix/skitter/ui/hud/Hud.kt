@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
@@ -26,16 +25,12 @@ import com.divelix.skitter.gameplay.GameEngine
 import com.divelix.skitter.gameplay.LevelManager
 import com.divelix.skitter.gameplay.components.AmmoComponent
 import com.divelix.skitter.gameplay.components.HealthComponent
-import com.divelix.skitter.screens.PlayScreen
-import com.divelix.skitter.screens.ScrollMenuScreen
-import com.divelix.skitter.utils.RegionBinder
+import com.divelix.skitter.data.binders.RegionBinder
 import com.divelix.skitter.utils.TopViewport
-import com.kotcrab.vis.ui.widget.VisWindow
 import ktx.actors.*
 import ktx.graphics.*
 import ktx.collections.*
 import ktx.scene2d.*
-import ktx.scene2d.vis.*
 import ktx.style.get
 
 class Hud(

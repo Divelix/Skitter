@@ -1,4 +1,4 @@
-package com.divelix.skitter.utils
+package com.divelix.skitter.data.binders
 
 import com.divelix.skitter.data.Enemy
 import com.divelix.skitter.data.EquipType
